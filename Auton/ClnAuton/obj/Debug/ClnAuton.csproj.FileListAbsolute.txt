@@ -1,0 +1,15 @@
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\bin\Debug\ClnAuton.dll.config
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\bin\Debug\ClnAuton.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\bin\Debug\ClnAuton.pdb
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\bin\Debug\CadAuton.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\bin\Debug\EntityFramework.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\bin\Debug\CadAuton.pdb
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\bin\Debug\CadAuton.dll.config
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\bin\Debug\EntityFramework.xml
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\obj\Debug\ClnAuton.csproj.AssemblyReference.cache
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\obj\Debug\ClnAuton.csproj.CoreCompileInputs.cache
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\obj\Debug\ClnAuton.csproj.Up2Date
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\obj\Debug\ClnAuton.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\ClnAuton\obj\Debug\ClnAuton.pdb

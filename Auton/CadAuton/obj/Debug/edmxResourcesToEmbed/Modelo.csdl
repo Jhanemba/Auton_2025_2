@@ -1,0 +1,382 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="AutonModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Cargo">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="descripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="estado" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="Empleado" Relationship="Self.FK_Empleado_Cargo" FromRole="Cargo" ToRole="Empleado" />
+  </EntityType>
+  <EntityType Name="Empleado">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idCargo" Type="Int32" Nullable="false" />
+    <Property Name="cedulaIdentidad" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="nombres" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="primerApellido" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="segundoApellido" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="direccion" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="celular" Type="Int64" Nullable="false" />
+    <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="estado" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="Cargo" Relationship="Self.FK_Empleado_Cargo" FromRole="Empleado" ToRole="Cargo" />
+    <NavigationProperty Name="Usuario" Relationship="Self.FK_Usuario_Empleado" FromRole="Empleado" ToRole="Usuario" />
+  </EntityType>
+  <EntityType Name="HistorialConfiabilidad">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idVehiculo" Type="Int32" Nullable="false" />
+    <Property Name="confiabilidadAnterior" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="confiabilidadNueva" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="puntuacionAnterior" Type="Decimal" Precision="3" Scale="1" Nullable="false" />
+    <Property Name="puntuacionNueva" Type="Decimal" Precision="3" Scale="1" Nullable="false" />
+    <Property Name="motivo" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Vehiculo" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="HistorialConfiabilidad" ToRole="Vehiculo" />
+  </EntityType>
+  <EntityType Name="Marca">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idProcedencia" Type="Int32" Nullable="false" />
+    <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="descripcion" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="estado" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="Procedencia" Relationship="Self.FK_Marca_Procedencia" FromRole="Marca" ToRole="Procedencia" />
+    <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_ModeloVehiculo_Marca" FromRole="Marca" ToRole="ModeloVehiculo" />
+  </EntityType>
+  <EntityType Name="ModeloVehiculo">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idMarca" Type="Int32" Nullable="false" />
+    <Property Name="idTipoVehiculo" Type="Int32" Nullable="false" />
+    <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="anioInicio" Type="Int32" Nullable="false" />
+    <Property Name="anioFin" Type="Int32" />
+    <Property Name="motor" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="combustible" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="estado" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="Marca" Relationship="Self.FK_ModeloVehiculo_Marca" FromRole="ModeloVehiculo" ToRole="Marca" />
+    <NavigationProperty Name="TipoVehiculo" Relationship="Self.FK_ModeloVehiculo_TipoVehiculo" FromRole="ModeloVehiculo" ToRole="TipoVehiculo" />
+    <NavigationProperty Name="Vehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="ModeloVehiculo" ToRole="Vehiculo" />
+  </EntityType>
+  <EntityType Name="Procedencia">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="codigo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="descripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="estado" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="Marca" Relationship="Self.FK_Marca_Procedencia" FromRole="Procedencia" ToRole="Marca" />
+  </EntityType>
+  <EntityType Name="TipoVehiculo">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="descripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="estado" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_ModeloVehiculo_TipoVehiculo" FromRole="TipoVehiculo" ToRole="ModeloVehiculo" />
+  </EntityType>
+  <EntityType Name="Usuario">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idEmpleado" Type="Int32" Nullable="false" />
+    <Property Name="usuario1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="clave" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="esAdministrador" Type="Boolean" Nullable="false" />
+    <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="estado" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="Empleado" Relationship="Self.FK_Usuario_Empleado" FromRole="Usuario" ToRole="Empleado" />
+  </EntityType>
+  <EntityType Name="Vehiculo">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idModeloVehiculo" Type="Int32" Nullable="false" />
+    <Property Name="anioFabricacion" Type="Int32" Nullable="false" />
+    <Property Name="confiabilidad" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="puntuacion" Type="Decimal" Precision="3" Scale="1" Nullable="false" />
+    <Property Name="observaciones" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="kilometraje" Type="Int32" />
+    <Property Name="propietario" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="estado" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="Vehiculo" ToRole="HistorialConfiabilidad" />
+    <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="Vehiculo" ToRole="ModeloVehiculo" />
+    <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="Vehiculo" ToRole="VehiculoMantenimiento" />
+  </EntityType>
+  <EntityType Name="VehiculoMantenimiento">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idVehiculo" Type="Int32" Nullable="false" />
+    <Property Name="tipoMantenimiento" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="descripcion" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="costo" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="fechaMantenimiento" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="proximoMantenimiento" Type="DateTime" Precision="0" />
+    <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="estado" Type="Int16" Nullable="false" />
+    <NavigationProperty Name="Vehiculo" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="VehiculoMantenimiento" ToRole="Vehiculo" />
+  </EntityType>
+  <Association Name="FK_Empleado_Cargo">
+    <End Role="Cargo" Type="Self.Cargo" Multiplicity="1" />
+    <End Role="Empleado" Type="Self.Empleado" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cargo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Empleado">
+        <PropertyRef Name="idCargo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Usuario_Empleado">
+    <End Role="Empleado" Type="Self.Empleado" Multiplicity="1" />
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Empleado">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Usuario">
+        <PropertyRef Name="idEmpleado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_HistorialConfiabilidad_Vehiculo">
+    <End Role="Vehiculo" Type="Self.Vehiculo" Multiplicity="1" />
+    <End Role="HistorialConfiabilidad" Type="Self.HistorialConfiabilidad" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vehiculo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="HistorialConfiabilidad">
+        <PropertyRef Name="idVehiculo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Marca_Procedencia">
+    <End Role="Procedencia" Type="Self.Procedencia" Multiplicity="1" />
+    <End Role="Marca" Type="Self.Marca" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Procedencia">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Marca">
+        <PropertyRef Name="idProcedencia" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ModeloVehiculo_Marca">
+    <End Role="Marca" Type="Self.Marca" Multiplicity="1" />
+    <End Role="ModeloVehiculo" Type="Self.ModeloVehiculo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Marca">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ModeloVehiculo">
+        <PropertyRef Name="idMarca" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ModeloVehiculo_TipoVehiculo">
+    <End Role="TipoVehiculo" Type="Self.TipoVehiculo" Multiplicity="1" />
+    <End Role="ModeloVehiculo" Type="Self.ModeloVehiculo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TipoVehiculo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ModeloVehiculo">
+        <PropertyRef Name="idTipoVehiculo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Vehiculo_ModeloVehiculo">
+    <End Role="ModeloVehiculo" Type="Self.ModeloVehiculo" Multiplicity="1" />
+    <End Role="Vehiculo" Type="Self.Vehiculo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ModeloVehiculo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Vehiculo">
+        <PropertyRef Name="idModeloVehiculo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_VehiculoMantenimiento_Vehiculo">
+    <End Role="Vehiculo" Type="Self.Vehiculo" Multiplicity="1" />
+    <End Role="VehiculoMantenimiento" Type="Self.VehiculoMantenimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vehiculo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="VehiculoMantenimiento">
+        <PropertyRef Name="idVehiculo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="AutonEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Cargo" EntityType="Self.Cargo" />
+    <EntitySet Name="Empleado" EntityType="Self.Empleado" />
+    <EntitySet Name="HistorialConfiabilidad" EntityType="Self.HistorialConfiabilidad" />
+    <EntitySet Name="Marca" EntityType="Self.Marca" />
+    <EntitySet Name="ModeloVehiculo" EntityType="Self.ModeloVehiculo" />
+    <EntitySet Name="Procedencia" EntityType="Self.Procedencia" />
+    <EntitySet Name="TipoVehiculo" EntityType="Self.TipoVehiculo" />
+    <EntitySet Name="Usuario" EntityType="Self.Usuario" />
+    <EntitySet Name="Vehiculo" EntityType="Self.Vehiculo" />
+    <EntitySet Name="VehiculoMantenimiento" EntityType="Self.VehiculoMantenimiento" />
+    <AssociationSet Name="FK_Empleado_Cargo" Association="Self.FK_Empleado_Cargo">
+      <End Role="Cargo" EntitySet="Cargo" />
+      <End Role="Empleado" EntitySet="Empleado" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Usuario_Empleado" Association="Self.FK_Usuario_Empleado">
+      <End Role="Empleado" EntitySet="Empleado" />
+      <End Role="Usuario" EntitySet="Usuario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_HistorialConfiabilidad_Vehiculo" Association="Self.FK_HistorialConfiabilidad_Vehiculo">
+      <End Role="Vehiculo" EntitySet="Vehiculo" />
+      <End Role="HistorialConfiabilidad" EntitySet="HistorialConfiabilidad" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Marca_Procedencia" Association="Self.FK_Marca_Procedencia">
+      <End Role="Procedencia" EntitySet="Procedencia" />
+      <End Role="Marca" EntitySet="Marca" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ModeloVehiculo_Marca" Association="Self.FK_ModeloVehiculo_Marca">
+      <End Role="Marca" EntitySet="Marca" />
+      <End Role="ModeloVehiculo" EntitySet="ModeloVehiculo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ModeloVehiculo_TipoVehiculo" Association="Self.FK_ModeloVehiculo_TipoVehiculo">
+      <End Role="TipoVehiculo" EntitySet="TipoVehiculo" />
+      <End Role="ModeloVehiculo" EntitySet="ModeloVehiculo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Vehiculo_ModeloVehiculo" Association="Self.FK_Vehiculo_ModeloVehiculo">
+      <End Role="ModeloVehiculo" EntitySet="ModeloVehiculo" />
+      <End Role="Vehiculo" EntitySet="Vehiculo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_VehiculoMantenimiento_Vehiculo" Association="Self.FK_VehiculoMantenimiento_Vehiculo">
+      <End Role="Vehiculo" EntitySet="Vehiculo" />
+      <End Role="VehiculoMantenimiento" EntitySet="VehiculoMantenimiento" />
+    </AssociationSet>
+    <FunctionImport Name="paCargoListar" ReturnType="Collection(AutonModel.paCargoListar_Result)" />
+    <FunctionImport Name="paMarcaPorProcedencia" ReturnType="Collection(AutonModel.paMarcaPorProcedencia_Result)">
+      <Parameter Name="idProcedencia" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="paModeloPorMarca" ReturnType="Collection(AutonModel.paModeloPorMarca_Result)">
+      <Parameter Name="idMarca" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="paProcedenciaListar" ReturnType="Collection(AutonModel.paProcedenciaListar_Result)" />
+    <FunctionImport Name="paTipoVehiculoListar" ReturnType="Collection(AutonModel.paTipoVehiculoListar_Result)" />
+    <FunctionImport Name="paUsuarioValidar" ReturnType="Collection(AutonModel.paUsuarioValidar_Result)">
+      <Parameter Name="usuario" Mode="In" Type="String" />
+      <Parameter Name="clave" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="paVehiculoActualizar" ReturnType="Collection(String)">
+      <Parameter Name="id" Mode="In" Type="Int32" />
+      <Parameter Name="idModeloVehiculo" Mode="In" Type="Int32" />
+      <Parameter Name="anioFabricacion" Mode="In" Type="Int32" />
+      <Parameter Name="confiabilidad" Mode="In" Type="String" />
+      <Parameter Name="puntuacion" Mode="In" Type="Decimal" />
+      <Parameter Name="observaciones" Mode="In" Type="String" />
+      <Parameter Name="kilometraje" Mode="In" Type="Int32" />
+      <Parameter Name="propietario" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="paVehiculoEliminar" ReturnType="Collection(String)">
+      <Parameter Name="id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="paVehiculoInsertar" ReturnType="Collection(Decimal)">
+      <Parameter Name="idModeloVehiculo" Mode="In" Type="Int32" />
+      <Parameter Name="anioFabricacion" Mode="In" Type="Int32" />
+      <Parameter Name="confiabilidad" Mode="In" Type="String" />
+      <Parameter Name="puntuacion" Mode="In" Type="Decimal" />
+      <Parameter Name="observaciones" Mode="In" Type="String" />
+      <Parameter Name="kilometraje" Mode="In" Type="Int32" />
+      <Parameter Name="propietario" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="paVehiculoListar" ReturnType="Collection(AutonModel.paVehiculoListar_Result)">
+      <Parameter Name="parametro" Mode="In" Type="String" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="paCargoListar_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="descripcion" Nullable="false" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="paMarcaPorProcedencia_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="nombre" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="descripcion" Nullable="true" MaxLength="250" />
+  </ComplexType>
+  <ComplexType Name="paModeloPorMarca_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="nombre" Nullable="false" MaxLength="100" />
+    <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+    <Property Type="Int32" Name="anioInicio" Nullable="false" />
+    <Property Type="Int32" Name="anioFin" Nullable="true" />
+    <Property Type="String" Name="motor" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="combustible" Nullable="true" MaxLength="20" />
+  </ComplexType>
+  <ComplexType Name="paProcedenciaListar_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="codigo" Nullable="false" MaxLength="10" />
+    <Property Type="String" Name="descripcion" Nullable="false" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="paTipoVehiculoListar_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="descripcion" Nullable="false" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="paUsuarioValidar_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="usuario" Nullable="false" MaxLength="20" />
+    <Property Type="Boolean" Name="esAdministrador" Nullable="false" />
+    <Property Type="String" Name="nombreCompleto" Nullable="false" MaxLength="112" />
+    <Property Type="String" Name="cargo" Nullable="false" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="paVehiculoListar_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="modelo" Nullable="false" MaxLength="100" />
+    <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+    <Property Type="Int32" Name="anioFabricacion" Nullable="false" />
+    <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
+    <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
+    <Property Type="Int32" Name="kilometraje" Nullable="true" />
+    <Property Type="String" Name="propietario" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="motor" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="combustible" Nullable="true" MaxLength="20" />
+    <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+    <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
+    <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
+    <Property Type="Int16" Name="estado" Nullable="false" />
+  </ComplexType>
+</Schema>

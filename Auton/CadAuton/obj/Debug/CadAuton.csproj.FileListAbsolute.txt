@@ -1,0 +1,12 @@
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\bin\Debug\CadAuton.dll.config
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\bin\Debug\CadAuton.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\bin\Debug\CadAuton.pdb
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\bin\Debug\EntityFramework.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\bin\Debug\EntityFramework.xml
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\obj\Debug\CadAuton.csproj.AssemblyReference.cache
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\obj\Debug\CadAuton.csproj.CoreCompileInputs.cache
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\obj\Debug\CadAuton.csproj.Up2Date
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\obj\Debug\CadAuton.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CadAuton\obj\Debug\CadAuton.pdb
