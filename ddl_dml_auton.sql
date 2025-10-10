@@ -387,6 +387,8 @@ CREATE NONCLUSTERED INDEX IX_Marca_Procedencia ON Marca(idProcedencia);
 CREATE NONCLUSTERED INDEX IX_ModeloVehiculo_Marca ON ModeloVehiculo(idMarca);
 CREATE NONCLUSTERED INDEX IX_Usuario_Estado ON Usuario(estado);
 
+select * FROM Procedencia;
+
 PRINT '========================================';
 PRINT 'SISTEMA AUTON - VERSION OPTIMIZADA';
 PRINT '========================================';

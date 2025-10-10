@@ -15,13 +15,17 @@ namespace CpAuton
 {
     public partial class FrmConsultaVehiculos : Form
     {
+
         public FrmConsultaVehiculos()
         {
             InitializeComponent();
         }
 
+
+
         private void FrmConsultaVehiculos_Load(object sender, EventArgs e)
         {
+            Size = new Size(1083, 418);
             // Configurar el DataGridView al cargar el formulario
             ConfigurarDataGridView();
             // Cargar todos los vehículos al inicio

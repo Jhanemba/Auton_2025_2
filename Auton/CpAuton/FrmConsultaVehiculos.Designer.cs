@@ -42,10 +42,10 @@
             this.nudPrecioVenta = new System.Windows.Forms.NumericUpDown();
             this.lblSaldo = new System.Windows.Forms.Label();
             this.lblPrecioVenta = new System.Windows.Forms.Label();
-            this.cbxUnidadMedida = new System.Windows.Forms.ComboBox();
-            this.lblUnidadMedida = new System.Windows.Forms.Label();
-            this.txtDescripcion = new System.Windows.Forms.TextBox();
-            this.lblDescripcion = new System.Windows.Forms.Label();
+            this.cbxProcedencia = new System.Windows.Forms.ComboBox();
+            this.lblProcedencia = new System.Windows.Forms.Label();
+            this.txtModelo = new System.Windows.Forms.TextBox();
+            this.lblModelo = new System.Windows.Forms.Label();
             this.txtCodigo = new System.Windows.Forms.TextBox();
             this.lblCodigo = new System.Windows.Forms.Label();
             this.gbxLista = new System.Windows.Forms.GroupBox();
@@ -60,6 +60,10 @@
             this.btnEditar = new System.Windows.Forms.Button();
             this.lblTotal = new System.Windows.Forms.Label();
             this.btnExportar = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtMarca = new System.Windows.Forms.TextBox();
+            this.lblMarca = new System.Windows.Forms.Label();
+            this.txtTipo = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.erpSaldo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.erpUnidadMedida)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.erpDescripcion)).BeginInit();
@@ -144,21 +148,25 @@
             // 
             // gbxDatos
             // 
+            this.gbxDatos.Controls.Add(this.txtTipo);
+            this.gbxDatos.Controls.Add(this.txtMarca);
+            this.gbxDatos.Controls.Add(this.lblMarca);
+            this.gbxDatos.Controls.Add(this.label1);
             this.gbxDatos.Controls.Add(this.btnCancelar);
             this.gbxDatos.Controls.Add(this.btnGuardar);
             this.gbxDatos.Controls.Add(this.nudSaldo);
             this.gbxDatos.Controls.Add(this.nudPrecioVenta);
             this.gbxDatos.Controls.Add(this.lblSaldo);
             this.gbxDatos.Controls.Add(this.lblPrecioVenta);
-            this.gbxDatos.Controls.Add(this.cbxUnidadMedida);
-            this.gbxDatos.Controls.Add(this.lblUnidadMedida);
-            this.gbxDatos.Controls.Add(this.txtDescripcion);
-            this.gbxDatos.Controls.Add(this.lblDescripcion);
+            this.gbxDatos.Controls.Add(this.cbxProcedencia);
+            this.gbxDatos.Controls.Add(this.lblProcedencia);
+            this.gbxDatos.Controls.Add(this.txtModelo);
+            this.gbxDatos.Controls.Add(this.lblModelo);
             this.gbxDatos.Controls.Add(this.txtCodigo);
             this.gbxDatos.Controls.Add(this.lblCodigo);
-            this.gbxDatos.Location = new System.Drawing.Point(138, 376);
+            this.gbxDatos.Location = new System.Drawing.Point(12, 377);
             this.gbxDatos.Name = "gbxDatos";
-            this.gbxDatos.Size = new System.Drawing.Size(795, 115);
+            this.gbxDatos.Size = new System.Drawing.Size(1043, 179);
             this.gbxDatos.TabIndex = 13;
             this.gbxDatos.TabStop = false;
             this.gbxDatos.Text = "Datos";
@@ -193,40 +201,40 @@
             this.lblPrecioVenta.TabIndex = 6;
             this.lblPrecioVenta.Text = "Precio de Venta:";
             // 
-            // cbxUnidadMedida
+            // cbxProcedencia
             // 
-            this.cbxUnidadMedida.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxUnidadMedida.FormattingEnabled = true;
-            this.cbxUnidadMedida.Location = new System.Drawing.Point(134, 72);
-            this.cbxUnidadMedida.Name = "cbxUnidadMedida";
-            this.cbxUnidadMedida.Size = new System.Drawing.Size(194, 24);
-            this.cbxUnidadMedida.TabIndex = 5;
+            this.cbxProcedencia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxProcedencia.FormattingEnabled = true;
+            this.cbxProcedencia.Location = new System.Drawing.Point(132, 104);
+            this.cbxProcedencia.Name = "cbxProcedencia";
+            this.cbxProcedencia.Size = new System.Drawing.Size(194, 24);
+            this.cbxProcedencia.TabIndex = 5;
             // 
-            // lblUnidadMedida
+            // lblProcedencia
             // 
-            this.lblUnidadMedida.AutoSize = true;
-            this.lblUnidadMedida.Location = new System.Drawing.Point(6, 75);
-            this.lblUnidadMedida.Name = "lblUnidadMedida";
-            this.lblUnidadMedida.Size = new System.Drawing.Size(122, 16);
-            this.lblUnidadMedida.TabIndex = 4;
-            this.lblUnidadMedida.Text = "Unidad de Medida:";
+            this.lblProcedencia.AutoSize = true;
+            this.lblProcedencia.Location = new System.Drawing.Point(4, 107);
+            this.lblProcedencia.Name = "lblProcedencia";
+            this.lblProcedencia.Size = new System.Drawing.Size(87, 16);
+            this.lblProcedencia.TabIndex = 4;
+            this.lblProcedencia.Text = "Procedencia:";
             // 
-            // txtDescripcion
+            // txtModelo
             // 
-            this.txtDescripcion.Location = new System.Drawing.Point(134, 43);
-            this.txtDescripcion.MaxLength = 250;
-            this.txtDescripcion.Name = "txtDescripcion";
-            this.txtDescripcion.Size = new System.Drawing.Size(194, 22);
-            this.txtDescripcion.TabIndex = 3;
+            this.txtModelo.Location = new System.Drawing.Point(132, 75);
+            this.txtModelo.MaxLength = 250;
+            this.txtModelo.Name = "txtModelo";
+            this.txtModelo.Size = new System.Drawing.Size(194, 22);
+            this.txtModelo.TabIndex = 3;
             // 
-            // lblDescripcion
+            // lblModelo
             // 
-            this.lblDescripcion.AutoSize = true;
-            this.lblDescripcion.Location = new System.Drawing.Point(46, 46);
-            this.lblDescripcion.Name = "lblDescripcion";
-            this.lblDescripcion.Size = new System.Drawing.Size(82, 16);
-            this.lblDescripcion.TabIndex = 2;
-            this.lblDescripcion.Text = "Descripción:";
+            this.lblModelo.AutoSize = true;
+            this.lblModelo.Location = new System.Drawing.Point(44, 78);
+            this.lblModelo.Name = "lblModelo";
+            this.lblModelo.Size = new System.Drawing.Size(56, 16);
+            this.lblModelo.TabIndex = 2;
+            this.lblModelo.Text = "Modelo:";
             // 
             // txtCodigo
             // 
@@ -380,6 +388,41 @@
             this.btnExportar.UseVisualStyleBackColor = true;
             this.btnExportar.Click += new System.EventHandler(this.btnExportar_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(20, 141);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(38, 16);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Tipo:";
+            // 
+            // txtMarca
+            // 
+            this.txtMarca.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.txtMarca.Location = new System.Drawing.Point(132, 47);
+            this.txtMarca.MaxLength = 20;
+            this.txtMarca.Name = "txtMarca";
+            this.txtMarca.Size = new System.Drawing.Size(194, 22);
+            this.txtMarca.TabIndex = 14;
+            // 
+            // lblMarca
+            // 
+            this.lblMarca.AutoSize = true;
+            this.lblMarca.Location = new System.Drawing.Point(72, 47);
+            this.lblMarca.Name = "lblMarca";
+            this.lblMarca.Size = new System.Drawing.Size(48, 16);
+            this.lblMarca.TabIndex = 13;
+            this.lblMarca.Text = "Marca:";
+            // 
+            // txtTipo
+            // 
+            this.txtTipo.Location = new System.Drawing.Point(134, 141);
+            this.txtTipo.MaxLength = 250;
+            this.txtTipo.Name = "txtTipo";
+            this.txtTipo.Size = new System.Drawing.Size(194, 22);
+            this.txtTipo.TabIndex = 15;
+            // 
             // FrmConsultaVehiculos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -430,10 +473,10 @@
         private System.Windows.Forms.NumericUpDown nudPrecioVenta;
         private System.Windows.Forms.Label lblSaldo;
         private System.Windows.Forms.Label lblPrecioVenta;
-        private System.Windows.Forms.ComboBox cbxUnidadMedida;
-        private System.Windows.Forms.Label lblUnidadMedida;
-        private System.Windows.Forms.TextBox txtDescripcion;
-        private System.Windows.Forms.Label lblDescripcion;
+        private System.Windows.Forms.ComboBox cbxProcedencia;
+        private System.Windows.Forms.Label lblProcedencia;
+        private System.Windows.Forms.TextBox txtModelo;
+        private System.Windows.Forms.Label lblModelo;
         private System.Windows.Forms.TextBox txtCodigo;
         private System.Windows.Forms.Label lblCodigo;
         private System.Windows.Forms.GroupBox gbxLista;
@@ -452,5 +495,9 @@
         private System.Windows.Forms.ErrorProvider erpPrecioVenta;
         private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.Button btnExportar;
+        private System.Windows.Forms.TextBox txtMarca;
+        private System.Windows.Forms.Label lblMarca;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtTipo;
     }
 }
