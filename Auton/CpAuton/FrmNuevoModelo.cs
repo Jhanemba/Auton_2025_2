@@ -194,43 +194,6 @@ namespace CpAuton
             this.Controls.Add(pnlPrincipal);
         }
 
-        private void BtnGuardar_Click(object sender, EventArgs e)
-        {
-            if (Validar())
-            {
-                try
-                {
-                    var nuevoModelo = new ModeloVehiculo
-                    {
-                        idMarca = idMarca,
-                        idTipoVehiculo = idTipo,
-                        nombre = txtNombre.Text.Trim(),
-                        anioInicio = int.Parse(txtAnioInicio.Text),
-                        anioFin = string.IsNullOrEmpty(txtAnioFin.Text) ? (int?)null : int.Parse(txtAnioFin.Text),
-                        motor = string.IsNullOrEmpty(txtMotor.Text) ? null : txtMotor.Text.Trim(),
-                        combustible = cboCombustible.SelectedItem != null ? cboCombustible.SelectedItem.ToString() : null,
-                        estado = 1,
-                        usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : "sistema"
-                    };
-
-                    NuevoIdModelo = ModeloVehiculoCln.insertar(nuevoModelo);
-
-                    if (NuevoIdModelo > 0)
-                    {
-                        MessageBox.Show($"Modelo registrado exitosamente",
-                                      "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        this.DialogResult = DialogResult.OK;
-                        this.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error al guardar el modelo: {ex.Message}",
-                                  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
         private bool Validar()
         {
             if (string.IsNullOrWhiteSpace(txtNombre.Text))
@@ -267,7 +230,68 @@ namespace CpAuton
                 }
             }
 
+            // VALIDACIÓN: Verificar si el modelo ya existe para esta marca
+            try
+            {
+                var todosLosModelos = ModeloVehiculoCln.listar();
+                var modeloExistente = todosLosModelos
+                    .Where(m => m.idMarca == idMarca && m.estado != -1)
+                    .FirstOrDefault(m => m.nombre.Equals(txtNombre.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+
+                if (modeloExistente != null)
+                {
+                    MessageBox.Show($"El modelo '{txtNombre.Text.Trim()}' ya existe para esta marca",
+                                  "Modelo Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtNombre.Focus();
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al validar el modelo: {ex.Message}",
+                              "Error de Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
             return true;
+        }
+
+        private void BtnGuardar_Click(object sender, EventArgs e)
+        {
+            if (Validar())
+            {
+                try
+                {
+                    var nuevoModelo = new ModeloVehiculo
+                    {
+                        idMarca = idMarca,
+                        idTipoVehiculo = idTipo,
+                        nombre = txtNombre.Text.Trim(),
+                        anioInicio = int.Parse(txtAnioInicio.Text),
+                        anioFin = string.IsNullOrEmpty(txtAnioFin.Text) ? (int?)null : int.Parse(txtAnioFin.Text),
+                        motor = string.IsNullOrEmpty(txtMotor.Text) ? null : txtMotor.Text.Trim(),
+                        combustible = cboCombustible.SelectedItem != null ? cboCombustible.SelectedItem.ToString() : null,
+                        estado = 1,
+                        usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : Environment.UserName,
+                        fechaRegistro = DateTime.Now
+                    };
+
+                    NuevoIdModelo = ModeloVehiculoCln.insertar(nuevoModelo);
+
+                    if (NuevoIdModelo > 0)
+                    {
+                        MessageBox.Show($"Modelo registrado exitosamente",
+                                      "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al guardar el modelo: {ex.Message}",
+                                  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private TextBox txtNombre;

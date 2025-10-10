@@ -133,7 +133,8 @@ namespace CpAuton
                         nombre = txtNombre.Text.Trim(),
                         descripcion = string.IsNullOrEmpty(txtDescripcion.Text) ? null : txtDescripcion.Text.Trim(),
                         estado = 1,
-                        usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : "sistema"
+                        usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : "sistema",
+                        fechaRegistro = DateTime.Now  // IMPORTANTE ESTO    
                     };
 
                     NuevoIdMarca = MarcaCln.insertar(nuevaMarca);
@@ -168,6 +169,20 @@ namespace CpAuton
             {
                 MessageBox.Show("El nombre no puede exceder 50 caracteres", "Validación",
                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // VALIDACIÓN: Verificar si la marca ya existe en esta procedencia
+            var marcaExistente = MarcaCln.listar()
+                .FirstOrDefault(m => m.idProcedencia == idProcedencia &&
+                                     m.nombre.ToUpper() == txtNombre.Text.Trim().ToUpper() &&
+                                     m.estado != -1);
+
+            if (marcaExistente != null)
+            {
+                MessageBox.Show($"La marca '{txtNombre.Text.Trim()}' ya existe en esta procedencia",
+                              "Marca Duplicada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNombre.Focus();
                 return false;
             }
 

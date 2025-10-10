@@ -480,7 +480,6 @@ namespace CpAuton
 
             return true;
         }
-
         private void BtnGuardar_Click(object sender, EventArgs e)
         {
             if (Validar())
@@ -501,7 +500,11 @@ namespace CpAuton
                         kilometraje = kilometraje,
                         propietario = string.IsNullOrEmpty(txtPropietario.Text) ? null : txtPropietario.Text,
                         observaciones = string.IsNullOrEmpty(txtObservaciones.Text) ? null : txtObservaciones.Text,
-                        estado = 1
+                        estado = 1,
+                        // NO asignamos usuarioRegistro aquí - dejamos que la BD use el DEFAULT
+                        // O asignamos solo si existe usuario autenticado
+                        usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : Environment.UserName,
+                        fechaRegistro = DateTime.Now  // IMPORTANTE: Asignar la fecha
                     };
 
                     int resultado = VehiculoCln.insertar(nuevoVehiculo);
@@ -516,7 +519,7 @@ namespace CpAuton
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error al guardar el vehículo: {ex.Message}",
+                    MessageBox.Show($"Error al guardar el vehículo: {ex.Message}\n\nStack Trace: {ex.StackTrace}",
                                   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
