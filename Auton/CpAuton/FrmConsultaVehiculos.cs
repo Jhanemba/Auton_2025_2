@@ -300,7 +300,7 @@ namespace CpAuton
                 Form frmDetalles = new Form
                 {
                     Text = "Detalles del Vehículo",
-                    Size = new Size(550, 650),
+                    Size = new Size(600, 650),
                     StartPosition = FormStartPosition.CenterParent,
                     FormBorderStyle = FormBorderStyle.FixedDialog,
                     MaximizeBox = false,
@@ -315,127 +315,106 @@ namespace CpAuton
                 };
 
                 int yPos = 20;
+                int lineHeight = 30;
 
-                // Información del vehículo
-                AgregarEtiqueta(pnlPrincipal, "Marca", vehiculo.marca, ref yPos, false, null);
-                AgregarEtiqueta(pnlPrincipal, "Modelo", vehiculo.modelo, ref yPos, false, null);
-                AgregarEtiqueta(pnlPrincipal, "Procedencia", vehiculo.procedencia, ref yPos, false, null);
-                AgregarEtiqueta(pnlPrincipal, "Tipo", vehiculo.tipoVehiculo, ref yPos, false, null);
-                AgregarEtiqueta(pnlPrincipal, "Año", vehiculo.anioFabricacion.ToString(), ref yPos, false, null);
+                // Etiqueta de estado edición
+                Label lblEstado = new Label
+                {
+                    Text = "MODO LECTURA",
+                    Font = new Font("Arial", 10, FontStyle.Bold),
+                    ForeColor = Color.Red,
+                    Location = new Point(20, yPos),
+                    Size = new Size(500, 20),
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                pnlPrincipal.Controls.Add(lblEstado);
+                yPos += 30;
+
+                // Marca (Editable)
+                Label lblMarca = new Label { Text = "Marca:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                TextBox txtMarca = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 23), ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculo.marca };
+                pnlPrincipal.Controls.Add(lblMarca);
+                pnlPrincipal.Controls.Add(txtMarca);
+                yPos += lineHeight;
+
+                // Modelo (Editable)
+                Label lblModelo = new Label { Text = "Modelo:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                TextBox txtModelo = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 23), ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculo.modelo };
+                pnlPrincipal.Controls.Add(lblModelo);
+                pnlPrincipal.Controls.Add(txtModelo);
+                yPos += lineHeight;
+
+                // Procedencia (Editable)
+                Label lblProcedencia = new Label { Text = "Procedencia:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                TextBox txtProcedencia = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 23), ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculo.procedencia };
+                pnlPrincipal.Controls.Add(lblProcedencia);
+                pnlPrincipal.Controls.Add(txtProcedencia);
+                yPos += lineHeight;
+
+                // Tipo Vehículo (Editable)
+                Label lblTipo = new Label { Text = "Tipo Vehículo:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                TextBox txtTipo = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 23), ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculo.tipoVehiculo };
+                pnlPrincipal.Controls.Add(lblTipo);
+                pnlPrincipal.Controls.Add(txtTipo);
+                yPos += lineHeight;
+
+                // Año Fabricación (Editable)
+                Label lblAnio = new Label { Text = "Año Fabricación:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                TextBox txtAnio = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 23), ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculoCompleto.anioFabricacion.ToString() };
+                pnlPrincipal.Controls.Add(lblAnio);
+                pnlPrincipal.Controls.Add(txtAnio);
+                yPos += lineHeight;
 
                 // Confiabilidad (Editable)
-                Label lblConfiabilidad = new Label
-                {
-                    Text = "Confiabilidad:",
-                    Font = new Font("Microsoft Sans Serif", 9, FontStyle.Bold),
-                    Location = new Point(20, yPos),
-                    Size = new Size(120, 20),
-                    ForeColor = Color.DarkBlue
-                };
-                ComboBox cboConfiabilidad = new ComboBox
-                {
-                    Location = new Point(150, yPos),
-                    Size = new Size(300, 23),
-                    DropDownStyle = ComboBoxStyle.DropDownList,
-                    Enabled = false
-                };
+                Label lblConfiabilidad = new Label { Text = "Confiabilidad:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                ComboBox cboConfiabilidad = new ComboBox { Location = new Point(150, yPos), Size = new Size(300, 23), DropDownStyle = ComboBoxStyle.DropDownList, Enabled = false };
                 cboConfiabilidad.Items.AddRange(new[] { "Excelente", "Bueno", "Regular", "Malo" });
                 cboConfiabilidad.SelectedItem = vehiculoCompleto.confiabilidad;
                 pnlPrincipal.Controls.Add(lblConfiabilidad);
                 pnlPrincipal.Controls.Add(cboConfiabilidad);
-                yPos += 25;
+                yPos += lineHeight;
 
                 // Puntuación (Editable)
-                Label lblPuntuacion = new Label
-                {
-                    Text = "Puntuación:",
-                    Font = new Font("Microsoft Sans Serif", 9, FontStyle.Bold),
-                    Location = new Point(20, yPos),
-                    Size = new Size(120, 20),
-                    ForeColor = Color.DarkBlue
-                };
-                TextBox txtPuntuacion = new TextBox
-                {
-                    Location = new Point(150, yPos),
-                    Size = new Size(300, 23),
-                    ReadOnly = true,
-                    BackColor = Color.WhiteSmoke
-                };
-                txtPuntuacion.Text = vehiculoCompleto.puntuacion.ToString();
+                Label lblPuntuacion = new Label { Text = "Puntuación:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                TextBox txtPuntuacion = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 23), ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculoCompleto.puntuacion.ToString() };
                 pnlPrincipal.Controls.Add(lblPuntuacion);
                 pnlPrincipal.Controls.Add(txtPuntuacion);
-                yPos += 25;
+                yPos += lineHeight;
 
                 // Kilometraje (Editable)
-                Label lblKilometraje = new Label
-                {
-                    Text = "Kilometraje:",
-                    Font = new Font("Microsoft Sans Serif", 9, FontStyle.Bold),
-                    Location = new Point(20, yPos),
-                    Size = new Size(120, 20),
-                    ForeColor = Color.DarkBlue
-                };
-                TextBox txtKilometraje = new TextBox
-                {
-                    Location = new Point(150, yPos),
-                    Size = new Size(300, 23),
-                    ReadOnly = true,
-                    BackColor = Color.WhiteSmoke
-                };
-                txtKilometraje.Text = vehiculoCompleto.kilometraje != null ? vehiculoCompleto.kilometraje.ToString() : "";
+                Label lblKilometraje = new Label { Text = "Kilometraje:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                TextBox txtKilometraje = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 23), ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculoCompleto.kilometraje?.ToString() ?? "" };
                 pnlPrincipal.Controls.Add(lblKilometraje);
                 pnlPrincipal.Controls.Add(txtKilometraje);
-                yPos += 25;
+                yPos += lineHeight;
 
                 // Propietario (Editable)
-                Label lblPropietario = new Label
-                {
-                    Text = "Propietario:",
-                    Font = new Font("Microsoft Sans Serif", 9, FontStyle.Bold),
-                    Location = new Point(20, yPos),
-                    Size = new Size(120, 20),
-                    ForeColor = Color.DarkBlue
-                };
-                TextBox txtPropietario = new TextBox
-                {
-                    Location = new Point(150, yPos),
-                    Size = new Size(300, 23),
-                    ReadOnly = true,
-                    BackColor = Color.WhiteSmoke
-                };
-                txtPropietario.Text = vehiculoCompleto.propietario ?? "";
+                Label lblPropietario = new Label { Text = "Propietario:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                TextBox txtPropietario = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 23), ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculoCompleto.propietario ?? "" };
                 pnlPrincipal.Controls.Add(lblPropietario);
                 pnlPrincipal.Controls.Add(txtPropietario);
-                yPos += 25;
+                yPos += lineHeight;
+
+                // Motor (Editable)
+                Label lblMotor = new Label { Text = "Motor:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                TextBox txtMotor = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 23), ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculo.motor ?? "" };
+                pnlPrincipal.Controls.Add(lblMotor);
+                pnlPrincipal.Controls.Add(txtMotor);
+                yPos += lineHeight;
+
+                // Combustible (Editable)
+                Label lblCombustible = new Label { Text = "Combustible:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                TextBox txtCombustible = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 23), ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculo.combustible ?? "" };
+                pnlPrincipal.Controls.Add(lblCombustible);
+                pnlPrincipal.Controls.Add(txtCombustible);
+                yPos += lineHeight;
 
                 // Observaciones (Editable)
-                Label lblObservaciones = new Label
-                {
-                    Text = "Observaciones:",
-                    Font = new Font("Microsoft Sans Serif", 9, FontStyle.Bold),
-                    Location = new Point(20, yPos),
-                    Size = new Size(120, 20),
-                    ForeColor = Color.DarkBlue
-                };
-                TextBox txtObservaciones = new TextBox
-                {
-                    Location = new Point(150, yPos),
-                    Size = new Size(300, 80),
-                    Multiline = true,
-                    ScrollBars = ScrollBars.Vertical,
-                    ReadOnly = true,
-                    BackColor = Color.WhiteSmoke
-                };
-                txtObservaciones.Text = vehiculoCompleto.observaciones ?? "";
+                Label lblObservaciones = new Label { Text = "Observaciones:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
+                TextBox txtObservaciones = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 80), Multiline = true, ScrollBars = ScrollBars.Vertical, ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculoCompleto.observaciones ?? "" };
                 pnlPrincipal.Controls.Add(lblObservaciones);
                 pnlPrincipal.Controls.Add(txtObservaciones);
                 yPos += 90;
-
-                // Información adicional (Solo lectura)
-                AgregarEtiqueta(pnlPrincipal, "Motor", vehiculo.motor, ref yPos, false, null);
-                AgregarEtiqueta(pnlPrincipal, "Combustible", vehiculo.combustible, ref yPos, false, null);
-                AgregarEtiqueta(pnlPrincipal, "Registrado por", vehiculo.usuarioRegistro, ref yPos, false, null);
-                AgregarEtiqueta(pnlPrincipal, "Fecha Registro", vehiculo.fechaRegistro.ToString("dd/MM/yyyy HH:mm"), ref yPos, false, null);
 
                 // Panel inferior con botones
                 Panel pnlBotones = new Panel
@@ -463,20 +442,62 @@ namespace CpAuton
                     {
                         if (btnEditar.Text == "Editar")
                         {
+                            // Activar modo edición para TODOS los campos
+                            txtMarca.ReadOnly = false;
+                            txtModelo.ReadOnly = false;
+                            txtProcedencia.ReadOnly = false;
+                            txtTipo.ReadOnly = false;
+                            txtAnio.ReadOnly = false;
                             cboConfiabilidad.Enabled = true;
                             txtPuntuacion.ReadOnly = false;
                             txtKilometraje.ReadOnly = false;
                             txtPropietario.ReadOnly = false;
+                            txtMotor.ReadOnly = false;
+                            txtCombustible.ReadOnly = false;
                             txtObservaciones.ReadOnly = false;
+
+                            // Cambiar color de fondo a blanco para indicar que están editables
+                            txtMarca.BackColor = Color.White;
+                            txtModelo.BackColor = Color.White;
+                            txtProcedencia.BackColor = Color.White;
+                            txtTipo.BackColor = Color.White;
+                            txtAnio.BackColor = Color.White;
                             txtPuntuacion.BackColor = Color.White;
                             txtKilometraje.BackColor = Color.White;
                             txtPropietario.BackColor = Color.White;
+                            txtMotor.BackColor = Color.White;
+                            txtCombustible.BackColor = Color.White;
                             txtObservaciones.BackColor = Color.White;
+
+                            lblEstado.Text = "MODO EDICIÓN";
+                            lblEstado.ForeColor = Color.Green;
                             btnEditar.Text = "Guardar";
                             btnEditar.BackColor = Color.FromArgb(40, 167, 69);
                         }
                         else
                         {
+                            // Validaciones
+                            if (string.IsNullOrWhiteSpace(txtMarca.Text))
+                            {
+                                MessageBox.Show("La marca no puede estar vacía", "Validación",
+                                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+
+                            if (string.IsNullOrWhiteSpace(txtModelo.Text))
+                            {
+                                MessageBox.Show("El modelo no puede estar vacío", "Validación",
+                                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+
+                            if (!int.TryParse(txtAnio.Text, out int anio) || anio < 1900 || anio > DateTime.Now.Year)
+                            {
+                                MessageBox.Show($"El año debe estar entre 1900 y {DateTime.Now.Year}", "Validación",
+                                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+
                             if (cboConfiabilidad.SelectedIndex == -1)
                             {
                                 MessageBox.Show("Debe seleccionar un nivel de confiabilidad", "Validación",
@@ -491,6 +512,15 @@ namespace CpAuton
                                 return;
                             }
 
+                            if (!string.IsNullOrWhiteSpace(txtKilometraje.Text) && !int.TryParse(txtKilometraje.Text, out int km))
+                            {
+                                MessageBox.Show("El kilometraje debe ser un número válido", "Validación",
+                                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+
+                            // Actualizar objeto con todos los campos editados
+                            vehiculoCompleto.anioFabricacion = anio;
                             vehiculoCompleto.confiabilidad = cboConfiabilidad.SelectedItem.ToString();
                             vehiculoCompleto.puntuacion = decimal.Parse(txtPuntuacion.Text);
                             vehiculoCompleto.kilometraje = string.IsNullOrEmpty(txtKilometraje.Text) ? (int?)null : int.Parse(txtKilometraje.Text);
@@ -502,15 +532,34 @@ namespace CpAuton
 
                             if (resultado > 0)
                             {
+                                // Desactivar modo edición
+                                txtMarca.ReadOnly = true;
+                                txtModelo.ReadOnly = true;
+                                txtProcedencia.ReadOnly = true;
+                                txtTipo.ReadOnly = true;
+                                txtAnio.ReadOnly = true;
                                 cboConfiabilidad.Enabled = false;
                                 txtPuntuacion.ReadOnly = true;
                                 txtKilometraje.ReadOnly = true;
                                 txtPropietario.ReadOnly = true;
+                                txtMotor.ReadOnly = true;
+                                txtCombustible.ReadOnly = true;
                                 txtObservaciones.ReadOnly = true;
+
+                                txtMarca.BackColor = Color.WhiteSmoke;
+                                txtModelo.BackColor = Color.WhiteSmoke;
+                                txtProcedencia.BackColor = Color.WhiteSmoke;
+                                txtTipo.BackColor = Color.WhiteSmoke;
+                                txtAnio.BackColor = Color.WhiteSmoke;
                                 txtPuntuacion.BackColor = Color.WhiteSmoke;
                                 txtKilometraje.BackColor = Color.WhiteSmoke;
                                 txtPropietario.BackColor = Color.WhiteSmoke;
+                                txtMotor.BackColor = Color.WhiteSmoke;
+                                txtCombustible.BackColor = Color.WhiteSmoke;
                                 txtObservaciones.BackColor = Color.WhiteSmoke;
+
+                                lblEstado.Text = "MODO LECTURA";
+                                lblEstado.ForeColor = Color.Red;
                                 btnEditar.Text = "Editar";
                                 btnEditar.BackColor = Color.FromArgb(51, 122, 183);
                                 MessageBox.Show("Vehículo actualizado exitosamente", "Éxito",

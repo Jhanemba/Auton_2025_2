@@ -183,6 +183,8 @@ CREATE TABLE VehiculoMantenimiento (
 	CONSTRAINT FK_VehiculoMantenimiento_Vehiculo FOREIGN KEY (idVehiculo) REFERENCES Vehiculo(id)
 );
 
+ALTER TABLE Vehiculo DROP COLUMN combustible;
+
 -- =====================================================
 -- PROCEDIMIENTOS ALMACENADOS ESENCIALES
 -- =====================================================
@@ -388,6 +390,7 @@ CREATE NONCLUSTERED INDEX IX_ModeloVehiculo_Marca ON ModeloVehiculo(idMarca);
 CREATE NONCLUSTERED INDEX IX_Usuario_Estado ON Usuario(estado);
 
 select * FROM Procedencia;
+select * FROM Vehiculo;
 
 PRINT '========================================';
 PRINT 'SISTEMA AUTON - VERSION OPTIMIZADA';
