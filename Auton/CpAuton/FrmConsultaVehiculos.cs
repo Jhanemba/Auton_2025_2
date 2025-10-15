@@ -395,7 +395,7 @@ namespace CpAuton
                 pnlPrincipal.Controls.Add(txtPropietario);
                 yPos += lineHeight;
 
-                // Motor (Editable)
+                // Motor (Solo lectura)
                 Label lblMotor = new Label { Text = "Motor:", Font = new Font("Arial", 9, FontStyle.Bold), Location = new Point(20, yPos), Size = new Size(120, 20), ForeColor = Color.DarkBlue };
                 TextBox txtMotor = new TextBox { Location = new Point(150, yPos), Size = new Size(300, 23), ReadOnly = true, BackColor = Color.WhiteSmoke, Text = vehiculo.motor ?? "" };
                 pnlPrincipal.Controls.Add(lblMotor);
@@ -452,8 +452,6 @@ namespace CpAuton
                             txtPuntuacion.ReadOnly = false;
                             txtKilometraje.ReadOnly = false;
                             txtPropietario.ReadOnly = false;
-                            txtMotor.ReadOnly = false;
-                            txtCombustible.ReadOnly = false;
                             txtObservaciones.ReadOnly = false;
 
                             // Cambiar color de fondo a blanco para indicar que están editables
@@ -465,7 +463,6 @@ namespace CpAuton
                             txtPuntuacion.BackColor = Color.White;
                             txtKilometraje.BackColor = Color.White;
                             txtPropietario.BackColor = Color.White;
-                            txtMotor.BackColor = Color.White;
                             txtCombustible.BackColor = Color.White;
                             txtObservaciones.BackColor = Color.White;
 
@@ -526,6 +523,7 @@ namespace CpAuton
                             vehiculoCompleto.kilometraje = string.IsNullOrEmpty(txtKilometraje.Text) ? (int?)null : int.Parse(txtKilometraje.Text);
                             vehiculoCompleto.propietario = string.IsNullOrEmpty(txtPropietario.Text) ? null : txtPropietario.Text;
                             vehiculoCompleto.observaciones = string.IsNullOrEmpty(txtObservaciones.Text) ? null : txtObservaciones.Text;
+                            vehiculoCompleto.ModeloVehiculo.combustible = string.IsNullOrEmpty(txtCombustible.Text) ? null : txtCombustible.Text;
                             vehiculoCompleto.usuarioRegistro = Util.usuario.usuario;
 
                             int resultado = VehiculoCln.actualizar(vehiculoCompleto);
@@ -542,8 +540,6 @@ namespace CpAuton
                                 txtPuntuacion.ReadOnly = true;
                                 txtKilometraje.ReadOnly = true;
                                 txtPropietario.ReadOnly = true;
-                                txtMotor.ReadOnly = true;
-                                txtCombustible.ReadOnly = true;
                                 txtObservaciones.ReadOnly = true;
 
                                 txtMarca.BackColor = Color.WhiteSmoke;
@@ -554,7 +550,6 @@ namespace CpAuton
                                 txtPuntuacion.BackColor = Color.WhiteSmoke;
                                 txtKilometraje.BackColor = Color.WhiteSmoke;
                                 txtPropietario.BackColor = Color.WhiteSmoke;
-                                txtMotor.BackColor = Color.WhiteSmoke;
                                 txtCombustible.BackColor = Color.WhiteSmoke;
                                 txtObservaciones.BackColor = Color.WhiteSmoke;
 

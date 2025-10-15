@@ -234,23 +234,26 @@ namespace CpAuton
             try
             {
                 var todosLosModelos = ModeloVehiculoCln.listar();
-                var modeloExistente = todosLosModelos
-                    .Where(m => m.idMarca == idMarca && m.estado != -1)
-                    .FirstOrDefault(m => m.nombre.Equals(txtNombre.Text.Trim(), StringComparison.OrdinalIgnoreCase));
-
-                if (modeloExistente != null)
+                if (todosLosModelos != null && todosLosModelos.Count > 0)
                 {
-                    MessageBox.Show($"El modelo '{txtNombre.Text.Trim()}' ya existe para esta marca",
-                                  "Modelo Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    txtNombre.Focus();
-                    return false;
+                    var modeloExistente = todosLosModelos
+                        .Where(m => m.idMarca == idMarca && m.estado != -1)
+                        .FirstOrDefault(m => m.nombre.Equals(txtNombre.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+
+                    if (modeloExistente != null)
+                    {
+                        MessageBox.Show($"El modelo '{txtNombre.Text.Trim()}' ya existe para esta marca",
+                                      "Modelo Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        txtNombre.Focus();
+                        return false;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al validar el modelo: {ex.Message}",
-                              "Error de Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
+                // No bloquear el guardado si hay error en la validación de duplicados
+                MessageBox.Show($"Advertencia al validar duplicados: {ex.Message}\n\nSe procederá con el registro.",
+                              "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             return true;
@@ -262,6 +265,13 @@ namespace CpAuton
             {
                 try
                 {
+                    // Obtener el valor del combustible (puede ser seleccionado o escrito)
+                    string combustible = null;
+                    if (!string.IsNullOrWhiteSpace(cboCombustible.Text))
+                    {
+                        combustible = cboCombustible.Text.Trim();
+                    }
+
                     var nuevoModelo = new ModeloVehiculo
                     {
                         idMarca = idMarca,
@@ -270,7 +280,7 @@ namespace CpAuton
                         anioInicio = int.Parse(txtAnioInicio.Text),
                         anioFin = string.IsNullOrEmpty(txtAnioFin.Text) ? (int?)null : int.Parse(txtAnioFin.Text),
                         motor = string.IsNullOrEmpty(txtMotor.Text) ? null : txtMotor.Text.Trim(),
-                        combustible = cboCombustible.SelectedItem != null ? cboCombustible.SelectedItem.ToString() : null,
+                        combustible = combustible,
                         estado = 1,
                         usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : Environment.UserName,
                         fechaRegistro = DateTime.Now
@@ -280,15 +290,20 @@ namespace CpAuton
 
                     if (NuevoIdModelo > 0)
                     {
-                        MessageBox.Show($"Modelo registrado exitosamente",
+                        MessageBox.Show($"Modelo registrado exitosamente con ID: {NuevoIdModelo}",
                                       "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
                         this.Close();
                     }
+                    else
+                    {
+                        MessageBox.Show("No se pudo registrar el modelo. El ID retornado es 0.",
+                                      "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error al guardar el modelo: {ex.Message}",
+                    MessageBox.Show($"Error al guardar el modelo: {ex.Message}\n\nStack Trace: {ex.StackTrace}",
                                   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
