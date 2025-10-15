@@ -44,6 +44,7 @@
             this.btnExportar = new System.Windows.Forms.Button();
             this.btnCerrar = new System.Windows.Forms.Button();
             this.lblTotal = new System.Windows.Forms.Label();
+            this.btnNuevo = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.erpSaldo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.erpUnidadMedida)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.erpDescripcion)).BeginInit();
@@ -104,12 +105,12 @@
             this.dgvVehiculos.AllowUserToResizeRows = false;
             this.dgvVehiculos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvVehiculos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvVehiculos.Location = new System.Drawing.Point(6, 21);
+            this.dgvVehiculos.Location = new System.Drawing.Point(0, 21);
             this.dgvVehiculos.Name = "dgvVehiculos";
             this.dgvVehiculos.ReadOnly = true;
             this.dgvVehiculos.RowHeadersWidth = 62;
             this.dgvVehiculos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvVehiculos.Size = new System.Drawing.Size(783, 158);
+            this.dgvVehiculos.Size = new System.Drawing.Size(795, 158);
             this.dgvVehiculos.TabIndex = 0;
             this.dgvVehiculos.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellDoubleClick);
             // 
@@ -118,7 +119,7 @@
             this.txtBuscar.Location = new System.Drawing.Point(138, 114);
             this.txtBuscar.MaxLength = 100;
             this.txtBuscar.Name = "txtBuscar";
-            this.txtBuscar.Size = new System.Drawing.Size(680, 22);
+            this.txtBuscar.Size = new System.Drawing.Size(680, 30);
             this.txtBuscar.TabIndex = 9;
             // 
             // lblParametro
@@ -126,7 +127,7 @@
             this.lblParametro.AutoSize = true;
             this.lblParametro.Location = new System.Drawing.Point(138, 95);
             this.lblParametro.Name = "lblParametro";
-            this.lblParametro.Size = new System.Drawing.Size(318, 16);
+            this.lblParametro.Size = new System.Drawing.Size(461, 25);
             this.lblParametro.TabIndex = 8;
             this.lblParametro.Text = "Buscar por Código, Descripción o Unida de Medida:";
             // 
@@ -142,6 +143,7 @@
             // 
             // pnlAcciones
             // 
+            this.pnlAcciones.Controls.Add(this.btnNuevo);
             this.pnlAcciones.Controls.Add(this.btnExportar);
             this.pnlAcciones.Controls.Add(this.btnCerrar);
             this.pnlAcciones.Location = new System.Drawing.Point(138, 388);
@@ -152,7 +154,7 @@
             // btnExportar
             // 
             this.btnExportar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnExportar.Location = new System.Drawing.Point(194, 4);
+            this.btnExportar.Location = new System.Drawing.Point(389, 3);
             this.btnExportar.Name = "btnExportar";
             this.btnExportar.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.btnExportar.Size = new System.Drawing.Size(111, 40);
@@ -164,7 +166,7 @@
             // btnCerrar
             // 
             this.btnCerrar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnCerrar.Location = new System.Drawing.Point(433, 4);
+            this.btnCerrar.Location = new System.Drawing.Point(620, 4);
             this.btnCerrar.Name = "btnCerrar";
             this.btnCerrar.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.btnCerrar.Size = new System.Drawing.Size(116, 40);
@@ -179,13 +181,25 @@
             this.lblTotal.AutoSize = true;
             this.lblTotal.Location = new System.Drawing.Point(753, 349);
             this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(122, 16);
+            this.lblTotal.Size = new System.Drawing.Size(180, 25);
             this.lblTotal.TabIndex = 14;
             this.lblTotal.Text = "Total de Vehículos:";
             // 
+            // btnNuevo
+            // 
+            this.btnNuevo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNuevo.Location = new System.Drawing.Point(164, 3);
+            this.btnNuevo.Name = "btnNuevo";
+            this.btnNuevo.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.btnNuevo.Size = new System.Drawing.Size(111, 40);
+            this.btnNuevo.TabIndex = 12;
+            this.btnNuevo.Text = "Nuevo";
+            this.btnNuevo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnNuevo.UseVisualStyleBackColor = true;
+            // 
             // FrmConsultaVehiculos
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
             this.ClientSize = new System.Drawing.Size(1067, 554);
@@ -233,5 +247,6 @@
         private System.Windows.Forms.ErrorProvider erpPrecioVenta;
         private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.Button btnExportar;
+        private System.Windows.Forms.Button btnNuevo;
     }
 }

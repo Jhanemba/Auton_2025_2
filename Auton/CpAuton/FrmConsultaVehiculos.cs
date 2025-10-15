@@ -442,27 +442,22 @@ namespace CpAuton
                     {
                         if (btnEditar.Text == "Editar")
                         {
-                            // Activar modo edición para TODOS los campos
-                            txtMarca.ReadOnly = false;
-                            txtModelo.ReadOnly = false;
-                            txtProcedencia.ReadOnly = false;
-                            txtTipo.ReadOnly = false;
+                            // Activamos modo edición
                             txtAnio.ReadOnly = false;
                             cboConfiabilidad.Enabled = true;
                             txtPuntuacion.ReadOnly = false;
                             txtKilometraje.ReadOnly = false;
                             txtPropietario.ReadOnly = false;
+                            txtMotor.ReadOnly = false;           // ← HABILITADO
+                            txtCombustible.ReadOnly = false;     // ← HABILITADO
                             txtObservaciones.ReadOnly = false;
 
-                            // Cambiar color de fondo a blanco para indicar que están editables
-                            txtMarca.BackColor = Color.White;
-                            txtModelo.BackColor = Color.White;
-                            txtProcedencia.BackColor = Color.White;
-                            txtTipo.BackColor = Color.White;
+                            // Cambiamos colores
                             txtAnio.BackColor = Color.White;
                             txtPuntuacion.BackColor = Color.White;
                             txtKilometraje.BackColor = Color.White;
                             txtPropietario.BackColor = Color.White;
+                            txtMotor.BackColor = Color.White;           // ← HABILITADO
                             txtCombustible.BackColor = Color.White;
                             txtObservaciones.BackColor = Color.White;
 
@@ -473,21 +468,7 @@ namespace CpAuton
                         }
                         else
                         {
-                            // Validaciones
-                            if (string.IsNullOrWhiteSpace(txtMarca.Text))
-                            {
-                                MessageBox.Show("La marca no puede estar vacía", "Validación",
-                                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                return;
-                            }
-
-                            if (string.IsNullOrWhiteSpace(txtModelo.Text))
-                            {
-                                MessageBox.Show("El modelo no puede estar vacío", "Validación",
-                                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                return;
-                            }
-
+                            // VALIDACIONES
                             if (!int.TryParse(txtAnio.Text, out int anio) || anio < 1900 || anio > DateTime.Now.Year)
                             {
                                 MessageBox.Show($"El año debe estar entre 1900 y {DateTime.Now.Year}", "Validación",
@@ -516,52 +497,108 @@ namespace CpAuton
                                 return;
                             }
 
-                            // Actualizar objeto con todos los campos editados
-                            vehiculoCompleto.anioFabricacion = anio;
-                            vehiculoCompleto.confiabilidad = cboConfiabilidad.SelectedItem.ToString();
-                            vehiculoCompleto.puntuacion = decimal.Parse(txtPuntuacion.Text);
-                            vehiculoCompleto.kilometraje = string.IsNullOrEmpty(txtKilometraje.Text) ? (int?)null : int.Parse(txtKilometraje.Text);
-                            vehiculoCompleto.propietario = string.IsNullOrEmpty(txtPropietario.Text) ? null : txtPropietario.Text;
-                            vehiculoCompleto.observaciones = string.IsNullOrEmpty(txtObservaciones.Text) ? null : txtObservaciones.Text;
-                            vehiculoCompleto.ModeloVehiculo.combustible = string.IsNullOrEmpty(txtCombustible.Text) ? null : txtCombustible.Text;
-                            vehiculoCompleto.usuarioRegistro = Util.usuario.usuario;
-
-                            int resultado = VehiculoCln.actualizar(vehiculoCompleto);
-
-                            if (resultado > 0)
+                            // ACTUALIZAMOS VEHÍCULO
+                            try
                             {
-                                // Desactivar modo edición
-                                txtMarca.ReadOnly = true;
-                                txtModelo.ReadOnly = true;
-                                txtProcedencia.ReadOnly = true;
-                                txtTipo.ReadOnly = true;
-                                txtAnio.ReadOnly = true;
-                                cboConfiabilidad.Enabled = false;
-                                txtPuntuacion.ReadOnly = true;
-                                txtKilometraje.ReadOnly = true;
-                                txtPropietario.ReadOnly = true;
-                                txtObservaciones.ReadOnly = true;
+                                vehiculoCompleto.anioFabricacion = anio;
+                                vehiculoCompleto.confiabilidad = cboConfiabilidad.SelectedItem.ToString();
+                                vehiculoCompleto.puntuacion = puntuacion;
+                                vehiculoCompleto.kilometraje = string.IsNullOrEmpty(txtKilometraje.Text) ? (int?)null : int.Parse(txtKilometraje.Text);
+                                vehiculoCompleto.propietario = string.IsNullOrEmpty(txtPropietario.Text) ? null : txtPropietario.Text;
+                                vehiculoCompleto.observaciones = string.IsNullOrEmpty(txtObservaciones.Text) ? null : txtObservaciones.Text;
+                                vehiculoCompleto.usuarioRegistro = Util.usuario.usuario;
 
-                                txtMarca.BackColor = Color.WhiteSmoke;
-                                txtModelo.BackColor = Color.WhiteSmoke;
-                                txtProcedencia.BackColor = Color.WhiteSmoke;
-                                txtTipo.BackColor = Color.WhiteSmoke;
-                                txtAnio.BackColor = Color.WhiteSmoke;
-                                txtPuntuacion.BackColor = Color.WhiteSmoke;
-                                txtKilometraje.BackColor = Color.WhiteSmoke;
-                                txtPropietario.BackColor = Color.WhiteSmoke;
-                                txtCombustible.BackColor = Color.WhiteSmoke;
-                                txtObservaciones.BackColor = Color.WhiteSmoke;
+                                int resultadoModelo = 0;
+                                int resultadoVehiculo = 0;
 
-                                lblEstado.Text = "MODO LECTURA";
-                                lblEstado.ForeColor = Color.Red;
-                                btnEditar.Text = "Editar";
-                                btnEditar.BackColor = Color.FromArgb(51, 122, 183);
-                                MessageBox.Show("Vehículo actualizado exitosamente", "Éxito",
-                                              MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                frmDetalles.Close();
-                                CargarVehiculos("");
+                                // ACTUALIZAMOS MODELO (Motor y Combustible) ← IMPORTANTE
+                                // Obtenemos el modelo de forma independiente para evitar ObjectDisposedException
+                                var modeloVehiculo = ModeloVehiculoCln.obtenerUno(vehiculoCompleto.idModeloVehiculo);
+                                if (modeloVehiculo != null)
+                                {
+                                    modeloVehiculo.motor = string.IsNullOrEmpty(txtMotor.Text) ? null : txtMotor.Text.Trim();
+                                    modeloVehiculo.combustible = string.IsNullOrEmpty(txtCombustible.Text) ? null : txtCombustible.Text.Trim();
+                                    modeloVehiculo.usuarioRegistro = Util.usuario.usuario;
+
+                                    // Actualizamos el modelo primero
+                                    resultadoModelo = ModeloVehiculoCln.actualizar(modeloVehiculo);
+                                }
+
+                                // Ahora actualizamos el vehículo
+                                resultadoVehiculo = ConsultaVehiculosCln.actualizar(vehiculoCompleto);
+
+                                // Si se actualizó CUALQUIERA de los dos (modelo o vehículo), es éxito
+                                if (resultadoModelo > 0 || resultadoVehiculo > 0)
+                                {
+                                    // Desactivamos modo edición
+                                    txtAnio.ReadOnly = true;
+                                    cboConfiabilidad.Enabled = false;
+                                    txtPuntuacion.ReadOnly = true;
+                                    txtKilometraje.ReadOnly = true;
+                                    txtPropietario.ReadOnly = true;
+                                    txtMotor.ReadOnly = true;
+                                    txtCombustible.ReadOnly = true;
+                                    txtObservaciones.ReadOnly = true;
+
+                                    txtAnio.BackColor = Color.WhiteSmoke;
+                                    txtPuntuacion.BackColor = Color.WhiteSmoke;
+                                    txtKilometraje.BackColor = Color.WhiteSmoke;
+                                    txtPropietario.BackColor = Color.WhiteSmoke;
+                                    txtMotor.BackColor = Color.WhiteSmoke;
+                                    txtCombustible.BackColor = Color.WhiteSmoke;
+                                    txtObservaciones.BackColor = Color.WhiteSmoke;
+
+                                    lblEstado.Text = "MODO LECTURA";
+                                    lblEstado.ForeColor = Color.Red;
+                                    btnEditar.Text = "Editar";
+                                    btnEditar.BackColor = Color.FromArgb(51, 122, 183);
+                                    MessageBox.Show("Vehículo actualizado exitosamente", "Éxito",
+                                                  MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    frmDetalles.Close();
+                                    CargarVehiculos("");
+                                }
+                                else
+                                {
+                                    MessageBox.Show("No se actualizó ningún registro", "Advertencia",
+                                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                }
                             }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Error al guardar: {ex.Message}\n\nStack: {ex.StackTrace}",
+                                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+
+
+                            //if (resultado > 0)
+                            //{
+                            //    // Desactivar modo edición
+                            //    txtAnio.ReadOnly = true;
+                            //    cboConfiabilidad.Enabled = false;
+                            //    txtPuntuacion.ReadOnly = true;
+                            //    txtKilometraje.ReadOnly = true;
+                            //    txtPropietario.ReadOnly = true;
+                            //    txtMotor.ReadOnly = true;           // ← DESHABILITADO
+                            //    txtCombustible.ReadOnly = true;     // ← DESHABILITADO
+                            //    txtObservaciones.ReadOnly = true;
+
+                            //    txtAnio.BackColor = Color.WhiteSmoke;
+                            //    txtPuntuacion.BackColor = Color.WhiteSmoke;
+                            //    txtKilometraje.BackColor = Color.WhiteSmoke;
+                            //    txtPropietario.BackColor = Color.WhiteSmoke;
+                            //    txtMotor.BackColor = Color.WhiteSmoke;        // ← DESHABILITADO
+                            //    txtCombustible.BackColor = Color.WhiteSmoke;
+                            //    txtObservaciones.BackColor = Color.WhiteSmoke;
+
+                            //    lblEstado.Text = "MODO LECTURA";
+                            //    lblEstado.ForeColor = Color.Red;
+                            //    btnEditar.Text = "Editar";
+                            //    btnEditar.BackColor = Color.FromArgb(51, 122, 183);
+                            //    MessageBox.Show("Vehículo actualizado exitosamente", "Éxito",
+                            //                  MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            //    frmDetalles.Close();
+                            //    CargarVehiculos("");
+                            //}
                         }
                     };
 
