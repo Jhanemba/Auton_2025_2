@@ -25,7 +25,8 @@ namespace CpAuton
         }
         private void btnSalir_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            this.Close();
+
         }
 
         private bool validar()
@@ -60,8 +61,8 @@ namespace CpAuton
                     txtClave.Clear();
                     txtUsuario.Focus();
                     txtUsuario.SelectAll();
-                    Hide();
-                    //new FrmPrincipal(this).ShowDialog();
+                    this.DialogResult = DialogResult.OK;  // <-
+                    this.Close();                         // <-
                 }
                 else
                 {

@@ -29,10 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.erpSaldo = new System.Windows.Forms.ErrorProvider(this.components);
-            this.erpUnidadMedida = new System.Windows.Forms.ErrorProvider(this.components);
-            this.erpDescripcion = new System.Windows.Forms.ErrorProvider(this.components);
-            this.erpCodigo = new System.Windows.Forms.ErrorProvider(this.components);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmConsultaVehiculos));
             this.btnBuscar = new System.Windows.Forms.Button();
             this.erpPrecioVenta = new System.Windows.Forms.ErrorProvider(this.components);
             this.gbxLista = new System.Windows.Forms.GroupBox();
@@ -41,38 +38,19 @@
             this.lblParametro = new System.Windows.Forms.Label();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.pnlAcciones = new System.Windows.Forms.Panel();
+            this.btnNuevo = new System.Windows.Forms.Button();
             this.btnExportar = new System.Windows.Forms.Button();
             this.btnCerrar = new System.Windows.Forms.Button();
             this.lblTotal = new System.Windows.Forms.Label();
-            this.btnNuevo = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.erpSaldo)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.erpUnidadMedida)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.erpDescripcion)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.erpCodigo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.erpPrecioVenta)).BeginInit();
             this.gbxLista.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvVehiculos)).BeginInit();
             this.pnlAcciones.SuspendLayout();
             this.SuspendLayout();
             // 
-            // erpSaldo
-            // 
-            this.erpSaldo.ContainerControl = this;
-            // 
-            // erpUnidadMedida
-            // 
-            this.erpUnidadMedida.ContainerControl = this;
-            // 
-            // erpDescripcion
-            // 
-            this.erpDescripcion.ContainerControl = this;
-            // 
-            // erpCodigo
-            // 
-            this.erpCodigo.ContainerControl = this;
-            // 
             // btnBuscar
             // 
+            this.btnBuscar.Image = ((System.Drawing.Image)(resources.GetObject("btnBuscar.Image")));
             this.btnBuscar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnBuscar.Location = new System.Drawing.Point(835, 105);
             this.btnBuscar.Name = "btnBuscar";
@@ -119,7 +97,7 @@
             this.txtBuscar.Location = new System.Drawing.Point(138, 114);
             this.txtBuscar.MaxLength = 100;
             this.txtBuscar.Name = "txtBuscar";
-            this.txtBuscar.Size = new System.Drawing.Size(680, 30);
+            this.txtBuscar.Size = new System.Drawing.Size(680, 22);
             this.txtBuscar.TabIndex = 9;
             // 
             // lblParametro
@@ -127,7 +105,7 @@
             this.lblParametro.AutoSize = true;
             this.lblParametro.Location = new System.Drawing.Point(138, 95);
             this.lblParametro.Name = "lblParametro";
-            this.lblParametro.Size = new System.Drawing.Size(461, 25);
+            this.lblParametro.Size = new System.Drawing.Size(318, 16);
             this.lblParametro.TabIndex = 8;
             this.lblParametro.Text = "Buscar por Código, Descripción o Unida de Medida:";
             // 
@@ -151,8 +129,23 @@
             this.pnlAcciones.Size = new System.Drawing.Size(795, 47);
             this.pnlAcciones.TabIndex = 12;
             // 
+            // btnNuevo
+            // 
+            this.btnNuevo.Image = global::CpAuton.Properties.Resources.add_77928;
+            this.btnNuevo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNuevo.Location = new System.Drawing.Point(164, 3);
+            this.btnNuevo.Name = "btnNuevo";
+            this.btnNuevo.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.btnNuevo.Size = new System.Drawing.Size(111, 40);
+            this.btnNuevo.TabIndex = 12;
+            this.btnNuevo.Text = "Nuevo";
+            this.btnNuevo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnNuevo.UseVisualStyleBackColor = true;
+            this.btnNuevo.Click += new System.EventHandler(this.MenuNuevo_Click);
+            // 
             // btnExportar
             // 
+            this.btnExportar.Image = ((System.Drawing.Image)(resources.GetObject("btnExportar.Image")));
             this.btnExportar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnExportar.Location = new System.Drawing.Point(389, 3);
             this.btnExportar.Name = "btnExportar";
@@ -162,9 +155,11 @@
             this.btnExportar.Text = "Exportar";
             this.btnExportar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnExportar.UseVisualStyleBackColor = true;
+            this.btnExportar.Click += new System.EventHandler(this.btnExportar_Click);
             // 
             // btnCerrar
             // 
+            this.btnCerrar.Image = ((System.Drawing.Image)(resources.GetObject("btnCerrar.Image")));
             this.btnCerrar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnCerrar.Location = new System.Drawing.Point(620, 4);
             this.btnCerrar.Name = "btnCerrar";
@@ -181,25 +176,13 @@
             this.lblTotal.AutoSize = true;
             this.lblTotal.Location = new System.Drawing.Point(753, 349);
             this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(180, 25);
+            this.lblTotal.Size = new System.Drawing.Size(122, 16);
             this.lblTotal.TabIndex = 14;
             this.lblTotal.Text = "Total de Vehículos:";
             // 
-            // btnNuevo
-            // 
-            this.btnNuevo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnNuevo.Location = new System.Drawing.Point(164, 3);
-            this.btnNuevo.Name = "btnNuevo";
-            this.btnNuevo.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.btnNuevo.Size = new System.Drawing.Size(111, 40);
-            this.btnNuevo.TabIndex = 12;
-            this.btnNuevo.Text = "Nuevo";
-            this.btnNuevo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnNuevo.UseVisualStyleBackColor = true;
-            // 
             // FrmConsultaVehiculos
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
             this.ClientSize = new System.Drawing.Size(1067, 554);
@@ -217,10 +200,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "...::: Auton - Consulta de Vehiculos :::...";
             this.Load += new System.EventHandler(this.FrmConsultaVehiculos_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.erpSaldo)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.erpUnidadMedida)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.erpDescripcion)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.erpCodigo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.erpPrecioVenta)).EndInit();
             this.gbxLista.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvVehiculos)).EndInit();
@@ -231,8 +210,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.ErrorProvider erpSaldo;
         private System.Windows.Forms.Button btnBuscar;
         private System.Windows.Forms.GroupBox gbxLista;
         private System.Windows.Forms.DataGridView dgvVehiculos;
@@ -241,9 +218,6 @@
         private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.Panel pnlAcciones;
         private System.Windows.Forms.Button btnCerrar;
-        private System.Windows.Forms.ErrorProvider erpUnidadMedida;
-        private System.Windows.Forms.ErrorProvider erpDescripcion;
-        private System.Windows.Forms.ErrorProvider erpCodigo;
         private System.Windows.Forms.ErrorProvider erpPrecioVenta;
         private System.Windows.Forms.Label lblTotal;
         private System.Windows.Forms.Button btnExportar;

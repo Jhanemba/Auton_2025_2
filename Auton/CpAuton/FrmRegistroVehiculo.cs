@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,6 +20,20 @@ namespace CpAuton
         private List<ModeloVehiculo> modelos;
         private List<TipoVehiculo> tipos;
 
+        private ComboBox cboProcedencia;
+        private ComboBox cboMarca;
+        private ComboBox cboTipo;
+        private ComboBox cboModelo;
+        private NumericUpDown nudAnio;
+        private ComboBox cboConfiabilidad;
+        private NumericUpDown nudPuntuacion;
+        private NumericUpDown nudKilometraje;
+        private TextBox txtPropietario;
+        private TextBox txtObservaciones;
+        private Button btnAgregarMarca;
+        private Button btnAgregarModelo;
+        private CheckBox chkKilometrajeDesconocido;
+
         public FrmRegistroVehiculo()
         {
             InitializeComponent();
@@ -27,283 +42,327 @@ namespace CpAuton
 
         private void ConfigurarFormulario()
         {
-            this.Text = "Registro de Nuevo Vehículo";
-            this.Size = new Size(600, 750);
-            this.StartPosition = FormStartPosition.CenterParent;
+            this.Text = "Registrar Nuevo Vehículo";
+            this.Size = new Size(1100, 750);
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.Font = new Font("Segoe UI", 10F);
 
+            // Panel principal SIN SCROLL
             Panel pnlPrincipal = new Panel
             {
-                Dock = DockStyle.Fill,
-                AutoScroll = true,
-                Padding = new Padding(20)
+                Location = new Point(0, 0),
+                Size = new Size(1084, 640),
+                Padding = new Padding(20),
+                BackColor = Color.White
             };
 
-            int yPos = 10;
-            int lineHeight = 30;
-            int lblWidth = 120;
-            int ctrlWidth = 300;
+            int yPos = 15;
+            int lineHeight = 50;
+            int labelWidth = 180;
+            int ctrlWidthLeft = 350;
+            int ctrlWidthRight = 350;
+            int colLeftX = 200;
+            int colRightX = 620;
 
-            // Título
+            // Título principal
             Label lblTitulo = new Label
             {
-                Text = "REGISTRO DE NUEVO VEHÍCULO",
-                Font = new Font("Arial", 14, FontStyle.Bold),
+                Text = "🚗 REGISTRO DE NUEVO VEHÍCULO",
+                Font = new Font("Segoe UI", 16, FontStyle.Bold),
                 ForeColor = Color.FromArgb(51, 122, 183),
                 Location = new Point(20, yPos),
-                Size = new Size(500, 25),
+                Size = new Size(1040, 35),
                 TextAlign = ContentAlignment.MiddleCenter
             };
             pnlPrincipal.Controls.Add(lblTitulo);
-            yPos += 40;
+            yPos += 50;
+
+            // COLUMNA IZQUIERDA - Sección del Modelo
+            AgregarSeccionCompacta(pnlPrincipal, "📋 DATOS DEL MODELO", 20, yPos, 500);
+            int yPosLeft = yPos + 40;
 
             // Procedencia
-            Label lblProcedencia = new Label
-            {
-                Text = "Procedencia:",
-                Font = new Font("Arial", 9, FontStyle.Bold),
-                Location = new Point(20, yPos),
-                Size = new Size(lblWidth, 20)
-            };
+            AgregarLabelCompacto(pnlPrincipal, "Procedencia:", 20, yPosLeft, labelWidth);
             cboProcedencia = new ComboBox
             {
-                Name = "cboProcedencia",
-                Location = new Point(150, yPos),
-                Size = new Size(ctrlWidth, 23),
-                DropDownStyle = ComboBoxStyle.DropDownList
+                Location = new Point(colLeftX, yPosLeft),
+                Size = new Size(ctrlWidthLeft, 28),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10F)
             };
             cboProcedencia.SelectedIndexChanged += CboProcedencia_SelectedIndexChanged;
-            pnlPrincipal.Controls.Add(lblProcedencia);
             pnlPrincipal.Controls.Add(cboProcedencia);
-            yPos += lineHeight;
+            yPosLeft += lineHeight;
 
-            // Marca con botón Agregar
-            Label lblMarca = new Label
-            {
-                Text = "Marca:",
-                Font = new Font("Arial", 9, FontStyle.Bold),
-                Location = new Point(20, yPos),
-                Size = new Size(lblWidth, 20)
-            };
+            // Marca
+            AgregarLabelCompacto(pnlPrincipal, "Marca:", 20, yPosLeft, labelWidth);
             cboMarca = new ComboBox
             {
-                Name = "cboMarca",
-                Location = new Point(150, yPos),
-                Size = new Size(250, 23),
+                Location = new Point(colLeftX, yPosLeft),
+                Size = new Size(250, 28),
                 DropDownStyle = ComboBoxStyle.DropDown,
+                Font = new Font("Segoe UI", 10F),
                 Enabled = false
             };
             cboMarca.SelectedIndexChanged += CboMarca_SelectedIndexChanged;
+            pnlPrincipal.Controls.Add(cboMarca);
 
             btnAgregarMarca = new Button
             {
                 Text = "+",
-                Location = new Point(410, yPos),
-                Size = new Size(40, 23),
-                Font = new Font("Arial", 10, FontStyle.Bold),
-                Enabled = false
+                Location = new Point(colLeftX + 255, yPosLeft),
+                Size = new Size(35, 28),
+                BackColor = Color.FromArgb(40, 167, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                Enabled = false,
+                Cursor = Cursors.Hand
             };
+            btnAgregarMarca.FlatAppearance.BorderSize = 0;
             btnAgregarMarca.Click += BtnAgregarMarca_Click;
-
-            pnlPrincipal.Controls.Add(lblMarca);
-            pnlPrincipal.Controls.Add(cboMarca);
             pnlPrincipal.Controls.Add(btnAgregarMarca);
-            yPos += lineHeight;
+            yPosLeft += lineHeight;
 
             // Tipo Vehículo
-            Label lblTipo = new Label
-            {
-                Text = "Tipo Vehículo:",
-                Font = new Font("Arial", 9, FontStyle.Bold),
-                Location = new Point(20, yPos),
-                Size = new Size(lblWidth, 20)
-            };
+            AgregarLabelCompacto(pnlPrincipal, "Tipo de Vehículo:", 20, yPosLeft, labelWidth);
             cboTipo = new ComboBox
             {
-                Name = "cboTipo",
-                Location = new Point(150, yPos),
-                Size = new Size(ctrlWidth, 23),
-                DropDownStyle = ComboBoxStyle.DropDownList
+                Location = new Point(colLeftX, yPosLeft),
+                Size = new Size(ctrlWidthLeft, 28),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10F)
             };
-            pnlPrincipal.Controls.Add(lblTipo);
             pnlPrincipal.Controls.Add(cboTipo);
-            yPos += lineHeight;
+            yPosLeft += lineHeight;
 
-            // Modelo con botón Agregar
-            Label lblModelo = new Label
-            {
-                Text = "Modelo:",
-                Font = new Font("Arial", 9, FontStyle.Bold),
-                Location = new Point(20, yPos),
-                Size = new Size(lblWidth, 20)
-            };
+            // Modelo
+            AgregarLabelCompacto(pnlPrincipal, "Modelo:", 20, yPosLeft, labelWidth);
             cboModelo = new ComboBox
             {
-                Name = "cboModelo",
-                Location = new Point(150, yPos),
-                Size = new Size(250, 23),
+                Location = new Point(colLeftX, yPosLeft),
+                Size = new Size(250, 28),
                 DropDownStyle = ComboBoxStyle.DropDown,
+                Font = new Font("Segoe UI", 10F),
                 Enabled = false
             };
+            pnlPrincipal.Controls.Add(cboModelo);
 
             btnAgregarModelo = new Button
             {
                 Text = "+",
-                Location = new Point(410, yPos),
-                Size = new Size(40, 23),
-                Font = new Font("Arial", 10, FontStyle.Bold),
-                Enabled = false
+                Location = new Point(colLeftX + 255, yPosLeft),
+                Size = new Size(35, 28),
+                BackColor = Color.FromArgb(40, 167, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                Enabled = false,
+                Cursor = Cursors.Hand
             };
+            btnAgregarModelo.FlatAppearance.BorderSize = 0;
             btnAgregarModelo.Click += BtnAgregarModelo_Click;
-
-            pnlPrincipal.Controls.Add(lblModelo);
-            pnlPrincipal.Controls.Add(cboModelo);
             pnlPrincipal.Controls.Add(btnAgregarModelo);
-            yPos += lineHeight;
+            yPosLeft += lineHeight;
+
+            // COLUMNA DERECHA - Sección de Características
+            AgregarSeccionCompacta(pnlPrincipal, "⚙️ CARACTERÍSTICAS", 560, yPos, 480);
+            int yPosRight = yPos + 40;
 
             // Año de Fabricación
-            Label lblAnio = new Label
+            AgregarLabelCompacto(pnlPrincipal, "Año:", 560, yPosRight, 100);
+            nudAnio = new NumericUpDown
             {
-                Text = "Año Fabricación:",
-                Font = new Font("Arial", 9, FontStyle.Bold),
-                Location = new Point(20, yPos),
-                Size = new Size(lblWidth, 20)
+                Location = new Point(colRightX + 40, yPosRight),
+                Size = new Size(120, 28),
+                Font = new Font("Segoe UI", 10F),
+                Minimum = 1900,
+                Maximum = DateTime.Now.Year,
+                Value = DateTime.Now.Year,
+                TextAlign = HorizontalAlignment.Center
             };
-            txtAnio = new TextBox
-            {
-                Name = "txtAnio",
-                Location = new Point(150, yPos),
-                Size = new Size(ctrlWidth, 23)
-            };
-            pnlPrincipal.Controls.Add(lblAnio);
-            pnlPrincipal.Controls.Add(txtAnio);
-            yPos += lineHeight;
+            pnlPrincipal.Controls.Add(nudAnio);
+            yPosRight += lineHeight;
 
             // Confiabilidad
-            Label lblConfiabilidad = new Label
-            {
-                Text = "Confiabilidad:",
-                Font = new Font("Arial", 9, FontStyle.Bold),
-                Location = new Point(20, yPos),
-                Size = new Size(lblWidth, 20)
-            };
+            AgregarLabelCompacto(pnlPrincipal, "Confiabilidad:", 560, yPosRight, 100);
             cboConfiabilidad = new ComboBox
             {
-                Name = "cboConfiabilidad",
-                Location = new Point(150, yPos),
-                Size = new Size(ctrlWidth, 23),
-                DropDownStyle = ComboBoxStyle.DropDownList
+                Location = new Point(colRightX + 40, yPosRight),
+                Size = new Size(200, 28),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10F)
             };
             cboConfiabilidad.Items.AddRange(new[] { "Excelente", "Bueno", "Regular", "Malo" });
-            pnlPrincipal.Controls.Add(lblConfiabilidad);
+            cboConfiabilidad.SelectedIndex = 1;
             pnlPrincipal.Controls.Add(cboConfiabilidad);
-            yPos += lineHeight;
+            yPosRight += lineHeight;
 
             // Puntuación
-            Label lblPuntuacion = new Label
+            AgregarLabelCompacto(pnlPrincipal, "Puntuación:", 560, yPosRight, 100);
+            nudPuntuacion = new NumericUpDown
             {
-                Text = "Puntuación:",
-                Font = new Font("Arial", 9, FontStyle.Bold),
-                Location = new Point(20, yPos),
-                Size = new Size(lblWidth, 20)
+                Location = new Point(colRightX + 40, yPosRight),
+                Size = new Size(120, 28),
+                Font = new Font("Segoe UI", 10F),
+                Minimum = 1.0m,
+                Maximum = 10.0m,
+                DecimalPlaces = 1,
+                Increment = 0.5m,
+                Value = 7.5m,
+                TextAlign = HorizontalAlignment.Center
             };
-            txtPuntuacion = new TextBox
+            pnlPrincipal.Controls.Add(nudPuntuacion);
+
+            Label lblPuntHelp = new Label
             {
-                Name = "txtPuntuacion",
-                Location = new Point(150, yPos),
-                Size = new Size(ctrlWidth, 23)
+                Text = "(1.0 - 10.0)",
+                Font = new Font("Segoe UI", 8, FontStyle.Italic),
+                ForeColor = Color.Gray,
+                Location = new Point(colRightX + 170, yPosRight + 5),
+                AutoSize = true
             };
-            pnlPrincipal.Controls.Add(lblPuntuacion);
-            pnlPrincipal.Controls.Add(txtPuntuacion);
-            yPos += lineHeight;
+            pnlPrincipal.Controls.Add(lblPuntHelp);
+            yPosRight += lineHeight;
 
             // Kilometraje
-            Label lblKilometraje = new Label
+            AgregarLabelCompacto(pnlPrincipal, "Kilometraje:", 560, yPosRight, 100);
+            nudKilometraje = new NumericUpDown
             {
-                Text = "Kilometraje:",
-                Font = new Font("Arial", 9, FontStyle.Bold),
-                Location = new Point(20, yPos),
-                Size = new Size(lblWidth, 20)
+                Location = new Point(colRightX + 40, yPosRight),
+                Size = new Size(150, 28),
+                Font = new Font("Segoe UI", 10F),
+                Minimum = 0,
+                Maximum = 999999,
+                ThousandsSeparator = true,
+                Value = 0,
+                TextAlign = HorizontalAlignment.Right
             };
-            txtKilometraje = new TextBox
+            pnlPrincipal.Controls.Add(nudKilometraje);
+
+            chkKilometrajeDesconocido = new CheckBox
             {
-                Name = "txtKilometraje",
-                Location = new Point(150, yPos),
-                Size = new Size(ctrlWidth, 23)
+                Text = "Desconocido",
+                Location = new Point(colRightX + 200, yPosRight + 5),
+                Font = new Font("Segoe UI", 9F),
+                AutoSize = true
             };
-            pnlPrincipal.Controls.Add(lblKilometraje);
-            pnlPrincipal.Controls.Add(txtKilometraje);
-            yPos += lineHeight;
+            chkKilometrajeDesconocido.CheckedChanged += (s, e) =>
+            {
+                nudKilometraje.Enabled = !chkKilometrajeDesconocido.Checked;
+                if (chkKilometrajeDesconocido.Checked) nudKilometraje.Value = 0;
+            };
+            pnlPrincipal.Controls.Add(chkKilometrajeDesconocido);
+            yPosRight += lineHeight;
+
+            // SECCIÓN INFERIOR - Propietario y Observaciones (ancho completo)
+            yPos = yPosLeft + 20;
 
             // Propietario
-            Label lblPropietario = new Label
-            {
-                Text = "Propietario:",
-                Font = new Font("Arial", 9, FontStyle.Bold),
-                Location = new Point(20, yPos),
-                Size = new Size(lblWidth, 20)
-            };
+            AgregarLabelCompacto(pnlPrincipal, "Propietario (opcional):", 20, yPos, labelWidth);
             txtPropietario = new TextBox
             {
-                Name = "txtPropietario",
-                Location = new Point(150, yPos),
-                Size = new Size(ctrlWidth, 23)
+                Location = new Point(colLeftX, yPos),
+                Size = new Size(740, 28),
+                Font = new Font("Segoe UI", 10F)
             };
-            pnlPrincipal.Controls.Add(lblPropietario);
             pnlPrincipal.Controls.Add(txtPropietario);
+            SetCueBanner(txtPropietario, "Nombre del propietario");
             yPos += lineHeight;
 
             // Observaciones
-            Label lblObservaciones = new Label
-            {
-                Text = "Observaciones:",
-                Font = new Font("Arial", 9, FontStyle.Bold),
-                Location = new Point(20, yPos),
-                Size = new Size(lblWidth, 20)
-            };
+            AgregarLabelCompacto(pnlPrincipal, "Observaciones:", 20, yPos, labelWidth);
             txtObservaciones = new TextBox
             {
-                Name = "txtObservaciones",
-                Location = new Point(150, yPos),
-                Size = new Size(ctrlWidth, 100),
+                Location = new Point(colLeftX, yPos),
+                Size = new Size(740, 80),
                 Multiline = true,
-                ScrollBars = ScrollBars.Vertical
+                ScrollBars = ScrollBars.Vertical,
+                Font = new Font("Segoe UI", 10F)
             };
-            pnlPrincipal.Controls.Add(lblObservaciones);
             pnlPrincipal.Controls.Add(txtObservaciones);
-            yPos += 110;
+            SetCueBanner(txtObservaciones, "Detalles adicionales del vehículo...");
 
-            // Botones
+            // Panel de botones VISIBLE en la parte inferior
+            Panel pnlBotones = new Panel
+            {
+                Location = new Point(0, 560), // ← CAMBIADO de 640 a 560 (80px más arriba)
+                Size = new Size(1084, 70),
+                BackColor = Color.FromArgb(248, 249, 250),
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
             Button btnGuardar = new Button
             {
-                Text = "Guardar",
-                Size = new Size(100, 35),
-                Location = new Point(150, yPos),
+                Text = "💾 Guardar Vehículo",
+                Size = new Size(200, 45),
+                Location = new Point(350, 12),
                 BackColor = Color.FromArgb(51, 122, 183),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Arial", 9, FontStyle.Bold)
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Cursor = Cursors.Hand
             };
+            btnGuardar.FlatAppearance.BorderSize = 0;
             btnGuardar.Click += BtnGuardar_Click;
 
             Button btnCancelar = new Button
             {
-                Text = "Cancelar",
-                Size = new Size(100, 35),
-                Location = new Point(260, yPos),
+                Text = "❌ Cancelar",
+                Size = new Size(200, 45),
+                Location = new Point(570, 12),
                 BackColor = Color.FromArgb(217, 83, 79),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Arial", 9, FontStyle.Bold)
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                DialogResult = DialogResult.Cancel
             };
-            btnCancelar.Click += (s, e) => this.Close();
+            btnCancelar.FlatAppearance.BorderSize = 0;
 
-            pnlPrincipal.Controls.Add(btnGuardar);
-            pnlPrincipal.Controls.Add(btnCancelar);
+            pnlBotones.Controls.Add(btnGuardar);
+            pnlBotones.Controls.Add(btnCancelar);
 
+            this.Controls.Add(pnlBotones);
             this.Controls.Add(pnlPrincipal);
+        }
+
+        private void AgregarSeccionCompacta(Panel panel, string titulo, int x, int yPos, int width)
+        {
+            Panel pnlSeccion = new Panel
+            {
+                Location = new Point(x, yPos),
+                Size = new Size(width, 35),
+                BackColor = Color.FromArgb(233, 236, 239)
+            };
+
+            Label lblSeccion = new Label
+            {
+                Text = titulo,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                ForeColor = Color.FromArgb(52, 58, 64),
+                Location = new Point(10, 8),
+                AutoSize = true
+            };
+            pnlSeccion.Controls.Add(lblSeccion);
+            panel.Controls.Add(pnlSeccion);
+        }
+
+        private void AgregarLabelCompacto(Panel panel, string texto, int x, int yPos, int width)
+        {
+            Label lbl = new Label
+            {
+                Text = texto,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Location = new Point(x, yPos + 3),
+                Size = new Size(width, 25),
+                TextAlign = ContentAlignment.MiddleLeft,
+                ForeColor = Color.FromArgb(33, 37, 41)
+            };
+            panel.Controls.Add(lbl);
         }
 
         private void FrmRegistroVehiculo_Load(object sender, EventArgs e)
@@ -418,13 +477,18 @@ namespace CpAuton
                     }
                 }
             }
+            else
+            {
+                MessageBox.Show("⚠️ Debe seleccionar una Marca y un Tipo de Vehículo primero",
+                              "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private bool Validar()
         {
             if (cboProcedencia.SelectedIndex == -1)
             {
-                MessageBox.Show("Debe seleccionar una procedencia", "Validación",
+                MessageBox.Show("⚠️ Debe seleccionar una procedencia", "Validación",
                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboProcedencia.Focus();
                 return false;
@@ -432,7 +496,7 @@ namespace CpAuton
 
             if (cboMarca.SelectedIndex == -1)
             {
-                MessageBox.Show("Debe seleccionar una marca", "Validación",
+                MessageBox.Show("⚠️ Debe seleccionar una marca", "Validación",
                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboMarca.Focus();
                 return false;
@@ -440,7 +504,7 @@ namespace CpAuton
 
             if (cboTipo.SelectedIndex == -1)
             {
-                MessageBox.Show("Debe seleccionar un tipo de vehículo", "Validación",
+                MessageBox.Show("⚠️ Debe seleccionar un tipo de vehículo", "Validación",
                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboTipo.Focus();
                 return false;
@@ -448,38 +512,23 @@ namespace CpAuton
 
             if (cboModelo.SelectedIndex == -1)
             {
-                MessageBox.Show("Debe seleccionar un modelo", "Validación",
+                MessageBox.Show("⚠️ Debe seleccionar un modelo", "Validación",
                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboModelo.Focus();
                 return false;
             }
 
-            if (!int.TryParse(txtAnio.Text, out int anio) || anio < 1900 || anio > DateTime.Now.Year)
-            {
-                MessageBox.Show($"El año debe estar entre 1900 y {DateTime.Now.Year}", "Validación",
-                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtAnio.Focus();
-                return false;
-            }
-
             if (cboConfiabilidad.SelectedIndex == -1)
             {
-                MessageBox.Show("Debe seleccionar el nivel de confiabilidad", "Validación",
+                MessageBox.Show("⚠️ Debe seleccionar el nivel de confiabilidad", "Validación",
                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboConfiabilidad.Focus();
                 return false;
             }
 
-            if (!decimal.TryParse(txtPuntuacion.Text, out decimal puntuacion) || puntuacion < 1.0m || puntuacion > 10.0m)
-            {
-                MessageBox.Show("La puntuación debe estar entre 1.0 y 10.0", "Validación",
-                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtPuntuacion.Focus();
-                return false;
-            }
-
             return true;
         }
+
         private void BtnGuardar_Click(object sender, EventArgs e)
         {
             if (Validar())
@@ -487,9 +536,9 @@ namespace CpAuton
                 try
                 {
                     int idModelo = (int)cboModelo.SelectedValue;
-                    int anio = int.Parse(txtAnio.Text);
-                    decimal puntuacion = decimal.Parse(txtPuntuacion.Text);
-                    int kilometraje = string.IsNullOrEmpty(txtKilometraje.Text) ? 0 : int.Parse(txtKilometraje.Text);
+                    int anio = (int)nudAnio.Value;
+                    decimal puntuacion = nudPuntuacion.Value;
+                    int? kilometraje = chkKilometrajeDesconocido.Checked ? (int?)null : (int)nudKilometraje.Value;
 
                     var nuevoVehiculo = new Vehiculo
                     {
@@ -498,20 +547,18 @@ namespace CpAuton
                         confiabilidad = cboConfiabilidad.SelectedItem.ToString(),
                         puntuacion = puntuacion,
                         kilometraje = kilometraje,
-                        propietario = string.IsNullOrEmpty(txtPropietario.Text) ? null : txtPropietario.Text,
-                        observaciones = string.IsNullOrEmpty(txtObservaciones.Text) ? null : txtObservaciones.Text,
+                        propietario = string.IsNullOrWhiteSpace(txtPropietario.Text) ? null : txtPropietario.Text.Trim(),
+                        observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ? null : txtObservaciones.Text.Trim(),
                         estado = 1,
-                        // NO asignamos usuarioRegistro aquí - dejamos que la BD use el DEFAULT
-                        // O asignamos solo si existe usuario autenticado
                         usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : Environment.UserName,
-                        fechaRegistro = DateTime.Now  // IMPORTANTE: Asignar la fecha
+                        fechaRegistro = DateTime.Now
                     };
 
                     int resultado = VehiculoCln.insertar(nuevoVehiculo);
 
                     if (resultado > 0)
                     {
-                        MessageBox.Show($"Vehículo registrado exitosamente con ID: {resultado}",
+                        MessageBox.Show($"✅ Vehículo registrado exitosamente\n\nID del vehículo: {resultado}",
                                       "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
                         this.Close();
@@ -519,24 +566,30 @@ namespace CpAuton
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error al guardar el vehículo: {ex.Message}\n\nStack Trace: {ex.StackTrace}",
+                    MessageBox.Show($"❌ Error al guardar el vehículo:\n\n{ex.Message}",
                                   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-        private ComboBox cboProcedencia;
-        private ComboBox cboMarca;
-        private ComboBox cboTipo;
-        private ComboBox cboModelo;
-        private TextBox txtAnio;
-        private ComboBox cboConfiabilidad;
-        private TextBox txtPuntuacion;
-        private TextBox txtKilometraje;
-        private TextBox txtPropietario;
-        private TextBox txtObservaciones;
-        private Button btnAgregarMarca;
-        private Button btnAgregarModelo;
+        // P/Invoke para placeholder (cue banner)
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, string lParam);
+
+        private const int EM_SETCUEBANNER = 0x1501;
+
+        private void SetCueBanner(TextBox tb, string text)
+        {
+            if (tb == null) return;
+            try
+            {
+                SendMessage(tb.Handle, EM_SETCUEBANNER, (IntPtr)1, text);
+            }
+            catch
+            {
+                // Si falla, no pasa nada (sistemas antiguos)
+            }
+        }
 
         private void InitializeComponent()
         {

@@ -17,6 +17,7 @@ namespace CpAuton
     {
 
         private Label lblEstadoUsuario;
+        private Button btnSesion;
 
         public FrmConsultaVehiculos()
         {
@@ -40,7 +41,7 @@ namespace CpAuton
                 BorderStyle = BorderStyle.FixedSingle
             };
 
-            Button btnSesion = new Button
+            btnSesion = new Button // ← QUITAR 'Button' para usar la variable de clase
             {
                 Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión",
                 Size = new Size(120, 35),
@@ -93,23 +94,16 @@ namespace CpAuton
 
         private void ActualizarInterfazSesion()
         {
-            foreach (Control ctrl in this.Controls)
+            if (btnSesion != null)
             {
-                if (ctrl is Panel pnl)
-                {
-                    foreach (Control child in pnl.Controls)
-                    {
-                        if (child is Button btn && btn.Text.Contains("Sesión"))
-                        {
-                            btn.Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión";
-                            btn.BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183);
-                        }
-                        if (child is Label lbl && lbl.Text.Contains("Usuario"))
-                        {
-                            lbl.Text = Util.usuario != null ? $"Usuario: {Util.usuario.nombreCompleto}" : "Usuario: No autenticado";
-                        }
-                    }
-                }
+                btnSesion.Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión";
+                btnSesion.BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183);
+            }
+
+            // Actualizar label
+            if (lblEstadoUsuario != null)
+            {
+                lblEstadoUsuario.Text = Util.usuario != null ? $"Usuario: {Util.usuario.nombreCompleto}" : "Usuario: No autenticado";
             }
         }
 
@@ -854,6 +848,67 @@ namespace CpAuton
             {
                 MessageBox.Show($"Error al exportar: {ex.Message}", "Error",
                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private bool ValidarAutenticacion()
+        {
+            if (Util.usuario != null)
+                return true;
+
+            FrmAutenticacion frmAuth = new FrmAutenticacion();
+            frmAuth.StartPosition = FormStartPosition.CenterParent;
+
+            if (frmAuth.ShowDialog(this) == DialogResult.OK)
+            {
+                ActualizarInterfaz();
+                return true;
+            }
+
+            return false;
+        }
+
+        private void ActualizarInterfaz()
+        {
+            var menuStrip = this.Controls.Find("menuPrincipal", false);
+            if (menuStrip.Length > 0 && menuStrip[0] is MenuStrip ms)
+            {
+                // Actualizar visibilidad de menús según autenticación
+                var menuAdmin = ms.Items.Find("menuAdmin", true);
+                if (menuAdmin.Length > 0)
+                    menuAdmin[0].Visible = Util.usuario != null && Util.EsAdministrador();
+
+                var menuLogin = ms.Items.Find("menuLogin", true);
+                if (menuLogin.Length > 0)
+                    menuLogin[0].Visible = Util.usuario == null;
+
+                var menuCerrarSesion = ms.Items.Find("menuCerrarSesion", true);
+                if (menuCerrarSesion.Length > 0)
+                    menuCerrarSesion[0].Visible = Util.usuario != null;
+            }
+
+            // Actualizar StatusBar
+            var statusStrip = this.Controls.Find("statusStrip", false);
+            if (statusStrip.Length > 0 && statusStrip[0] is StatusStrip ss)
+            {
+                var lblUsuario = (ToolStripStatusLabel)ss.Items["lblUsuario"];
+                if (Util.usuario != null)
+                {
+                    lblUsuario.Text = $"Usuario: {Util.usuario.nombreCompleto} - {Util.usuario.cargo}";
+                }
+                else
+                {
+                    lblUsuario.Text = "Usuario: Invitado (Solo consulta)";
+                }
+            }
+        }
+
+        private void MenuNuevo_Click(object sender, EventArgs e)
+        {
+            if (ValidarAutenticacion())
+            {
+                new FrmRegistroVehiculo().ShowDialog();
+
             }
         }
     }
