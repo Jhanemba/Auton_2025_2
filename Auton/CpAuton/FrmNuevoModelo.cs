@@ -283,6 +283,8 @@ namespace CpAuton
                         combustible = combustible,
                         estado = 1,
                         usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : Environment.UserName,
+                        //transmision = cboTransmision.SelectedItem?.ToString(),
+                        //tieneTurbo = chkTieneTurbo.Checked,
                         fechaRegistro = DateTime.Now
                     };
 

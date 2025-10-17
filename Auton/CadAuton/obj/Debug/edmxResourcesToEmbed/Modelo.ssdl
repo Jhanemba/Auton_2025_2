@@ -67,6 +67,8 @@
     <Property Name="usuarioRegistro" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="fechaRegistro" Type="datetime" Nullable="false" />
     <Property Name="estado" Type="smallint" Nullable="false" />
+    <Property Name="transmision" Type="varchar" MaxLength="20" />
+    <Property Name="tieneTurbo" Type="bit" />
   </EntityType>
   <EntityType Name="Procedencia">
     <Key>

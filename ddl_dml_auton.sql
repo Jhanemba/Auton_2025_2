@@ -185,6 +185,12 @@ CREATE TABLE VehiculoMantenimiento (
 
 ALTER TABLE Vehiculo DROP COLUMN combustible;
 
+ALTER TABLE ModeloVehiculo 
+ADD transmision VARCHAR(20) NULL;
+
+ALTER TABLE ModeloVehiculo 
+ADD tieneTurbo BIT NULL DEFAULT 0;
+
 -- =====================================================
 -- PROCEDIMIENTOS ALMACENADOS ESENCIALES
 -- =====================================================
@@ -391,6 +397,8 @@ CREATE NONCLUSTERED INDEX IX_Usuario_Estado ON Usuario(estado);
 
 select * FROM Procedencia;
 select * FROM Vehiculo;
+select * FROM ModeloVehiculo
+select * FROM ModeloVehiculo
 
 PRINT '========================================';
 PRINT 'SISTEMA AUTON - VERSION OPTIMIZADA';

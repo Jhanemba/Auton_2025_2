@@ -73,6 +73,8 @@
     <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="estado" Type="Int16" Nullable="false" />
+    <Property Name="transmision" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="tieneTurbo" Type="Boolean" />
     <NavigationProperty Name="Marca" Relationship="Self.FK_ModeloVehiculo_Marca" FromRole="ModeloVehiculo" ToRole="Marca" />
     <NavigationProperty Name="TipoVehiculo" Relationship="Self.FK_ModeloVehiculo_TipoVehiculo" FromRole="ModeloVehiculo" ToRole="TipoVehiculo" />
     <NavigationProperty Name="Vehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="ModeloVehiculo" ToRole="Vehiculo" />

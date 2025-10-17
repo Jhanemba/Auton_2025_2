@@ -71,6 +71,8 @@
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
+          <ScalarProperty Name="transmision" ColumnName="transmision" />
+          <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
