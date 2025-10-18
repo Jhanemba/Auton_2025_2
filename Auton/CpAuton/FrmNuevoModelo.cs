@@ -167,7 +167,7 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(cboCombustible);
             yPosLeft += lineHeight;
 
-            // Transmisión
+            // Transmisión ⚠️ IMPORTANTE: Ahora es ÚNICA por modelo
             AgregarLabel(pnlPrincipal, "Transmisión:", 25, yPosLeft, labelWidth);
             cboTransmision = new ComboBox
             {
@@ -179,6 +179,17 @@ namespace CpAuton
             cboTransmision.Items.AddRange(new[] { "Manual", "Automática", "CVT", "Semiautomática", "Doble Embrague" });
             cboTransmision.SelectedIndex = 0;
             pnlPrincipal.Controls.Add(cboTransmision);
+
+            // Label informativo sobre transmisión
+            Label lblInfoTransmision = new Label
+            {
+                Text = "ℹ️ La transmisión identifica modelos únicos",
+                Location = new Point(colLeftX, yPosLeft + 32),
+                Size = new Size(300, 18),
+                Font = new Font("Segoe UI", 7.5F, FontStyle.Italic),
+                ForeColor = Color.DarkBlue
+            };
+            pnlPrincipal.Controls.Add(lblInfoTransmision);
             yPosLeft += lineHeight;
 
             // Turbo
@@ -197,8 +208,8 @@ namespace CpAuton
             AgregarSeccion(pnlPrincipal, "🛡️ SEGURIDAD", 490, yPos, 470);
             int yPosRight = yPos + 38;
 
-            // Airbags
-            AgregarLabel(pnlPrincipal, "Nro. Airbags:", 490, yPosRight, labelWidth);
+            // Airbags (SIN "Nro." para evitar espacio)
+            AgregarLabel(pnlPrincipal, "Airbags:", 490, yPosRight, labelWidth);
             nudAirbags = new NumericUpDown
             {
                 Location = new Point(colRightX, yPosRight),
@@ -228,12 +239,12 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(cboOrganizacionSeguridad);
             yPosRight += lineHeight;
 
-            // Seguridad en Choques (Estrellas)
+            // Seguridad en Choques (Estrellas) - AHORA CON 0 ESTRELLAS
             AgregarLabel(pnlPrincipal, "Estrellas:", 490, yPosRight, labelWidth);
             cboSeguridadChoques = new ComboBox
             {
                 Location = new Point(colRightX, yPosRight),
-                Size = new Size(200, 28),
+                Size = new Size(250, 28),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Font = new Font("Segoe UI", 10F)
             };
@@ -243,6 +254,7 @@ namespace CpAuton
                 "⭐⭐⭐ (3 estrellas)",
                 "⭐⭐ (2 estrellas)",
                 "⭐ (1 estrella)",
+                "☆ (0 estrellas - Sin seguridad)",
                 "Sin calificación"
             });
             cboSeguridadChoques.SelectedIndex = 2;
@@ -393,20 +405,33 @@ namespace CpAuton
                 return false;
             }
 
+            // ✅ VALIDACIÓN CRÍTICA: Mismo modelo + transmisión = DUPLICADO
             try
             {
                 var todosLosModelos = ModeloVehiculoCln.listar();
                 if (todosLosModelos != null && todosLosModelos.Count > 0)
                 {
+                    string nombreBuscado = txtNombre.Text.Trim();
+                    string transmisionBuscada = cboTransmision.SelectedItem.ToString();
+
+                    // Validamos modelo + transmisión (manejando NULLs)
                     var modeloExistente = todosLosModelos
                         .Where(m => m.idMarca == idMarca && m.estado != -1)
-                        .FirstOrDefault(m => m.nombre.Equals(txtNombre.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+                        .FirstOrDefault(m =>
+                            m.nombre != null &&
+                            m.nombre.Equals(nombreBuscado, StringComparison.OrdinalIgnoreCase) &&
+                            m.transmision != null &&
+                            m.transmision.Equals(transmisionBuscada, StringComparison.OrdinalIgnoreCase) &&
+                            //m.tieneTurbo.Value == tieneTurboBuscado
+                        );
 
                     if (modeloExistente != null)
                     {
-                        MessageBox.Show($"⚠️ El modelo '{txtNombre.Text.Trim()}' ya existe para esta marca",
+                        MessageBox.Show($"⚠️ El modelo '{nombreBuscado}' con transmisión '{transmisionBuscada}' ya existe para esta marca.\n\n" +
+                                      $"💡 Nota: Si deseas registrar el mismo modelo con transmisión diferente (Ej: Manual vs CVT), " +
+                                      $"selecciona otra opción de transmisión.",
                                       "Modelo Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        txtNombre.Focus();
+                        cboTransmision.Focus();
                         return false;
                     }
                 }
@@ -426,9 +451,9 @@ namespace CpAuton
             {
                 try
                 {
-                    // Extraer el número de estrellas del texto
+                    // Extraer el número de estrellas del texto (ahora incluye 0)
                     int estrellas = 0;
-                    if (cboSeguridadChoques.SelectedIndex != 5) // Si no es "Sin calificación"
+                    if (cboSeguridadChoques.SelectedIndex < 6) // Si no es "Sin calificación"
                     {
                         estrellas = 5 - cboSeguridadChoques.SelectedIndex;
                     }
@@ -458,13 +483,14 @@ namespace CpAuton
                     {
                         string turboInfo = chkTieneTurbo.Checked ? " 🚀 CON TURBO" : "";
                         string airbagInfo = $"\nAirbags: {nudAirbags.Value}";
-                        string seguridadInfo = estrellas > 0 ? $"\nSeguridad: {estrellas} estrellas ({cboOrganizacionSeguridad.SelectedItem})" : "";
+                        string seguridadInfo = estrellas >= 0 ? $"\nSeguridad: {estrellas} estrellas ({cboOrganizacionSeguridad.SelectedItem})" : "";
+                        string transmisionInfo = $"\nTransmisión: {cboTransmision.SelectedItem}";
 
                         MessageBox.Show($"✅ Modelo registrado exitosamente{turboInfo}\n\n" +
                                       $"ID: {NuevoIdModelo}\n" +
                                       $"Nombre: {txtNombre.Text}\n" +
-                                      $"Motor: {txtMotor.Text}\n" +
-                                      $"Transmisión: {cboTransmision.SelectedItem}" +
+                                      $"Motor: {txtMotor.Text}" +
+                                      transmisionInfo +
                                       airbagInfo + seguridadInfo,
                                       "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
@@ -483,12 +509,5 @@ namespace CpAuton
                 }
             }
         }
-
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.Name = "FrmNuevoModelo";
-        //    this.ResumeLayout(false);
-        //}
     }
 }

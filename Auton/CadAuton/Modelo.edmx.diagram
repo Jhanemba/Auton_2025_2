@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="59e5af53a3cf43b493ffce73fe875190" Name="Diagram1">
+      <Diagram DiagramId="3cdae73839dd49d1806faf89ea5dceda" Name="Diagram1">
         <EntityTypeShape EntityType="AutonModel.Cargo" Width="1.5" PointX="0.75" PointY="9.875" IsExpanded="true" />
         <EntityTypeShape EntityType="AutonModel.Empleado" Width="1.5" PointX="3" PointY="9.25" IsExpanded="true" />
         <EntityTypeShape EntityType="AutonModel.HistorialConfiabilidad" Width="1.5" PointX="9.75" PointY="2.375" IsExpanded="true" />

@@ -212,6 +212,93 @@ BEGIN
     ON Vehiculo(nroChasis) 
     WHERE nroChasis != '' AND estado != -1;
 END
+
+
+
+
+-- 1. ELIMINAMOS la constraint antigua que NO consideraba turbo
+IF EXISTS (SELECT * FROM sys.indexes WHERE name = 'UK_ModeloVehiculo_Nombre_Marca')
+BEGIN
+    ALTER TABLE ModeloVehiculo DROP CONSTRAINT UK_ModeloVehiculo_Nombre_Marca;
+    PRINT 'Constraint antigua (sin turbo) eliminada';
+END
+
+IF EXISTS (SELECT * FROM sys.indexes WHERE name = 'UK_ModeloVehiculo_Nombre_Marca_Transmision')
+BEGIN
+    ALTER TABLE ModeloVehiculo DROP CONSTRAINT UK_ModeloVehiculo_Nombre_Marca_Transmision;
+    PRINT 'Constraint antigua (sin turbo) eliminada';
+END
+
+-- 2. CREAMOS nueva constraint que incluye transmisión Y turbo
+-- Esto permite:
+-- - Toyota Tundra Manual SIN turbo
+-- - Toyota Tundra Manual CON turbo
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'UK_ModeloVehiculo_Completo')
+BEGIN
+    ALTER TABLE ModeloVehiculo 
+    ADD CONSTRAINT UK_ModeloVehiculo_Completo 
+    UNIQUE (nombre, idMarca, anioInicio, transmision, tieneTurbo);
+    
+    PRINT 'Nueva constraint creada: nombre + marca + año + transmisión + turbo';
+END
+
+-- 3. ACTUALIZAMOS tabla de seguridad para permitir 0 estrellas
+IF EXISTS (SELECT * FROM sys.check_constraints WHERE name = 'CK_ModeloVehiculo_SeguridadChoques')
+BEGIN
+    ALTER TABLE ModeloVehiculo DROP CONSTRAINT CK_ModeloVehiculo_SeguridadChoques;
+END
+
+ALTER TABLE ModeloVehiculo 
+ADD CONSTRAINT CK_ModeloVehiculo_SeguridadChoques 
+CHECK (seguridadChoques >= 0 AND seguridadChoques <= 5);
+
+PRINT 'Seguridad actualizada: ahora permite 0 estrellas';
+
+-- 4. ACTUALIZAMOS modelos existentes con transmision NULL
+UPDATE ModeloVehiculo 
+SET transmision = 'Manual'
+WHERE transmision IS NULL;
+
+PRINT 'Modelos con transmision NULL actualizados a "Manual"';
+
+-- 5. ACTUALIZAMOS modelos existentes con tieneTurbo NULL
+UPDATE ModeloVehiculo 
+SET tieneTurbo = 0
+WHERE tieneTurbo IS NULL;
+
+PRINT 'Modelos con tieneTurbo NULL actualizados a 0 (sin turbo)';
+
+-- 6. Hacemos transmision NOT NULL recomendadisimo
+--ALTER TABLE ModeloVehiculo
+--ALTER COLUMN transmision VARCHAR(20) NOT NULL;
+
+--PRINT 'Columna transmision ahora es NOT NULL';
+
+---- 7. Hacer tieneTurbo NOT NULL maybe
+--ALTER TABLE ModeloVehiculo
+--ALTER COLUMN tieneTurbo BIT NOT NULL;
+
+--PRINT 'Columna tieneTurbo ahora es NOT NULL';
+
+-- 8. EJEMPLOS: Ahora podemos tener estos registros
+/*
+INSERT INTO ModeloVehiculo (nombre, idMarca, transmision, tieneTurbo, ...) 
+VALUES 
+('Tundra', 1, 'Manual', 0, ...)  -- ✅ V8 Manual sin turbo (Bueno)
+('Tundra', 1, 'Manual', 1, ...)  -- ✅ 3.3L Turbo Manual (Malo)
+('Versa', 2, 'Manual', 0, ...)   -- ✅ Manual sin turbo (Bueno)
+('Versa', 2, 'CVT', 0, ...)      -- ✅ CVT sin turbo (Malo)
+('Fiesta', 3, 'Manual', 0, ...)  -- ✅ Manual sin turbo (Bueno)
+('Fiesta', 3, 'Manual', 1, ...)  -- ✅ Manual con turbo (Malo)
+*/
+
+PRINT '1. Modelos duplicados OK si transmisión O turbo diferente';
+PRINT '2. Seguridad permite 0 estrellas';
+PRINT '3. Transmision y tieneTurbo son NOT NULL';
+PRINT '4. Ejemplos:';
+PRINT '   - Tundra Manual SIN turbo ≠ Tundra Manual CON turbo';
+PRINT '   - Versa Manual ≠ Versa CVT';
+PRINT '   - Fiesta Manual SIN turbo ≠ Fiesta Manual CON turbo';
 -- =====================================================
 -- PROCEDIMIENTOS ALMACENADOS ESENCIALES
 -- =====================================================

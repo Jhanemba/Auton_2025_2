@@ -30,7 +30,7 @@ namespace CpAuton
         private NumericUpDown nudKilometraje;
         private TextBox txtPropietario;
         private TextBox txtObservaciones;
-        private TextBox txtNroChasis; // ← NUEVO
+        private TextBox txtNroChasis;
         private Button btnAgregarMarca;
         private Button btnAgregarModelo;
         private CheckBox chkKilometrajeDesconocido;
@@ -139,7 +139,7 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(cboTipo);
             yPosLeft += lineHeight;
 
-            // Modelo
+            // Modelo ⚠️ MEJORADO: Ahora muestra transmisión y turbo
             AgregarLabelCompacto(pnlPrincipal, "Modelo:", 20, yPosLeft, labelWidth);
             cboModelo = new ComboBox
             {
@@ -168,7 +168,7 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(btnAgregarModelo);
             yPosLeft += lineHeight;
 
-            // Nro. de Chasis (NUEVO)
+            // Nro. de Chasis
             AgregarLabelCompacto(pnlPrincipal, "Nro. de Chasis:", 20, yPosLeft, labelWidth);
             txtNroChasis = new TextBox
             {
@@ -435,9 +435,17 @@ namespace CpAuton
             {
                 try
                 {
-                    modelos = ModeloVehiculoCln.listar().Where(m => m.idMarca == idMarca).ToList();
-                    cboModelo.DataSource = modelos;
-                    cboModelo.DisplayMember = "nombre";
+                    modelos = ModeloVehiculoCln.listar().Where(m => m.idMarca == idMarca && m.estado != -1).ToList();
+
+                    // ✅ MEJORADO: Formato descriptivo que incluye transmisión y turbo
+                    var modelosFormateados = modelos.Select(m => new
+                    {
+                        m.id,
+                        DisplayText = FormatearNombreModelo(m)
+                    }).ToList();
+
+                    cboModelo.DataSource = modelosFormateados;
+                    cboModelo.DisplayMember = "DisplayText";
                     cboModelo.ValueMember = "id";
                     cboModelo.Enabled = true;
                     btnAgregarModelo.Enabled = true;
@@ -449,6 +457,23 @@ namespace CpAuton
                                   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        /// <summary>
+        /// ✅ NUEVO: Formatea el nombre del modelo para mostrar características distintivas
+        /// Ejemplos:
+        /// - "Versa (Manual)"
+        /// - "Versa (CVT)"
+        /// - "Fiesta 🚀 (Manual)"
+        /// - "Fiesta (Automática)"
+        /// </summary>
+        private string FormatearNombreModelo(ModeloVehiculo modelo)
+        {
+            string nombre = modelo.nombre ?? "Sin nombre";
+            string transmision = modelo.transmision ?? "N/A";
+            string turbo = (modelo.tieneTurbo.HasValue && modelo.tieneTurbo.Value) ? " 🚀" : "";
+
+            return $"{nombre}{turbo} ({transmision})";
         }
 
         private void BtnAgregarMarca_Click(object sender, EventArgs e)
@@ -578,7 +603,13 @@ namespace CpAuton
 
                     if (resultado > 0)
                     {
-                        MessageBox.Show($"✅ Vehículo registrado exitosamente\n\nChasis: {txtNroChasis.Text}",
+                        // Obtener el modelo seleccionado para mostrar info completa
+                        var modeloSeleccionado = modelos.FirstOrDefault(m => m.id == idModelo);
+                        string infoModelo = modeloSeleccionado != null ? FormatearNombreModelo(modeloSeleccionado) : "";
+
+                        MessageBox.Show($"✅ Vehículo registrado exitosamente\n\n" +
+                                      $"Chasis: {txtNroChasis.Text}\n" +
+                                      $"Modelo: {infoModelo}",
                                       "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
                         this.Close();
