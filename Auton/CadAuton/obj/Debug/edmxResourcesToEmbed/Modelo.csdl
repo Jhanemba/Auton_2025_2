@@ -75,6 +75,9 @@
     <Property Name="estado" Type="Int16" Nullable="false" />
     <Property Name="transmision" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="tieneTurbo" Type="Boolean" />
+    <Property Name="nroAirbags" Type="Int32" />
+    <Property Name="seguridadChoques" Type="Int32" />
+    <Property Name="organizacionSeguridad" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="Marca" Relationship="Self.FK_ModeloVehiculo_Marca" FromRole="ModeloVehiculo" ToRole="Marca" />
     <NavigationProperty Name="TipoVehiculo" Relationship="Self.FK_ModeloVehiculo_TipoVehiculo" FromRole="ModeloVehiculo" ToRole="TipoVehiculo" />
     <NavigationProperty Name="Vehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="ModeloVehiculo" ToRole="Vehiculo" />
@@ -131,6 +134,7 @@
     <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="estado" Type="Int16" Nullable="false" />
+    <Property Name="nroChasis" Type="String" MaxLength="17" FixedLength="false" Unicode="false" Nullable="false" />
     <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="Vehiculo" ToRole="HistorialConfiabilidad" />
     <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="Vehiculo" ToRole="ModeloVehiculo" />
     <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="Vehiculo" ToRole="VehiculoMantenimiento" />

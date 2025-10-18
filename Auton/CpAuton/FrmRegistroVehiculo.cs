@@ -30,6 +30,7 @@ namespace CpAuton
         private NumericUpDown nudKilometraje;
         private TextBox txtPropietario;
         private TextBox txtObservaciones;
+        private TextBox txtNroChasis; // ← NUEVO
         private Button btnAgregarMarca;
         private Button btnAgregarModelo;
         private CheckBox chkKilometrajeDesconocido;
@@ -43,46 +44,45 @@ namespace CpAuton
         private void ConfigurarFormulario()
         {
             this.Text = "Registrar Nuevo Vehículo";
-            this.Size = new Size(1100, 750);
+            this.Size = new Size(1150, 720);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Font = new Font("Segoe UI", 10F);
 
-            // Panel principal SIN SCROLL
             Panel pnlPrincipal = new Panel
             {
                 Location = new Point(0, 0),
-                Size = new Size(1084, 640),
+                Size = new Size(1134, 610),
                 Padding = new Padding(20),
                 BackColor = Color.White
             };
 
             int yPos = 15;
-            int lineHeight = 50;
+            int lineHeight = 48;
             int labelWidth = 180;
-            int ctrlWidthLeft = 350;
-            int ctrlWidthRight = 350;
+            int ctrlWidthLeft = 380;
+            int ctrlWidthRight = 380;
             int colLeftX = 200;
-            int colRightX = 620;
+            int colRightX = 650;
 
             // Título principal
             Label lblTitulo = new Label
             {
                 Text = "🚗 REGISTRO DE NUEVO VEHÍCULO",
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                Font = new Font("Segoe UI", 15, FontStyle.Bold),
                 ForeColor = Color.FromArgb(51, 122, 183),
                 Location = new Point(20, yPos),
-                Size = new Size(1040, 35),
+                Size = new Size(1090, 32),
                 TextAlign = ContentAlignment.MiddleCenter
             };
             pnlPrincipal.Controls.Add(lblTitulo);
-            yPos += 50;
+            yPos += 45;
 
-            // COLUMNA IZQUIERDA - Sección del Modelo
-            AgregarSeccionCompacta(pnlPrincipal, "📋 DATOS DEL MODELO", 20, yPos, 500);
-            int yPosLeft = yPos + 40;
+            // COLUMNA IZQUIERDA
+            AgregarSeccionCompacta(pnlPrincipal, "📋 DATOS DEL MODELO", 20, yPos, 560);
+            int yPosLeft = yPos + 38;
 
             // Procedencia
             AgregarLabelCompacto(pnlPrincipal, "Procedencia:", 20, yPosLeft, labelWidth);
@@ -102,7 +102,7 @@ namespace CpAuton
             cboMarca = new ComboBox
             {
                 Location = new Point(colLeftX, yPosLeft),
-                Size = new Size(250, 28),
+                Size = new Size(280, 28),
                 DropDownStyle = ComboBoxStyle.DropDown,
                 Font = new Font("Segoe UI", 10F),
                 Enabled = false
@@ -113,7 +113,7 @@ namespace CpAuton
             btnAgregarMarca = new Button
             {
                 Text = "+",
-                Location = new Point(colLeftX + 255, yPosLeft),
+                Location = new Point(colLeftX + 285, yPosLeft),
                 Size = new Size(35, 28),
                 BackColor = Color.FromArgb(40, 167, 69),
                 ForeColor = Color.White,
@@ -144,7 +144,7 @@ namespace CpAuton
             cboModelo = new ComboBox
             {
                 Location = new Point(colLeftX, yPosLeft),
-                Size = new Size(250, 28),
+                Size = new Size(280, 28),
                 DropDownStyle = ComboBoxStyle.DropDown,
                 Font = new Font("Segoe UI", 10F),
                 Enabled = false
@@ -154,7 +154,7 @@ namespace CpAuton
             btnAgregarModelo = new Button
             {
                 Text = "+",
-                Location = new Point(colLeftX + 255, yPosLeft),
+                Location = new Point(colLeftX + 285, yPosLeft),
                 Size = new Size(35, 28),
                 BackColor = Color.FromArgb(40, 167, 69),
                 ForeColor = Color.White,
@@ -168,15 +168,29 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(btnAgregarModelo);
             yPosLeft += lineHeight;
 
-            // COLUMNA DERECHA - Sección de Características
-            AgregarSeccionCompacta(pnlPrincipal, "⚙️ CARACTERÍSTICAS", 560, yPos, 480);
-            int yPosRight = yPos + 40;
+            // Nro. de Chasis (NUEVO)
+            AgregarLabelCompacto(pnlPrincipal, "Nro. de Chasis:", 20, yPosLeft, labelWidth);
+            txtNroChasis = new TextBox
+            {
+                Location = new Point(colLeftX, yPosLeft),
+                Size = new Size(ctrlWidthLeft, 28),
+                Font = new Font("Segoe UI", 10F),
+                CharacterCasing = CharacterCasing.Upper,
+                MaxLength = 17
+            };
+            pnlPrincipal.Controls.Add(txtNroChasis);
+            SetCueBanner(txtNroChasis, "Ej: 1HGBH41JXMN109186 (17 caracteres)");
+            yPosLeft += lineHeight;
 
-            // Año de Fabricación
-            AgregarLabelCompacto(pnlPrincipal, "Año:", 560, yPosRight, 100);
+            // COLUMNA DERECHA
+            AgregarSeccionCompacta(pnlPrincipal, "⚙️ CARACTERÍSTICAS", 590, yPos, 520);
+            int yPosRight = yPos + 38;
+
+            // Año
+            AgregarLabelCompacto(pnlPrincipal, "Año:", 590, yPosRight, 120);
             nudAnio = new NumericUpDown
             {
-                Location = new Point(colRightX + 40, yPosRight),
+                Location = new Point(colRightX + 60, yPosRight),
                 Size = new Size(120, 28),
                 Font = new Font("Segoe UI", 10F),
                 Minimum = 1900,
@@ -188,10 +202,10 @@ namespace CpAuton
             yPosRight += lineHeight;
 
             // Confiabilidad
-            AgregarLabelCompacto(pnlPrincipal, "Confiabilidad:", 560, yPosRight, 100);
+            AgregarLabelCompacto(pnlPrincipal, "Confiabilidad:", 590, yPosRight, 120);
             cboConfiabilidad = new ComboBox
             {
-                Location = new Point(colRightX + 40, yPosRight),
+                Location = new Point(colRightX + 60, yPosRight),
                 Size = new Size(200, 28),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Font = new Font("Segoe UI", 10F)
@@ -202,10 +216,10 @@ namespace CpAuton
             yPosRight += lineHeight;
 
             // Puntuación
-            AgregarLabelCompacto(pnlPrincipal, "Puntuación:", 560, yPosRight, 100);
+            AgregarLabelCompacto(pnlPrincipal, "Puntuación:", 590, yPosRight, 120);
             nudPuntuacion = new NumericUpDown
             {
-                Location = new Point(colRightX + 40, yPosRight),
+                Location = new Point(colRightX + 60, yPosRight),
                 Size = new Size(120, 28),
                 Font = new Font("Segoe UI", 10F),
                 Minimum = 1.0m,
@@ -216,23 +230,13 @@ namespace CpAuton
                 TextAlign = HorizontalAlignment.Center
             };
             pnlPrincipal.Controls.Add(nudPuntuacion);
-
-            Label lblPuntHelp = new Label
-            {
-                Text = "(1.0 - 10.0)",
-                Font = new Font("Segoe UI", 8, FontStyle.Italic),
-                ForeColor = Color.Gray,
-                Location = new Point(colRightX + 170, yPosRight + 5),
-                AutoSize = true
-            };
-            pnlPrincipal.Controls.Add(lblPuntHelp);
             yPosRight += lineHeight;
 
             // Kilometraje
-            AgregarLabelCompacto(pnlPrincipal, "Kilometraje:", 560, yPosRight, 100);
+            AgregarLabelCompacto(pnlPrincipal, "Kilometraje:", 590, yPosRight, 120);
             nudKilometraje = new NumericUpDown
             {
-                Location = new Point(colRightX + 40, yPosRight),
+                Location = new Point(colRightX + 60, yPosRight),
                 Size = new Size(150, 28),
                 Font = new Font("Segoe UI", 10F),
                 Minimum = 0,
@@ -246,7 +250,7 @@ namespace CpAuton
             chkKilometrajeDesconocido = new CheckBox
             {
                 Text = "Desconocido",
-                Location = new Point(colRightX + 200, yPosRight + 5),
+                Location = new Point(colRightX + 220, yPosRight + 5),
                 Font = new Font("Segoe UI", 9F),
                 AutoSize = true
             };
@@ -258,27 +262,25 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(chkKilometrajeDesconocido);
             yPosRight += lineHeight;
 
-            // SECCIÓN INFERIOR - Propietario y Observaciones (ancho completo)
-            yPos = yPosLeft + 20;
-
             // Propietario
-            AgregarLabelCompacto(pnlPrincipal, "Propietario (opcional):", 20, yPos, labelWidth);
+            AgregarLabelCompacto(pnlPrincipal, "Propietario:", 590, yPosRight, 120);
             txtPropietario = new TextBox
             {
-                Location = new Point(colLeftX, yPos),
-                Size = new Size(740, 28),
+                Location = new Point(colRightX + 60, yPosRight),
+                Size = new Size(ctrlWidthRight, 28),
                 Font = new Font("Segoe UI", 10F)
             };
             pnlPrincipal.Controls.Add(txtPropietario);
-            SetCueBanner(txtPropietario, "Nombre del propietario");
-            yPos += lineHeight;
+            SetCueBanner(txtPropietario, "Nombre del propietario (opcional)");
+            yPosRight += lineHeight;
 
-            // Observaciones
+            // OBSERVACIONES - Ancho completo
+            yPos = Math.Max(yPosLeft, yPosRight) + 15;
             AgregarLabelCompacto(pnlPrincipal, "Observaciones:", 20, yPos, labelWidth);
             txtObservaciones = new TextBox
             {
                 Location = new Point(colLeftX, yPos),
-                Size = new Size(740, 80),
+                Size = new Size(910, 65),
                 Multiline = true,
                 ScrollBars = ScrollBars.Vertical,
                 Font = new Font("Segoe UI", 10F)
@@ -286,11 +288,11 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(txtObservaciones);
             SetCueBanner(txtObservaciones, "Detalles adicionales del vehículo...");
 
-            // Panel de botones VISIBLE en la parte inferior
+            // Panel de botones
             Panel pnlBotones = new Panel
             {
-                Location = new Point(0, 560), // ← CAMBIADO de 640 a 560 (80px más arriba)
-                Size = new Size(1084, 70),
+                Location = new Point(0, 610),
+                Size = new Size(1134, 70),
                 BackColor = Color.FromArgb(248, 249, 250),
                 BorderStyle = BorderStyle.FixedSingle
             };
@@ -299,7 +301,7 @@ namespace CpAuton
             {
                 Text = "💾 Guardar Vehículo",
                 Size = new Size(200, 45),
-                Location = new Point(350, 12),
+                Location = new Point(400, 12),
                 BackColor = Color.FromArgb(51, 122, 183),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -313,7 +315,7 @@ namespace CpAuton
             {
                 Text = "❌ Cancelar",
                 Size = new Size(200, 45),
-                Location = new Point(570, 12),
+                Location = new Point(620, 12),
                 BackColor = Color.FromArgb(217, 83, 79),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -335,16 +337,16 @@ namespace CpAuton
             Panel pnlSeccion = new Panel
             {
                 Location = new Point(x, yPos),
-                Size = new Size(width, 35),
+                Size = new Size(width, 32),
                 BackColor = Color.FromArgb(233, 236, 239)
             };
 
             Label lblSeccion = new Label
             {
                 Text = titulo,
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
                 ForeColor = Color.FromArgb(52, 58, 64),
-                Location = new Point(10, 8),
+                Location = new Point(10, 7),
                 AutoSize = true
             };
             pnlSeccion.Controls.Add(lblSeccion);
@@ -468,7 +470,8 @@ namespace CpAuton
         {
             if (cboMarca.SelectedValue is int idMarca && cboTipo.SelectedValue is int idTipo)
             {
-                using (var frmNuevoModelo = new FrmNuevoModelo(idMarca, idTipo))
+                int anioVehiculo = (int)nudAnio.Value;
+                using (var frmNuevoModelo = new FrmNuevoModelo(idMarca, idTipo, anioVehiculo))
                 {
                     if (frmNuevoModelo.ShowDialog(this) == DialogResult.OK)
                     {
@@ -518,6 +521,22 @@ namespace CpAuton
                 return false;
             }
 
+            if (string.IsNullOrWhiteSpace(txtNroChasis.Text))
+            {
+                MessageBox.Show("⚠️ Debe ingresar el número de chasis", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNroChasis.Focus();
+                return false;
+            }
+
+            if (txtNroChasis.Text.Length != 17)
+            {
+                MessageBox.Show("⚠️ El número de chasis debe tener exactamente 17 caracteres", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNroChasis.Focus();
+                return false;
+            }
+
             if (cboConfiabilidad.SelectedIndex == -1)
             {
                 MessageBox.Show("⚠️ Debe seleccionar el nivel de confiabilidad", "Validación",
@@ -542,6 +561,7 @@ namespace CpAuton
 
                     var nuevoVehiculo = new Vehiculo
                     {
+                        nroChasis = txtNroChasis.Text.Trim().ToUpper(),
                         idModeloVehiculo = idModelo,
                         anioFabricacion = anio,
                         confiabilidad = cboConfiabilidad.SelectedItem.ToString(),
@@ -558,7 +578,7 @@ namespace CpAuton
 
                     if (resultado > 0)
                     {
-                        MessageBox.Show($"✅ Vehículo registrado exitosamente\n\nID del vehículo: {resultado}",
+                        MessageBox.Show($"✅ Vehículo registrado exitosamente\n\nChasis: {txtNroChasis.Text}",
                                       "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
                         this.Close();
@@ -572,7 +592,6 @@ namespace CpAuton
             }
         }
 
-        // P/Invoke para placeholder (cue banner)
         [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, string lParam);
 
@@ -585,10 +604,7 @@ namespace CpAuton
             {
                 SendMessage(tb.Handle, EM_SETCUEBANNER, (IntPtr)1, text);
             }
-            catch
-            {
-                // Si falla, no pasa nada (sistemas antiguos)
-            }
+            catch { }
         }
 
         private void InitializeComponent()

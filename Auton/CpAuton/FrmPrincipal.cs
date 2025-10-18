@@ -176,8 +176,11 @@ namespace CpAuton
         {
             if (ValidarAutenticacion())
             {
-                new FrmRegistroVehiculo().ShowDialog();
-
+                using (var frmRegistro = new FrmRegistroVehiculo())
+                {
+                    frmRegistro.ShowDialog(this);
+                    // No necesitamos recargar nada aquí porque no tiene lista
+                }
             }
         }
 

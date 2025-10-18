@@ -33,6 +33,9 @@ namespace CadAuton
         public short estado { get; set; }
         public string transmision { get; set; }
         public Nullable<bool> tieneTurbo { get; set; }
+        public Nullable<int> nroAirbags { get; set; }
+        public Nullable<int> seguridadChoques { get; set; }
+        public string organizacionSeguridad { get; set; }
     
         public virtual Marca Marca { get; set; }
         public virtual TipoVehiculo TipoVehiculo { get; set; }

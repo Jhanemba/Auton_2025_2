@@ -907,8 +907,14 @@ namespace CpAuton
         {
             if (ValidarAutenticacion())
             {
-                new FrmRegistroVehiculo().ShowDialog();
-
+                using (var frmRegistro = new FrmRegistroVehiculo())
+                {
+                    if (frmRegistro.ShowDialog(this) == DialogResult.OK)
+                    {
+                        // ← AGREGAMOS ESTA LÍNEA: Recargamos la lista después de guardar
+                        CargarVehiculos("");
+                    }
+                }
             }
         }
     }

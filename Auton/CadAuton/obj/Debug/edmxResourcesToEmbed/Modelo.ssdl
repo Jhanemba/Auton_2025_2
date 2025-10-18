@@ -69,6 +69,9 @@
     <Property Name="estado" Type="smallint" Nullable="false" />
     <Property Name="transmision" Type="varchar" MaxLength="20" />
     <Property Name="tieneTurbo" Type="bit" />
+    <Property Name="nroAirbags" Type="int" />
+    <Property Name="seguridadChoques" Type="int" />
+    <Property Name="organizacionSeguridad" Type="varchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="Procedencia">
     <Key>
@@ -119,6 +122,7 @@
     <Property Name="usuarioRegistro" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="fechaRegistro" Type="datetime" Nullable="false" />
     <Property Name="estado" Type="smallint" Nullable="false" />
+    <Property Name="nroChasis" Type="varchar" MaxLength="17" Nullable="false" />
   </EntityType>
   <EntityType Name="VehiculoMantenimiento">
     <Key>

@@ -73,6 +73,9 @@
           <ScalarProperty Name="estado" ColumnName="estado" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+          <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+          <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+          <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -127,6 +130,7 @@
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
+          <ScalarProperty Name="nroChasis" ColumnName="nroChasis" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

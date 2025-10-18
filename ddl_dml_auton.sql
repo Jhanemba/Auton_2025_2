@@ -191,6 +191,27 @@ ADD transmision VARCHAR(20) NULL;
 ALTER TABLE ModeloVehiculo 
 ADD tieneTurbo BIT NULL DEFAULT 0;
 
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('ModeloVehiculo') AND name = 'nroAirbags')
+    ALTER TABLE ModeloVehiculo ADD nroAirbags INT NULL DEFAULT 2;
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('ModeloVehiculo') AND name = 'seguridadChoques')
+    ALTER TABLE ModeloVehiculo ADD seguridadChoques INT NULL CHECK (seguridadChoques >= 0 AND seguridadChoques <= 5);
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('ModeloVehiculo') AND name = 'organizacionSeguridad')
+    ALTER TABLE ModeloVehiculo ADD organizacionSeguridad VARCHAR(50) NULL;
+
+
+	IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Vehiculo') AND name = 'nroChasis')
+    ALTER TABLE Vehiculo ADD nroChasis VARCHAR(17) NOT NULL DEFAULT '';
+
+
+	-- Creamos índice único para evitar duplicados
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'UX_Vehiculo_NroChasis')
+BEGIN
+    CREATE UNIQUE INDEX UX_Vehiculo_NroChasis 
+    ON Vehiculo(nroChasis) 
+    WHERE nroChasis != '' AND estado != -1;
+END
 -- =====================================================
 -- PROCEDIMIENTOS ALMACENADOS ESENCIALES
 -- =====================================================
@@ -397,7 +418,6 @@ CREATE NONCLUSTERED INDEX IX_Usuario_Estado ON Usuario(estado);
 
 select * FROM Procedencia;
 select * FROM Vehiculo;
-select * FROM ModeloVehiculo
 select * FROM ModeloVehiculo
 
 PRINT '========================================';

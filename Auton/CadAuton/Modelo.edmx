@@ -74,6 +74,9 @@
           <Property Name="estado" Type="smallint" Nullable="false" />
           <Property Name="transmision" Type="varchar" MaxLength="20" />
           <Property Name="tieneTurbo" Type="bit" />
+          <Property Name="nroAirbags" Type="int" />
+          <Property Name="seguridadChoques" Type="int" />
+          <Property Name="organizacionSeguridad" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Procedencia">
           <Key>
@@ -124,6 +127,7 @@
           <Property Name="usuarioRegistro" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="fechaRegistro" Type="datetime" Nullable="false" />
           <Property Name="estado" Type="smallint" Nullable="false" />
+          <Property Name="nroChasis" Type="varchar" MaxLength="17" Nullable="false" />
         </EntityType>
         <EntityType Name="VehiculoMantenimiento">
           <Key>
@@ -398,6 +402,9 @@
           <Property Name="estado" Type="Int16" Nullable="false" />
           <Property Name="transmision" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="tieneTurbo" Type="Boolean" />
+          <Property Name="nroAirbags" Type="Int32" />
+          <Property Name="seguridadChoques" Type="Int32" />
+          <Property Name="organizacionSeguridad" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Marca" Relationship="Self.FK_ModeloVehiculo_Marca" FromRole="ModeloVehiculo" ToRole="Marca" />
           <NavigationProperty Name="TipoVehiculo" Relationship="Self.FK_ModeloVehiculo_TipoVehiculo" FromRole="ModeloVehiculo" ToRole="TipoVehiculo" />
           <NavigationProperty Name="Vehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="ModeloVehiculo" ToRole="Vehiculo" />
@@ -454,6 +461,7 @@
           <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="estado" Type="Int16" Nullable="false" />
+          <Property Name="nroChasis" Type="String" MaxLength="17" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="Vehiculo" ToRole="HistorialConfiabilidad" />
           <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="Vehiculo" ToRole="ModeloVehiculo" />
           <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="Vehiculo" ToRole="VehiculoMantenimiento" />
@@ -782,6 +790,9 @@
                 <ScalarProperty Name="estado" ColumnName="estado" />
                 <ScalarProperty Name="transmision" ColumnName="transmision" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+                <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+                <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+                <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -836,6 +847,7 @@
                 <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
                 <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
                 <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="nroChasis" ColumnName="nroChasis" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
