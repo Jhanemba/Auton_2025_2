@@ -299,6 +299,51 @@ PRINT '4. Ejemplos:';
 PRINT '   - Tundra Manual SIN turbo ≠ Tundra Manual CON turbo';
 PRINT '   - Versa Manual ≠ Versa CVT';
 PRINT '   - Fiesta Manual SIN turbo ≠ Fiesta Manual CON turbo';
+
+
+
+-- 1. AGREGAMOS columna paisFabricacion
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('ModeloVehiculo') AND name = 'paisFabricacion')
+BEGIN
+    ALTER TABLE ModeloVehiculo 
+    ADD paisFabricacion VARCHAR(50) NULL;
+    
+    PRINT 'Columna paisFabricacion agregada';
+END
+
+-- 2. ACTUALIZAMOS modelos existentes con país por defecto
+UPDATE ModeloVehiculo 
+SET paisFabricacion = 'No especificado'
+WHERE paisFabricacion IS NULL;
+
+PRINT 'Modelos existentes actualizados con país por defecto';
+
+-- 3. HACEMOS paisFabricacion NOT NULL
+ALTER TABLE ModeloVehiculo
+ALTER COLUMN paisFabricacion VARCHAR(50) NOT NULL;
+
+PRINT 'Columna paisFabricacion ahora es NOT NULL';
+
+-- 4. ELIMINAMOS constraint antigua
+IF EXISTS (SELECT * FROM sys.indexes WHERE name = 'UK_ModeloVehiculo_Completo')
+BEGIN
+    ALTER TABLE ModeloVehiculo DROP CONSTRAINT UK_ModeloVehiculo_Completo;
+    PRINT 'Constraint antigua eliminada';
+END
+
+-- 5. CREAMOS nueva constraint que incluye país de fabricación
+-- Esto permite:
+-- - Suzuki Baleno Manual Sin turbo India ✅
+-- - Suzuki Baleno Manual Sin turbo Hungría ✅
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'UK_ModeloVehiculo_ConPais')
+BEGIN
+    ALTER TABLE ModeloVehiculo 
+    ADD CONSTRAINT UK_ModeloVehiculo_ConPais 
+    UNIQUE (nombre, idMarca, anioInicio, transmision, tieneTurbo, paisFabricacion);
+    
+    PRINT 'Nueva constraint creada: nombre + marca + año + transmisión + turbo + PAÍS';
+END
+
 -- =====================================================
 -- PROCEDIMIENTOS ALMACENADOS ESENCIALES
 -- =====================================================

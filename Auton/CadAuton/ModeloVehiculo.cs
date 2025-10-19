@@ -36,6 +36,7 @@ namespace CadAuton
         public Nullable<int> nroAirbags { get; set; }
         public Nullable<int> seguridadChoques { get; set; }
         public string organizacionSeguridad { get; set; }
+        public string paisFabricacion { get; set; }
     
         public virtual Marca Marca { get; set; }
         public virtual TipoVehiculo TipoVehiculo { get; set; }

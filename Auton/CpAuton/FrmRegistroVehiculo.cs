@@ -460,20 +460,57 @@ namespace CpAuton
         }
 
         /// <summary>
-        /// ✅ NUEVO: Formatea el nombre del modelo para mostrar características distintivas
+        /// ✅ MEJORADO: Formatea el nombre del modelo mostrando país, turbo y transmisión
         /// Ejemplos:
-        /// - "Versa (Manual)"
-        /// - "Versa (CVT)"
-        /// - "Fiesta 🚀 (Manual)"
-        /// - "Fiesta (Automática)"
+        /// - "Baleno (India) SIN Turbo - Manual" - 2 airbags
+        /// - "Baleno (Hungría) SIN Turbo - Manual" - 6 airbags
+        /// - "F-150 (EE.UU.) SIN Turbo - Manual"
+        /// - "F-150 (EE.UU.) 🚀 CON Turbo - Manual"
+        /// - "Corolla (Japón) - CVT" - Premium
+        /// - "Corolla (Brasil) - CVT" - Versión Latino
         /// </summary>
         private string FormatearNombreModelo(ModeloVehiculo modelo)
         {
             string nombre = modelo.nombre ?? "Sin nombre";
             string transmision = modelo.transmision ?? "N/A";
-            string turbo = (modelo.tieneTurbo.HasValue && modelo.tieneTurbo.Value) ? " 🚀" : "";
+            string pais = modelo.paisFabricacion ?? "N/A";
 
-            return $"{nombre}{turbo} ({transmision})";
+            // ✅ Abreviar países largos para mejor visualización
+            string paisAbreviado = AbrevarPais(pais);
+
+            // ✅ Mostrar explícitamente si tiene turbo o no
+            string infoTurbo = "";
+            if (modelo.tieneTurbo.HasValue)
+            {
+                if (modelo.tieneTurbo.Value)
+                {
+                    infoTurbo = " 🚀 CON Turbo";
+                }
+                else
+                {
+                    infoTurbo = " SIN Turbo";
+                }
+            }
+
+            // Formato: "Baleno (India) SIN Turbo - Manual"
+            return $"{nombre} ({paisAbreviado}){infoTurbo} - {transmision}";
+        }
+
+        /// <summary>
+        /// Abrevia nombres de países largos para mejor visualización
+        /// </summary>
+        private string AbrevarPais(string pais)
+        {
+            var abreviaturas = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "Estados Unidos", "EE.UU." },
+                { "Reino Unido", "UK" },
+                { "República Checa", "R. Checa" },
+                { "Corea del Sur", "Corea S." },
+                { "Sudáfrica", "Sudáfr." }
+            };
+
+            return abreviaturas.ContainsKey(pais) ? abreviaturas[pais] : pais;
         }
 
         private void BtnAgregarMarca_Click(object sender, EventArgs e)

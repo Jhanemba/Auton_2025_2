@@ -72,6 +72,7 @@
     <Property Name="nroAirbags" Type="int" />
     <Property Name="seguridadChoques" Type="int" />
     <Property Name="organizacionSeguridad" Type="varchar" MaxLength="50" />
+    <Property Name="paisFabricacion" Type="varchar" MaxLength="50" Nullable="false" />
   </EntityType>
   <EntityType Name="Procedencia">
     <Key>

@@ -167,7 +167,7 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(cboCombustible);
             yPosLeft += lineHeight;
 
-            // Transmisión ⚠️ IMPORTANTE: Ahora es ÚNICA por modelo
+            // Transmisión ⚠️ IMPORTANTE: Ahora es ÚNICA por modelo + turbo
             AgregarLabel(pnlPrincipal, "Transmisión:", 25, yPosLeft, labelWidth);
             cboTransmision = new ComboBox
             {
@@ -183,7 +183,7 @@ namespace CpAuton
             // Label informativo sobre transmisión
             Label lblInfoTransmision = new Label
             {
-                Text = "ℹ️ La transmisión identifica modelos únicos",
+                Text = "ℹ️ Transmisión y turbo identifican modelos únicos",
                 Location = new Point(colLeftX, yPosLeft + 32),
                 Size = new Size(300, 18),
                 Font = new Font("Segoe UI", 7.5F, FontStyle.Italic),
@@ -405,7 +405,7 @@ namespace CpAuton
                 return false;
             }
 
-            // ✅ VALIDACIÓN CRÍTICA: Mismo modelo + transmisión = DUPLICADO
+            // ✅ VALIDACIÓN CRÍTICA: Mismo modelo + transmisión + turbo = DUPLICADO
             try
             {
                 var todosLosModelos = ModeloVehiculoCln.listar();
@@ -413,8 +413,9 @@ namespace CpAuton
                 {
                     string nombreBuscado = txtNombre.Text.Trim();
                     string transmisionBuscada = cboTransmision.SelectedItem.ToString();
+                    bool tieneTurboBuscado = chkTieneTurbo.Checked;
 
-                    // Validamos modelo + transmisión (manejando NULLs)
+                    // Validamos modelo + transmisión + turbo (manejando NULLs)
                     var modeloExistente = todosLosModelos
                         .Where(m => m.idMarca == idMarca && m.estado != -1)
                         .FirstOrDefault(m =>
@@ -422,14 +423,18 @@ namespace CpAuton
                             m.nombre.Equals(nombreBuscado, StringComparison.OrdinalIgnoreCase) &&
                             m.transmision != null &&
                             m.transmision.Equals(transmisionBuscada, StringComparison.OrdinalIgnoreCase) &&
-                            //m.tieneTurbo.Value == tieneTurboBuscado
+                            m.tieneTurbo.HasValue &&
+                            m.tieneTurbo.Value == tieneTurboBuscado
                         );
 
                     if (modeloExistente != null)
                     {
-                        MessageBox.Show($"⚠️ El modelo '{nombreBuscado}' con transmisión '{transmisionBuscada}' ya existe para esta marca.\n\n" +
-                                      $"💡 Nota: Si deseas registrar el mismo modelo con transmisión diferente (Ej: Manual vs CVT), " +
-                                      $"selecciona otra opción de transmisión.",
+                        string turboText = tieneTurboBuscado ? "CON turbo 🚀" : "SIN turbo";
+                        MessageBox.Show($"⚠️ El modelo '{nombreBuscado}' con transmisión '{transmisionBuscada}' {turboText} ya existe para esta marca.\n\n" +
+                                      $"💡 Nota: Puedes registrar el mismo modelo si:\n" +
+                                      $"   • Cambias la transmisión (Manual/CVT/Automática)\n" +
+                                      $"   • Cambias si tiene turbo o no\n\n" +
+                                      $"Ejemplo: Tundra Manual SIN turbo ≠ Tundra Manual CON turbo",
                                       "Modelo Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         cboTransmision.Focus();
                         return false;
@@ -491,7 +496,8 @@ namespace CpAuton
                                       $"Nombre: {txtNombre.Text}\n" +
                                       $"Motor: {txtMotor.Text}" +
                                       transmisionInfo +
-                                      airbagInfo + seguridadInfo,
+                                      airbagInfo + seguridadInfo +
+                                      $"\n\n💡 Este modelo aparecerá como:\n'{txtNombre.Text}{turboInfo} ({cboTransmision.SelectedItem})'",
                                       "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
                         this.Close();

@@ -78,6 +78,7 @@
     <Property Name="nroAirbags" Type="Int32" />
     <Property Name="seguridadChoques" Type="Int32" />
     <Property Name="organizacionSeguridad" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="paisFabricacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
     <NavigationProperty Name="Marca" Relationship="Self.FK_ModeloVehiculo_Marca" FromRole="ModeloVehiculo" ToRole="Marca" />
     <NavigationProperty Name="TipoVehiculo" Relationship="Self.FK_ModeloVehiculo_TipoVehiculo" FromRole="ModeloVehiculo" ToRole="TipoVehiculo" />
     <NavigationProperty Name="Vehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="ModeloVehiculo" ToRole="Vehiculo" />

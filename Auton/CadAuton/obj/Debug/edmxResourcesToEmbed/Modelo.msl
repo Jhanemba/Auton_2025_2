@@ -76,6 +76,7 @@
           <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
           <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
           <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
+          <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
