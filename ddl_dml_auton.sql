@@ -55,357 +55,249 @@ DROP PROC IF EXISTS paProcedenciaListar;
 DROP VIEW IF EXISTS VW_VehiculosCompleto;
 DROP VIEW IF EXISTS VW_EstadisticasProcedencia;
 
+
+
+
+PRINT '========================================';
+PRINT 'CREANDO SISTEMA AUTON SIMPLIFICADO';
+PRINT '========================================';
+
 -- =====================================================
 -- CREACIÓN DE TABLAS
 -- =====================================================
 
 CREATE TABLE Cargo (
-	id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
-	descripcion VARCHAR(50) NOT NULL UNIQUE,
-	usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
-	fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
-	estado SMALLINT NOT NULL DEFAULT 1 -- 1: Activo, 0: Inactivo, -1: Eliminado
+    id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    descripcion VARCHAR(50) NOT NULL UNIQUE,
+    usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
+    fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    estado SMALLINT NOT NULL DEFAULT 1
 );
 
 CREATE TABLE Empleado (
-	id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
-	idCargo INT NOT NULL,
-	cedulaIdentidad VARCHAR(12) NOT NULL UNIQUE,
-	nombres VARCHAR(50) NOT NULL,
-	primerApellido VARCHAR(30) NULL,
-	segundoApellido VARCHAR(30) NULL,
-	direccion VARCHAR(250) NOT NULL,
-	celular BIGINT NOT NULL,
-	usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
-	fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
-	estado SMALLINT NOT NULL DEFAULT 1,
-	CONSTRAINT FK_Empleado_Cargo FOREIGN KEY (idCargo) REFERENCES Cargo(id)
+    id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    idCargo INT NOT NULL,
+    cedulaIdentidad VARCHAR(12) NOT NULL UNIQUE,
+    nombres VARCHAR(50) NOT NULL,
+    primerApellido VARCHAR(30) NULL,
+    segundoApellido VARCHAR(30) NULL,
+    direccion VARCHAR(250) NOT NULL,
+    celular BIGINT NOT NULL,
+    usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
+    fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    estado SMALLINT NOT NULL DEFAULT 1,
+    CONSTRAINT FK_Empleado_Cargo FOREIGN KEY (idCargo) REFERENCES Cargo(id)
 );
 
 CREATE TABLE Usuario (
-	id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
-	idEmpleado INT NOT NULL,
-	usuario VARCHAR(20) NOT NULL UNIQUE,
-	clave VARCHAR(250) NOT NULL,
-	esAdministrador BIT NOT NULL DEFAULT 0,
-	usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
-	fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
-	estado SMALLINT NOT NULL DEFAULT 1,
-	CONSTRAINT FK_Usuario_Empleado FOREIGN KEY (idEmpleado) REFERENCES Empleado(id)
+    id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    idEmpleado INT NOT NULL,
+    usuario VARCHAR(20) NOT NULL UNIQUE,
+    clave VARCHAR(250) NOT NULL,
+    esAdministrador BIT NOT NULL DEFAULT 0,
+    usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
+    fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    estado SMALLINT NOT NULL DEFAULT 1,
+    CONSTRAINT FK_Usuario_Empleado FOREIGN KEY (idEmpleado) REFERENCES Empleado(id)
 );
 
 CREATE TABLE Procedencia (
-	id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
-	codigo VARCHAR(10) NOT NULL UNIQUE,
-	descripcion VARCHAR(50) NOT NULL UNIQUE,
-	usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
-	fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
-	estado SMALLINT NOT NULL DEFAULT 1
+    id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    codigo VARCHAR(10) NOT NULL UNIQUE,
+    descripcion VARCHAR(50) NOT NULL UNIQUE,
+    usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
+    fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    estado SMALLINT NOT NULL DEFAULT 1
 );
 
 CREATE TABLE Marca (
-	id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
-	idProcedencia INT NOT NULL,
-	nombre VARCHAR(50) NOT NULL,
-	descripcion VARCHAR(250) NULL,
-	usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
-	fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
-	estado SMALLINT NOT NULL DEFAULT 1,
-	CONSTRAINT FK_Marca_Procedencia FOREIGN KEY (idProcedencia) REFERENCES Procedencia(id),
-	CONSTRAINT UK_Marca_Nombre_Procedencia UNIQUE (nombre, idProcedencia)
+    id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    idProcedencia INT NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(250) NULL,
+    usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
+    fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    estado SMALLINT NOT NULL DEFAULT 1,
+    CONSTRAINT FK_Marca_Procedencia FOREIGN KEY (idProcedencia) REFERENCES Procedencia(id),
+    CONSTRAINT UK_Marca_Nombre_Procedencia UNIQUE (nombre, idProcedencia)
 );
 
 CREATE TABLE TipoVehiculo (
-	id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
-	descripcion VARCHAR(50) NOT NULL UNIQUE,
-	usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
-	fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
-	estado SMALLINT NOT NULL DEFAULT 1
+    id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    descripcion VARCHAR(50) NOT NULL UNIQUE,
+    usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
+    fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    estado SMALLINT NOT NULL DEFAULT 1
 );
 
+-- MODELO SIMPLIFICADO: Solo nombre + marca + tipo
 CREATE TABLE ModeloVehiculo (
-	id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
-	idMarca INT NOT NULL,
-	idTipoVehiculo INT NOT NULL,
-	nombre VARCHAR(100) NOT NULL,
-	anioInicio INT NOT NULL CHECK (anioInicio >= 1900 AND anioInicio <= YEAR(GETDATE())),
-	anioFin INT NULL CHECK (anioFin <= YEAR(GETDATE())),
-	motor VARCHAR(50) NULL,
-	combustible VARCHAR(20) NULL,
-	usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
-	fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
-	estado SMALLINT NOT NULL DEFAULT 1,
-	CONSTRAINT FK_ModeloVehiculo_Marca FOREIGN KEY (idMarca) REFERENCES Marca(id),
-	CONSTRAINT FK_ModeloVehiculo_TipoVehiculo FOREIGN KEY (idTipoVehiculo) REFERENCES TipoVehiculo(id),
-	CONSTRAINT UK_ModeloVehiculo_Nombre_Marca UNIQUE (nombre, idMarca, anioInicio),
-	CONSTRAINT CK_ModeloVehiculo_AnioFin CHECK (anioFin IS NULL OR anioFin >= anioInicio)
+    id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    idMarca INT NOT NULL,
+    idTipoVehiculo INT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion VARCHAR(500) NULL,
+    usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
+    fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    estado SMALLINT NOT NULL DEFAULT 1,
+    CONSTRAINT FK_ModeloVehiculo_Marca FOREIGN KEY (idMarca) REFERENCES Marca(id),
+    CONSTRAINT FK_ModeloVehiculo_TipoVehiculo FOREIGN KEY (idTipoVehiculo) REFERENCES TipoVehiculo(id),
+    CONSTRAINT UK_ModeloVehiculo_Simple UNIQUE (nombre, idMarca)
 );
 
+-- VEHICULO COMPLETO: TODAS las características específicas
 CREATE TABLE Vehiculo (
-	id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
-	idModeloVehiculo INT NOT NULL,
-	anioFabricacion INT NOT NULL CHECK (anioFabricacion >= 1900 AND anioFabricacion <= YEAR(GETDATE())),
-	confiabilidad VARCHAR(10) NOT NULL CHECK (confiabilidad IN ('Excelente', 'Bueno', 'Regular', 'Malo')),
-	puntuacion DECIMAL(3,1) NOT NULL CHECK (puntuacion >= 1.0 AND puntuacion <= 10.0),
-	observaciones VARCHAR(500) NULL,
-	kilometraje INT NULL CHECK (kilometraje >= 0),
-	propietario VARCHAR(100) NULL,
-	usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
-	fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
-	estado SMALLINT NOT NULL DEFAULT 1,
-	CONSTRAINT FK_Vehiculo_ModeloVehiculo FOREIGN KEY (idModeloVehiculo) REFERENCES ModeloVehiculo(id)
+    id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    nroChasis VARCHAR(17) NOT NULL,
+    idModeloVehiculo INT NOT NULL,
+    
+    -- Características específicas
+    generacion VARCHAR(50) NOT NULL,
+    paisFabricacion VARCHAR(50) NOT NULL,
+    transmision VARCHAR(20) NOT NULL,
+    tieneTurbo BIT NOT NULL DEFAULT 0,
+    motor VARCHAR(50) NOT NULL,
+    combustible VARCHAR(20) NOT NULL,
+    
+    -- Seguridad
+    nroAirbags INT NOT NULL DEFAULT 2,
+    seguridadChoques INT NOT NULL DEFAULT 0 CHECK (seguridadChoques >= 0 AND seguridadChoques <= 5),
+    organizacionSeguridad VARCHAR(50) NOT NULL DEFAULT 'Sin calificación',
+    
+    -- Evaluación
+    anioFabricacion INT NOT NULL CHECK (anioFabricacion >= 1900 AND anioFabricacion <= YEAR(GETDATE())),
+    confiabilidad VARCHAR(10) NOT NULL CHECK (confiabilidad IN ('Excelente', 'Bueno', 'Regular', 'Malo')),
+    puntuacion DECIMAL(3,1) NOT NULL CHECK (puntuacion >= 1.0 AND puntuacion <= 10.0),
+    kilometraje INT NULL CHECK (kilometraje >= 0),
+    observaciones VARCHAR(500) NULL,
+    
+    -- Metadata
+    usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
+    fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    estado SMALLINT NOT NULL DEFAULT 1,
+    
+    CONSTRAINT FK_Vehiculo_ModeloVehiculo FOREIGN KEY (idModeloVehiculo) REFERENCES ModeloVehiculo(id)
 );
+
+-- Índice único para nroChasis
+CREATE UNIQUE INDEX UX_Vehiculo_NroChasis 
+ON Vehiculo(nroChasis) 
+WHERE nroChasis != '' AND estado != -1;
 
 CREATE TABLE HistorialConfiabilidad (
-	id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
-	idVehiculo INT NOT NULL,
-	confiabilidadAnterior VARCHAR(10) NOT NULL,
-	confiabilidadNueva VARCHAR(10) NOT NULL,
-	puntuacionAnterior DECIMAL(3,1) NOT NULL,
-	puntuacionNueva DECIMAL(3,1) NOT NULL,
-	motivo VARCHAR(250) NOT NULL,
-	usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
-	fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
-	CONSTRAINT FK_HistorialConfiabilidad_Vehiculo FOREIGN KEY (idVehiculo) REFERENCES Vehiculo(id)
+    id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    idVehiculo INT NOT NULL,
+    confiabilidadAnterior VARCHAR(10) NOT NULL,
+    confiabilidadNueva VARCHAR(10) NOT NULL,
+    puntuacionAnterior DECIMAL(3,1) NOT NULL,
+    puntuacionNueva DECIMAL(3,1) NOT NULL,
+    motivo VARCHAR(250) NOT NULL,
+    usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
+    fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT FK_HistorialConfiabilidad_Vehiculo FOREIGN KEY (idVehiculo) REFERENCES Vehiculo(id)
 );
 
 CREATE TABLE VehiculoMantenimiento (
-	id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
-	idVehiculo INT NOT NULL,
-	tipoMantenimiento VARCHAR(50) NOT NULL,
-	descripcion VARCHAR(250) NOT NULL,
-	costo DECIMAL(10,2) NULL CHECK (costo >= 0),
-	fechaMantenimiento DATE NOT NULL,
-	proximoMantenimiento DATE NULL,
-	usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
-	fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
-	estado SMALLINT NOT NULL DEFAULT 1,
-	CONSTRAINT FK_VehiculoMantenimiento_Vehiculo FOREIGN KEY (idVehiculo) REFERENCES Vehiculo(id)
+    id INT NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    idVehiculo INT NOT NULL,
+    tipoMantenimiento VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(250) NOT NULL,
+    costo DECIMAL(10,2) NULL CHECK (costo >= 0),
+    fechaMantenimiento DATE NOT NULL,
+    proximoMantenimiento DATE NULL,
+    usuarioRegistro VARCHAR(50) NOT NULL DEFAULT SUSER_NAME(),
+    fechaRegistro DATETIME NOT NULL DEFAULT GETDATE(),
+    estado SMALLINT NOT NULL DEFAULT 1,
+    CONSTRAINT FK_VehiculoMantenimiento_Vehiculo FOREIGN KEY (idVehiculo) REFERENCES Vehiculo(id)
 );
 
-ALTER TABLE Vehiculo DROP COLUMN combustible;
-
-ALTER TABLE ModeloVehiculo 
-ADD transmision VARCHAR(20) NULL;
-
-ALTER TABLE ModeloVehiculo 
-ADD tieneTurbo BIT NULL DEFAULT 0;
-
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('ModeloVehiculo') AND name = 'nroAirbags')
-    ALTER TABLE ModeloVehiculo ADD nroAirbags INT NULL DEFAULT 2;
-
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('ModeloVehiculo') AND name = 'seguridadChoques')
-    ALTER TABLE ModeloVehiculo ADD seguridadChoques INT NULL CHECK (seguridadChoques >= 0 AND seguridadChoques <= 5);
-
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('ModeloVehiculo') AND name = 'organizacionSeguridad')
-    ALTER TABLE ModeloVehiculo ADD organizacionSeguridad VARCHAR(50) NULL;
-
-
-	IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Vehiculo') AND name = 'nroChasis')
-    ALTER TABLE Vehiculo ADD nroChasis VARCHAR(17) NOT NULL DEFAULT '';
-
-
-	-- Creamos índice único para evitar duplicados
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'UX_Vehiculo_NroChasis')
-BEGIN
-    CREATE UNIQUE INDEX UX_Vehiculo_NroChasis 
-    ON Vehiculo(nroChasis) 
-    WHERE nroChasis != '' AND estado != -1;
-END
-
-
-
-
--- 1. ELIMINAMOS la constraint antigua que NO consideraba turbo
-IF EXISTS (SELECT * FROM sys.indexes WHERE name = 'UK_ModeloVehiculo_Nombre_Marca')
-BEGIN
-    ALTER TABLE ModeloVehiculo DROP CONSTRAINT UK_ModeloVehiculo_Nombre_Marca;
-    PRINT 'Constraint antigua (sin turbo) eliminada';
-END
-
-IF EXISTS (SELECT * FROM sys.indexes WHERE name = 'UK_ModeloVehiculo_Nombre_Marca_Transmision')
-BEGIN
-    ALTER TABLE ModeloVehiculo DROP CONSTRAINT UK_ModeloVehiculo_Nombre_Marca_Transmision;
-    PRINT 'Constraint antigua (sin turbo) eliminada';
-END
-
--- 2. CREAMOS nueva constraint que incluye transmisión Y turbo
--- Esto permite:
--- - Toyota Tundra Manual SIN turbo
--- - Toyota Tundra Manual CON turbo
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'UK_ModeloVehiculo_Completo')
-BEGIN
-    ALTER TABLE ModeloVehiculo 
-    ADD CONSTRAINT UK_ModeloVehiculo_Completo 
-    UNIQUE (nombre, idMarca, anioInicio, transmision, tieneTurbo);
-    
-    PRINT 'Nueva constraint creada: nombre + marca + año + transmisión + turbo';
-END
-
--- 3. ACTUALIZAMOS tabla de seguridad para permitir 0 estrellas
-IF EXISTS (SELECT * FROM sys.check_constraints WHERE name = 'CK_ModeloVehiculo_SeguridadChoques')
-BEGIN
-    ALTER TABLE ModeloVehiculo DROP CONSTRAINT CK_ModeloVehiculo_SeguridadChoques;
-END
-
-ALTER TABLE ModeloVehiculo 
-ADD CONSTRAINT CK_ModeloVehiculo_SeguridadChoques 
-CHECK (seguridadChoques >= 0 AND seguridadChoques <= 5);
-
-PRINT 'Seguridad actualizada: ahora permite 0 estrellas';
-
--- 4. ACTUALIZAMOS modelos existentes con transmision NULL
-UPDATE ModeloVehiculo 
-SET transmision = 'Manual'
-WHERE transmision IS NULL;
-
-PRINT 'Modelos con transmision NULL actualizados a "Manual"';
-
--- 5. ACTUALIZAMOS modelos existentes con tieneTurbo NULL
-UPDATE ModeloVehiculo 
-SET tieneTurbo = 0
-WHERE tieneTurbo IS NULL;
-
-PRINT 'Modelos con tieneTurbo NULL actualizados a 0 (sin turbo)';
-
--- 6. Hacemos transmision NOT NULL recomendadisimo
---ALTER TABLE ModeloVehiculo
---ALTER COLUMN transmision VARCHAR(20) NOT NULL;
-
---PRINT 'Columna transmision ahora es NOT NULL';
-
----- 7. Hacer tieneTurbo NOT NULL maybe
---ALTER TABLE ModeloVehiculo
---ALTER COLUMN tieneTurbo BIT NOT NULL;
-
---PRINT 'Columna tieneTurbo ahora es NOT NULL';
-
--- 8. EJEMPLOS: Ahora podemos tener estos registros
-/*
-INSERT INTO ModeloVehiculo (nombre, idMarca, transmision, tieneTurbo, ...) 
-VALUES 
-('Tundra', 1, 'Manual', 0, ...)  -- ✅ V8 Manual sin turbo (Bueno)
-('Tundra', 1, 'Manual', 1, ...)  -- ✅ 3.3L Turbo Manual (Malo)
-('Versa', 2, 'Manual', 0, ...)   -- ✅ Manual sin turbo (Bueno)
-('Versa', 2, 'CVT', 0, ...)      -- ✅ CVT sin turbo (Malo)
-('Fiesta', 3, 'Manual', 0, ...)  -- ✅ Manual sin turbo (Bueno)
-('Fiesta', 3, 'Manual', 1, ...)  -- ✅ Manual con turbo (Malo)
-*/
-
-PRINT '1. Modelos duplicados OK si transmisión O turbo diferente';
-PRINT '2. Seguridad permite 0 estrellas';
-PRINT '3. Transmision y tieneTurbo son NOT NULL';
-PRINT '4. Ejemplos:';
-PRINT '   - Tundra Manual SIN turbo ≠ Tundra Manual CON turbo';
-PRINT '   - Versa Manual ≠ Versa CVT';
-PRINT '   - Fiesta Manual SIN turbo ≠ Fiesta Manual CON turbo';
-
-
-
--- 1. AGREGAMOS columna paisFabricacion
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('ModeloVehiculo') AND name = 'paisFabricacion')
-BEGIN
-    ALTER TABLE ModeloVehiculo 
-    ADD paisFabricacion VARCHAR(50) NULL;
-    
-    PRINT 'Columna paisFabricacion agregada';
-END
-
--- 2. ACTUALIZAMOS modelos existentes con país por defecto
-UPDATE ModeloVehiculo 
-SET paisFabricacion = 'No especificado'
-WHERE paisFabricacion IS NULL;
-
-PRINT 'Modelos existentes actualizados con país por defecto';
-
--- 3. HACEMOS paisFabricacion NOT NULL
-ALTER TABLE ModeloVehiculo
-ALTER COLUMN paisFabricacion VARCHAR(50) NOT NULL;
-
-PRINT 'Columna paisFabricacion ahora es NOT NULL';
-
--- 4. ELIMINAMOS constraint antigua
-IF EXISTS (SELECT * FROM sys.indexes WHERE name = 'UK_ModeloVehiculo_Completo')
-BEGIN
-    ALTER TABLE ModeloVehiculo DROP CONSTRAINT UK_ModeloVehiculo_Completo;
-    PRINT 'Constraint antigua eliminada';
-END
-
--- 5. CREAMOS nueva constraint que incluye país de fabricación
--- Esto permite:
--- - Suzuki Baleno Manual Sin turbo India ✅
--- - Suzuki Baleno Manual Sin turbo Hungría ✅
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'UK_ModeloVehiculo_ConPais')
-BEGIN
-    ALTER TABLE ModeloVehiculo 
-    ADD CONSTRAINT UK_ModeloVehiculo_ConPais 
-    UNIQUE (nombre, idMarca, anioInicio, transmision, tieneTurbo, paisFabricacion);
-    
-    PRINT 'Nueva constraint creada: nombre + marca + año + transmisión + turbo + PAÍS';
-END
-
 -- =====================================================
--- PROCEDIMIENTOS ALMACENADOS ESENCIALES
+-- PROCEDIMIENTOS ALMACENADOS
 -- =====================================================
 
 GO
 CREATE PROC paUsuarioValidar 
-	@usuario VARCHAR(20),
-	@clave VARCHAR(250)
+    @usuario VARCHAR(20),
+    @clave VARCHAR(250)
 AS
-	SELECT u.id, u.usuario, u.esAdministrador, 
-		   e.nombres + ' ' + ISNULL(e.primerApellido, '') + ' ' + ISNULL(e.segundoApellido, '') AS nombreCompleto,
-		   c.descripcion AS cargo
-	FROM Usuario u
-	INNER JOIN Empleado e ON u.idEmpleado = e.id
-	INNER JOIN Cargo c ON e.idCargo = c.id
-	WHERE u.usuario = @usuario AND u.clave = @clave AND u.estado = 1 AND e.estado = 1;
+    SELECT u.id, u.usuario, u.esAdministrador, 
+           e.nombres + ' ' + ISNULL(e.primerApellido, '') + ' ' + ISNULL(e.segundoApellido, '') AS nombreCompleto,
+           c.descripcion AS cargo
+    FROM Usuario u
+    INNER JOIN Empleado e ON u.idEmpleado = e.id
+    INNER JOIN Cargo c ON e.idCargo = c.id
+    WHERE u.usuario = @usuario AND u.clave = @clave AND u.estado = 1 AND e.estado = 1;
 
 GO
 CREATE PROC paVehiculoListar @parametro VARCHAR(100)
 AS
-	SELECT v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
-		   tv.descripcion AS tipoVehiculo, v.anioFabricacion, v.confiabilidad, v.puntuacion,
-		   v.kilometraje, v.propietario, mv.motor, mv.combustible,
-		   v.observaciones, v.usuarioRegistro, v.fechaRegistro, v.estado
-	FROM Vehiculo v
-	INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
-	INNER JOIN Marca m ON mv.idMarca = m.id
-	INNER JOIN Procedencia p ON m.idProcedencia = p.id
-	INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
-	WHERE v.estado <> -1 
-		AND (mv.nombre + m.nombre + p.descripcion + tv.descripcion + v.confiabilidad + 
-			 ISNULL(v.propietario, '') + ISNULL(mv.motor, '') + ISNULL(mv.combustible, ''))
-			LIKE '%' + REPLACE(@parametro, ' ', '%') + '%'
-	ORDER BY v.estado DESC, p.descripcion ASC, m.nombre ASC, mv.nombre ASC;
+    SELECT v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
+           tv.descripcion AS tipoVehiculo, 
+           v.generacion, v.paisFabricacion, v.transmision, v.tieneTurbo,
+           v.motor, v.combustible, v.nroAirbags,
+           v.anioFabricacion, v.confiabilidad, v.puntuacion,
+           v.kilometraje, v.observaciones, 
+           v.usuarioRegistro, v.fechaRegistro, v.estado
+    FROM Vehiculo v
+    INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+    INNER JOIN Marca m ON mv.idMarca = m.id
+    INNER JOIN Procedencia p ON m.idProcedencia = p.id
+    INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
+    WHERE v.estado <> -1 
+        AND (mv.nombre + m.nombre + p.descripcion + tv.descripcion + v.confiabilidad + 
+             v.generacion + v.paisFabricacion + v.transmision + ISNULL(v.motor, ''))
+            LIKE '%' + REPLACE(@parametro, ' ', '%') + '%'
+    ORDER BY v.estado DESC, p.descripcion ASC, m.nombre ASC, mv.nombre ASC;
 
 GO
 CREATE PROC paVehiculoInsertar
+    @nroChasis VARCHAR(17),
     @idModeloVehiculo INT,
+    @generacion VARCHAR(50),
+    @paisFabricacion VARCHAR(50),
+    @transmision VARCHAR(20),
+    @tieneTurbo BIT,
+    @motor VARCHAR(50),
+    @combustible VARCHAR(20),
+    @nroAirbags INT,
+    @seguridadChoques INT,
+    @organizacionSeguridad VARCHAR(50),
     @anioFabricacion INT,
     @confiabilidad VARCHAR(10),
     @puntuacion DECIMAL(3,1),
-    @observaciones VARCHAR(500) = NULL,
     @kilometraje INT = NULL,
-    @propietario VARCHAR(100) = NULL
+    @observaciones VARCHAR(500) = NULL
 AS
-    INSERT INTO Vehiculo (idModeloVehiculo, anioFabricacion, confiabilidad, puntuacion, 
-                         observaciones, kilometraje, propietario)
-    VALUES (@idModeloVehiculo, @anioFabricacion, @confiabilidad, @puntuacion, 
-            @observaciones, @kilometraje, @propietario);
+    INSERT INTO Vehiculo (
+        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision,
+        tieneTurbo, motor, combustible, nroAirbags, seguridadChoques, organizacionSeguridad,
+        anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones
+    )
+    VALUES (
+        @nroChasis, @idModeloVehiculo, @generacion, @paisFabricacion, @transmision,
+        @tieneTurbo, @motor, @combustible, @nroAirbags, @seguridadChoques, @organizacionSeguridad,
+        @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones
+    );
     
     SELECT SCOPE_IDENTITY() AS nuevoId;
 
 GO
 CREATE PROC paVehiculoActualizar
     @id INT,
-    @idModeloVehiculo INT,
+    @generacion VARCHAR(50),
+    @paisFabricacion VARCHAR(50),
+    @transmision VARCHAR(20),
+    @tieneTurbo BIT,
+    @motor VARCHAR(50),
+    @combustible VARCHAR(20),
+    @nroAirbags INT,
+    @seguridadChoques INT,
+    @organizacionSeguridad VARCHAR(50),
     @anioFabricacion INT,
     @confiabilidad VARCHAR(10),
     @puntuacion DECIMAL(3,1),
-    @observaciones VARCHAR(500) = NULL,
     @kilometraje INT = NULL,
-    @propietario VARCHAR(100) = NULL
+    @observaciones VARCHAR(500) = NULL
 AS
     -- Guardar historial si cambia la confiabilidad
     IF EXISTS (SELECT 1 FROM Vehiculo WHERE id = @id AND confiabilidad != @confiabilidad)
@@ -416,13 +308,20 @@ AS
         FROM Vehiculo WHERE id = @id;
     
     UPDATE Vehiculo 
-    SET idModeloVehiculo = @idModeloVehiculo,
+    SET generacion = @generacion,
+        paisFabricacion = @paisFabricacion,
+        transmision = @transmision,
+        tieneTurbo = @tieneTurbo,
+        motor = @motor,
+        combustible = @combustible,
+        nroAirbags = @nroAirbags,
+        seguridadChoques = @seguridadChoques,
+        organizacionSeguridad = @organizacionSeguridad,
         anioFabricacion = @anioFabricacion,
         confiabilidad = @confiabilidad,
         puntuacion = @puntuacion,
-        observaciones = @observaciones,
         kilometraje = @kilometraje,
-        propietario = @propietario
+        observaciones = @observaciones
     WHERE id = @id;
     
     SELECT 'Actualizado correctamente' AS mensaje;
@@ -437,57 +336,67 @@ AS
 GO
 CREATE PROC paProcedenciaListar
 AS
-	SELECT id, codigo, descripcion
-	FROM Procedencia
-	WHERE estado = 1
-	ORDER BY descripcion ASC;
+    SELECT id, codigo, descripcion
+    FROM Procedencia
+    WHERE estado = 1
+    ORDER BY descripcion ASC;
 
 GO
 CREATE PROC paCargoListar
 AS
-	SELECT id, descripcion
-	FROM Cargo
-	WHERE estado = 1
-	ORDER BY descripcion ASC;
+    SELECT id, descripcion
+    FROM Cargo
+    WHERE estado = 1
+    ORDER BY descripcion ASC;
 
 GO
 CREATE PROC paTipoVehiculoListar
 AS
-	SELECT id, descripcion
-	FROM TipoVehiculo
-	WHERE estado = 1
-	ORDER BY descripcion ASC;
+    SELECT id, descripcion
+    FROM TipoVehiculo
+    WHERE estado = 1
+    ORDER BY descripcion ASC;
 
 GO
 CREATE PROC paMarcaPorProcedencia @idProcedencia INT
 AS
-	SELECT id, nombre, descripcion
-	FROM Marca
-	WHERE estado = 1 AND idProcedencia = @idProcedencia
-	ORDER BY nombre ASC;
+    SELECT id, nombre, descripcion
+    FROM Marca
+    WHERE estado = 1 AND idProcedencia = @idProcedencia
+    ORDER BY nombre ASC;
 
 GO
 CREATE PROC paModeloPorMarca @idMarca INT
 AS
-	SELECT mv.id, mv.nombre, tv.descripcion AS tipoVehiculo, 
-		   mv.anioInicio, mv.anioFin, mv.motor, mv.combustible
-	FROM ModeloVehiculo mv
-	INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
-	WHERE mv.estado = 1 AND mv.idMarca = @idMarca
-	ORDER BY mv.nombre ASC;
+    SELECT mv.id, mv.nombre, mv.descripcion, tv.descripcion AS tipoVehiculo
+    FROM ModeloVehiculo mv
+    INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
+    WHERE mv.estado = 1 AND mv.idMarca = @idMarca
+    ORDER BY mv.nombre ASC;
+
 
 -- =====================================================
 -- DATOS INICIALES
 -- =====================================================
 
--- Insertar Cargos
+-- Cargos
 INSERT INTO Cargo (descripcion) VALUES 
 ('Administrador Sistema'),
 ('Técnico Automotriz'),
 ('Evaluador Vehicular'),
 ('Consultor Ventas');
 
--- Insertar Procedencias
+-- Empleados
+INSERT INTO Empleado (cedulaIdentidad, nombres, primerApellido, segundoApellido, direccion, celular, idCargo) VALUES 
+('12345678', 'Kevin Eduardo', 'Cardenas', 'Mamani', 'Av. Venezuela #123', 71234567, 1),
+('87654321', 'María José', 'Fernández', 'López', 'Calle Bolívar #456', 72345678, 2);
+
+-- Usuarios
+INSERT INTO Usuario (idEmpleado, usuario, clave, esAdministrador) VALUES 
+(1, 'admin', 'YWRtaW4xMjM=', 1),
+(2, 'maria.fernandez', 'bWFyaWExMjM=', 0);
+
+-- Procedencias
 INSERT INTO Procedencia (codigo, descripcion) VALUES 
 ('JPN', 'Japonés'),
 ('USA', 'Americano'),
@@ -496,7 +405,18 @@ INSERT INTO Procedencia (codigo, descripcion) VALUES
 ('EUR', 'Europeo'),
 ('KOR', 'Coreano');
 
--- Insertar Tipos de Vehículo
+-- Marcas
+INSERT INTO Marca (idProcedencia, nombre, descripcion) VALUES 
+(1, 'Toyota', 'Fabricante japonés líder en confiabilidad'),
+(1, 'Honda', 'Marca japonesa reconocida por durabilidad'),
+(1, 'Nissan', 'Marca japonesa innovadora'),
+(1, 'Suzuki', 'Fabricante japonés de vehículos compactos'),
+(2, 'Ford', 'Fabricante americano histórico'),
+(2, 'Chevrolet', 'Marca americana popular'),
+(4, 'Volkswagen', 'Fabricante alemán de calidad'),
+(6, 'Hyundai', 'Fabricante coreano líder');
+
+-- Tipos de Vehículo
 INSERT INTO TipoVehiculo (descripcion) VALUES 
 ('Sedán'),
 ('SUV'),
@@ -504,39 +424,41 @@ INSERT INTO TipoVehiculo (descripcion) VALUES
 ('Hatchback'),
 ('Coupé');
 
--- Insertar Empleados
-INSERT INTO Empleado (cedulaIdentidad, nombres, primerApellido, segundoApellido, direccion, celular, idCargo) VALUES 
-('12345678', 'Kevin Eduardo', 'Cardenas', 'Mamani', 'Av. Venezuela #123', 71234567, 1),
-('87654321', 'María José', 'Fernández', 'López', 'Calle Bolívar #456', 72345678, 2);
+-- MODELOS SIMPLIFICADOS (Solo nombre)
+INSERT INTO ModeloVehiculo (idMarca, idTipoVehiculo, nombre, descripcion) VALUES 
+(1, 1, 'Corolla', 'Sedán compacto confiable'),
+(1, 2, 'RAV4', 'SUV versátil y espaciosa'),
+(2, 1, 'Civic', 'Sedán deportivo y eficiente'),
+(2, 2, 'CR-V', 'SUV familiar confiable'),
+(3, 4, 'Versa', 'Hatchback económico'),
+(4, 4, 'Baleno', 'Hatchback compacto'),
+(5, 3, 'F-150', 'Pickup robusta y potente'),
+(7, 4, 'Golf', 'Hatchback premium'),
+(8, 1, 'Elantra', 'Sedán moderno y equipado');
 
--- Insertar Usuarios
-INSERT INTO Usuario (idEmpleado, usuario, clave, esAdministrador) VALUES 
-(1, 'admin', 'YWRtaW4xMjM=', 1), -- admin123 en base64
-(2, 'maria.fernandez', 'bWFyaWExMjM=', 0); -- maria123 en base64
+-- VEHÍCULOS COMPLETOS (Con TODAS las características)
+INSERT INTO Vehiculo (
+    nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision, tieneTurbo,
+    motor, combustible, nroAirbags, seguridadChoques, organizacionSeguridad,
+    anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones
+) VALUES 
+-- Toyota Corolla variantes
+('1HGBH41JXMN109186', 1, 'Gen 12 (2020-2024)', 'Japón', 'CVT', 0, '2.0L Híbrido', 'Híbrido', 8, 5, 'JNCAP', 2022, 'Excelente', 9.5, 15000, 'Versión premium japonesa con máxima seguridad'),
+('2T3RFREV8FW123456', 1, 'Gen 12 (2020-2024)', 'Brasil', 'Manual', 0, '1.8L', 'Gasolina', 6, 4, 'Latin NCAP', 2021, 'Bueno', 8.0, 45000, 'Versión brasileña con buena relación calidad-precio'),
+('3FADP4BJ5NM789012', 1, 'Gen 11 (2012-2019)', 'México', 'CVT', 0, '1.8L', 'Gasolina', 6, 4, 'NHTSA', 2018, 'Bueno', 8.2, 78000, 'Generación anterior aún confiable'),
 
--- Insertar Marcas por Procedencia
-INSERT INTO Marca (idProcedencia, nombre, descripcion) VALUES 
-(1, 'Toyota', 'Fabricante japonés líder en confiabilidad'),
-(1, 'Honda', 'Marca japonesa reconocida por durabilidad'),
-(2, 'Ford', 'Fabricante americano histórico'),
-(2, 'Chevrolet', 'Marca americana popular'),
-(4, 'Volkswagen', 'Fabricante alemán popular'),
-(6, 'Hyundai', 'Fabricante coreano líder');
+-- Nissan Versa - Diferencia por transmisión
+('4S3BMHB68B3234567', 5, 'Gen 2 (2015-2020)', 'México', 'Manual', 0, '1.6L', 'Gasolina', 4, 3, 'Latin NCAP', 2019, 'Bueno', 7.8, 52000, 'Transmisión manual confiable'),
+('5FRYD3H49HB345678', 5, 'Gen 2 (2015-2020)', 'México', 'CVT', 0, '1.6L', 'Gasolina', 4, 3, 'Latin NCAP', 2019, 'Regular', 5.5, 38000, 'CVT presenta problemas prematuros'),
 
--- Insertar algunos Modelos de Vehículo
-INSERT INTO ModeloVehiculo (idMarca, idTipoVehiculo, nombre, anioInicio, motor, combustible) VALUES 
-(1, 1, 'Corolla', 1966, '1.8L', 'Gasolina'),
-(1, 2, 'RAV4', 1994, '2.5L', 'Gasolina'),
-(2, 1, 'Civic', 1972, '2.0L', 'Gasolina'),
-(3, 3, 'F-150', 1975, '3.5L V6', 'Gasolina'),
-(5, 4, 'Golf', 1974, '1.4L TSI', 'Gasolina'),
-(6, 1, 'Elantra', 1990, '2.0L', 'Gasolina');
+-- Suzuki Baleno - Diferencia por país
+('6T1BF1FK8GU456789', 6, 'Gen 2 (2015-actual)', 'India', 'Manual', 0, '1.2L', 'Gasolina', 2, 2, 'Global NCAP', 2020, 'Regular', 6.5, 35000, 'Versión india básica - 2 airbags'),
+('7JTEBU5JR8K567890', 6, 'Gen 2 (2015-actual)', 'Hungría', 'Manual', 0, '1.2L', 'Gasolina', 6, 4, 'Euro NCAP', 2020, 'Bueno', 8.5, 28000, 'Versión europea - 6 airbags y mejor seguridad'),
 
--- Insertar algunos Vehículos de ejemplo
-INSERT INTO Vehiculo (idModeloVehiculo, anioFabricacion, confiabilidad, puntuacion, observaciones, kilometraje, propietario) VALUES 
-(1, 2020, 'Excelente', 9.2, 'Vehículo muy confiable, bajo mantenimiento', 45000, 'Juan Pérez'),
-(2, 2022, 'Excelente', 9.4, 'SUV confiable, ideal para familia', 15000, 'Roberto Silva'),
-(3, 2018, 'Bueno', 8.5, 'Buen rendimiento, algunos problemas menores', 78000, 'Carlos Mamani');
+-- Ford F-150 - Con y sin turbo
+('8FTFW1ET5BFA67890', 7, 'Gen 14 (2021-actual)', 'Estados Unidos', 'Manual', 0, 'V8 5.0L', 'Gasolina', 6, 4, 'NHTSA', 2022, 'Excelente', 9.0, 12000, 'Motor V8 aspirado muy confiable'),
+('9FTEW1E58BKE78901', 7, 'Gen 14 (2021-actual)', 'Estados Unidos', 'Automática', 1, '3.5L EcoBoost', 'Gasolina', 6, 4, 'NHTSA', 2022, 'Bueno', 7.5, 25000, 'Turbo tiene problemas ocasionales');
+
 
 -- =====================================================
 -- ÍNDICES PARA OPTIMIZACIÓN
@@ -548,15 +470,35 @@ CREATE NONCLUSTERED INDEX IX_Marca_Procedencia ON Marca(idProcedencia);
 CREATE NONCLUSTERED INDEX IX_ModeloVehiculo_Marca ON ModeloVehiculo(idMarca);
 CREATE NONCLUSTERED INDEX IX_Usuario_Estado ON Usuario(estado);
 
-select * FROM Procedencia;
-select * FROM Vehiculo;
-select * FROM ModeloVehiculo
 
-PRINT '========================================';
-PRINT 'SISTEMA AUTON - VERSION OPTIMIZADA';
-PRINT '========================================';
-PRINT 'Base de datos: Auton';
-PRINT 'Usuario: usrauton / Auton2025*';
-PRINT 'Tablas: 9 | Procedimientos: 10';
-PRINT 'Listo para desarrollo .NET';
+-- =====================================================
+-- RESUMEN
+-- =====================================================
+
+PRINT '';
+PRINT '';
+PRINT 'ESTADÍSTICAS:';
+SELECT 'Modelos registrados' AS Concepto, COUNT(*) AS Cantidad FROM ModeloVehiculo WHERE estado = 1
+UNION ALL
+SELECT 'Vehículos registrados', COUNT(*) FROM Vehiculo WHERE estado = 1
+UNION ALL
+SELECT 'Marcas disponibles', COUNT(*) FROM Marca WHERE estado = 1
+UNION ALL
+SELECT 'Usuarios creados', COUNT(*) FROM Usuario WHERE estado = 1;
+
+PRINT '';
+PRINT 'USUARIOS:';
+PRINT '   admin / admin123 (Administrador)';
+PRINT '   maria.fernandez / maria123 (Usuario)';
+PRINT '';
+PRINT 'ESTRUCTURA:';
+PRINT '   MODELO: Simple (solo nombre)';
+PRINT '   VEHICULO: Completo (todas las características)';
+PRINT '';
+PRINT 'EJEMPLOS EN LA BD:';
+PRINT '   • 3 Toyota Corollas diferentes';
+PRINT '   • 2 Nissan Versas (Manual vs CVT)';
+PRINT '   • 2 Suzuki Balenos (India vs Hungría)';
+PRINT '   • 2 Ford F-150 (V8 vs Turbo)';
+PRINT '';
 PRINT '========================================';

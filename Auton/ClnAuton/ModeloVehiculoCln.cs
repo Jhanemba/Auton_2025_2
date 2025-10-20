@@ -27,10 +27,10 @@ namespace ClnAuton
                 existente.idMarca = modelo.idMarca;
                 existente.idTipoVehiculo = modelo.idTipoVehiculo;
                 existente.nombre = modelo.nombre;
-                existente.anioInicio = modelo.anioInicio;
-                existente.anioFin = modelo.anioFin;
-                existente.motor = modelo.motor;
-                existente.combustible = modelo.combustible;
+                //existente.anioInicio = modelo.anioInicio;
+                //existente.anioFin = modelo.anioFin;
+                //existente.motor = modelo.motor;
+                //existente.combustible = modelo.combustible;
                 existente.usuarioRegistro = modelo.usuarioRegistro;
                 return context.SaveChanges();
             }

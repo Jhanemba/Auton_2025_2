@@ -64,19 +64,10 @@
           <ScalarProperty Name="idMarca" ColumnName="idMarca" />
           <ScalarProperty Name="idTipoVehiculo" ColumnName="idTipoVehiculo" />
           <ScalarProperty Name="nombre" ColumnName="nombre" />
-          <ScalarProperty Name="anioInicio" ColumnName="anioInicio" />
-          <ScalarProperty Name="anioFin" ColumnName="anioFin" />
-          <ScalarProperty Name="motor" ColumnName="motor" />
-          <ScalarProperty Name="combustible" ColumnName="combustible" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
-          <ScalarProperty Name="transmision" ColumnName="transmision" />
-          <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
-          <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
-          <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
-          <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
-          <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -121,17 +112,25 @@
       <EntityTypeMapping TypeName="AutonModel.Vehiculo">
         <MappingFragment StoreEntitySet="Vehiculo">
           <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="nroChasis" ColumnName="nroChasis" />
           <ScalarProperty Name="idModeloVehiculo" ColumnName="idModeloVehiculo" />
+          <ScalarProperty Name="generacion" ColumnName="generacion" />
+          <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
+          <ScalarProperty Name="transmision" ColumnName="transmision" />
+          <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+          <ScalarProperty Name="motor" ColumnName="motor" />
+          <ScalarProperty Name="combustible" ColumnName="combustible" />
+          <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+          <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+          <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
           <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
           <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
           <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
-          <ScalarProperty Name="observaciones" ColumnName="observaciones" />
           <ScalarProperty Name="kilometraje" ColumnName="kilometraje" />
-          <ScalarProperty Name="propietario" ColumnName="propietario" />
+          <ScalarProperty Name="observaciones" ColumnName="observaciones" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
-          <ScalarProperty Name="nroChasis" ColumnName="nroChasis" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -173,11 +172,8 @@
         <ComplexTypeMapping TypeName="AutonModel.paModeloPorMarca_Result">
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
           <ScalarProperty Name="tipoVehiculo" ColumnName="tipoVehiculo" />
-          <ScalarProperty Name="anioInicio" ColumnName="anioInicio" />
-          <ScalarProperty Name="anioFin" ColumnName="anioFin" />
-          <ScalarProperty Name="motor" ColumnName="motor" />
-          <ScalarProperty Name="combustible" ColumnName="combustible" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
@@ -220,13 +216,17 @@
           <ScalarProperty Name="marca" ColumnName="marca" />
           <ScalarProperty Name="procedencia" ColumnName="procedencia" />
           <ScalarProperty Name="tipoVehiculo" ColumnName="tipoVehiculo" />
+          <ScalarProperty Name="generacion" ColumnName="generacion" />
+          <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
+          <ScalarProperty Name="transmision" ColumnName="transmision" />
+          <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+          <ScalarProperty Name="motor" ColumnName="motor" />
+          <ScalarProperty Name="combustible" ColumnName="combustible" />
+          <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
           <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
           <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
           <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
           <ScalarProperty Name="kilometraje" ColumnName="kilometraje" />
-          <ScalarProperty Name="propietario" ColumnName="propietario" />
-          <ScalarProperty Name="motor" ColumnName="motor" />
-          <ScalarProperty Name="combustible" ColumnName="combustible" />
           <ScalarProperty Name="observaciones" ColumnName="observaciones" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />

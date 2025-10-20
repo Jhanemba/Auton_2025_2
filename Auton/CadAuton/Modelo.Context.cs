@@ -84,15 +84,47 @@ namespace CadAuton
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<paUsuarioValidar_Result>("paUsuarioValidar", usuarioParameter, claveParameter);
         }
     
-        public virtual ObjectResult<string> paVehiculoActualizar(Nullable<int> id, Nullable<int> idModeloVehiculo, Nullable<int> anioFabricacion, string confiabilidad, Nullable<decimal> puntuacion, string observaciones, Nullable<int> kilometraje, string propietario)
+        public virtual ObjectResult<string> paVehiculoActualizar(Nullable<int> id, string generacion, string paisFabricacion, string transmision, Nullable<bool> tieneTurbo, string motor, string combustible, Nullable<int> nroAirbags, Nullable<int> seguridadChoques, string organizacionSeguridad, Nullable<int> anioFabricacion, string confiabilidad, Nullable<decimal> puntuacion, Nullable<int> kilometraje, string observaciones)
         {
             var idParameter = id.HasValue ?
                 new ObjectParameter("id", id) :
                 new ObjectParameter("id", typeof(int));
     
-            var idModeloVehiculoParameter = idModeloVehiculo.HasValue ?
-                new ObjectParameter("idModeloVehiculo", idModeloVehiculo) :
-                new ObjectParameter("idModeloVehiculo", typeof(int));
+            var generacionParameter = generacion != null ?
+                new ObjectParameter("generacion", generacion) :
+                new ObjectParameter("generacion", typeof(string));
+    
+            var paisFabricacionParameter = paisFabricacion != null ?
+                new ObjectParameter("paisFabricacion", paisFabricacion) :
+                new ObjectParameter("paisFabricacion", typeof(string));
+    
+            var transmisionParameter = transmision != null ?
+                new ObjectParameter("transmision", transmision) :
+                new ObjectParameter("transmision", typeof(string));
+    
+            var tieneTurboParameter = tieneTurbo.HasValue ?
+                new ObjectParameter("tieneTurbo", tieneTurbo) :
+                new ObjectParameter("tieneTurbo", typeof(bool));
+    
+            var motorParameter = motor != null ?
+                new ObjectParameter("motor", motor) :
+                new ObjectParameter("motor", typeof(string));
+    
+            var combustibleParameter = combustible != null ?
+                new ObjectParameter("combustible", combustible) :
+                new ObjectParameter("combustible", typeof(string));
+    
+            var nroAirbagsParameter = nroAirbags.HasValue ?
+                new ObjectParameter("nroAirbags", nroAirbags) :
+                new ObjectParameter("nroAirbags", typeof(int));
+    
+            var seguridadChoquesParameter = seguridadChoques.HasValue ?
+                new ObjectParameter("seguridadChoques", seguridadChoques) :
+                new ObjectParameter("seguridadChoques", typeof(int));
+    
+            var organizacionSeguridadParameter = organizacionSeguridad != null ?
+                new ObjectParameter("organizacionSeguridad", organizacionSeguridad) :
+                new ObjectParameter("organizacionSeguridad", typeof(string));
     
             var anioFabricacionParameter = anioFabricacion.HasValue ?
                 new ObjectParameter("anioFabricacion", anioFabricacion) :
@@ -106,19 +138,15 @@ namespace CadAuton
                 new ObjectParameter("puntuacion", puntuacion) :
                 new ObjectParameter("puntuacion", typeof(decimal));
     
-            var observacionesParameter = observaciones != null ?
-                new ObjectParameter("observaciones", observaciones) :
-                new ObjectParameter("observaciones", typeof(string));
-    
             var kilometrajeParameter = kilometraje.HasValue ?
                 new ObjectParameter("kilometraje", kilometraje) :
                 new ObjectParameter("kilometraje", typeof(int));
     
-            var propietarioParameter = propietario != null ?
-                new ObjectParameter("propietario", propietario) :
-                new ObjectParameter("propietario", typeof(string));
+            var observacionesParameter = observaciones != null ?
+                new ObjectParameter("observaciones", observaciones) :
+                new ObjectParameter("observaciones", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("paVehiculoActualizar", idParameter, idModeloVehiculoParameter, anioFabricacionParameter, confiabilidadParameter, puntuacionParameter, observacionesParameter, kilometrajeParameter, propietarioParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("paVehiculoActualizar", idParameter, generacionParameter, paisFabricacionParameter, transmisionParameter, tieneTurboParameter, motorParameter, combustibleParameter, nroAirbagsParameter, seguridadChoquesParameter, organizacionSeguridadParameter, anioFabricacionParameter, confiabilidadParameter, puntuacionParameter, kilometrajeParameter, observacionesParameter);
         }
     
         public virtual ObjectResult<string> paVehiculoEliminar(Nullable<int> id)
@@ -130,11 +158,51 @@ namespace CadAuton
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("paVehiculoEliminar", idParameter);
         }
     
-        public virtual ObjectResult<Nullable<decimal>> paVehiculoInsertar(Nullable<int> idModeloVehiculo, Nullable<int> anioFabricacion, string confiabilidad, Nullable<decimal> puntuacion, string observaciones, Nullable<int> kilometraje, string propietario)
+        public virtual ObjectResult<Nullable<decimal>> paVehiculoInsertar(string nroChasis, Nullable<int> idModeloVehiculo, string generacion, string paisFabricacion, string transmision, Nullable<bool> tieneTurbo, string motor, string combustible, Nullable<int> nroAirbags, Nullable<int> seguridadChoques, string organizacionSeguridad, Nullable<int> anioFabricacion, string confiabilidad, Nullable<decimal> puntuacion, Nullable<int> kilometraje, string observaciones)
         {
+            var nroChasisParameter = nroChasis != null ?
+                new ObjectParameter("nroChasis", nroChasis) :
+                new ObjectParameter("nroChasis", typeof(string));
+    
             var idModeloVehiculoParameter = idModeloVehiculo.HasValue ?
                 new ObjectParameter("idModeloVehiculo", idModeloVehiculo) :
                 new ObjectParameter("idModeloVehiculo", typeof(int));
+    
+            var generacionParameter = generacion != null ?
+                new ObjectParameter("generacion", generacion) :
+                new ObjectParameter("generacion", typeof(string));
+    
+            var paisFabricacionParameter = paisFabricacion != null ?
+                new ObjectParameter("paisFabricacion", paisFabricacion) :
+                new ObjectParameter("paisFabricacion", typeof(string));
+    
+            var transmisionParameter = transmision != null ?
+                new ObjectParameter("transmision", transmision) :
+                new ObjectParameter("transmision", typeof(string));
+    
+            var tieneTurboParameter = tieneTurbo.HasValue ?
+                new ObjectParameter("tieneTurbo", tieneTurbo) :
+                new ObjectParameter("tieneTurbo", typeof(bool));
+    
+            var motorParameter = motor != null ?
+                new ObjectParameter("motor", motor) :
+                new ObjectParameter("motor", typeof(string));
+    
+            var combustibleParameter = combustible != null ?
+                new ObjectParameter("combustible", combustible) :
+                new ObjectParameter("combustible", typeof(string));
+    
+            var nroAirbagsParameter = nroAirbags.HasValue ?
+                new ObjectParameter("nroAirbags", nroAirbags) :
+                new ObjectParameter("nroAirbags", typeof(int));
+    
+            var seguridadChoquesParameter = seguridadChoques.HasValue ?
+                new ObjectParameter("seguridadChoques", seguridadChoques) :
+                new ObjectParameter("seguridadChoques", typeof(int));
+    
+            var organizacionSeguridadParameter = organizacionSeguridad != null ?
+                new ObjectParameter("organizacionSeguridad", organizacionSeguridad) :
+                new ObjectParameter("organizacionSeguridad", typeof(string));
     
             var anioFabricacionParameter = anioFabricacion.HasValue ?
                 new ObjectParameter("anioFabricacion", anioFabricacion) :
@@ -148,19 +216,15 @@ namespace CadAuton
                 new ObjectParameter("puntuacion", puntuacion) :
                 new ObjectParameter("puntuacion", typeof(decimal));
     
-            var observacionesParameter = observaciones != null ?
-                new ObjectParameter("observaciones", observaciones) :
-                new ObjectParameter("observaciones", typeof(string));
-    
             var kilometrajeParameter = kilometraje.HasValue ?
                 new ObjectParameter("kilometraje", kilometraje) :
                 new ObjectParameter("kilometraje", typeof(int));
     
-            var propietarioParameter = propietario != null ?
-                new ObjectParameter("propietario", propietario) :
-                new ObjectParameter("propietario", typeof(string));
+            var observacionesParameter = observaciones != null ?
+                new ObjectParameter("observaciones", observaciones) :
+                new ObjectParameter("observaciones", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<decimal>>("paVehiculoInsertar", idModeloVehiculoParameter, anioFabricacionParameter, confiabilidadParameter, puntuacionParameter, observacionesParameter, kilometrajeParameter, propietarioParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<decimal>>("paVehiculoInsertar", nroChasisParameter, idModeloVehiculoParameter, generacionParameter, paisFabricacionParameter, transmisionParameter, tieneTurboParameter, motorParameter, combustibleParameter, nroAirbagsParameter, seguridadChoquesParameter, organizacionSeguridadParameter, anioFabricacionParameter, confiabilidadParameter, puntuacionParameter, kilometrajeParameter, observacionesParameter);
         }
     
         public virtual ObjectResult<paVehiculoListar_Result> paVehiculoListar(string parametro)

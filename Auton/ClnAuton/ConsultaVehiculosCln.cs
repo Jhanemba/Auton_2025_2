@@ -42,7 +42,7 @@ namespace ClnAuton
                     existente.puntuacion = vehiculo.puntuacion;
                     existente.observaciones = vehiculo.observaciones;
                     existente.kilometraje = vehiculo.kilometraje;
-                    existente.propietario = vehiculo.propietario;
+                    //existente.propietario = vehiculo.propietario;
                     existente.usuarioRegistro = vehiculo.usuarioRegistro;
                     return context.SaveChanges();
                 }

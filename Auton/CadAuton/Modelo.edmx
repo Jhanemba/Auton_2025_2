@@ -65,19 +65,10 @@
           <Property Name="idMarca" Type="int" Nullable="false" />
           <Property Name="idTipoVehiculo" Type="int" Nullable="false" />
           <Property Name="nombre" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="anioInicio" Type="int" Nullable="false" />
-          <Property Name="anioFin" Type="int" />
-          <Property Name="motor" Type="varchar" MaxLength="50" />
-          <Property Name="combustible" Type="varchar" MaxLength="20" />
+          <Property Name="descripcion" Type="varchar" MaxLength="500" />
           <Property Name="usuarioRegistro" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="fechaRegistro" Type="datetime" Nullable="false" />
           <Property Name="estado" Type="smallint" Nullable="false" />
-          <Property Name="transmision" Type="varchar" MaxLength="20" />
-          <Property Name="tieneTurbo" Type="bit" />
-          <Property Name="nroAirbags" Type="int" />
-          <Property Name="seguridadChoques" Type="int" />
-          <Property Name="organizacionSeguridad" Type="varchar" MaxLength="50" />
-          <Property Name="paisFabricacion" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Procedencia">
           <Key>
@@ -118,17 +109,25 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nroChasis" Type="varchar" MaxLength="17" Nullable="false" />
           <Property Name="idModeloVehiculo" Type="int" Nullable="false" />
+          <Property Name="generacion" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="paisFabricacion" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="transmision" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="tieneTurbo" Type="bit" Nullable="false" />
+          <Property Name="motor" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="combustible" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="nroAirbags" Type="int" Nullable="false" />
+          <Property Name="seguridadChoques" Type="int" Nullable="false" />
+          <Property Name="organizacionSeguridad" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="anioFabricacion" Type="int" Nullable="false" />
           <Property Name="confiabilidad" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="puntuacion" Type="decimal" Precision="3" Scale="1" Nullable="false" />
-          <Property Name="observaciones" Type="varchar" MaxLength="500" />
           <Property Name="kilometraje" Type="int" />
-          <Property Name="propietario" Type="varchar" MaxLength="100" />
+          <Property Name="observaciones" Type="varchar" MaxLength="500" />
           <Property Name="usuarioRegistro" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="fechaRegistro" Type="datetime" Nullable="false" />
           <Property Name="estado" Type="smallint" Nullable="false" />
-          <Property Name="nroChasis" Type="varchar" MaxLength="17" Nullable="false" />
         </EntityType>
         <EntityType Name="VehiculoMantenimiento">
           <Key>
@@ -256,25 +255,41 @@
         </Function>
         <Function Name="paVehiculoActualizar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="int" Mode="In" />
-          <Parameter Name="idModeloVehiculo" Type="int" Mode="In" />
+          <Parameter Name="generacion" Type="varchar" Mode="In" />
+          <Parameter Name="paisFabricacion" Type="varchar" Mode="In" />
+          <Parameter Name="transmision" Type="varchar" Mode="In" />
+          <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
+          <Parameter Name="motor" Type="varchar" Mode="In" />
+          <Parameter Name="combustible" Type="varchar" Mode="In" />
+          <Parameter Name="nroAirbags" Type="int" Mode="In" />
+          <Parameter Name="seguridadChoques" Type="int" Mode="In" />
+          <Parameter Name="organizacionSeguridad" Type="varchar" Mode="In" />
           <Parameter Name="anioFabricacion" Type="int" Mode="In" />
           <Parameter Name="confiabilidad" Type="varchar" Mode="In" />
           <Parameter Name="puntuacion" Type="decimal" Mode="In" />
-          <Parameter Name="observaciones" Type="varchar" Mode="In" />
           <Parameter Name="kilometraje" Type="int" Mode="In" />
-          <Parameter Name="propietario" Type="varchar" Mode="In" />
+          <Parameter Name="observaciones" Type="varchar" Mode="In" />
         </Function>
         <Function Name="paVehiculoEliminar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="int" Mode="In" />
         </Function>
         <Function Name="paVehiculoInsertar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="nroChasis" Type="varchar" Mode="In" />
           <Parameter Name="idModeloVehiculo" Type="int" Mode="In" />
+          <Parameter Name="generacion" Type="varchar" Mode="In" />
+          <Parameter Name="paisFabricacion" Type="varchar" Mode="In" />
+          <Parameter Name="transmision" Type="varchar" Mode="In" />
+          <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
+          <Parameter Name="motor" Type="varchar" Mode="In" />
+          <Parameter Name="combustible" Type="varchar" Mode="In" />
+          <Parameter Name="nroAirbags" Type="int" Mode="In" />
+          <Parameter Name="seguridadChoques" Type="int" Mode="In" />
+          <Parameter Name="organizacionSeguridad" Type="varchar" Mode="In" />
           <Parameter Name="anioFabricacion" Type="int" Mode="In" />
           <Parameter Name="confiabilidad" Type="varchar" Mode="In" />
           <Parameter Name="puntuacion" Type="decimal" Mode="In" />
-          <Parameter Name="observaciones" Type="varchar" Mode="In" />
           <Parameter Name="kilometraje" Type="int" Mode="In" />
-          <Parameter Name="propietario" Type="varchar" Mode="In" />
+          <Parameter Name="observaciones" Type="varchar" Mode="In" />
         </Function>
         <Function Name="paVehiculoListar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="parametro" Type="varchar" Mode="In" />
@@ -394,19 +409,10 @@
           <Property Name="idMarca" Type="Int32" Nullable="false" />
           <Property Name="idTipoVehiculo" Type="Int32" Nullable="false" />
           <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="anioInicio" Type="Int32" Nullable="false" />
-          <Property Name="anioFin" Type="Int32" />
-          <Property Name="motor" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="combustible" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="descripcion" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="estado" Type="Int16" Nullable="false" />
-          <Property Name="transmision" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="tieneTurbo" Type="Boolean" />
-          <Property Name="nroAirbags" Type="Int32" />
-          <Property Name="seguridadChoques" Type="Int32" />
-          <Property Name="organizacionSeguridad" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="paisFabricacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Marca" Relationship="Self.FK_ModeloVehiculo_Marca" FromRole="ModeloVehiculo" ToRole="Marca" />
           <NavigationProperty Name="TipoVehiculo" Relationship="Self.FK_ModeloVehiculo_TipoVehiculo" FromRole="ModeloVehiculo" ToRole="TipoVehiculo" />
           <NavigationProperty Name="Vehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="ModeloVehiculo" ToRole="Vehiculo" />
@@ -453,17 +459,25 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nroChasis" Type="String" MaxLength="17" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="idModeloVehiculo" Type="Int32" Nullable="false" />
+          <Property Name="generacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="paisFabricacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="transmision" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="tieneTurbo" Type="Boolean" Nullable="false" />
+          <Property Name="motor" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="combustible" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nroAirbags" Type="Int32" Nullable="false" />
+          <Property Name="seguridadChoques" Type="Int32" Nullable="false" />
+          <Property Name="organizacionSeguridad" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="anioFabricacion" Type="Int32" Nullable="false" />
           <Property Name="confiabilidad" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="puntuacion" Type="Decimal" Precision="3" Scale="1" Nullable="false" />
-          <Property Name="observaciones" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="kilometraje" Type="Int32" />
-          <Property Name="propietario" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="observaciones" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="estado" Type="Int16" Nullable="false" />
-          <Property Name="nroChasis" Type="String" MaxLength="17" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="Vehiculo" ToRole="HistorialConfiabilidad" />
           <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="Vehiculo" ToRole="ModeloVehiculo" />
           <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="Vehiculo" ToRole="VehiculoMantenimiento" />
@@ -638,25 +652,41 @@
           </FunctionImport>
           <FunctionImport Name="paVehiculoActualizar" ReturnType="Collection(String)">
             <Parameter Name="id" Mode="In" Type="Int32" />
-            <Parameter Name="idModeloVehiculo" Mode="In" Type="Int32" />
+            <Parameter Name="generacion" Mode="In" Type="String" />
+            <Parameter Name="paisFabricacion" Mode="In" Type="String" />
+            <Parameter Name="transmision" Mode="In" Type="String" />
+            <Parameter Name="tieneTurbo" Mode="In" Type="Boolean" />
+            <Parameter Name="motor" Mode="In" Type="String" />
+            <Parameter Name="combustible" Mode="In" Type="String" />
+            <Parameter Name="nroAirbags" Mode="In" Type="Int32" />
+            <Parameter Name="seguridadChoques" Mode="In" Type="Int32" />
+            <Parameter Name="organizacionSeguridad" Mode="In" Type="String" />
             <Parameter Name="anioFabricacion" Mode="In" Type="Int32" />
             <Parameter Name="confiabilidad" Mode="In" Type="String" />
             <Parameter Name="puntuacion" Mode="In" Type="Decimal" />
-            <Parameter Name="observaciones" Mode="In" Type="String" />
             <Parameter Name="kilometraje" Mode="In" Type="Int32" />
-            <Parameter Name="propietario" Mode="In" Type="String" />
+            <Parameter Name="observaciones" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="paVehiculoEliminar" ReturnType="Collection(String)">
             <Parameter Name="id" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="paVehiculoInsertar" ReturnType="Collection(Decimal)">
+            <Parameter Name="nroChasis" Mode="In" Type="String" />
             <Parameter Name="idModeloVehiculo" Mode="In" Type="Int32" />
+            <Parameter Name="generacion" Mode="In" Type="String" />
+            <Parameter Name="paisFabricacion" Mode="In" Type="String" />
+            <Parameter Name="transmision" Mode="In" Type="String" />
+            <Parameter Name="tieneTurbo" Mode="In" Type="Boolean" />
+            <Parameter Name="motor" Mode="In" Type="String" />
+            <Parameter Name="combustible" Mode="In" Type="String" />
+            <Parameter Name="nroAirbags" Mode="In" Type="Int32" />
+            <Parameter Name="seguridadChoques" Mode="In" Type="Int32" />
+            <Parameter Name="organizacionSeguridad" Mode="In" Type="String" />
             <Parameter Name="anioFabricacion" Mode="In" Type="Int32" />
             <Parameter Name="confiabilidad" Mode="In" Type="String" />
             <Parameter Name="puntuacion" Mode="In" Type="Decimal" />
-            <Parameter Name="observaciones" Mode="In" Type="String" />
             <Parameter Name="kilometraje" Mode="In" Type="Int32" />
-            <Parameter Name="propietario" Mode="In" Type="String" />
+            <Parameter Name="observaciones" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="paVehiculoListar" ReturnType="Collection(AutonModel.paVehiculoListar_Result)">
             <Parameter Name="parametro" Mode="In" Type="String" />
@@ -674,11 +704,8 @@
         <ComplexType Name="paModeloPorMarca_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
           <Property Type="String" Name="nombre" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="descripcion" Nullable="true" MaxLength="500" />
           <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
-          <Property Type="Int32" Name="anioInicio" Nullable="false" />
-          <Property Type="Int32" Name="anioFin" Nullable="true" />
-          <Property Type="String" Name="motor" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="combustible" Nullable="true" MaxLength="20" />
         </ComplexType>
         <ComplexType Name="paProcedenciaListar_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -702,13 +729,17 @@
           <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
+          <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
+          <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="nroAirbags" Nullable="false" />
           <Property Type="Int32" Name="anioFabricacion" Nullable="false" />
           <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
           <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
           <Property Type="Int32" Name="kilometraje" Nullable="true" />
-          <Property Type="String" Name="propietario" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="motor" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="combustible" Nullable="true" MaxLength="20" />
           <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
           <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
           <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
@@ -783,19 +814,10 @@
                 <ScalarProperty Name="idMarca" ColumnName="idMarca" />
                 <ScalarProperty Name="idTipoVehiculo" ColumnName="idTipoVehiculo" />
                 <ScalarProperty Name="nombre" ColumnName="nombre" />
-                <ScalarProperty Name="anioInicio" ColumnName="anioInicio" />
-                <ScalarProperty Name="anioFin" ColumnName="anioFin" />
-                <ScalarProperty Name="motor" ColumnName="motor" />
-                <ScalarProperty Name="combustible" ColumnName="combustible" />
+                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
                 <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
                 <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
                 <ScalarProperty Name="estado" ColumnName="estado" />
-                <ScalarProperty Name="transmision" ColumnName="transmision" />
-                <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
-                <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
-                <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
-                <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
-                <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -840,17 +862,25 @@
             <EntityTypeMapping TypeName="AutonModel.Vehiculo">
               <MappingFragment StoreEntitySet="Vehiculo">
                 <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nroChasis" ColumnName="nroChasis" />
                 <ScalarProperty Name="idModeloVehiculo" ColumnName="idModeloVehiculo" />
+                <ScalarProperty Name="generacion" ColumnName="generacion" />
+                <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
+                <ScalarProperty Name="transmision" ColumnName="transmision" />
+                <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+                <ScalarProperty Name="motor" ColumnName="motor" />
+                <ScalarProperty Name="combustible" ColumnName="combustible" />
+                <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+                <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+                <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
                 <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
                 <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
                 <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
-                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
                 <ScalarProperty Name="kilometraje" ColumnName="kilometraje" />
-                <ScalarProperty Name="propietario" ColumnName="propietario" />
+                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
                 <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
                 <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
                 <ScalarProperty Name="estado" ColumnName="estado" />
-                <ScalarProperty Name="nroChasis" ColumnName="nroChasis" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -892,11 +922,8 @@
               <ComplexTypeMapping TypeName="AutonModel.paModeloPorMarca_Result">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
                 <ScalarProperty Name="tipoVehiculo" ColumnName="tipoVehiculo" />
-                <ScalarProperty Name="anioInicio" ColumnName="anioInicio" />
-                <ScalarProperty Name="anioFin" ColumnName="anioFin" />
-                <ScalarProperty Name="motor" ColumnName="motor" />
-                <ScalarProperty Name="combustible" ColumnName="combustible" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -939,13 +966,17 @@
                 <ScalarProperty Name="marca" ColumnName="marca" />
                 <ScalarProperty Name="procedencia" ColumnName="procedencia" />
                 <ScalarProperty Name="tipoVehiculo" ColumnName="tipoVehiculo" />
+                <ScalarProperty Name="generacion" ColumnName="generacion" />
+                <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
+                <ScalarProperty Name="transmision" ColumnName="transmision" />
+                <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+                <ScalarProperty Name="motor" ColumnName="motor" />
+                <ScalarProperty Name="combustible" ColumnName="combustible" />
+                <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
                 <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
                 <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
                 <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
                 <ScalarProperty Name="kilometraje" ColumnName="kilometraje" />
-                <ScalarProperty Name="propietario" ColumnName="propietario" />
-                <ScalarProperty Name="motor" ColumnName="motor" />
-                <ScalarProperty Name="combustible" ColumnName="combustible" />
                 <ScalarProperty Name="observaciones" ColumnName="observaciones" />
                 <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
                 <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />

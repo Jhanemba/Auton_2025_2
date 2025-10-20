@@ -60,19 +60,10 @@
     <Property Name="idMarca" Type="int" Nullable="false" />
     <Property Name="idTipoVehiculo" Type="int" Nullable="false" />
     <Property Name="nombre" Type="varchar" MaxLength="100" Nullable="false" />
-    <Property Name="anioInicio" Type="int" Nullable="false" />
-    <Property Name="anioFin" Type="int" />
-    <Property Name="motor" Type="varchar" MaxLength="50" />
-    <Property Name="combustible" Type="varchar" MaxLength="20" />
+    <Property Name="descripcion" Type="varchar" MaxLength="500" />
     <Property Name="usuarioRegistro" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="fechaRegistro" Type="datetime" Nullable="false" />
     <Property Name="estado" Type="smallint" Nullable="false" />
-    <Property Name="transmision" Type="varchar" MaxLength="20" />
-    <Property Name="tieneTurbo" Type="bit" />
-    <Property Name="nroAirbags" Type="int" />
-    <Property Name="seguridadChoques" Type="int" />
-    <Property Name="organizacionSeguridad" Type="varchar" MaxLength="50" />
-    <Property Name="paisFabricacion" Type="varchar" MaxLength="50" Nullable="false" />
   </EntityType>
   <EntityType Name="Procedencia">
     <Key>
@@ -113,17 +104,25 @@
       <PropertyRef Name="id" />
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nroChasis" Type="varchar" MaxLength="17" Nullable="false" />
     <Property Name="idModeloVehiculo" Type="int" Nullable="false" />
+    <Property Name="generacion" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="paisFabricacion" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="transmision" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="tieneTurbo" Type="bit" Nullable="false" />
+    <Property Name="motor" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="combustible" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="nroAirbags" Type="int" Nullable="false" />
+    <Property Name="seguridadChoques" Type="int" Nullable="false" />
+    <Property Name="organizacionSeguridad" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="anioFabricacion" Type="int" Nullable="false" />
     <Property Name="confiabilidad" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="puntuacion" Type="decimal" Precision="3" Scale="1" Nullable="false" />
-    <Property Name="observaciones" Type="varchar" MaxLength="500" />
     <Property Name="kilometraje" Type="int" />
-    <Property Name="propietario" Type="varchar" MaxLength="100" />
+    <Property Name="observaciones" Type="varchar" MaxLength="500" />
     <Property Name="usuarioRegistro" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="fechaRegistro" Type="datetime" Nullable="false" />
     <Property Name="estado" Type="smallint" Nullable="false" />
-    <Property Name="nroChasis" Type="varchar" MaxLength="17" Nullable="false" />
   </EntityType>
   <EntityType Name="VehiculoMantenimiento">
     <Key>
@@ -251,25 +250,41 @@
   </Function>
   <Function Name="paVehiculoActualizar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="id" Type="int" Mode="In" />
-    <Parameter Name="idModeloVehiculo" Type="int" Mode="In" />
+    <Parameter Name="generacion" Type="varchar" Mode="In" />
+    <Parameter Name="paisFabricacion" Type="varchar" Mode="In" />
+    <Parameter Name="transmision" Type="varchar" Mode="In" />
+    <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
+    <Parameter Name="motor" Type="varchar" Mode="In" />
+    <Parameter Name="combustible" Type="varchar" Mode="In" />
+    <Parameter Name="nroAirbags" Type="int" Mode="In" />
+    <Parameter Name="seguridadChoques" Type="int" Mode="In" />
+    <Parameter Name="organizacionSeguridad" Type="varchar" Mode="In" />
     <Parameter Name="anioFabricacion" Type="int" Mode="In" />
     <Parameter Name="confiabilidad" Type="varchar" Mode="In" />
     <Parameter Name="puntuacion" Type="decimal" Mode="In" />
-    <Parameter Name="observaciones" Type="varchar" Mode="In" />
     <Parameter Name="kilometraje" Type="int" Mode="In" />
-    <Parameter Name="propietario" Type="varchar" Mode="In" />
+    <Parameter Name="observaciones" Type="varchar" Mode="In" />
   </Function>
   <Function Name="paVehiculoEliminar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="id" Type="int" Mode="In" />
   </Function>
   <Function Name="paVehiculoInsertar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="nroChasis" Type="varchar" Mode="In" />
     <Parameter Name="idModeloVehiculo" Type="int" Mode="In" />
+    <Parameter Name="generacion" Type="varchar" Mode="In" />
+    <Parameter Name="paisFabricacion" Type="varchar" Mode="In" />
+    <Parameter Name="transmision" Type="varchar" Mode="In" />
+    <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
+    <Parameter Name="motor" Type="varchar" Mode="In" />
+    <Parameter Name="combustible" Type="varchar" Mode="In" />
+    <Parameter Name="nroAirbags" Type="int" Mode="In" />
+    <Parameter Name="seguridadChoques" Type="int" Mode="In" />
+    <Parameter Name="organizacionSeguridad" Type="varchar" Mode="In" />
     <Parameter Name="anioFabricacion" Type="int" Mode="In" />
     <Parameter Name="confiabilidad" Type="varchar" Mode="In" />
     <Parameter Name="puntuacion" Type="decimal" Mode="In" />
-    <Parameter Name="observaciones" Type="varchar" Mode="In" />
     <Parameter Name="kilometraje" Type="int" Mode="In" />
-    <Parameter Name="propietario" Type="varchar" Mode="In" />
+    <Parameter Name="observaciones" Type="varchar" Mode="In" />
   </Function>
   <Function Name="paVehiculoListar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="parametro" Type="varchar" Mode="In" />

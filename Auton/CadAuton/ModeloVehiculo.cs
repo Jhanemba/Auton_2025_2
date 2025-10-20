@@ -24,19 +24,10 @@ namespace CadAuton
         public int idMarca { get; set; }
         public int idTipoVehiculo { get; set; }
         public string nombre { get; set; }
-        public int anioInicio { get; set; }
-        public Nullable<int> anioFin { get; set; }
-        public string motor { get; set; }
-        public string combustible { get; set; }
+        public string descripcion { get; set; }
         public string usuarioRegistro { get; set; }
         public System.DateTime fechaRegistro { get; set; }
         public short estado { get; set; }
-        public string transmision { get; set; }
-        public Nullable<bool> tieneTurbo { get; set; }
-        public Nullable<int> nroAirbags { get; set; }
-        public Nullable<int> seguridadChoques { get; set; }
-        public string organizacionSeguridad { get; set; }
-        public string paisFabricacion { get; set; }
     
         public virtual Marca Marca { get; set; }
         public virtual TipoVehiculo TipoVehiculo { get; set; }

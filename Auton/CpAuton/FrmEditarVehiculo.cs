@@ -195,7 +195,7 @@ namespace CpAuton
                     cboConfiabilidad.SelectedItem = vehiculoActual.confiabilidad;
                     txtPuntuacion.Text = vehiculoActual.puntuacion.ToString();
                     txtKilometraje.Text = vehiculoActual.kilometraje?.ToString() ?? "";
-                    txtPropietario.Text = vehiculoActual.propietario ?? "";
+                    //txtPropietario.Text = vehiculoActual.propietario ?? "";
                     txtObservaciones.Text = vehiculoActual.observaciones ?? "";
                 }
                 else
@@ -255,7 +255,7 @@ namespace CpAuton
                     vehiculoActual.confiabilidad = cboConfiabilidad.SelectedItem.ToString();
                     vehiculoActual.puntuacion = decimal.Parse(txtPuntuacion.Text);
                     vehiculoActual.kilometraje = string.IsNullOrEmpty(txtKilometraje.Text) ? (int?)null : int.Parse(txtKilometraje.Text);
-                    vehiculoActual.propietario = string.IsNullOrEmpty(txtPropietario.Text) ? null : txtPropietario.Text;
+                    //vehiculoActual.propietario = string.IsNullOrEmpty(txtPropietario.Text) ? null : txtPropietario.Text;
                     vehiculoActual.observaciones = string.IsNullOrEmpty(txtObservaciones.Text) ? null : txtObservaciones.Text;
                     vehiculoActual.usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : Environment.UserName;
 

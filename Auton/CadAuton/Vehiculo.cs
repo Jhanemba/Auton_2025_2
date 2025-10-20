@@ -22,17 +22,25 @@ namespace CadAuton
         }
     
         public int id { get; set; }
+        public string nroChasis { get; set; }
         public int idModeloVehiculo { get; set; }
+        public string generacion { get; set; }
+        public string paisFabricacion { get; set; }
+        public string transmision { get; set; }
+        public bool tieneTurbo { get; set; }
+        public string motor { get; set; }
+        public string combustible { get; set; }
+        public int nroAirbags { get; set; }
+        public int seguridadChoques { get; set; }
+        public string organizacionSeguridad { get; set; }
         public int anioFabricacion { get; set; }
         public string confiabilidad { get; set; }
         public decimal puntuacion { get; set; }
-        public string observaciones { get; set; }
         public Nullable<int> kilometraje { get; set; }
-        public string propietario { get; set; }
+        public string observaciones { get; set; }
         public string usuarioRegistro { get; set; }
         public System.DateTime fechaRegistro { get; set; }
         public short estado { get; set; }
-        public string nroChasis { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HistorialConfiabilidad> HistorialConfiabilidad { get; set; }

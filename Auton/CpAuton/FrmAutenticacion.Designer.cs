@@ -52,8 +52,9 @@
             this.txtClave.MaxLength = 30;
             this.txtClave.Name = "txtClave";
             this.txtClave.PasswordChar = '*';
-            this.txtClave.Size = new System.Drawing.Size(207, 22);
+            this.txtClave.Size = new System.Drawing.Size(207, 30);
             this.txtClave.TabIndex = 17;
+            this.txtClave.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtClave_KeyPress);
             // 
             // lblClave
             // 
@@ -61,7 +62,7 @@
             this.lblClave.Location = new System.Drawing.Point(59, 124);
             this.lblClave.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblClave.Name = "lblClave";
-            this.lblClave.Size = new System.Drawing.Size(79, 16);
+            this.lblClave.Size = new System.Drawing.Size(120, 25);
             this.lblClave.TabIndex = 16;
             this.lblClave.Text = "Contraseña:";
             // 
@@ -71,7 +72,7 @@
             this.txtUsuario.Margin = new System.Windows.Forms.Padding(4);
             this.txtUsuario.MaxLength = 20;
             this.txtUsuario.Name = "txtUsuario";
-            this.txtUsuario.Size = new System.Drawing.Size(207, 22);
+            this.txtUsuario.Size = new System.Drawing.Size(207, 30);
             this.txtUsuario.TabIndex = 15;
             // 
             // lblUsuario
@@ -80,7 +81,7 @@
             this.lblUsuario.Location = new System.Drawing.Point(81, 91);
             this.lblUsuario.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblUsuario.Name = "lblUsuario";
-            this.lblUsuario.Size = new System.Drawing.Size(57, 16);
+            this.lblUsuario.Size = new System.Drawing.Size(85, 25);
             this.lblUsuario.TabIndex = 14;
             this.lblUsuario.Text = "Usuario:";
             // 
@@ -148,7 +149,7 @@
             // 
             // FrmAutenticacion
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
             this.ClientSize = new System.Drawing.Size(616, 256);

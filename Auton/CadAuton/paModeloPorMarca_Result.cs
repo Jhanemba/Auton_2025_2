@@ -15,10 +15,7 @@ namespace CadAuton
     {
         public int id { get; set; }
         public string nombre { get; set; }
+        public string descripcion { get; set; }
         public string tipoVehiculo { get; set; }
-        public int anioInicio { get; set; }
-        public Nullable<int> anioFin { get; set; }
-        public string motor { get; set; }
-        public string combustible { get; set; }
     }
 }
