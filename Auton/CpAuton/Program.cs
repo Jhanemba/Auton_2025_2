@@ -16,7 +16,7 @@ namespace CpAuton
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmConsultaVehiculos());
+            Application.Run(new FrmPrincipal());
         }
     }
 }

@@ -72,12 +72,6 @@
     <Compile Include="FrmConsultaVehiculos.Designer.cs">
       <DependentUpon>FrmConsultaVehiculos.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmEditarVehiculo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmEditarVehiculo.Designer.cs">
-      <DependentUpon>FrmEditarVehiculo.cs</DependentUpon>
-    </Compile>
     <Compile Include="FrmNuevaMarca.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,9 +104,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmConsultaVehiculos.resx">
       <DependentUpon>FrmConsultaVehiculos.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FrmEditarVehiculo.resx">
-      <DependentUpon>FrmEditarVehiculo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmNuevaMarca.resx">
       <DependentUpon>FrmNuevaMarca.cs</DependentUpon>

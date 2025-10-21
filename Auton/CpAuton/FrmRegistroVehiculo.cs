@@ -46,7 +46,7 @@ namespace CpAuton
         // EVALUACIÓN
         private ComboBox cboConfiabilidad;
         private NumericUpDown nudPuntuacion;
-        private NumericUpDown nudKilometraje;
+        //private NumericUpDown nudKilometraje;
         private CheckBox chkKilometrajeDesconocido;
         private TextBox txtObservaciones;
 
@@ -390,34 +390,34 @@ namespace CpAuton
             yPosRight += lineHeight;
 
             // Kilometraje
-            AgregarLabel(pnlPrincipal, "Kilometraje:", 580, yPosRight, labelWidth);
-            nudKilometraje = new NumericUpDown
-            {
-                Location = new Point(colRightX + 80, yPosRight),
-                Size = new Size(150, 28),
-                Font = new Font("Segoe UI", 10F),
-                Minimum = 0,
-                Maximum = 999999,
-                ThousandsSeparator = true,
-                Value = 0,
-                TextAlign = HorizontalAlignment.Right
-            };
-            pnlPrincipal.Controls.Add(nudKilometraje);
+            //AgregarLabel(pnlPrincipal, "Kilometraje:", 580, yPosRight, labelWidth);
+            //nudKilometraje = new NumericUpDown
+            //{
+            //    Location = new Point(colRightX + 80, yPosRight),
+            //    Size = new Size(150, 28),
+            //    Font = new Font("Segoe UI", 10F),
+            //    Minimum = 0,
+            //    Maximum = 999999,
+            //    ThousandsSeparator = true,
+            //    Value = 0,
+            //    TextAlign = HorizontalAlignment.Right
+            //};
+            //pnlPrincipal.Controls.Add(nudKilometraje);
 
-            chkKilometrajeDesconocido = new CheckBox
-            {
-                Text = "Desconocido",
-                Location = new Point(colRightX + 240, yPosRight + 5),
-                Font = new Font("Segoe UI", 9F),
-                AutoSize = true
-            };
-            chkKilometrajeDesconocido.CheckedChanged += (s, e) =>
-            {
-                nudKilometraje.Enabled = !chkKilometrajeDesconocido.Checked;
-                if (chkKilometrajeDesconocido.Checked) nudKilometraje.Value = 0;
-            };
-            pnlPrincipal.Controls.Add(chkKilometrajeDesconocido);
-            yPosRight += lineHeight;
+            //chkKilometrajeDesconocido = new CheckBox
+            //{
+            //    Text = "Desconocido",
+            //    Location = new Point(colRightX + 240, yPosRight + 5),
+            //    Font = new Font("Segoe UI", 9F),
+            //    AutoSize = true
+            //};
+            //chkKilometrajeDesconocido.CheckedChanged += (s, e) =>
+            //{
+            //    nudKilometraje.Enabled = !chkKilometrajeDesconocido.Checked;
+            //    if (chkKilometrajeDesconocido.Checked) nudKilometraje.Value = 0;
+            //};
+            //pnlPrincipal.Controls.Add(chkKilometrajeDesconocido);
+            //yPosRight += lineHeight;
 
             // ==================== OBSERVACIONES ====================
             yPos = Math.Max(yPosLeft, yPosRight) + 15;
@@ -744,7 +744,7 @@ namespace CpAuton
                     int idModelo = (int)cboModelo.SelectedValue;
                     int anio = (int)nudAnio.Value;
                     decimal puntuacion = nudPuntuacion.Value;
-                    int? kilometraje = chkKilometrajeDesconocido.Checked ? (int?)null : (int)nudKilometraje.Value;
+                    //int? kilometraje = chkKilometrajeDesconocido.Checked ? (int?)null : (int)nudKilometraje.Value;
 
                     // Extraer estrellas
                     int estrellas = 0;
@@ -776,7 +776,7 @@ namespace CpAuton
                         // Evaluación
                         confiabilidad = cboConfiabilidad.SelectedItem.ToString(),
                         puntuacion = puntuacion,
-                        kilometraje = kilometraje,
+                        //kilometraje = kilometraje,
                         observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ? null : txtObservaciones.Text.Trim(),
 
                         estado = 1,
