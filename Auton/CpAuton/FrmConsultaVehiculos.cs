@@ -15,7 +15,6 @@ namespace CpAuton
 {
     public partial class FrmConsultaVehiculos : Form
     {
-
         private Label lblEstadoUsuario;
         private Button btnSesion;
 
@@ -289,222 +288,407 @@ namespace CpAuton
                 var vehiculo = (paVehiculoListar_Result)dgvVehiculos.CurrentRow.DataBoundItem;
                 var vehiculoCompleto = VehiculoCln.obtenerUno(vehiculo.id);
 
+                // ===== FORMULARIO PRINCIPAL =====
                 Form frmDetalles = new Form
                 {
-                    Text = "Detalles del Vehículo",
-                    Size = new Size(700, 780),
+                    Text = $"Detalles del Vehículo - {vehiculo.marca} {vehiculo.modelo}",
+                    Size = new Size(1200, 800),
                     StartPosition = FormStartPosition.CenterParent,
                     FormBorderStyle = FormBorderStyle.FixedDialog,
                     MaximizeBox = false,
-                    MinimizeBox = false
+                    MinimizeBox = false,
+                    Font = new Font("Segoe UI", 10F),
+                    AutoScroll = true
                 };
 
                 Panel pnlPrincipal = new Panel
                 {
-                    Dock = DockStyle.Fill,
-                    AutoScroll = true,
-                    Padding = new Padding(20)
+                    Location = new Point(0, 0),
+                    Size = new Size(1184, 700),
+                    Padding = new Padding(20),
+                    BackColor = Color.White,
+                    AutoScroll = true
                 };
 
-                int yPos = 20;
-                int lineHeight = 35;
+                int yPos = 15;
+                int lineHeight = 45;
+                int labelWidth = 150;
+                int ctrlWidth = 250;
+                int colLeftX = 170;
+                int colRightX = 650;
 
-                // Etiqueta de estado edición
+                // ===== TÍTULO Y ESTADO =====
+                Label lblTitulo = new Label
+                {
+                    Text = "📋 CONSULTA/EDICIÓN DE VEHÍCULO",
+                    Font = new Font("Segoe UI", 15, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(51, 122, 183),
+                    Location = new Point(20, yPos),
+                    Size = new Size(1140, 32),
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                pnlPrincipal.Controls.Add(lblTitulo);
+                yPos += 40;
+
                 Label lblEstado = new Label
                 {
-                    Text = "MODO LECTURA",
-                    Font = new Font("Arial", 10, FontStyle.Bold),
+                    Text = "🔒 MODO LECTURA",
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
                     ForeColor = Color.Red,
                     Location = new Point(20, yPos),
-                    Size = new Size(620, 20),
-                    TextAlign = ContentAlignment.MiddleCenter
+                    Size = new Size(1140, 25),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    BackColor = Color.FromArgb(255, 230, 230),
+                    Padding = new Padding(5)
                 };
                 pnlPrincipal.Controls.Add(lblEstado);
                 yPos += 35;
 
-                // ===== IDENTIFICACIÓN =====
-                AgregarTitulo(pnlPrincipal, "📋 IDENTIFICACIÓN", yPos);
-                yPos += 30;
+                // ==================== COLUMNA IZQUIERDA ====================
+                AgregarSeccion(pnlPrincipal, "📋 IDENTIFICACIÓN DEL MODELO", 20, yPos, 540);
+                int yPosLeft = yPos + 38;
 
-                var txtMarca = AgregarCampo(pnlPrincipal, "Marca:", vehiculo.marca, yPos, true);
-                yPos += lineHeight;
+                // Marca (solo lectura)
+                AgregarLabelForm(pnlPrincipal, "Marca:", 20, yPosLeft, labelWidth);
+                TextBox txtMarca = new TextBox
+                {
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke,
+                    Text = vehiculo.marca
+                };
+                pnlPrincipal.Controls.Add(txtMarca);
+                yPosLeft += lineHeight;
 
-                var txtModelo = AgregarCampo(pnlPrincipal, "Modelo:", vehiculo.modelo, yPos, true);
-                yPos += lineHeight;
+                // Modelo (solo lectura)
+                AgregarLabelForm(pnlPrincipal, "Modelo:", 20, yPosLeft, labelWidth);
+                TextBox txtModelo = new TextBox
+                {
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke,
+                    Text = vehiculo.modelo
+                };
+                pnlPrincipal.Controls.Add(txtModelo);
+                yPosLeft += lineHeight;
 
-                var txtTipo = AgregarCampo(pnlPrincipal, "Tipo:", vehiculo.tipoVehiculo, yPos, true);
-                yPos += lineHeight;
+                // Tipo (solo lectura)
+                AgregarLabelForm(pnlPrincipal, "Tipo:", 20, yPosLeft, labelWidth);
+                TextBox txtTipo = new TextBox
+                {
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke,
+                    Text = vehiculo.tipoVehiculo
+                };
+                pnlPrincipal.Controls.Add(txtTipo);
+                yPosLeft += lineHeight;
 
-                var nudAnio = AgregarNumerico(pnlPrincipal, "Año Fabricación:", vehiculoCompleto.anioFabricacion, yPos, 1900, DateTime.Now.Year, true);
-                yPos += lineHeight;
+                // Nro. de Chasis (solo lectura)
+                AgregarLabelForm(pnlPrincipal, "Nro. de Chasis:", 20, yPosLeft, labelWidth);
+                TextBox txtChasis = new TextBox
+                {
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke,
+                    Text = vehiculoCompleto.nroChasis
+                };
+                pnlPrincipal.Controls.Add(txtChasis);
+                yPosLeft += lineHeight;
 
-                // ===== CARACTERÍSTICAS ESPECÍFICAS =====
-                yPos += 10;
-                AgregarTitulo(pnlPrincipal, "⚙️ CARACTERÍSTICAS ESPECÍFICAS", yPos);
-                yPos += 30;
+                // Año de Fabricación (EDITABLE)
+                AgregarLabelForm(pnlPrincipal, "Año Fabricación:", 20, yPosLeft, labelWidth);
+                NumericUpDown nudAnio = new NumericUpDown
+                {
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(120, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 1900,
+                    Maximum = DateTime.Now.Year,
+                    Value = vehiculoCompleto.anioFabricacion,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = false
+                };
+                pnlPrincipal.Controls.Add(nudAnio);
+                yPosLeft += lineHeight;
 
-                var txtGeneracion = AgregarCampo(pnlPrincipal, "Generación:", vehiculoCompleto.generacion, yPos, false);
-                yPos += lineHeight;
+                // ==================== COLUMNA DERECHA ====================
+                AgregarSeccion(pnlPrincipal, "⚙️ CARACTERÍSTICAS ESPECÍFICAS", 590, yPos, 560);
+                int yPosRight = yPos + 38;
 
-                var txtPais = AgregarCampo(pnlPrincipal, "País Fabricación:", vehiculoCompleto.paisFabricacion, yPos, false);
-                yPos += lineHeight;
+                // Generación (EDITABLE)
+                AgregarLabelForm(pnlPrincipal, "Generación:", 590, yPosRight, labelWidth);
+                TextBox txtGeneracion = new TextBox
+                {
+                    Location = new Point(colRightX + 90, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke,
+                    Text = vehiculoCompleto.generacion
+                };
+                pnlPrincipal.Controls.Add(txtGeneracion);
+                yPosRight += lineHeight;
 
-                var txtTransmision = AgregarCampo(pnlPrincipal, "Transmisión:", vehiculoCompleto.transmision, yPos, false);
-                yPos += lineHeight;
+                // País de Fabricación (EDITABLE)
+                AgregarLabelForm(pnlPrincipal, "País Fabricación:", 590, yPosRight, labelWidth);
+                ComboBox cboPaisFabricacion = new ComboBox
+                {
+                    Location = new Point(colRightX + 90, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDown,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+                cboPaisFabricacion.Items.AddRange(new[] { "Japón", "Alemania", "Estados Unidos", "Corea del Sur",
+                    "China", "India", "Brasil", "México", "España", "Francia", "Italia", "Reino Unido" });
+                cboPaisFabricacion.Text = vehiculoCompleto.paisFabricacion;
+                pnlPrincipal.Controls.Add(cboPaisFabricacion);
+                yPosRight += lineHeight;
 
-                var chkTurbo = AgregarCheckBox(pnlPrincipal, "Tiene Turbo:", vehiculoCompleto.tieneTurbo, yPos, false);
-                yPos += lineHeight;
+                // Transmisión (EDITABLE)
+                AgregarLabelForm(pnlPrincipal, "Transmisión:", 590, yPosRight, labelWidth);
+                ComboBox cboTransmision = new ComboBox
+                {
+                    Location = new Point(colRightX + 90, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+                cboTransmision.Items.AddRange(new[] { "Manual", "Automática", "CVT", "Semiautomática", "Doble Embrague" });
+                cboTransmision.Text = vehiculoCompleto.transmision;
+                pnlPrincipal.Controls.Add(cboTransmision);
+                yPosRight += lineHeight;
 
-                var txtMotor = AgregarCampo(pnlPrincipal, "Motor:", vehiculoCompleto.motor, yPos, false);
-                yPos += lineHeight;
+                // Tiene Turbo (EDITABLE)
+                CheckBox chkTieneTurbo = new CheckBox
+                {
+                    Text = "🚀 Tiene Turbo",
+                    Location = new Point(colRightX + 90, yPosRight + 3),
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    AutoSize = true,
+                    ForeColor = Color.FromArgb(220, 53, 69),
+                    Checked = vehiculoCompleto.tieneTurbo,
+                    Enabled = false
+                };
+                pnlPrincipal.Controls.Add(chkTieneTurbo);
+                yPosRight += lineHeight;
 
-                var txtCombustible = AgregarCampo(pnlPrincipal, "Combustible:", vehiculoCompleto.combustible, yPos, false);
-                yPos += lineHeight;
+                // Motor (EDITABLE)
+                AgregarLabelForm(pnlPrincipal, "Motor:", 590, yPosRight, labelWidth);
+                TextBox txtMotor = new TextBox
+                {
+                    Location = new Point(colRightX + 90, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke,
+                    Text = vehiculoCompleto.motor
+                };
+                pnlPrincipal.Controls.Add(txtMotor);
+                yPosRight += lineHeight;
 
-                // ===== SEGURIDAD =====
-                yPos += 10;
-                AgregarTitulo(pnlPrincipal, "🛡️ SEGURIDAD", yPos);
-                yPos += 30;
+                // Combustible (EDITABLE)
+                AgregarLabelForm(pnlPrincipal, "Combustible:", 590, yPosRight, labelWidth);
+                ComboBox cboCombustible = new ComboBox
+                {
+                    Location = new Point(colRightX + 90, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+                cboCombustible.Items.AddRange(new[] { "Gasolina", "Diesel", "Híbrido", "Eléctrico", "GLP", "GNC" });
+                cboCombustible.Text = vehiculoCompleto.combustible;
+                pnlPrincipal.Controls.Add(cboCombustible);
+                yPosRight += lineHeight;
 
-                var nudAirbags = AgregarNumerico(pnlPrincipal, "Nro. Airbags:", vehiculoCompleto.nroAirbags, yPos, 0, 12, false);
-                yPos += lineHeight;
+                // ==================== SEGURIDAD ====================
+                yPos = Math.Max(yPosLeft, yPosRight) + 15;
+                AgregarSeccion(pnlPrincipal, "🛡️ SEGURIDAD", 20, yPos, 540);
+                yPosLeft = yPos + 38;
 
-                var txtOrganizacion = AgregarCampo(pnlPrincipal, "Organización:", vehiculoCompleto.organizacionSeguridad, yPos, false);
-                yPos += lineHeight;
+                // Airbags (EDITABLE)
+                AgregarLabelForm(pnlPrincipal, "Airbags:", 20, yPosLeft, labelWidth);
+                NumericUpDown nudAirbags = new NumericUpDown
+                {
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(100, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 0,
+                    Maximum = 12,
+                    Value = vehiculoCompleto.nroAirbags,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = false
+                };
+                pnlPrincipal.Controls.Add(nudAirbags);
+                yPosLeft += lineHeight;
 
-                var nudEstrellas = AgregarNumerico(pnlPrincipal, "Estrellas:", vehiculoCompleto.seguridadChoques, yPos, 0, 5, false);
-                yPos += lineHeight;
+                // Organización (EDITABLE)
+                AgregarLabelForm(pnlPrincipal, "Organización:", 20, yPosLeft, labelWidth);
+                ComboBox cboOrganizacion = new ComboBox
+                {
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+                cboOrganizacion.Items.AddRange(new[] { "Latin NCAP", "Euro NCAP", "IIHS", "NHTSA", "ANCAP", "Sin calificación" });
+                cboOrganizacion.Text = vehiculoCompleto.organizacionSeguridad;
+                pnlPrincipal.Controls.Add(cboOrganizacion);
+                yPosLeft += lineHeight;
 
-                // ===== EVALUACIÓN =====
-                yPos += 10;
-                AgregarTitulo(pnlPrincipal, "⭐ EVALUACIÓN", yPos);
-                yPos += 30;
+                // Estrellas (EDITABLE)
+                AgregarLabelForm(pnlPrincipal, "Estrellas:", 20, yPosLeft, labelWidth);
+                NumericUpDown nudEstrellas = new NumericUpDown
+                {
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(100, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 0,
+                    Maximum = 5,
+                    Value = vehiculoCompleto.seguridadChoques,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = false
+                };
+                pnlPrincipal.Controls.Add(nudEstrellas);
+                yPosLeft += lineHeight;
 
+                // ==================== EVALUACIÓN ====================
+                AgregarSeccion(pnlPrincipal, "⭐ EVALUACIÓN", 590, yPos, 560);
+                yPosRight = yPos + 38;
+
+                // Confiabilidad (EDITABLE)
+                AgregarLabelForm(pnlPrincipal, "Confiabilidad:", 590, yPosRight, labelWidth);
                 ComboBox cboConfiabilidad = new ComboBox
                 {
-                    Location = new Point(170, yPos),
-                    Size = new Size(250, 23),
+                    Location = new Point(colRightX + 90, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
                     Enabled = false
                 };
                 cboConfiabilidad.Items.AddRange(new[] { "Excelente", "Bueno", "Regular", "Malo" });
-                cboConfiabilidad.SelectedItem = vehiculoCompleto.confiabilidad;
-                AgregarLabel(pnlPrincipal, "Confiabilidad:", 20, yPos);
+                cboConfiabilidad.Text = vehiculoCompleto.confiabilidad;
                 pnlPrincipal.Controls.Add(cboConfiabilidad);
-                yPos += lineHeight;
+                yPosRight += lineHeight;
 
-                var nudPuntuacion = AgregarNumericoDecimal(pnlPrincipal, "Puntuación:", vehiculoCompleto.puntuacion, yPos, 1.0m, 10.0m, false);
-                yPos += lineHeight;
+                // Puntuación (EDITABLE)
+                AgregarLabelForm(pnlPrincipal, "Puntuación:", 590, yPosRight, labelWidth);
+                NumericUpDown nudPuntuacion = new NumericUpDown
+                {
+                    Location = new Point(colRightX + 90, yPosRight),
+                    Size = new Size(120, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 1.0m,
+                    Maximum = 10.0m,
+                    DecimalPlaces = 1,
+                    Increment = 0.5m,
+                    Value = vehiculoCompleto.puntuacion,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = false
+                };
+                pnlPrincipal.Controls.Add(nudPuntuacion);
+                yPosRight += lineHeight;
 
-                // Observaciones
-                yPos += 10;
-                AgregarLabel(pnlPrincipal, "Observaciones:", 20, yPos);
+                // ==================== OBSERVACIONES ====================
+                yPos = Math.Max(yPosLeft, yPosRight) + 15;
+                AgregarLabelForm(pnlPrincipal, "Observaciones:", 20, yPos, labelWidth);
                 TextBox txtObservaciones = new TextBox
                 {
-                    Location = new Point(170, yPos),
-                    Size = new Size(480, 300),
+                    Location = new Point(colLeftX, yPos),
+                    Size = new Size(990, 65),
                     Multiline = true,
                     ScrollBars = ScrollBars.Vertical,
+                    Font = new Font("Segoe UI", 10F),
                     ReadOnly = true,
                     BackColor = Color.WhiteSmoke,
                     Text = vehiculoCompleto.observaciones ?? ""
                 };
                 pnlPrincipal.Controls.Add(txtObservaciones);
-                yPos += 90;
 
-                // Panel inferior con botones
+                // ==================== PANEL DE BOTONES ====================
                 Panel pnlBotones = new Panel
                 {
-                    Height = 100,
-                    Dock = DockStyle.Bottom,
-                    Padding = new Padding(580, 100, 580, 100),
+                    Location = new Point(0, 700),
+                    Size = new Size(1184, 110),
+                    BackColor = Color.FromArgb(248, 249, 250),
                     BorderStyle = BorderStyle.FixedSingle
                 };
 
-                // Botones Editar y Eliminar (solo si hay usuario autenticado)
+                // Botón Editar/Guardar (solo si hay usuario autenticado)
                 if (Util.usuario != null)
                 {
                     Button btnEditar = new Button
                     {
-                        Text = "Editar",
-                        Size = new Size(110, 40),
-                        Location = new Point(150, 10),
+                        Text = "✏️ Editar",
+                        Size = new Size(180, 45),
+                        Location = new Point(350, 12),
                         BackColor = Color.FromArgb(51, 122, 183),
                         ForeColor = Color.White,
                         FlatStyle = FlatStyle.Flat,
-                        Font = new Font("Arial", 9, FontStyle.Bold)
+                        Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                        Cursor = Cursors.Hand
                     };
+                    btnEditar.FlatAppearance.BorderSize = 0;
+
                     btnEditar.Click += (s, e) =>
                     {
-                        if (btnEditar.Text == "Editar")
+                        if (btnEditar.Text == "✏️ Editar")
                         {
-                            // Activar modo edición
-                            txtGeneracion.ReadOnly = false;
-                            txtPais.ReadOnly = false;
-                            txtTransmision.ReadOnly = false;
-                            chkTurbo.Enabled = true;
-                            txtMotor.ReadOnly = false;
-                            txtCombustible.ReadOnly = false;
-                            nudAirbags.Enabled = true;
-                            txtOrganizacion.ReadOnly = false;
-                            nudEstrellas.Enabled = true;
+                            // ACTIVAR MODO EDICIÓN
                             nudAnio.Enabled = true;
+                            txtGeneracion.ReadOnly = false;
+                            txtGeneracion.BackColor = Color.White;
+                            cboPaisFabricacion.Enabled = true;
+                            cboTransmision.Enabled = true;
+                            chkTieneTurbo.Enabled = true;
+                            txtMotor.ReadOnly = false;
+                            txtMotor.BackColor = Color.White;
+                            cboCombustible.Enabled = true;
+                            nudAirbags.Enabled = true;
+                            cboOrganizacion.Enabled = true;
+                            nudEstrellas.Enabled = true;
                             cboConfiabilidad.Enabled = true;
                             nudPuntuacion.Enabled = true;
                             txtObservaciones.ReadOnly = false;
-
-                            // Cambiar colores
-                            txtGeneracion.BackColor = Color.White;
-                            txtPais.BackColor = Color.White;
-                            txtTransmision.BackColor = Color.White;
-                            txtMotor.BackColor = Color.White;
-                            txtCombustible.BackColor = Color.White;
-                            txtOrganizacion.BackColor = Color.White;
                             txtObservaciones.BackColor = Color.White;
 
-                            lblEstado.Text = "MODO EDICIÓN";
+                            lblEstado.Text = "✏️ MODO EDICIÓN - Modifique los campos necesarios";
                             lblEstado.ForeColor = Color.Green;
-                            btnEditar.Text = "Guardar";
+                            lblEstado.BackColor = Color.FromArgb(230, 255, 230);
+                            btnEditar.Text = "💾 Guardar";
                             btnEditar.BackColor = Color.FromArgb(40, 167, 69);
                         }
                         else
                         {
-                            // VALIDACIONES
-                            if (string.IsNullOrWhiteSpace(txtGeneracion.Text))
-                            {
-                                MessageBox.Show("La generación es obligatoria", "Validación",
-                                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            // GUARDAR CAMBIOS
+                            if (!ValidarEdicion(txtGeneracion.Text, cboPaisFabricacion.SelectedIndex, cboConfiabilidad.SelectedIndex))
                                 return;
-                            }
 
-                            if (string.IsNullOrWhiteSpace(txtPais.Text))
-                            {
-                                MessageBox.Show("El país de fabricación es obligatorio", "Validación",
-                                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                return;
-                            }
-
-                            if (cboConfiabilidad.SelectedIndex == -1)
-                            {
-                                MessageBox.Show("Debe seleccionar un nivel de confiabilidad", "Validación",
-                                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                return;
-                            }
-
-                            // ACTUALIZAR VEHÍCULO
                             try
                             {
-                                vehiculoCompleto.generacion = txtGeneracion.Text.Trim();
-                                vehiculoCompleto.paisFabricacion = txtPais.Text.Trim();
-                                vehiculoCompleto.transmision = txtTransmision.Text.Trim();
-                                vehiculoCompleto.tieneTurbo = chkTurbo.Checked;
-                                vehiculoCompleto.motor = txtMotor.Text.Trim();
-                                vehiculoCompleto.combustible = txtCombustible.Text.Trim();
-                                vehiculoCompleto.nroAirbags = (int)nudAirbags.Value;
-                                vehiculoCompleto.organizacionSeguridad = txtOrganizacion.Text.Trim();
-                                vehiculoCompleto.seguridadChoques = (int)nudEstrellas.Value;
                                 vehiculoCompleto.anioFabricacion = (int)nudAnio.Value;
-                                vehiculoCompleto.confiabilidad = cboConfiabilidad.SelectedItem.ToString();
+                                vehiculoCompleto.generacion = txtGeneracion.Text.Trim();
+                                vehiculoCompleto.paisFabricacion = cboPaisFabricacion.Text.Trim();
+                                vehiculoCompleto.transmision = cboTransmision.Text;
+                                vehiculoCompleto.tieneTurbo = chkTieneTurbo.Checked;
+                                vehiculoCompleto.motor = txtMotor.Text.Trim();
+                                vehiculoCompleto.combustible = cboCombustible.Text;
+                                vehiculoCompleto.nroAirbags = (int)nudAirbags.Value;
+                                vehiculoCompleto.organizacionSeguridad = cboOrganizacion.Text;
+                                vehiculoCompleto.seguridadChoques = (int)nudEstrellas.Value;
+                                vehiculoCompleto.confiabilidad = cboConfiabilidad.Text;
                                 vehiculoCompleto.puntuacion = nudPuntuacion.Value;
                                 vehiculoCompleto.observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ? null : txtObservaciones.Text.Trim();
                                 vehiculoCompleto.usuarioRegistro = Util.usuario.usuario;
@@ -513,63 +697,61 @@ namespace CpAuton
 
                                 if (resultado > 0)
                                 {
-                                    // Desactivar modo edición
-                                    txtGeneracion.ReadOnly = true;
-                                    txtPais.ReadOnly = true;
-                                    txtTransmision.ReadOnly = true;
-                                    chkTurbo.Enabled = false;
-                                    txtMotor.ReadOnly = true;
-                                    txtCombustible.ReadOnly = true;
-                                    nudAirbags.Enabled = false;
-                                    txtOrganizacion.ReadOnly = true;
-                                    nudEstrellas.Enabled = false;
+                                    // DESACTIVAR MODO EDICIÓN
                                     nudAnio.Enabled = false;
+                                    txtGeneracion.ReadOnly = true;
+                                    txtGeneracion.BackColor = Color.WhiteSmoke;
+                                    cboPaisFabricacion.Enabled = false;
+                                    cboTransmision.Enabled = false;
+                                    chkTieneTurbo.Enabled = false;
+                                    txtMotor.ReadOnly = true;
+                                    txtMotor.BackColor = Color.WhiteSmoke;
+                                    cboCombustible.Enabled = false;
+                                    nudAirbags.Enabled = false;
+                                    cboOrganizacion.Enabled = false;
+                                    nudEstrellas.Enabled = false;
                                     cboConfiabilidad.Enabled = false;
                                     nudPuntuacion.Enabled = false;
                                     txtObservaciones.ReadOnly = true;
-
-                                    txtGeneracion.BackColor = Color.WhiteSmoke;
-                                    txtPais.BackColor = Color.WhiteSmoke;
-                                    txtTransmision.BackColor = Color.WhiteSmoke;
-                                    txtMotor.BackColor = Color.WhiteSmoke;
-                                    txtCombustible.BackColor = Color.WhiteSmoke;
-                                    txtOrganizacion.BackColor = Color.WhiteSmoke;
                                     txtObservaciones.BackColor = Color.WhiteSmoke;
 
-                                    lblEstado.Text = "MODO LECTURA";
+                                    lblEstado.Text = "🔒 MODO LECTURA";
                                     lblEstado.ForeColor = Color.Red;
-                                    btnEditar.Text = "Editar";
+                                    lblEstado.BackColor = Color.FromArgb(255, 230, 230);
+                                    btnEditar.Text = "✏️ Editar";
                                     btnEditar.BackColor = Color.FromArgb(51, 122, 183);
 
-                                    MessageBox.Show("✅ Vehículo actualizado exitosamente", "Éxito",
-                                                  MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    MessageBox.Show("✅ Vehículo actualizado exitosamente",
+                                                  "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     frmDetalles.Close();
                                     CargarVehiculos("");
                                 }
                                 else
                                 {
-                                    MessageBox.Show("❌ No se pudo actualizar el vehículo", "Error",
-                                                  MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBox.Show("❌ No se pudo actualizar el vehículo",
+                                                  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show($"❌ Error al guardar: {ex.Message}", "Error",
-                                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show($"❌ Error al guardar: {ex.Message}",
+                                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
                     };
 
                     Button btnEliminar = new Button
                     {
-                        Text = "Eliminar",
-                        Size = new Size(110, 40),
-                        Location = new Point(270, 10),
+                        Text = "🗑️ Eliminar",
+                        Size = new Size(180, 45),
+                        Location = new Point(550, 12),
                         BackColor = Color.FromArgb(217, 83, 79),
                         ForeColor = Color.White,
                         FlatStyle = FlatStyle.Flat,
-                        Font = new Font("Arial", 9, FontStyle.Bold)
+                        Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                        Cursor = Cursors.Hand
                     };
+                    btnEliminar.FlatAppearance.BorderSize = 0;
                     btnEliminar.Click += (s, e) => EliminarVehiculo(vehiculo, frmDetalles);
 
                     pnlBotones.Controls.Add(btnEditar);
@@ -578,15 +760,17 @@ namespace CpAuton
 
                 Button btnCerrar = new Button
                 {
-                    Text = "Cerrar",
-                    Size = new Size(110, 40),
-                    Location = new Point(450, 10),
+                    Text = "❌ Cerrar",
+                    Size = new Size(180, 45),
+                    Location = new Point(750, 12),
                     BackColor = Color.FromArgb(108, 117, 125),
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
-                    Font = new Font("Arial", 9, FontStyle.Bold),
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
                     DialogResult = DialogResult.OK
                 };
+                btnCerrar.FlatAppearance.BorderSize = 0;
 
                 pnlBotones.Controls.Add(btnCerrar);
                 frmDetalles.Controls.Add(pnlBotones);
@@ -597,111 +781,79 @@ namespace CpAuton
             }
         }
 
-        private void AgregarTitulo(Panel panel, string texto, int yPos)
+        private void AgregarSeccion(Panel panel, string titulo, int x, int yPos, int width)
         {
-            Panel pnlTitulo = new Panel
+            Panel pnlSeccion = new Panel
             {
-                Location = new Point(20, yPos),
-                Size = new Size(620, 25),
-                BackColor = Color.FromArgb(233, 236, 239)
+                Location = new Point(x, yPos),
+                Size = new Size(width, 32),
+                BackColor = Color.FromArgb(52, 58, 64)
             };
 
-            Label lblTitulo = new Label
+            Label lblSeccion = new Label
             {
-                Text = texto,
+                Text = titulo,
                 Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                ForeColor = Color.FromArgb(52, 58, 64),
-                Location = new Point(10, 4),
+                ForeColor = Color.White,
+                Location = new Point(10, 7),
                 AutoSize = true
             };
-            pnlTitulo.Controls.Add(lblTitulo);
-            panel.Controls.Add(pnlTitulo);
+            pnlSeccion.Controls.Add(lblSeccion);
+            panel.Controls.Add(pnlSeccion);
         }
 
-        private void AgregarLabel(Panel panel, string texto, int x, int yPos)
+        private void AgregarLabelForm(Panel panel, string texto, int x, int yPos, int width)
         {
             Label lbl = new Label
             {
                 Text = texto,
-                Font = new Font("Arial", 9, FontStyle.Bold),
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
                 Location = new Point(x, yPos + 3),
-                Size = new Size(140, 20),
-                ForeColor = Color.DarkBlue
+                Size = new Size(width, 25),
+                TextAlign = ContentAlignment.MiddleLeft,
+                ForeColor = Color.FromArgb(33, 37, 41)
             };
             panel.Controls.Add(lbl);
         }
 
-        private TextBox AgregarCampo(Panel panel, string label, string valor, int yPos, bool soloLectura)
+        private bool ValidarEdicion(string generacion, int paisIndex, int confiabilidadIndex)
         {
-            AgregarLabel(panel, label, 20, yPos);
-            TextBox txt = new TextBox
+            if (string.IsNullOrWhiteSpace(generacion))
             {
-                Location = new Point(170, yPos),
-                Size = new Size(480, 23),
-                ReadOnly = soloLectura,
-                BackColor = Color.WhiteSmoke,
-                Text = valor ?? ""
-            };
-            panel.Controls.Add(txt);
-            return txt;
-        }
+                MessageBox.Show("⚠️ La generación es obligatoria", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
-        private NumericUpDown AgregarNumerico(Panel panel, string label, int valor, int yPos, int min, int max, bool soloLectura)
-        {
-            AgregarLabel(panel, label, 20, yPos);
-            NumericUpDown nud = new NumericUpDown
+            if (paisIndex == -1)
             {
-                Location = new Point(170, yPos),
-                Size = new Size(120, 23),
-                Minimum = min,
-                Maximum = max,
-                Value = valor,
-                Enabled = !soloLectura,
-                TextAlign = HorizontalAlignment.Center
-            };
-            panel.Controls.Add(nud);
-            return nud;
-        }
+                MessageBox.Show("⚠️ Debe seleccionar el país de fabricación", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
-        private NumericUpDown AgregarNumericoDecimal(Panel panel, string label, decimal valor, int yPos, decimal min, decimal max, bool soloLectura)
-        {
-            AgregarLabel(panel, label, 20, yPos);
-            NumericUpDown nud = new NumericUpDown
+            if (confiabilidadIndex == -1)
             {
-                Location = new Point(170, yPos),
-                Size = new Size(120, 23),
-                Minimum = min,
-                Maximum = max,
-                DecimalPlaces = 1,
-                Increment = 0.5m,
-                Value = valor,
-                Enabled = !soloLectura,
-                TextAlign = HorizontalAlignment.Center
-            };
-            panel.Controls.Add(nud);
-            return nud;
-        }
+                MessageBox.Show("⚠️ Debe seleccionar el nivel de confiabilidad", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
 
-        private CheckBox AgregarCheckBox(Panel panel, string label, bool valor, int yPos, bool soloLectura)
-        {
-            AgregarLabel(panel, label, 20, yPos);
-            CheckBox chk = new CheckBox
-            {
-                Location = new Point(170, yPos + 3),
-                Checked = valor,
-                Enabled = !soloLectura,
-                AutoSize = true
-            };
-            panel.Controls.Add(chk);
-            return chk;
+            return true;
         }
 
         private void EliminarVehiculo(paVehiculoListar_Result vehiculo, Form frmDetalles)
         {
-            DialogResult resultado = MessageBox.Show($"¿Está seguro que desea eliminar el vehículo '{vehiculo.modelo} {vehiculo.generacion}'?",
-                                                    "Eliminar Vehículo",
-                                                    MessageBoxButtons.YesNo,
-                                                    MessageBoxIcon.Question);
+            DialogResult resultado = MessageBox.Show(
+                $"⚠️ ¿Está seguro que desea eliminar este vehículo?\n\n" +
+                $"Modelo: {vehiculo.modelo}\n" +
+                $"Generación: {vehiculo.generacion}\n" +
+                $"País: {vehiculo.paisFabricacion}\n\n" +
+                $"Esta acción no se puede deshacer.",
+                "Confirmar Eliminación",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
             if (resultado == DialogResult.Yes)
             {
                 try
