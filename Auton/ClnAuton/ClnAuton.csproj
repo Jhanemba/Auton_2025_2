@@ -64,6 +64,7 @@
     <Compile Include="TipoVehiculoCln.cs" />
     <Compile Include="UsuarioCln.cs" />
     <Compile Include="VehiculoCln.cs" />
+    <Compile Include="VehiculosJaponesesCln.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CadAuton\CadAuton.csproj">

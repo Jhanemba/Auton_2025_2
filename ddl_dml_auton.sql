@@ -51,6 +51,13 @@ DROP PROC IF EXISTS paCargoListar;
 DROP PROC IF EXISTS paTipoVehiculoListar;
 DROP PROC IF EXISTS paProcedenciaListar;
 
+DROP PROC IF EXISTS paVehiculosJaponeses;
+DROP PROC IF EXISTS paVehiculosAmericanos;
+DROP PROC IF EXISTS paVehiculosChinos;
+DROP PROC IF EXISTS paVehiculosAlemanes;
+DROP PROC IF EXISTS paVehiculosEuropeos;
+DROP PROC IF EXISTS paVehiculosCoreanos;
+
 -- Eliminar vistas si existen
 DROP VIEW IF EXISTS VW_VehiculosCompleto;
 DROP VIEW IF EXISTS VW_EstadisticasProcedencia;
@@ -360,7 +367,7 @@ AS
 GO
 CREATE PROC paMarcaPorProcedencia @idProcedencia INT
 AS
-    SELECT id, nombre, descripcion
+    SELECT id, nombre, descripcion 
     FROM Marca
     WHERE estado = 1 AND idProcedencia = @idProcedencia
     ORDER BY nombre ASC;
@@ -373,6 +380,300 @@ AS
     INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
     WHERE mv.estado = 1 AND mv.idMarca = @idMarca
     ORDER BY mv.nombre ASC;
+
+
+
+-- =====================================================
+-- PROCEDIMIENTO: Vehículos Japoneses
+-- =====================================================
+GO
+CREATE PROC paVehiculosJaponeses
+    @parametro VARCHAR(100) = ''
+AS
+BEGIN
+    SELECT 
+        v.id, 
+        mv.nombre AS modelo, 
+        m.nombre AS marca, 
+        p.descripcion AS procedencia,
+        tv.descripcion AS tipoVehiculo, 
+        v.generacion, 
+        v.paisFabricacion, 
+        v.transmision, 
+        v.tieneTurbo,
+        v.motor, 
+        v.combustible, 
+        v.nroAirbags,
+        v.seguridadChoques,
+        v.organizacionSeguridad,
+        v.anioFabricacion, 
+        v.confiabilidad, 
+        v.puntuacion,
+        v.observaciones, 
+        v.usuarioRegistro, 
+        v.fechaRegistro, 
+        v.estado
+    FROM Vehiculo v
+    INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+    INNER JOIN Marca m ON mv.idMarca = m.id
+    INNER JOIN Procedencia p ON m.idProcedencia = p.id
+    INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
+    WHERE v.estado <> -1 
+        AND p.descripcion = 'Japonés'
+        AND (
+            @parametro = '' 
+            OR mv.nombre LIKE '%' + @parametro + '%'
+            OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.generacion LIKE '%' + @parametro + '%'
+            OR v.motor LIKE '%' + @parametro + '%'
+            OR v.paisFabricacion LIKE '%' + @parametro + '%'
+        )
+    ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
+END
+GO
+
+-- =====================================================
+-- PROCEDIMIENTO: Vehículos Americanos
+-- =====================================================
+CREATE PROC paVehiculosAmericanos
+    @parametro VARCHAR(100) = ''
+AS
+BEGIN
+    SELECT 
+        v.id, 
+        mv.nombre AS modelo, 
+        m.nombre AS marca, 
+        p.descripcion AS procedencia,
+        tv.descripcion AS tipoVehiculo, 
+        v.generacion, 
+        v.paisFabricacion, 
+        v.transmision, 
+        v.tieneTurbo,
+        v.motor, 
+        v.combustible, 
+        v.nroAirbags,
+        v.seguridadChoques,
+        v.organizacionSeguridad,
+        v.anioFabricacion, 
+        v.confiabilidad, 
+        v.puntuacion,
+        v.observaciones, 
+        v.usuarioRegistro, 
+        v.fechaRegistro, 
+        v.estado
+    FROM Vehiculo v
+    INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+    INNER JOIN Marca m ON mv.idMarca = m.id
+    INNER JOIN Procedencia p ON m.idProcedencia = p.id
+    INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
+    WHERE v.estado <> -1 
+        AND p.descripcion = 'Americano'
+        AND (
+            @parametro = '' 
+            OR mv.nombre LIKE '%' + @parametro + '%'
+            OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.generacion LIKE '%' + @parametro + '%'
+            OR v.motor LIKE '%' + @parametro + '%'
+            OR v.paisFabricacion LIKE '%' + @parametro + '%'
+        )
+    ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
+END
+GO
+
+-- =====================================================
+-- PROCEDIMIENTO: Vehículos Chinos
+-- =====================================================
+CREATE PROC paVehiculosChinos
+    @parametro VARCHAR(100) = ''
+AS
+BEGIN
+    SELECT 
+        v.id, 
+        mv.nombre AS modelo, 
+        m.nombre AS marca, 
+        p.descripcion AS procedencia,
+        tv.descripcion AS tipoVehiculo, 
+        v.generacion, 
+        v.paisFabricacion, 
+        v.transmision, 
+        v.tieneTurbo,
+        v.motor, 
+        v.combustible, 
+        v.nroAirbags,
+        v.seguridadChoques,
+        v.organizacionSeguridad,
+        v.anioFabricacion, 
+        v.confiabilidad, 
+        v.puntuacion,
+        v.observaciones, 
+        v.usuarioRegistro, 
+        v.fechaRegistro, 
+        v.estado
+    FROM Vehiculo v
+    INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+    INNER JOIN Marca m ON mv.idMarca = m.id
+    INNER JOIN Procedencia p ON m.idProcedencia = p.id
+    INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
+    WHERE v.estado <> -1 
+        AND p.descripcion = 'Chino'
+        AND (
+            @parametro = '' 
+            OR mv.nombre LIKE '%' + @parametro + '%'
+            OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.generacion LIKE '%' + @parametro + '%'
+            OR v.motor LIKE '%' + @parametro + '%'
+            OR v.paisFabricacion LIKE '%' + @parametro + '%'
+        )
+    ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
+END
+GO
+
+-- =====================================================
+-- PROCEDIMIENTO: Vehículos Alemanes
+-- =====================================================
+CREATE PROC paVehiculosAlemanes
+    @parametro VARCHAR(100) = ''
+AS
+BEGIN
+    SELECT 
+        v.id, 
+        mv.nombre AS modelo, 
+        m.nombre AS marca, 
+        p.descripcion AS procedencia,
+        tv.descripcion AS tipoVehiculo, 
+        v.generacion, 
+        v.paisFabricacion, 
+        v.transmision, 
+        v.tieneTurbo,
+        v.motor, 
+        v.combustible, 
+        v.nroAirbags,
+        v.seguridadChoques,
+        v.organizacionSeguridad,
+        v.anioFabricacion, 
+        v.confiabilidad, 
+        v.puntuacion,
+        v.observaciones, 
+        v.usuarioRegistro, 
+        v.fechaRegistro, 
+        v.estado
+    FROM Vehiculo v
+    INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+    INNER JOIN Marca m ON mv.idMarca = m.id
+    INNER JOIN Procedencia p ON m.idProcedencia = p.id
+    INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
+    WHERE v.estado <> -1 
+        AND p.descripcion = 'Alemán'
+        AND (
+            @parametro = '' 
+            OR mv.nombre LIKE '%' + @parametro + '%'
+            OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.generacion LIKE '%' + @parametro + '%'
+            OR v.motor LIKE '%' + @parametro + '%'
+            OR v.paisFabricacion LIKE '%' + @parametro + '%'
+        )
+    ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
+END
+GO
+
+-- =====================================================
+-- PROCEDIMIENTO: Vehículos Europeos
+-- =====================================================
+CREATE PROC paVehiculosEuropeos
+    @parametro VARCHAR(100) = ''
+AS
+BEGIN
+    SELECT 
+        v.id, 
+        mv.nombre AS modelo, 
+        m.nombre AS marca, 
+        p.descripcion AS procedencia,
+        tv.descripcion AS tipoVehiculo, 
+        v.generacion, 
+        v.paisFabricacion, 
+        v.transmision, 
+        v.tieneTurbo,
+        v.motor, 
+        v.combustible, 
+        v.nroAirbags,
+        v.seguridadChoques,
+        v.organizacionSeguridad,
+        v.anioFabricacion, 
+        v.confiabilidad, 
+        v.puntuacion,
+        v.observaciones, 
+        v.usuarioRegistro, 
+        v.fechaRegistro, 
+        v.estado
+    FROM Vehiculo v
+    INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+    INNER JOIN Marca m ON mv.idMarca = m.id
+    INNER JOIN Procedencia p ON m.idProcedencia = p.id
+    INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
+    WHERE v.estado <> -1 
+        AND p.descripcion = 'Europeo'
+        AND (
+            @parametro = '' 
+            OR mv.nombre LIKE '%' + @parametro + '%'
+            OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.generacion LIKE '%' + @parametro + '%'
+            OR v.motor LIKE '%' + @parametro + '%'
+            OR v.paisFabricacion LIKE '%' + @parametro + '%'
+        )
+    ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
+END
+GO
+
+-- =====================================================
+-- PROCEDIMIENTO: Vehículos Coreanos
+-- =====================================================
+CREATE PROC paVehiculosCoreanos
+    @parametro VARCHAR(100) = ''
+AS
+BEGIN
+    SELECT 
+        v.id, 
+        mv.nombre AS modelo, 
+        m.nombre AS marca, 
+        p.descripcion AS procedencia,
+        tv.descripcion AS tipoVehiculo, 
+        v.generacion, 
+        v.paisFabricacion, 
+        v.transmision, 
+        v.tieneTurbo,
+        v.motor, 
+        v.combustible, 
+        v.nroAirbags,
+        v.seguridadChoques,
+        v.organizacionSeguridad,
+        v.anioFabricacion, 
+        v.confiabilidad, 
+        v.puntuacion,
+        v.observaciones, 
+        v.usuarioRegistro, 
+        v.fechaRegistro, 
+        v.estado
+    FROM Vehiculo v
+    INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+    INNER JOIN Marca m ON mv.idMarca = m.id
+    INNER JOIN Procedencia p ON m.idProcedencia = p.id
+    INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
+    WHERE v.estado <> -1 
+        AND p.descripcion = 'Coreano'
+        AND (
+            @parametro = '' 
+            OR mv.nombre LIKE '%' + @parametro + '%'
+            OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.generacion LIKE '%' + @parametro + '%'
+            OR v.motor LIKE '%' + @parametro + '%'
+            OR v.paisFabricacion LIKE '%' + @parametro + '%'
+        )
+    ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
+END
+
+
+EXEC paVehiculosJaponeses ''
+
 
 
 -- =====================================================
@@ -485,6 +786,12 @@ UNION ALL
 SELECT 'Marcas disponibles', COUNT(*) FROM Marca WHERE estado = 1
 UNION ALL
 SELECT 'Usuarios creados', COUNT(*) FROM Usuario WHERE estado = 1;
+
+SELECT COUNT(*) FROM Vehiculo v
+INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+INNER JOIN Marca m ON mv.idMarca = m.id
+INNER JOIN Procedencia p ON m.idProcedencia = p.id
+WHERE p.descripcion = 'Japonés'
 
 PRINT '';
 PRINT 'USUARIOS:';

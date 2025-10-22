@@ -137,6 +137,7 @@
             this.btnCaJaponeses.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaJaponeses.IconSet")))));
             this.btnCaJaponeses.Name = "btnCaJaponeses";
             this.btnCaJaponeses.Text = "Japoneses";
+            this.btnCaJaponeses.Click += new System.EventHandler(this.MenuJaponeses_Click);
             // 
             // ribbonGroup3
             // 

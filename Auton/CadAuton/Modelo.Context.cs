@@ -235,5 +235,59 @@ namespace CadAuton
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<paVehiculoListar_Result>("paVehiculoListar", parametroParameter);
         }
+    
+        public virtual ObjectResult<paVehiculosAlemanes_Result> paVehiculosAlemanes(string parametro)
+        {
+            var parametroParameter = parametro != null ?
+                new ObjectParameter("parametro", parametro) :
+                new ObjectParameter("parametro", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<paVehiculosAlemanes_Result>("paVehiculosAlemanes", parametroParameter);
+        }
+    
+        public virtual ObjectResult<paVehiculosAmericanos_Result> paVehiculosAmericanos(string parametro)
+        {
+            var parametroParameter = parametro != null ?
+                new ObjectParameter("parametro", parametro) :
+                new ObjectParameter("parametro", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<paVehiculosAmericanos_Result>("paVehiculosAmericanos", parametroParameter);
+        }
+    
+        public virtual ObjectResult<paVehiculosChinos_Result> paVehiculosChinos(string parametro)
+        {
+            var parametroParameter = parametro != null ?
+                new ObjectParameter("parametro", parametro) :
+                new ObjectParameter("parametro", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<paVehiculosChinos_Result>("paVehiculosChinos", parametroParameter);
+        }
+    
+        public virtual ObjectResult<paVehiculosCoreanos_Result> paVehiculosCoreanos(string parametro)
+        {
+            var parametroParameter = parametro != null ?
+                new ObjectParameter("parametro", parametro) :
+                new ObjectParameter("parametro", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<paVehiculosCoreanos_Result>("paVehiculosCoreanos", parametroParameter);
+        }
+    
+        public virtual ObjectResult<paVehiculosEuropeos_Result> paVehiculosEuropeos(string parametro)
+        {
+            var parametroParameter = parametro != null ?
+                new ObjectParameter("parametro", parametro) :
+                new ObjectParameter("parametro", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<paVehiculosEuropeos_Result>("paVehiculosEuropeos", parametroParameter);
+        }
+    
+        public virtual ObjectResult<paVehiculosJaponeses_Result> paVehiculosJaponeses(string parametro)
+        {
+            var parametroParameter = parametro != null ?
+                new ObjectParameter("parametro", parametro) :
+                new ObjectParameter("parametro", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<paVehiculosJaponeses_Result>("paVehiculosJaponeses", parametroParameter);
+        }
     }
 }

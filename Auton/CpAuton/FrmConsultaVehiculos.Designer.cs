@@ -99,15 +99,16 @@
             this.txtBuscar.Name = "txtBuscar";
             this.txtBuscar.Size = new System.Drawing.Size(680, 22);
             this.txtBuscar.TabIndex = 9;
+            this.txtBuscar.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtClave_KeyPress);
             // 
             // lblParametro
             // 
             this.lblParametro.AutoSize = true;
             this.lblParametro.Location = new System.Drawing.Point(138, 95);
             this.lblParametro.Name = "lblParametro";
-            this.lblParametro.Size = new System.Drawing.Size(318, 16);
+            this.lblParametro.Size = new System.Drawing.Size(399, 16);
             this.lblParametro.TabIndex = 8;
-            this.lblParametro.Text = "Buscar por Código, Descripción o Unida de Medida:";
+            this.lblParametro.Text = "Buscar por Marca, Modelo, País, Tansmisión, Motor, Confiabilidad\r\n";
             // 
             // lblTitulo
             // 

@@ -988,5 +988,9 @@ namespace CpAuton
                 }
             }
         }
+        private void txtClave_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter) btnBuscar.PerformClick();
+        }
     }
 }

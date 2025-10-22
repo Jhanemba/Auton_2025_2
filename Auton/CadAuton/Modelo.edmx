@@ -294,6 +294,24 @@
         <Function Name="paVehiculoListar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="parametro" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="paVehiculosAlemanes" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="parametro" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="paVehiculosAmericanos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="parametro" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="paVehiculosChinos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="parametro" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="paVehiculosCoreanos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="parametro" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="paVehiculosEuropeos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="parametro" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="paVehiculosJaponeses" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="parametro" Type="varchar" Mode="In" />
+        </Function>
         <EntityContainer Name="AutonModelStoreContainer">
           <EntitySet Name="Cargo" EntityType="Self.Cargo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Empleado" EntityType="Self.Empleado" Schema="dbo" store:Type="Tables" />
@@ -691,6 +709,24 @@
           <FunctionImport Name="paVehiculoListar" ReturnType="Collection(AutonModel.paVehiculoListar_Result)">
             <Parameter Name="parametro" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="paVehiculosAlemanes" ReturnType="Collection(AutonModel.paVehiculosAlemanes_Result)">
+            <Parameter Name="parametro" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="paVehiculosAmericanos" ReturnType="Collection(AutonModel.paVehiculosAmericanos_Result)">
+            <Parameter Name="parametro" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="paVehiculosChinos" ReturnType="Collection(AutonModel.paVehiculosChinos_Result)">
+            <Parameter Name="parametro" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="paVehiculosCoreanos" ReturnType="Collection(AutonModel.paVehiculosCoreanos_Result)">
+            <Parameter Name="parametro" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="paVehiculosEuropeos" ReturnType="Collection(AutonModel.paVehiculosEuropeos_Result)">
+            <Parameter Name="parametro" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="paVehiculosJaponeses" ReturnType="Collection(AutonModel.paVehiculosJaponeses_Result)">
+            <Parameter Name="parametro" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="paCargoListar_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -740,6 +776,144 @@
           <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
           <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
           <Property Type="Int32" Name="kilometraje" Nullable="true" />
+          <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
+          <Property Type="Int16" Name="estado" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="paVehiculosAlemanes_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="modelo" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
+          <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
+          <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="nroAirbags" Nullable="false" />
+          <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
+          <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="anioFabricacion" Nullable="false" />
+          <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
+          <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
+          <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
+          <Property Type="Int16" Name="estado" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="paVehiculosAmericanos_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="modelo" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
+          <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
+          <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="nroAirbags" Nullable="false" />
+          <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
+          <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="anioFabricacion" Nullable="false" />
+          <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
+          <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
+          <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
+          <Property Type="Int16" Name="estado" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="paVehiculosChinos_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="modelo" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
+          <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
+          <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="nroAirbags" Nullable="false" />
+          <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
+          <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="anioFabricacion" Nullable="false" />
+          <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
+          <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
+          <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
+          <Property Type="Int16" Name="estado" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="paVehiculosCoreanos_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="modelo" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
+          <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
+          <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="nroAirbags" Nullable="false" />
+          <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
+          <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="anioFabricacion" Nullable="false" />
+          <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
+          <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
+          <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
+          <Property Type="Int16" Name="estado" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="paVehiculosEuropeos_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="modelo" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
+          <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
+          <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="nroAirbags" Nullable="false" />
+          <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
+          <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="anioFabricacion" Nullable="false" />
+          <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
+          <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
+          <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
+          <Property Type="Int16" Name="estado" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="paVehiculosJaponeses_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="modelo" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
+          <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
+          <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="nroAirbags" Nullable="false" />
+          <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
+          <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="anioFabricacion" Nullable="false" />
+          <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
+          <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
           <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
           <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
           <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
@@ -977,6 +1151,168 @@
                 <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
                 <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
                 <ScalarProperty Name="kilometraje" ColumnName="kilometraje" />
+                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+                <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
+                <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="paVehiculosAlemanes" FunctionName="AutonModel.Store.paVehiculosAlemanes">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AutonModel.paVehiculosAlemanes_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="modelo" ColumnName="modelo" />
+                <ScalarProperty Name="marca" ColumnName="marca" />
+                <ScalarProperty Name="procedencia" ColumnName="procedencia" />
+                <ScalarProperty Name="tipoVehiculo" ColumnName="tipoVehiculo" />
+                <ScalarProperty Name="generacion" ColumnName="generacion" />
+                <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
+                <ScalarProperty Name="transmision" ColumnName="transmision" />
+                <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+                <ScalarProperty Name="motor" ColumnName="motor" />
+                <ScalarProperty Name="combustible" ColumnName="combustible" />
+                <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+                <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+                <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
+                <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
+                <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
+                <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
+                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+                <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
+                <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="paVehiculosAmericanos" FunctionName="AutonModel.Store.paVehiculosAmericanos">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AutonModel.paVehiculosAmericanos_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="modelo" ColumnName="modelo" />
+                <ScalarProperty Name="marca" ColumnName="marca" />
+                <ScalarProperty Name="procedencia" ColumnName="procedencia" />
+                <ScalarProperty Name="tipoVehiculo" ColumnName="tipoVehiculo" />
+                <ScalarProperty Name="generacion" ColumnName="generacion" />
+                <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
+                <ScalarProperty Name="transmision" ColumnName="transmision" />
+                <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+                <ScalarProperty Name="motor" ColumnName="motor" />
+                <ScalarProperty Name="combustible" ColumnName="combustible" />
+                <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+                <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+                <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
+                <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
+                <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
+                <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
+                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+                <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
+                <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="paVehiculosChinos" FunctionName="AutonModel.Store.paVehiculosChinos">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AutonModel.paVehiculosChinos_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="modelo" ColumnName="modelo" />
+                <ScalarProperty Name="marca" ColumnName="marca" />
+                <ScalarProperty Name="procedencia" ColumnName="procedencia" />
+                <ScalarProperty Name="tipoVehiculo" ColumnName="tipoVehiculo" />
+                <ScalarProperty Name="generacion" ColumnName="generacion" />
+                <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
+                <ScalarProperty Name="transmision" ColumnName="transmision" />
+                <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+                <ScalarProperty Name="motor" ColumnName="motor" />
+                <ScalarProperty Name="combustible" ColumnName="combustible" />
+                <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+                <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+                <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
+                <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
+                <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
+                <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
+                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+                <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
+                <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="paVehiculosCoreanos" FunctionName="AutonModel.Store.paVehiculosCoreanos">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AutonModel.paVehiculosCoreanos_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="modelo" ColumnName="modelo" />
+                <ScalarProperty Name="marca" ColumnName="marca" />
+                <ScalarProperty Name="procedencia" ColumnName="procedencia" />
+                <ScalarProperty Name="tipoVehiculo" ColumnName="tipoVehiculo" />
+                <ScalarProperty Name="generacion" ColumnName="generacion" />
+                <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
+                <ScalarProperty Name="transmision" ColumnName="transmision" />
+                <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+                <ScalarProperty Name="motor" ColumnName="motor" />
+                <ScalarProperty Name="combustible" ColumnName="combustible" />
+                <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+                <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+                <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
+                <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
+                <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
+                <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
+                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+                <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
+                <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="paVehiculosEuropeos" FunctionName="AutonModel.Store.paVehiculosEuropeos">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AutonModel.paVehiculosEuropeos_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="modelo" ColumnName="modelo" />
+                <ScalarProperty Name="marca" ColumnName="marca" />
+                <ScalarProperty Name="procedencia" ColumnName="procedencia" />
+                <ScalarProperty Name="tipoVehiculo" ColumnName="tipoVehiculo" />
+                <ScalarProperty Name="generacion" ColumnName="generacion" />
+                <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
+                <ScalarProperty Name="transmision" ColumnName="transmision" />
+                <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+                <ScalarProperty Name="motor" ColumnName="motor" />
+                <ScalarProperty Name="combustible" ColumnName="combustible" />
+                <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+                <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+                <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
+                <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
+                <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
+                <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
+                <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+                <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
+                <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
+                <ScalarProperty Name="estado" ColumnName="estado" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="paVehiculosJaponeses" FunctionName="AutonModel.Store.paVehiculosJaponeses">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AutonModel.paVehiculosJaponeses_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="modelo" ColumnName="modelo" />
+                <ScalarProperty Name="marca" ColumnName="marca" />
+                <ScalarProperty Name="procedencia" ColumnName="procedencia" />
+                <ScalarProperty Name="tipoVehiculo" ColumnName="tipoVehiculo" />
+                <ScalarProperty Name="generacion" ColumnName="generacion" />
+                <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
+                <ScalarProperty Name="transmision" ColumnName="transmision" />
+                <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
+                <ScalarProperty Name="motor" ColumnName="motor" />
+                <ScalarProperty Name="combustible" ColumnName="combustible" />
+                <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+                <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+                <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
+                <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
+                <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
+                <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
                 <ScalarProperty Name="observaciones" ColumnName="observaciones" />
                 <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
                 <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />

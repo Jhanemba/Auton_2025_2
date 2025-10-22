@@ -184,6 +184,11 @@ namespace CpAuton
             }
         }
 
+        private void MenuJaponeses_Click(object sender, EventArgs e)
+        {
+            new FrmVehiculosJaponeses().ShowDialog();
+        }
+
         private void MenuEditar_Click(object sender, EventArgs e)
         {
             if (ValidarAutenticacion())
