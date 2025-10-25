@@ -38,22 +38,16 @@
             this.ribbonGroup1 = new C1.Win.Ribbon.RibbonGroup();
             this.btnCaTodoVehiculos = new C1.Win.Ribbon.RibbonButton();
             this.ribbonGroup2 = new C1.Win.Ribbon.RibbonGroup();
-            this.btnCaJaponeses = new C1.Win.Ribbon.RibbonButton();
             this.ribbonGroup3 = new C1.Win.Ribbon.RibbonGroup();
-            this.btnCaAmericanos = new C1.Win.Ribbon.RibbonButton();
             this.ribbonGroup4 = new C1.Win.Ribbon.RibbonGroup();
-            this.btnCaChinos = new C1.Win.Ribbon.RibbonButton();
             this.ribbonGroup5 = new C1.Win.Ribbon.RibbonGroup();
-            this.btnCaAlemanes = new C1.Win.Ribbon.RibbonButton();
             this.ribbonGroup6 = new C1.Win.Ribbon.RibbonGroup();
-            this.btnCaEuropeos = new C1.Win.Ribbon.RibbonButton();
+            this.ribbonGroup14 = new C1.Win.Ribbon.RibbonGroup();
             this.ribbonGroup7 = new C1.Win.Ribbon.RibbonGroup();
-            this.btnCaBusquedaAvanzada = new C1.Win.Ribbon.RibbonButton();
             this.ribbonGroup8 = new C1.Win.Ribbon.RibbonGroup();
             this.btnCaEstadisticas = new C1.Win.Ribbon.RibbonButton();
             this.ribbonTab2 = new C1.Win.Ribbon.RibbonTab();
             this.ribbonGroup9 = new C1.Win.Ribbon.RibbonGroup();
-            this.btnCaGestionarVehiculos = new C1.Win.Ribbon.RibbonButton();
             this.ribbonGroup10 = new C1.Win.Ribbon.RibbonGroup();
             this.btnCaGestionarMarcasModelos = new C1.Win.Ribbon.RibbonButton();
             this.ribbonGroup11 = new C1.Win.Ribbon.RibbonGroup();
@@ -65,6 +59,14 @@
             this.btnCaManualUsuario = new C1.Win.Ribbon.RibbonButton();
             this.ribbonTopToolBar1 = new C1.Win.Ribbon.RibbonTopToolBar();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnCaJaponeses = new C1.Win.Ribbon.RibbonButton();
+            this.btnCaAmericanos = new C1.Win.Ribbon.RibbonButton();
+            this.btnCaChinos = new C1.Win.Ribbon.RibbonButton();
+            this.btnCaAlemanes = new C1.Win.Ribbon.RibbonButton();
+            this.btnCaEuropeos = new C1.Win.Ribbon.RibbonButton();
+            this.ribbonButton1 = new C1.Win.Ribbon.RibbonButton();
+            this.btnCaBusquedaAvanzada = new C1.Win.Ribbon.RibbonButton();
+            this.btnCaGestionarVehiculos = new C1.Win.Ribbon.RibbonButton();
             ((System.ComponentModel.ISupportInitialize)(this.c1Ribbon1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -78,7 +80,7 @@
             this.c1Ribbon1.Location = new System.Drawing.Point(0, 0);
             this.c1Ribbon1.Name = "c1Ribbon1";
             this.c1Ribbon1.QatHolder = this.ribbonQat1;
-            this.c1Ribbon1.Size = new System.Drawing.Size(1067, 161);
+            this.c1Ribbon1.Size = new System.Drawing.Size(1067, 241);
             this.c1Ribbon1.Tabs.Add(this.ribbonTab1);
             this.c1Ribbon1.Tabs.Add(this.ribbonTab2);
             this.c1Ribbon1.Tabs.Add(this.ribbonTab3);
@@ -108,6 +110,7 @@
             this.ribbonTab1.Groups.Add(this.ribbonGroup4);
             this.ribbonTab1.Groups.Add(this.ribbonGroup5);
             this.ribbonTab1.Groups.Add(this.ribbonGroup6);
+            this.ribbonTab1.Groups.Add(this.ribbonGroup14);
             this.ribbonTab1.Groups.Add(this.ribbonGroup7);
             this.ribbonTab1.Groups.Add(this.ribbonGroup8);
             this.ribbonTab1.Name = "ribbonTab1";
@@ -131,73 +134,35 @@
             this.ribbonGroup2.Items.Add(this.btnCaJaponeses);
             this.ribbonGroup2.Name = "ribbonGroup2";
             // 
-            // btnCaJaponeses
-            // 
-            this.btnCaJaponeses.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
-            this.btnCaJaponeses.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaJaponeses.IconSet")))));
-            this.btnCaJaponeses.Name = "btnCaJaponeses";
-            this.btnCaJaponeses.Text = "Japoneses";
-            this.btnCaJaponeses.Click += new System.EventHandler(this.MenuJaponeses_Click);
-            // 
             // ribbonGroup3
             // 
             this.ribbonGroup3.Items.Add(this.btnCaAmericanos);
             this.ribbonGroup3.Name = "ribbonGroup3";
-            // 
-            // btnCaAmericanos
-            // 
-            this.btnCaAmericanos.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
-            this.btnCaAmericanos.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaAmericanos.IconSet")))));
-            this.btnCaAmericanos.Name = "btnCaAmericanos";
-            this.btnCaAmericanos.Text = "Americanos";
             // 
             // ribbonGroup4
             // 
             this.ribbonGroup4.Items.Add(this.btnCaChinos);
             this.ribbonGroup4.Name = "ribbonGroup4";
             // 
-            // btnCaChinos
-            // 
-            this.btnCaChinos.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
-            this.btnCaChinos.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaChinos.IconSet")))));
-            this.btnCaChinos.Name = "btnCaChinos";
-            this.btnCaChinos.Text = "Chinos";
-            // 
             // ribbonGroup5
             // 
             this.ribbonGroup5.Items.Add(this.btnCaAlemanes);
             this.ribbonGroup5.Name = "ribbonGroup5";
-            // 
-            // btnCaAlemanes
-            // 
-            this.btnCaAlemanes.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
-            this.btnCaAlemanes.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaAlemanes.IconSet")))));
-            this.btnCaAlemanes.Name = "btnCaAlemanes";
-            this.btnCaAlemanes.Text = "Alemanes";
             // 
             // ribbonGroup6
             // 
             this.ribbonGroup6.Items.Add(this.btnCaEuropeos);
             this.ribbonGroup6.Name = "ribbonGroup6";
             // 
-            // btnCaEuropeos
+            // ribbonGroup14
             // 
-            this.btnCaEuropeos.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
-            this.btnCaEuropeos.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaEuropeos.IconSet")))));
-            this.btnCaEuropeos.Name = "btnCaEuropeos";
-            this.btnCaEuropeos.Text = "Europeos";
+            this.ribbonGroup14.Items.Add(this.ribbonButton1);
+            this.ribbonGroup14.Name = "ribbonGroup14";
             // 
             // ribbonGroup7
             // 
             this.ribbonGroup7.Items.Add(this.btnCaBusquedaAvanzada);
             this.ribbonGroup7.Name = "ribbonGroup7";
-            // 
-            // btnCaBusquedaAvanzada
-            // 
-            this.btnCaBusquedaAvanzada.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
-            this.btnCaBusquedaAvanzada.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaBusquedaAvanzada.IconSet")))));
-            this.btnCaBusquedaAvanzada.Name = "btnCaBusquedaAvanzada";
-            this.btnCaBusquedaAvanzada.Text = "Búsqueda Avanzada";
             // 
             // ribbonGroup8
             // 
@@ -223,13 +188,6 @@
             // 
             this.ribbonGroup9.Items.Add(this.btnCaGestionarVehiculos);
             this.ribbonGroup9.Name = "ribbonGroup9";
-            // 
-            // btnCaGestionarVehiculos
-            // 
-            this.btnCaGestionarVehiculos.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
-            this.btnCaGestionarVehiculos.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaGestionarVehiculos.IconSet")))));
-            this.btnCaGestionarVehiculos.Name = "btnCaGestionarVehiculos";
-            this.btnCaGestionarVehiculos.Text = "Gestionar Vehículos";
             // 
             // ribbonGroup10
             // 
@@ -294,16 +252,78 @@
             // 
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(0, 161);
+            this.pictureBox1.Location = new System.Drawing.Point(0, 241);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1067, 393);
+            this.pictureBox1.Size = new System.Drawing.Size(1067, 313);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
+            // btnCaJaponeses
+            // 
+            this.btnCaJaponeses.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
+            this.btnCaJaponeses.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaJaponeses.IconSet")))));
+            this.btnCaJaponeses.Name = "btnCaJaponeses";
+            this.btnCaJaponeses.Text = "Japoneses";
+            this.btnCaJaponeses.Click += new System.EventHandler(this.MenuJaponeses_Click);
+            // 
+            // btnCaAmericanos
+            // 
+            this.btnCaAmericanos.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
+            this.btnCaAmericanos.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaAmericanos.IconSet")))));
+            this.btnCaAmericanos.Name = "btnCaAmericanos";
+            this.btnCaAmericanos.Text = "Americanos";
+            this.btnCaAmericanos.Click += new System.EventHandler(this.MenuAmericanos_Click);
+            // 
+            // btnCaChinos
+            // 
+            this.btnCaChinos.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
+            this.btnCaChinos.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaChinos.IconSet")))));
+            this.btnCaChinos.Name = "btnCaChinos";
+            this.btnCaChinos.Text = "Chinos";
+            this.btnCaChinos.Click += new System.EventHandler(this.MenuChinos_Click);
+            // 
+            // btnCaAlemanes
+            // 
+            this.btnCaAlemanes.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
+            this.btnCaAlemanes.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaAlemanes.IconSet")))));
+            this.btnCaAlemanes.Name = "btnCaAlemanes";
+            this.btnCaAlemanes.Text = "Alemanes";
+            this.btnCaAlemanes.Click += new System.EventHandler(this.MenuAlemanes_Click);
+            // 
+            // btnCaEuropeos
+            // 
+            this.btnCaEuropeos.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
+            this.btnCaEuropeos.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaEuropeos.IconSet")))));
+            this.btnCaEuropeos.Name = "btnCaEuropeos";
+            this.btnCaEuropeos.Text = "Europeos";
+            this.btnCaEuropeos.Click += new System.EventHandler(this.MenuEuropeos_Click);
+            // 
+            // ribbonButton1
+            // 
+            this.ribbonButton1.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
+            this.ribbonButton1.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("ribbonButton1.IconSet")))));
+            this.ribbonButton1.Name = "ribbonButton1";
+            this.ribbonButton1.Text = "Coreanos";
+            this.ribbonButton1.Click += new System.EventHandler(this.MenuCoreanos_Click);
+            // 
+            // btnCaBusquedaAvanzada
+            // 
+            this.btnCaBusquedaAvanzada.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
+            this.btnCaBusquedaAvanzada.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaBusquedaAvanzada.IconSet")))));
+            this.btnCaBusquedaAvanzada.Name = "btnCaBusquedaAvanzada";
+            this.btnCaBusquedaAvanzada.Text = "Búsqueda Avanzada";
+            // 
+            // btnCaGestionarVehiculos
+            // 
+            this.btnCaGestionarVehiculos.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
+            this.btnCaGestionarVehiculos.IconSet.Add(new C1.Framework.C1BitmapIcon(null, new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, ((System.Drawing.Image)(resources.GetObject("btnCaGestionarVehiculos.IconSet")))));
+            this.btnCaGestionarVehiculos.Name = "btnCaGestionarVehiculos";
+            this.btnCaGestionarVehiculos.Text = "Gestionar Vehículos";
+            // 
             // FrmPrincipal
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
             this.ClientSize = new System.Drawing.Size(1067, 554);
@@ -360,5 +380,7 @@
         private C1.Win.Ribbon.RibbonGroup ribbonGroup13;
         private C1.Win.Ribbon.RibbonButton btnCaManualUsuario;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private C1.Win.Ribbon.RibbonGroup ribbonGroup14;
+        private C1.Win.Ribbon.RibbonButton ribbonButton1;
     }
 }

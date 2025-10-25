@@ -9,7 +9,7 @@ namespace ClnAuton
 {
     public class ConsultaVehiculosCln
     {
-        /// <summary>
+        // <summary>
         /// Inserta un nuevo vehículo
         /// </summary>
         /// <param name="vehiculo">Objeto Vehiculo a insertar</param>
@@ -25,7 +25,7 @@ namespace ClnAuton
         }
 
         /// <summary>
-        /// Actualiza un vehículo existente
+        /// Actualiza un vehículo existente - VERSIÓN CORREGIDA
         /// </summary>
         /// <param name="vehiculo">Objeto Vehiculo con los datos actualizados</param>
         /// <returns>Número de registros afectados</returns>
@@ -36,14 +36,32 @@ namespace ClnAuton
                 var existente = context.Vehiculo.Find(vehiculo.id);
                 if (existente != null)
                 {
+                    // CAMPOS BÁSICOS
                     existente.idModeloVehiculo = vehiculo.idModeloVehiculo;
                     existente.anioFabricacion = vehiculo.anioFabricacion;
+
+                    // ⭐ CAMPOS QUE FALTABAN - CARACTERÍSTICAS ESPECÍFICAS
+                    existente.generacion = vehiculo.generacion;
+                    existente.paisFabricacion = vehiculo.paisFabricacion;
+                    existente.transmision = vehiculo.transmision;
+                    existente.tieneTurbo = vehiculo.tieneTurbo;
+                    existente.motor = vehiculo.motor;
+                    existente.combustible = vehiculo.combustible;
+
+                    // ⭐ SEGURIDAD
+                    existente.nroAirbags = vehiculo.nroAirbags;
+                    existente.seguridadChoques = vehiculo.seguridadChoques;
+                    existente.organizacionSeguridad = vehiculo.organizacionSeguridad;
+
+                    // ⭐ EVALUACIÓN
                     existente.confiabilidad = vehiculo.confiabilidad;
                     existente.puntuacion = vehiculo.puntuacion;
-                    existente.observaciones = vehiculo.observaciones;
                     existente.kilometraje = vehiculo.kilometraje;
-                    //existente.propietario = vehiculo.propietario;
+                    existente.observaciones = vehiculo.observaciones;
+
+                    // METADATA
                     existente.usuarioRegistro = vehiculo.usuarioRegistro;
+
                     return context.SaveChanges();
                 }
                 return 0;

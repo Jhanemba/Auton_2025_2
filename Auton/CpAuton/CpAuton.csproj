@@ -72,6 +72,18 @@
     <Compile Include="FrmConsultaVehiculos.Designer.cs">
       <DependentUpon>FrmConsultaVehiculos.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmVehiculosAlemanes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmVehiculosAlemanes.Designer.cs">
+      <DependentUpon>FrmVehiculosAlemanes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmVehiculosChinos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmVehiculosChinos.Designer.cs">
+      <DependentUpon>FrmVehiculosChinos.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmNuevaMarca.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -96,6 +108,24 @@
     <Compile Include="FrmRegistroVehiculo.Designer.cs">
       <DependentUpon>FrmRegistroVehiculo.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmVehiculosAmericanos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmVehiculosAmericanos.Designer.cs">
+      <DependentUpon>FrmVehiculosAmericanos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmVehiculosCoreanos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmVehiculosCoreanos.Designer.cs">
+      <DependentUpon>FrmVehiculosCoreanos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmVehiculosEuropeos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmVehiculosEuropeos.Designer.cs">
+      <DependentUpon>FrmVehiculosEuropeos.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmVehiculosJaponeses.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +141,12 @@
     <EmbeddedResource Include="FrmConsultaVehiculos.resx">
       <DependentUpon>FrmConsultaVehiculos.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmVehiculosAlemanes.resx">
+      <DependentUpon>FrmVehiculosAlemanes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmVehiculosChinos.resx">
+      <DependentUpon>FrmVehiculosChinos.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmNuevaMarca.resx">
       <DependentUpon>FrmNuevaMarca.cs</DependentUpon>
     </EmbeddedResource>
@@ -122,6 +158,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmRegistroVehiculo.resx">
       <DependentUpon>FrmRegistroVehiculo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmVehiculosAmericanos.resx">
+      <DependentUpon>FrmVehiculosAmericanos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmVehiculosCoreanos.resx">
+      <DependentUpon>FrmVehiculosCoreanos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmVehiculosEuropeos.resx">
+      <DependentUpon>FrmVehiculosEuropeos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmVehiculosJaponeses.resx">
       <DependentUpon>FrmVehiculosJaponeses.cs</DependentUpon>

@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CargoCln.cs" />
+    <Compile Include="ConsultaVehiculosChinosCln.cs" />
     <Compile Include="ConsultaVehiculosCln.cs" />
     <Compile Include="EmpleadoCln.cs" />
     <Compile Include="MarcaCln.cs" />
@@ -64,6 +65,10 @@
     <Compile Include="TipoVehiculoCln.cs" />
     <Compile Include="UsuarioCln.cs" />
     <Compile Include="VehiculoCln.cs" />
+    <Compile Include="VehiculosAlemanesCln.cs" />
+    <Compile Include="VehiculosAmericanosCln.cs" />
+    <Compile Include="VehiculosCoreanosCln.cs" />
+    <Compile Include="VehiculosEuropeosCln.cs" />
     <Compile Include="VehiculosJaponesesCln.cs" />
   </ItemGroup>
   <ItemGroup>

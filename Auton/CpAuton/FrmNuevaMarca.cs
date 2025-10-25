@@ -26,7 +26,7 @@ namespace CpAuton
 
         private void ConfigurarFormulario()
         {
-            this.Text = "Nueva Marca";
+            this.Text = "...::: Auton - Nueva Marca :::...";
             this.Size = new Size(450, 250);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;

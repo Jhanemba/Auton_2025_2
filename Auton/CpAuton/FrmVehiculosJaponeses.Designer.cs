@@ -54,7 +54,7 @@
             // 
             this.btnBuscar.Image = ((System.Drawing.Image)(resources.GetObject("btnBuscar.Image")));
             this.btnBuscar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnBuscar.Location = new System.Drawing.Point(835, 133);
+            this.btnBuscar.Location = new System.Drawing.Point(956, 62);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.btnBuscar.Size = new System.Drawing.Size(98, 40);
@@ -70,9 +70,9 @@
             // gbxLista
             // 
             this.gbxLista.Controls.Add(this.dgvVehiculos);
-            this.gbxLista.Location = new System.Drawing.Point(138, 170);
+            this.gbxLista.Location = new System.Drawing.Point(8, 99);
             this.gbxLista.Name = "gbxLista";
-            this.gbxLista.Size = new System.Drawing.Size(795, 179);
+            this.gbxLista.Size = new System.Drawing.Size(1249, 335);
             this.gbxLista.TabIndex = 19;
             this.gbxLista.TabStop = false;
             this.gbxLista.Text = "Lista de Vehículos";
@@ -84,35 +84,38 @@
             this.dgvVehiculos.AllowUserToResizeRows = false;
             this.dgvVehiculos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvVehiculos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvVehiculos.Location = new System.Drawing.Point(0, 21);
+            this.dgvVehiculos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvVehiculos.Location = new System.Drawing.Point(3, 18);
             this.dgvVehiculos.Name = "dgvVehiculos";
             this.dgvVehiculos.ReadOnly = true;
             this.dgvVehiculos.RowHeadersWidth = 62;
             this.dgvVehiculos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvVehiculos.Size = new System.Drawing.Size(795, 158);
+            this.dgvVehiculos.Size = new System.Drawing.Size(1243, 314);
             this.dgvVehiculos.TabIndex = 0;
+            this.dgvVehiculos.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellDoubleClick);
             // 
             // txtBuscar
             // 
-            this.txtBuscar.Location = new System.Drawing.Point(138, 142);
+            this.txtBuscar.Location = new System.Drawing.Point(259, 71);
             this.txtBuscar.MaxLength = 100;
             this.txtBuscar.Name = "txtBuscar";
-            this.txtBuscar.Size = new System.Drawing.Size(680, 30);
+            this.txtBuscar.Size = new System.Drawing.Size(680, 22);
             this.txtBuscar.TabIndex = 17;
+            this.txtBuscar.TextChanged += new System.EventHandler(this.txtBuscar_TextChanged);
             // 
             // lblParametro
             // 
             this.lblParametro.AutoSize = true;
-            this.lblParametro.Location = new System.Drawing.Point(138, 123);
+            this.lblParametro.Location = new System.Drawing.Point(259, 52);
             this.lblParametro.Name = "lblParametro";
-            this.lblParametro.Size = new System.Drawing.Size(583, 25);
+            this.lblParametro.Size = new System.Drawing.Size(399, 16);
             this.lblParametro.TabIndex = 16;
             this.lblParametro.Text = "Buscar por Marca, Modelo, País, Tansmisión, Motor, Confiabilidad\r\n";
             // 
             // lblTitulo
             // 
             this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitulo.Location = new System.Drawing.Point(133, 92);
+            this.lblTitulo.Location = new System.Drawing.Point(254, 21);
             this.lblTitulo.Name = "lblTitulo";
             this.lblTitulo.Size = new System.Drawing.Size(800, 31);
             this.lblTitulo.TabIndex = 15;
@@ -124,7 +127,7 @@
             this.pnlAcciones.Controls.Add(this.btnNuevo);
             this.pnlAcciones.Controls.Add(this.btnExportar);
             this.pnlAcciones.Controls.Add(this.btnCerrar);
-            this.pnlAcciones.Location = new System.Drawing.Point(138, 416);
+            this.pnlAcciones.Location = new System.Drawing.Point(138, 490);
             this.pnlAcciones.Name = "pnlAcciones";
             this.pnlAcciones.Size = new System.Drawing.Size(795, 47);
             this.pnlAcciones.TabIndex = 20;
@@ -154,6 +157,7 @@
             this.btnExportar.Text = "Exportar";
             this.btnExportar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnExportar.UseVisualStyleBackColor = true;
+            this.btnExportar.Click += new System.EventHandler(this.btnExportar_Click);
             // 
             // btnCerrar
             // 
@@ -167,40 +171,41 @@
             this.btnCerrar.Text = "Cerrar";
             this.btnCerrar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnCerrar.UseVisualStyleBackColor = true;
+            this.btnCerrar.Click += new System.EventHandler(this.btnCerrar_Click);
             // 
             // lblTotal
             // 
             this.lblTotal.AutoSize = true;
-            this.lblTotal.Location = new System.Drawing.Point(707, 376);
+            this.lblTotal.Location = new System.Drawing.Point(982, 450);
             this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(180, 25);
+            this.lblTotal.Size = new System.Drawing.Size(122, 16);
             this.lblTotal.TabIndex = 21;
             this.lblTotal.Text = "Total de Vehículos:";
             // 
             // lblEstadisticas
             // 
             this.lblEstadisticas.AutoSize = true;
-            this.lblEstadisticas.Location = new System.Drawing.Point(443, 376);
+            this.lblEstadisticas.Location = new System.Drawing.Point(384, 450);
             this.lblEstadisticas.Name = "lblEstadisticas";
-            this.lblEstadisticas.Size = new System.Drawing.Size(122, 25);
+            this.lblEstadisticas.Size = new System.Drawing.Size(83, 16);
             this.lblEstadisticas.TabIndex = 22;
             this.lblEstadisticas.Text = "Estadisticas:";
             // 
             // lblMarcas
             // 
             this.lblMarcas.AutoSize = true;
-            this.lblMarcas.Location = new System.Drawing.Point(265, 376);
+            this.lblMarcas.Location = new System.Drawing.Point(12, 450);
             this.lblMarcas.Name = "lblMarcas";
-            this.lblMarcas.Size = new System.Drawing.Size(83, 25);
+            this.lblMarcas.Size = new System.Drawing.Size(55, 16);
             this.lblMarcas.TabIndex = 23;
             this.lblMarcas.Text = "Marcas:";
             // 
             // FrmVehiculosJaponeses
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
-            this.ClientSize = new System.Drawing.Size(1067, 554);
+            this.ClientSize = new System.Drawing.Size(1264, 554);
             this.Controls.Add(this.lblMarcas);
             this.Controls.Add(this.lblEstadisticas);
             this.Controls.Add(this.btnBuscar);
@@ -213,6 +218,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "FrmVehiculosJaponeses";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmVehiculosJaponeses";
             this.Load += new System.EventHandler(this.FrmVehiculosJaponeses_Load);

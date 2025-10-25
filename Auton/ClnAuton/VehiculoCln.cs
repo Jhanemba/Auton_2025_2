@@ -19,6 +19,9 @@ namespace ClnAuton
             }
         }
 
+        /// <summary>
+        /// Actualiza un vehículo - VERSIÓN COMPLETA CORREGIDA ✅
+        /// </summary>
         public static int actualizar(Vehiculo vehiculo)
         {
             using (var context = new AutonEntities())
@@ -26,14 +29,32 @@ namespace ClnAuton
                 var existente = context.Vehiculo.Find(vehiculo.id);
                 if (existente != null)
                 {
+                    // CAMPOS BÁSICOS
                     existente.idModeloVehiculo = vehiculo.idModeloVehiculo;
                     existente.anioFabricacion = vehiculo.anioFabricacion;
+
+                    // ⭐ CARACTERÍSTICAS ESPECÍFICAS (LOS QUE FALTABAN)
+                    existente.generacion = vehiculo.generacion;
+                    existente.paisFabricacion = vehiculo.paisFabricacion;  // ← ESTE ERA TU PROBLEMA
+                    existente.transmision = vehiculo.transmision;
+                    existente.tieneTurbo = vehiculo.tieneTurbo;
+                    existente.motor = vehiculo.motor;
+                    existente.combustible = vehiculo.combustible;
+
+                    // ⭐ SEGURIDAD
+                    existente.nroAirbags = vehiculo.nroAirbags;
+                    existente.seguridadChoques = vehiculo.seguridadChoques;
+                    existente.organizacionSeguridad = vehiculo.organizacionSeguridad;
+
+                    // ⭐ EVALUACIÓN
                     existente.confiabilidad = vehiculo.confiabilidad;
                     existente.puntuacion = vehiculo.puntuacion;
-                    existente.observaciones = vehiculo.observaciones;
                     existente.kilometraje = vehiculo.kilometraje;
-                    //existente.propietario = vehiculo.propietario;
+                    existente.observaciones = vehiculo.observaciones;
+
+                    // METADATA
                     existente.usuarioRegistro = vehiculo.usuarioRegistro;
+
                     return context.SaveChanges();
                 }
                 return 0;

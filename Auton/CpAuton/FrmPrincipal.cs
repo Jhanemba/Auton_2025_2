@@ -189,12 +189,38 @@ namespace CpAuton
             new FrmVehiculosJaponeses().ShowDialog();
         }
 
+        private void MenuAmericanos_Click(object sender, EventArgs e)
+        {
+            new FrmVehiculosAmericanos().ShowDialog();
+        }
+
+        private void MenuChinos_Click(object sender, EventArgs e)
+        {
+            new FrmVehiculosChinos().ShowDialog();
+        }
+
+        private void MenuAlemanes_Click(object sender, EventArgs e)
+        {
+            new FrmVehiculosAlemanes().ShowDialog();
+        }
+
+        private void MenuEuropeos_Click(object sender, EventArgs e)
+        {
+            new FrmVehiculosEuropeos().ShowDialog();
+        }
+
+        private void MenuCoreanos_Click(object sender, EventArgs e)
+        {
+            new FrmVehiculosCoreanos().ShowDialog();
+        }
+
         private void MenuEditar_Click(object sender, EventArgs e)
         {
             if (ValidarAutenticacion())
             {
-                MessageBox.Show("Formulario de Editar Vehículo (Por implementar)",
-                              "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                new FrmConsultaVehiculos().ShowDialog();
+                //MessageBox.Show("Formulario de Editar Vehículo (Por implementar)",
+                //              "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 

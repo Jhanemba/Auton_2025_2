@@ -52,7 +52,7 @@
             // 
             this.btnBuscar.Image = ((System.Drawing.Image)(resources.GetObject("btnBuscar.Image")));
             this.btnBuscar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnBuscar.Location = new System.Drawing.Point(835, 105);
+            this.btnBuscar.Location = new System.Drawing.Point(864, 82);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.btnBuscar.Size = new System.Drawing.Size(98, 40);
@@ -69,9 +69,9 @@
             // gbxLista
             // 
             this.gbxLista.Controls.Add(this.dgvVehiculos);
-            this.gbxLista.Location = new System.Drawing.Point(138, 142);
+            this.gbxLista.Location = new System.Drawing.Point(35, 142);
             this.gbxLista.Name = "gbxLista";
-            this.gbxLista.Size = new System.Drawing.Size(795, 179);
+            this.gbxLista.Size = new System.Drawing.Size(1080, 305);
             this.gbxLista.TabIndex = 11;
             this.gbxLista.TabStop = false;
             this.gbxLista.Text = "Lista de Vehículos";
@@ -82,19 +82,23 @@
             this.dgvVehiculos.AllowUserToDeleteRows = false;
             this.dgvVehiculos.AllowUserToResizeRows = false;
             this.dgvVehiculos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgvVehiculos.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dgvVehiculos.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.dgvVehiculos.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.RaisedHorizontal;
             this.dgvVehiculos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvVehiculos.Location = new System.Drawing.Point(0, 21);
+            this.dgvVehiculos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvVehiculos.Location = new System.Drawing.Point(3, 18);
             this.dgvVehiculos.Name = "dgvVehiculos";
             this.dgvVehiculos.ReadOnly = true;
             this.dgvVehiculos.RowHeadersWidth = 62;
             this.dgvVehiculos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvVehiculos.Size = new System.Drawing.Size(795, 158);
+            this.dgvVehiculos.Size = new System.Drawing.Size(1074, 284);
             this.dgvVehiculos.TabIndex = 0;
             this.dgvVehiculos.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellDoubleClick);
             // 
             // txtBuscar
             // 
-            this.txtBuscar.Location = new System.Drawing.Point(138, 114);
+            this.txtBuscar.Location = new System.Drawing.Point(167, 91);
             this.txtBuscar.MaxLength = 100;
             this.txtBuscar.Name = "txtBuscar";
             this.txtBuscar.Size = new System.Drawing.Size(680, 22);
@@ -104,7 +108,7 @@
             // lblParametro
             // 
             this.lblParametro.AutoSize = true;
-            this.lblParametro.Location = new System.Drawing.Point(138, 95);
+            this.lblParametro.Location = new System.Drawing.Point(167, 72);
             this.lblParametro.Name = "lblParametro";
             this.lblParametro.Size = new System.Drawing.Size(399, 16);
             this.lblParametro.TabIndex = 8;
@@ -113,7 +117,7 @@
             // lblTitulo
             // 
             this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitulo.Location = new System.Drawing.Point(133, 64);
+            this.lblTitulo.Location = new System.Drawing.Point(162, 41);
             this.lblTitulo.Name = "lblTitulo";
             this.lblTitulo.Size = new System.Drawing.Size(800, 31);
             this.lblTitulo.TabIndex = 7;
@@ -125,7 +129,7 @@
             this.pnlAcciones.Controls.Add(this.btnNuevo);
             this.pnlAcciones.Controls.Add(this.btnExportar);
             this.pnlAcciones.Controls.Add(this.btnCerrar);
-            this.pnlAcciones.Location = new System.Drawing.Point(138, 388);
+            this.pnlAcciones.Location = new System.Drawing.Point(138, 494);
             this.pnlAcciones.Name = "pnlAcciones";
             this.pnlAcciones.Size = new System.Drawing.Size(795, 47);
             this.pnlAcciones.TabIndex = 12;
@@ -134,7 +138,7 @@
             // 
             this.btnNuevo.Image = global::CpAuton.Properties.Resources.add_77928;
             this.btnNuevo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnNuevo.Location = new System.Drawing.Point(164, 3);
+            this.btnNuevo.Location = new System.Drawing.Point(378, 4);
             this.btnNuevo.Name = "btnNuevo";
             this.btnNuevo.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.btnNuevo.Size = new System.Drawing.Size(111, 40);
@@ -148,7 +152,7 @@
             // 
             this.btnExportar.Image = ((System.Drawing.Image)(resources.GetObject("btnExportar.Image")));
             this.btnExportar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnExportar.Location = new System.Drawing.Point(389, 3);
+            this.btnExportar.Location = new System.Drawing.Point(136, 4);
             this.btnExportar.Name = "btnExportar";
             this.btnExportar.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.btnExportar.Size = new System.Drawing.Size(111, 40);
@@ -175,7 +179,7 @@
             // lblTotal
             // 
             this.lblTotal.AutoSize = true;
-            this.lblTotal.Location = new System.Drawing.Point(753, 349);
+            this.lblTotal.Location = new System.Drawing.Point(753, 450);
             this.lblTotal.Name = "lblTotal";
             this.lblTotal.Size = new System.Drawing.Size(122, 16);
             this.lblTotal.TabIndex = 14;
@@ -186,7 +190,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
-            this.ClientSize = new System.Drawing.Size(1067, 554);
+            this.ClientSize = new System.Drawing.Size(1148, 554);
             this.Controls.Add(this.lblTotal);
             this.Controls.Add(this.btnBuscar);
             this.Controls.Add(this.gbxLista);
@@ -198,6 +202,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "FrmConsultaVehiculos";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "...::: Auton - Consulta de Vehiculos :::...";
             this.Load += new System.EventHandler(this.FrmConsultaVehiculos_Load);

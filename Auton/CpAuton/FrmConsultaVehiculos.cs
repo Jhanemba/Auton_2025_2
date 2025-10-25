@@ -28,6 +28,7 @@ namespace CpAuton
             AgregarBotonesSesion();
             ConfigurarDataGridView();
             CargarVehiculos("");
+            btnNuevo.Visible = Util.usuario != null;
         }
 
         private void AgregarBotonesSesion()
@@ -89,6 +90,7 @@ namespace CpAuton
                     ActualizarInterfazSesion();
                 }
             }
+            btnNuevo.Visible = Util.usuario != null;
         }
 
         private void ActualizarInterfazSesion()
@@ -298,7 +300,8 @@ namespace CpAuton
                     MaximizeBox = false,
                     MinimizeBox = false,
                     Font = new Font("Segoe UI", 10F),
-                    AutoScroll = true
+                    AutoScroll = true,
+                    ShowInTaskbar = false
                 };
 
                 Panel pnlPrincipal = new Panel
@@ -987,6 +990,7 @@ namespace CpAuton
                     }
                 }
             }
+            ActualizarInterfazSesion();
         }
         private void txtClave_KeyPress(object sender, KeyPressEventArgs e)
         {

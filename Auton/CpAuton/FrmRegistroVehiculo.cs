@@ -58,7 +58,7 @@ namespace CpAuton
 
         private void ConfigurarFormulario()
         {
-            this.Text = "Registrar Nuevo Vehículo";
+            this.Text = "...::: Auton - Registrar Nuevo Vehículo :::...";
             this.Size = new Size(1200, 850);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -828,9 +828,15 @@ namespace CpAuton
         private void InitializeComponent()
         {
             this.SuspendLayout();
+            // 
+            // FrmRegistroVehiculo
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 261);
             this.Name = "FrmRegistroVehiculo";
+            this.ShowInTaskbar = false;
             this.Load += new System.EventHandler(this.FrmRegistroVehiculo_Load);
             this.ResumeLayout(false);
+
         }
     }
 }

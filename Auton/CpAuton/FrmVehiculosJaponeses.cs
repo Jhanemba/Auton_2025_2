@@ -24,14 +24,16 @@ namespace CpAuton
             ConfigurarFormulario();
             ConfigurarDataGridView();
             CargarVehiculosJaponeses();
+            btnNuevo.Visible = Util.usuario != null;
         }
 
         private void ConfigurarFormulario()
         {
-            this.Text = "Vehículos Japoneses";
-            this.Size = new Size(1400, 700);
+            this.Text = "...::: Auton - Vehículos Japoneses :::...";
+            //this.Size = new Size(1083, 593);
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = Color.White;
+            this.BackColor = Color.PapayaWhip;
+
         }
 
         private void ConfigurarDataGridView()
@@ -375,7 +377,7 @@ namespace CpAuton
                     TextBox txtObs = new TextBox
                     {
                         Location = new Point(30, yPos),
-                        Size = new Size(600, 80),
+                        Size = new Size(600, 180),
                         Multiline = true,
                         ReadOnly = true,
                         BackColor = Color.FromArgb(248, 249, 250),

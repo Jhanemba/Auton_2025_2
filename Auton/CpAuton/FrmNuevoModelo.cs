@@ -31,7 +31,7 @@ namespace CpAuton
 
         private void ConfigurarFormulario()
         {
-            this.Text = "Registrar Nuevo Modelo";
+            this.Text = "...::: Auton - Registrar Nuevo Modelo :::...";
             this.Size = new Size(600, 350);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
