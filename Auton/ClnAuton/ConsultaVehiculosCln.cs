@@ -183,6 +183,156 @@ namespace ClnAuton
                     .ToList();
             }
         }
+        /// <summary>
+        /// Lista vehículos por procedencia - VERSIÓN SIMPLIFICADA
+        /// </summary>
+        public static List<dynamic> listarPorProcedencia(string procedencia, string parametro)
+        {
+            using (var context = new AutonEntities())
+            {
+                parametro = parametro ?? string.Empty;
+
+                // Obtener todos los resultados sin importar el tipo
+                IEnumerable<dynamic> resultadosBrutos = null;
+
+                switch (procedencia.ToLower())
+                {
+                    case "japonés":
+                    case "japones":
+                        resultadosBrutos = context.paVehiculosJaponeses(parametro).ToList();
+                        break;
+
+                    case "americano":
+                        resultadosBrutos = context.paVehiculosAmericanos(parametro).ToList();
+                        break;
+
+                    case "chino":
+                        resultadosBrutos = context.paVehiculosChinos(parametro).ToList();
+                        break;
+
+                    case "alemán":
+                    case "aleman":
+                        resultadosBrutos = context.paVehiculosAlemanes(parametro).ToList();
+                        break;
+
+                    case "europeo":
+                        resultadosBrutos = context.paVehiculosEuropeos(parametro).ToList();
+                        break;
+
+                    case "coreano":
+                        resultadosBrutos = context.paVehiculosCoreanos(parametro).ToList();
+                        break;
+
+                    default:
+                        resultadosBrutos = context.paVehiculoListar(parametro).ToList();
+                        break;
+                }
+
+                // Convertir a lista dinámica
+                return resultadosBrutos.Cast<dynamic>().ToList();
+            }
+        }
+
+        /// <summary>
+        /// Obtiene estadísticas generales de todos los vehículos
+        /// </summary>
+        public static EstadisticasGenerales obtenerEstadisticasGenerales()
+        {
+            using (var context = new AutonEntities())
+            {
+                var vehiculos = context.paVehiculoListar(string.Empty).ToList();
+
+                if (!vehiculos.Any())
+                {
+                    return new EstadisticasGenerales();
+                }
+
+                return new EstadisticasGenerales
+                {
+                    TotalVehiculos = vehiculos.Count,
+
+                    // Por Confiabilidad
+                    Excelentes = vehiculos.Count(v => v.confiabilidad == "Excelente"),
+                    Buenos = vehiculos.Count(v => v.confiabilidad == "Bueno"),
+                    Regulares = vehiculos.Count(v => v.confiabilidad == "Regular"),
+                    Malos = vehiculos.Count(v => v.confiabilidad == "Malo"),
+
+                    // Por Procedencia
+                    Japoneses = vehiculos.Count(v => v.procedencia == "Japonés"),
+                    Americanos = vehiculos.Count(v => v.procedencia == "Americano"),
+                    Chinos = vehiculos.Count(v => v.procedencia == "Chino"),
+                    Alemanes = vehiculos.Count(v => v.procedencia == "Alemán"),
+                    Europeos = vehiculos.Count(v => v.procedencia == "Europeo"),
+                    Coreanos = vehiculos.Count(v => v.procedencia == "Coreano"),
+
+                    // Promedios
+                    PromedioPuntuacion = vehiculos.Average(v => (double)v.puntuacion),
+                    PromedioAirbags = vehiculos.Average(v => v.nroAirbags),
+
+                    // Otros
+                    ConTurbo = vehiculos.Count(v => v.tieneTurbo),
+                    SinTurbo = vehiculos.Count(v => !v.tieneTurbo),
+
+                    // Top Marcas
+                    TopMarcas = vehiculos.GroupBy(v => v.marca)
+                        .Select(g => new { Marca = g.Key, Cantidad = g.Count() })
+                        .OrderByDescending(x => x.Cantidad)
+                        .Take(5)
+                        .ToDictionary(x => x.Marca, x => x.Cantidad),
+
+                    // Año más reciente y más antiguo
+                    AnioMasReciente = vehiculos.Max(v => v.anioFabricacion),
+                    AnioMasAntiguo = vehiculos.Min(v => v.anioFabricacion)
+                };
+            }
+        }
+
+        /// <summary>
+        /// Clase para almacenar estadísticas generales
+        /// </summary>
+        public class EstadisticasGenerales
+        {
+            public int TotalVehiculos { get; set; }
+
+            // Por Confiabilidad
+            public int Excelentes { get; set; }
+            public int Buenos { get; set; }
+            public int Regulares { get; set; }
+            public int Malos { get; set; }
+
+            // Por Procedencia
+            public int Japoneses { get; set; }
+            public int Americanos { get; set; }
+            public int Chinos { get; set; }
+            public int Alemanes { get; set; }
+            public int Europeos { get; set; }
+            public int Coreanos { get; set; }
+
+            // Promedios
+            public double PromedioPuntuacion { get; set; }
+            public double PromedioAirbags { get; set; }
+
+            // Otros
+            public int ConTurbo { get; set; }
+            public int SinTurbo { get; set; }
+
+            // Top Marcas
+            public Dictionary<string, int> TopMarcas { get; set; }
+
+            // Rangos
+            public int AnioMasReciente { get; set; }
+            public int AnioMasAntiguo { get; set; }
+
+            public EstadisticasGenerales()
+            {
+                TopMarcas = new Dictionary<string, int>();
+            }
+
+            public double PorcentajeExcelentes => TotalVehiculos > 0 ? (Excelentes * 100.0 / TotalVehiculos) : 0;
+            public double PorcentajeBuenos => TotalVehiculos > 0 ? (Buenos * 100.0 / TotalVehiculos) : 0;
+            public double PorcentajeRegulares => TotalVehiculos > 0 ? (Regulares * 100.0 / TotalVehiculos) : 0;
+            public double PorcentajeMalos => TotalVehiculos > 0 ? (Malos * 100.0 / TotalVehiculos) : 0;
+        }
     }
 
 }

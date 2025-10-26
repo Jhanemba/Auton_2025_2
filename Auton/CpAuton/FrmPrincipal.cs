@@ -214,6 +214,19 @@ namespace CpAuton
             new FrmVehiculosCoreanos().ShowDialog();
         }
 
+        private void MenuBusquedaAvanzada_Click(object sender, EventArgs e)
+        {
+            new FrmBusquedaAvanzada().ShowDialog();
+        }
+
+        private void btnEstadisticas_Click(object sender, EventArgs e)
+        {
+            using (var frmStats = new FrmEstadisticas())
+            {
+                frmStats.ShowDialog(this);
+            }
+        }
+
         private void MenuEditar_Click(object sender, EventArgs e)
         {
             if (ValidarAutenticacion())
@@ -228,6 +241,30 @@ namespace CpAuton
         {
             MessageBox.Show("Reporte de Estadísticas (Por implementar)",
                           "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void MenuGestionarVehiculos_Click(object sender, EventArgs e)
+        {
+            if (ValidarAutenticacion())
+            {
+                using (var frmGestion = new FrmGestionarVehiculos())
+                {
+                    frmGestion.ShowDialog(this);
+                    // No necesitamos recargar nada aquí porque no tiene lista
+                }
+            }
+        }
+
+        private void MenuGestionarMarcasModelos_Click(object sender, EventArgs e)
+        {
+            if (ValidarAutenticacion())
+            {
+                using (var frmGestionMM = new FrmGestionarMarcasModelos())
+                {
+                    frmGestionMM.ShowDialog(this);
+                    // No necesitamos recargar nada aquí porque no tiene lista
+                }
+            }
         }
 
         private void MenuUsuarios_Click(object sender, EventArgs e)

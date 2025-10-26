@@ -793,6 +793,9 @@ INNER JOIN Marca m ON mv.idMarca = m.id
 INNER JOIN Procedencia p ON m.idProcedencia = p.id
 WHERE p.descripcion = 'Japonés'
 
+select * FROM Marca
+SELECT * FROM Procedencia WHERE estado != -1;
+
 PRINT '';
 PRINT 'USUARIOS:';
 PRINT '   admin / admin123 (Administrador)';
