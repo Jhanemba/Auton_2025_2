@@ -90,11 +90,23 @@
     <Compile Include="FrmGestionarMarcasModelos.Designer.cs">
       <DependentUpon>FrmGestionarMarcasModelos.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmGestionarUsuarios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmGestionarUsuarios.Designer.cs">
+      <DependentUpon>FrmGestionarUsuarios.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmGestionarVehiculos.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FrmGestionarVehiculos.Designer.cs">
       <DependentUpon>FrmGestionarVehiculos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmNuevoEmpleado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmNuevoEmpleado.Designer.cs">
+      <DependentUpon>FrmNuevoEmpleado.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmVehiculosAlemanes.cs">
       <SubType>Form</SubType>
@@ -174,8 +186,14 @@
     <EmbeddedResource Include="FrmGestionarMarcasModelos.resx">
       <DependentUpon>FrmGestionarMarcasModelos.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmGestionarUsuarios.resx">
+      <DependentUpon>FrmGestionarUsuarios.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmGestionarVehiculos.resx">
       <DependentUpon>FrmGestionarVehiculos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmNuevoEmpleado.resx">
+      <DependentUpon>FrmNuevoEmpleado.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmVehiculosAlemanes.resx">
       <DependentUpon>FrmVehiculosAlemanes.cs</DependentUpon>

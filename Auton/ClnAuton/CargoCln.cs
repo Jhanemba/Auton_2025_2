@@ -9,6 +9,25 @@ namespace ClnAuton
 {
     public class CargoCln
     {
+        public static List<Cargo> listar()
+        {
+            using (var context = new AutonEntities())
+            {
+                return context.Cargo
+                    .Where(c => c.estado != -1)
+                    .OrderBy(c => c.descripcion)
+                    .ToList();
+            }
+        }
+
+        public static Cargo obtenerUno(int id)
+        {
+            using (var context = new AutonEntities())
+            {
+                return context.Cargo.Find(id);
+            }
+        }
+
         public static int insertar(Cargo cargo)
         {
             using (var context = new AutonEntities())
@@ -24,8 +43,11 @@ namespace ClnAuton
             using (var context = new AutonEntities())
             {
                 var existente = context.Cargo.Find(cargo.id);
+                if (existente == null) return 0;
+
                 existente.descripcion = cargo.descripcion;
                 existente.usuarioRegistro = cargo.usuarioRegistro;
+
                 return context.SaveChanges();
             }
         }
@@ -35,36 +57,11 @@ namespace ClnAuton
             using (var context = new AutonEntities())
             {
                 var cargo = context.Cargo.Find(id);
+                if (cargo == null) return 0;
+
                 cargo.estado = -1;
                 cargo.usuarioRegistro = usuarioRegistro;
                 return context.SaveChanges();
-            }
-        }
-
-        public static Cargo obtenerUno(int id)
-        {
-            using (var context = new AutonEntities())
-            {
-                return context.Cargo.Find(id);
-            }
-        }
-
-        public static List<Cargo> listar()
-        {
-            using (var context = new AutonEntities())
-            {
-                return context.Cargo
-                    .Where(x => x.estado != -1)
-                    .OrderBy(x => x.descripcion)
-                    .ToList();
-            }
-        }
-
-        public static List<paCargoListar_Result> listarPa()
-        {
-            using (var context = new AutonEntities())
-            {
-                return context.paCargoListar().ToList();
             }
         }
     }

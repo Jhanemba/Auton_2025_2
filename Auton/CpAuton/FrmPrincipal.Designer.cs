@@ -278,6 +278,7 @@
             this.btnCaAdministrarUsuarios.IconSet.Add(new C1.Framework.C1BitmapIcon("Users", new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, "Preset_LargeImages", 332));
             this.btnCaAdministrarUsuarios.Name = "btnCaAdministrarUsuarios";
             this.btnCaAdministrarUsuarios.Text = "Administrar Usuarios";
+            this.btnCaAdministrarUsuarios.Click += new System.EventHandler(this.menuAdministrarUsuarios_Click);
             // 
             // ribbonTab3
             // 

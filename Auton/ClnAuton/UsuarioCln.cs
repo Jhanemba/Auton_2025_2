@@ -19,16 +19,30 @@ namespace ClnAuton
             }
         }
 
+        // En UsuarioCln.cs - ACTUALIZACIÓN CORREGIDA
         public static int actualizar(Usuario usuario)
         {
             using (var context = new AutonEntities())
             {
                 var existente = context.Usuario.Find(usuario.id);
+
+                if (existente == null)
+                {
+                    return 0;
+                }
+
                 existente.idEmpleado = usuario.idEmpleado;
                 existente.usuario1 = usuario.usuario1;
-                existente.clave = usuario.clave;
+
+                // Solo actualizar la clave si viene con valor
+                if (!string.IsNullOrEmpty(usuario.clave))
+                {
+                    existente.clave = usuario.clave;
+                }
+
                 existente.esAdministrador = usuario.esAdministrador;
                 existente.usuarioRegistro = usuario.usuarioRegistro;
+
                 return context.SaveChanges();
             }
         }

@@ -24,10 +24,17 @@ namespace ClnAuton
             using (var context = new AutonEntities())
             {
                 var existente = context.Marca.Find(marca.id);
+
+                if (existente == null)
+                {
+                    return 0; // ← CRÍTICO: Manejar cuando no existe
+                }
+
                 existente.idProcedencia = marca.idProcedencia;
                 existente.nombre = marca.nombre;
                 existente.descripcion = marca.descripcion;
                 existente.usuarioRegistro = marca.usuarioRegistro;
+
                 return context.SaveChanges();
             }
         }

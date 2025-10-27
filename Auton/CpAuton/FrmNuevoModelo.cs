@@ -274,5 +274,10 @@ namespace CpAuton
                 }
             }
         }
+
+        private void FrmNuevoModelo_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

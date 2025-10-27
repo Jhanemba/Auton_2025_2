@@ -24,6 +24,8 @@ namespace ClnAuton
             using (var context = new AutonEntities())
             {
                 var existente = context.Empleado.Find(empleado.id);
+                if (existente == null) return 0;
+
                 existente.idCargo = empleado.idCargo;
                 existente.cedulaIdentidad = empleado.cedulaIdentidad;
                 existente.nombres = empleado.nombres;
@@ -32,6 +34,7 @@ namespace ClnAuton
                 existente.direccion = empleado.direccion;
                 existente.celular = empleado.celular;
                 existente.usuarioRegistro = empleado.usuarioRegistro;
+
                 return context.SaveChanges();
             }
         }
@@ -41,6 +44,8 @@ namespace ClnAuton
             using (var context = new AutonEntities())
             {
                 var empleado = context.Empleado.Find(id);
+                if (empleado == null) return 0;
+
                 empleado.estado = -1;
                 empleado.usuarioRegistro = usuarioRegistro;
                 return context.SaveChanges();
@@ -60,8 +65,8 @@ namespace ClnAuton
             using (var context = new AutonEntities())
             {
                 return context.Empleado
-                    .Where(x => x.estado != -1)
-                    .OrderBy(x => x.nombres)
+                    .Where(e => e.estado != -1)
+                    .OrderBy(e => e.nombres)
                     .ToList();
             }
         }

@@ -24,14 +24,18 @@ namespace ClnAuton
             using (var context = new AutonEntities())
             {
                 var existente = context.ModeloVehiculo.Find(modelo.id);
+
+                if (existente == null)
+                {
+                    return 0; // ← CRÍTICO: Manejar cuando no existe
+                }
+
                 existente.idMarca = modelo.idMarca;
                 existente.idTipoVehiculo = modelo.idTipoVehiculo;
                 existente.nombre = modelo.nombre;
-                //existente.anioInicio = modelo.anioInicio;
-                //existente.anioFin = modelo.anioFin;
-                //existente.motor = modelo.motor;
-                //existente.combustible = modelo.combustible;
+                existente.descripcion = modelo.descripcion; // ← También actualizar descripción
                 existente.usuarioRegistro = modelo.usuarioRegistro;
+
                 return context.SaveChanges();
             }
         }

@@ -843,7 +843,11 @@ namespace CpAuton
                 }
                 else
                 {
-                    marca = new Marca();
+                    marca = new Marca
+                    {
+                        estado = 1,  // ← CRÍTICO: Inicializar estado
+                        fechaRegistro = DateTime.Now  // ← CRÍTICO: Inicializar fecha
+                    };
                 }
 
                 marca.idProcedencia = (int)cboProcedencia.SelectedValue;
@@ -875,12 +879,12 @@ namespace CpAuton
                     MessageBox.Show(mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LimpiarFormularioMarca();
                     CargarMarcas();
-                    CargarMarcasCombo(); // Actualizar combo de modelos
+                    CargarMarcasCombo();
 
-                    var btnGuardar = this.Controls.Find("btnGuardarMarca", true)[0] as Button;
-                    var btnCancelar = this.Controls.Find("btnCancelarMarca", true)[0] as Button;
-                    btnGuardar.Enabled = false;
-                    btnCancelar.Enabled = false;
+                    var btnGuardar = BuscarControlEnTab("btnGuardarMarca", "MARCAS") as Button;
+                    var btnCancelar = BuscarControlEnTab("btnCancelarMarca", "MARCAS") as Button;
+                    if (btnGuardar != null) btnGuardar.Enabled = false;
+                    if (btnCancelar != null) btnCancelar.Enabled = false;
                 }
                 else
                 {
@@ -889,8 +893,8 @@ namespace CpAuton
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"❌ Error al guardar marca: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"❌ Error al guardar marca: {ex.Message}\n\nStack Trace: {ex.StackTrace}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1118,7 +1122,11 @@ namespace CpAuton
                 }
                 else
                 {
-                    modelo = new ModeloVehiculo();
+                    modelo = new ModeloVehiculo
+                    {
+                        estado = 1,  // ← CRÍTICO
+                        fechaRegistro = DateTime.Now  // ← CRÍTICO
+                    };
                 }
 
                 modelo.idMarca = (int)cboMarca.SelectedValue;
@@ -1152,10 +1160,10 @@ namespace CpAuton
                     LimpiarFormularioModelo();
                     CargarModelos();
 
-                    var btnGuardar = this.Controls.Find("btnGuardarModelo", true)[0] as Button;
-                    var btnCancelar = this.Controls.Find("btnCancelarModelo", true)[0] as Button;
-                    btnGuardar.Enabled = false;
-                    btnCancelar.Enabled = false;
+                    var btnGuardar = BuscarControlEnTab("btnGuardarModelo", "MODELOS") as Button;
+                    var btnCancelar = BuscarControlEnTab("btnCancelarModelo", "MODELOS") as Button;
+                    if (btnGuardar != null) btnGuardar.Enabled = false;
+                    if (btnCancelar != null) btnCancelar.Enabled = false;
                 }
                 else
                 {
@@ -1164,8 +1172,8 @@ namespace CpAuton
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"❌ Error al guardar modelo: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"❌ Error al guardar modelo: {ex.Message}\n\nStack Trace: {ex.StackTrace}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

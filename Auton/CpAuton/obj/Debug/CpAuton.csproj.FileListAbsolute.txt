@@ -40,3 +40,5 @@ C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmBusqued
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmEstadisticas.resources
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmGestionarVehiculos.resources
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmGestionarMarcasModelos.resources
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmGestionarUsuarios.resources
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmNuevoEmpleado.resources
