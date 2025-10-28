@@ -674,6 +674,46 @@ END
 
 EXEC paVehiculosJaponeses ''
 
+-- PROCEDIMIENTO ALMACENADO: Listar Empleados con Usuario
+-- =====================================================
+IF OBJECT_ID('paEmpleadoListar', 'P') IS NOT NULL
+    DROP PROCEDURE paEmpleadoListar;
+GO
+
+CREATE PROCEDURE paEmpleadoListar
+    @parametro VARCHAR(100) = ''
+AS
+BEGIN
+    SELECT 
+        e.id,
+        e.cedulaIdentidad,
+        e.nombres + ' ' + ISNULL(e.primerApellido, '') + ' ' + ISNULL(e.segundoApellido, '') AS nombreCompleto,
+        c.descripcion AS cargo,
+        e.celular,
+        e.direccion,
+        CASE WHEN EXISTS(SELECT 1 FROM Usuario u WHERE u.idEmpleado = e.id AND u.estado != -1) 
+             THEN 'SÍ' 
+             ELSE 'NO' 
+        END AS tieneUsuario,
+        e.fechaRegistro,
+        e.usuarioRegistro
+    FROM Empleado e
+    INNER JOIN Cargo c ON e.idCargo = c.id
+    WHERE e.estado != -1
+        AND (
+            @parametro = ''
+            OR e.cedulaIdentidad LIKE '%' + @parametro + '%'
+            OR e.nombres LIKE '%' + @parametro + '%'
+            OR e.primerApellido LIKE '%' + @parametro + '%'
+            OR e.segundoApellido LIKE '%' + @parametro + '%'
+            OR c.descripcion LIKE '%' + @parametro + '%'
+        )
+    ORDER BY nombreCompleto ASC;
+END
+GO
+
+PRINT 'Procedimiento paEmpleadoListar creado';
+
 
 
 -- =====================================================
@@ -771,6 +811,30 @@ CREATE NONCLUSTERED INDEX IX_Marca_Procedencia ON Marca(idProcedencia);
 CREATE NONCLUSTERED INDEX IX_ModeloVehiculo_Marca ON ModeloVehiculo(idMarca);
 CREATE NONCLUSTERED INDEX IX_Usuario_Estado ON Usuario(estado);
 
+
+-- VERIFICAR Y CREAR ÍNDICES ADICIONALES
+-- =====================================================
+
+-- Índice para búsquedas por empleado en Usuario
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Usuario_IdEmpleado' AND object_id = OBJECT_ID('Usuario'))
+BEGIN
+    CREATE NONCLUSTERED INDEX IX_Usuario_IdEmpleado ON Usuario(idEmpleado) WHERE estado != -1;
+    PRINT 'Índice IX_Usuario_IdEmpleado creado';
+END
+
+-- Índice para búsquedas por estado en Empleado
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Empleado_Estado' AND object_id = OBJECT_ID('Empleado'))
+BEGIN
+    CREATE NONCLUSTERED INDEX IX_Empleado_Estado ON Empleado(estado);
+    PRINT 'Índice IX_Empleado_Estado creado';
+END
+
+-- Índice para búsquedas por cargo
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Empleado_IdCargo' AND object_id = OBJECT_ID('Empleado'))
+BEGIN
+    CREATE NONCLUSTERED INDEX IX_Empleado_IdCargo ON Empleado(idCargo);
+    PRINT 'Índice IX_Empleado_IdCargo creado';
+END
 
 -- =====================================================
 -- RESUMEN

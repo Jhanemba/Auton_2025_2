@@ -241,6 +241,9 @@
           </ReferentialConstraint>
         </Association>
         <Function Name="paCargoListar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="paEmpleadoListar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="parametro" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="paMarcaPorProcedencia" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="idProcedencia" Type="int" Mode="In" />
         </Function>
@@ -656,6 +659,9 @@
             <End Role="VehiculoMantenimiento" EntitySet="VehiculoMantenimiento" />
           </AssociationSet>
           <FunctionImport Name="paCargoListar" ReturnType="Collection(AutonModel.paCargoListar_Result)" />
+          <FunctionImport Name="paEmpleadoListar" ReturnType="Collection(AutonModel.paEmpleadoListar_Result)">
+            <Parameter Name="parametro" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="paMarcaPorProcedencia" ReturnType="Collection(AutonModel.paMarcaPorProcedencia_Result)">
             <Parameter Name="idProcedencia" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -731,6 +737,17 @@
         <ComplexType Name="paCargoListar_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
           <Property Type="String" Name="descripcion" Nullable="false" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="paEmpleadoListar_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="cedulaIdentidad" Nullable="false" MaxLength="12" />
+          <Property Type="String" Name="nombreCompleto" Nullable="false" MaxLength="112" />
+          <Property Type="String" Name="cargo" Nullable="false" MaxLength="50" />
+          <Property Type="Int64" Name="celular" Nullable="false" />
+          <Property Type="String" Name="direccion" Nullable="false" MaxLength="250" />
+          <Property Type="String" Name="tieneUsuario" Nullable="false" MaxLength="2" />
+          <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
+          <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
         </ComplexType>
         <ComplexType Name="paMarcaPorProcedencia_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -1079,6 +1096,21 @@
               <ComplexTypeMapping TypeName="AutonModel.paCargoListar_Result">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="paEmpleadoListar" FunctionName="AutonModel.Store.paEmpleadoListar">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="AutonModel.paEmpleadoListar_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="cedulaIdentidad" ColumnName="cedulaIdentidad" />
+                <ScalarProperty Name="nombreCompleto" ColumnName="nombreCompleto" />
+                <ScalarProperty Name="cargo" ColumnName="cargo" />
+                <ScalarProperty Name="celular" ColumnName="celular" />
+                <ScalarProperty Name="direccion" ColumnName="direccion" />
+                <ScalarProperty Name="tieneUsuario" ColumnName="tieneUsuario" />
+                <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
+                <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

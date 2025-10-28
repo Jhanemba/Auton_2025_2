@@ -295,6 +295,9 @@
       <End Role="VehiculoMantenimiento" EntitySet="VehiculoMantenimiento" />
     </AssociationSet>
     <FunctionImport Name="paCargoListar" ReturnType="Collection(AutonModel.paCargoListar_Result)" />
+    <FunctionImport Name="paEmpleadoListar" ReturnType="Collection(AutonModel.paEmpleadoListar_Result)">
+      <Parameter Name="parametro" Mode="In" Type="String" />
+    </FunctionImport>
     <FunctionImport Name="paMarcaPorProcedencia" ReturnType="Collection(AutonModel.paMarcaPorProcedencia_Result)">
       <Parameter Name="idProcedencia" Mode="In" Type="Int32" />
     </FunctionImport>
@@ -370,6 +373,17 @@
   <ComplexType Name="paCargoListar_Result">
     <Property Type="Int32" Name="id" Nullable="false" />
     <Property Type="String" Name="descripcion" Nullable="false" MaxLength="50" />
+  </ComplexType>
+  <ComplexType Name="paEmpleadoListar_Result">
+    <Property Type="Int32" Name="id" Nullable="false" />
+    <Property Type="String" Name="cedulaIdentidad" Nullable="false" MaxLength="12" />
+    <Property Type="String" Name="nombreCompleto" Nullable="false" MaxLength="112" />
+    <Property Type="String" Name="cargo" Nullable="false" MaxLength="50" />
+    <Property Type="Int64" Name="celular" Nullable="false" />
+    <Property Type="String" Name="direccion" Nullable="false" MaxLength="250" />
+    <Property Type="String" Name="tieneUsuario" Nullable="false" MaxLength="2" />
+    <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
+    <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
   </ComplexType>
   <ComplexType Name="paMarcaPorProcedencia_Result">
     <Property Type="Int32" Name="id" Nullable="false" />

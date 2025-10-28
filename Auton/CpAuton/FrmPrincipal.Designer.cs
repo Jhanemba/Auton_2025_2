@@ -67,6 +67,8 @@
             this.btnCaManualUsuario = new C1.Win.Ribbon.RibbonButton();
             this.ribbonTopToolBar1 = new C1.Win.Ribbon.RibbonTopToolBar();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.ribbonGroup15 = new C1.Win.Ribbon.RibbonGroup();
+            this.ribbonButton2 = new C1.Win.Ribbon.RibbonButton();
             ((System.ComponentModel.ISupportInitialize)(this.c1Ribbon1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -238,6 +240,7 @@
             this.ribbonTab2.Groups.Add(this.ribbonGroup9);
             this.ribbonTab2.Groups.Add(this.ribbonGroup10);
             this.ribbonTab2.Groups.Add(this.ribbonGroup11);
+            this.ribbonTab2.Groups.Add(this.ribbonGroup15);
             this.ribbonTab2.Name = "ribbonTab2";
             this.ribbonTab2.Text = "Gestión";
             // 
@@ -326,6 +329,18 @@
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
+            // ribbonGroup15
+            // 
+            this.ribbonGroup15.Items.Add(this.ribbonButton2);
+            this.ribbonGroup15.Name = "ribbonGroup15";
+            // 
+            // ribbonButton2
+            // 
+            this.ribbonButton2.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
+            this.ribbonButton2.Name = "ribbonButton2";
+            this.ribbonButton2.Text = "Administrar Empleados";
+            this.ribbonButton2.Click += new System.EventHandler(this.menuAdministrarEmpleados_Click);
+            // 
             // FrmPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -387,5 +402,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private C1.Win.Ribbon.RibbonGroup ribbonGroup14;
         private C1.Win.Ribbon.RibbonButton ribbonButton1;
+        private C1.Win.Ribbon.RibbonGroup ribbonGroup15;
+        private C1.Win.Ribbon.RibbonButton ribbonButton2;
     }
 }

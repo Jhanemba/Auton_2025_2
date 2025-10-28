@@ -70,5 +70,13 @@ namespace ClnAuton
                     .ToList();
             }
         }
+        // Opcional: Método usando procedimiento almacenado
+        public static List<paEmpleadoListar_Result> listarConUsuario(string parametro = "")
+        {
+            using (var context = new AutonEntities())
+            {
+                return context.paEmpleadoListar(parametro ?? string.Empty).ToList();
+            }
+        }
     }
 }

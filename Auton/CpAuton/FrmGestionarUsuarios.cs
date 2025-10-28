@@ -905,23 +905,114 @@ namespace CpAuton
                 }
             }
 
-            // Verificar si el usuario ya existe (solo en inserción)
+            // ✅ CORRECCIÓN: Verificar si el usuario ya existe (solo ACTIVOS)
             if (!modoEdicion)
             {
-                var usuarioExistente = UsuarioCln.listar()
-                    .FirstOrDefault(u => u.usuario1.ToLower() == txtUsuario.Text.Trim().ToLower());
-
-                if (usuarioExistente != null)
+                try
                 {
-                    MessageBox.Show($"⚠️ El usuario '{txtUsuario.Text}' ya existe",
-                        "Usuario Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    txtUsuario.Focus();
+                    using (var context = new AutonEntities())
+                    {
+                        var usuarioExistente = context.Usuario
+                            .FirstOrDefault(u => u.usuario1.ToLower() == txtUsuario.Text.Trim().ToLower()
+                                              && u.estado != -1); // ← SOLO usuarios activos
+
+                        if (usuarioExistente != null)
+                        {
+                            MessageBox.Show($"⚠️ El usuario '{txtUsuario.Text}' ya existe y está activo.\n\n" +
+                                          "Por favor, elija otro nombre de usuario.",
+                                "Usuario Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            txtUsuario.Focus();
+                            return false;
+                        }
+
+                        // ⚠️ ADVERTENCIA: Usuario eliminado
+                        var usuarioEliminado = context.Usuario
+                            .FirstOrDefault(u => u.usuario1.ToLower() == txtUsuario.Text.Trim().ToLower()
+                                              && u.estado == -1);
+
+                        if (usuarioEliminado != null)
+                        {
+                            DialogResult resultado = MessageBox.Show(
+                                $"⚠️ El usuario '{txtUsuario.Text}' existe pero fue eliminado anteriormente.\n\n" +
+                                $"¿Desea REACTIVAR este usuario en lugar de crear uno nuevo?\n\n" +
+                                $"• SÍ: Reactivar el usuario existente\n" +
+                                $"• NO: Continuar con el error (no recomendado)\n" +
+                                $"• CANCELAR: Elegir otro nombre de usuario",
+                                "Usuario Eliminado Encontrado",
+                                MessageBoxButtons.YesNoCancel,
+                                MessageBoxIcon.Question);
+
+                            if (resultado == DialogResult.Yes)
+                            {
+                                // Reactivar usuario
+                                ReactivarUsuario(usuarioEliminado.id);
+                                return false; // No continuar con el guardado normal
+                            }
+                            else if (resultado == DialogResult.Cancel)
+                            {
+                                txtUsuario.Focus();
+                                return false;
+                            }
+                            // Si elige NO, continúa y dejará que falle (no recomendado)
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al validar usuario: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
 
             return true;
         }
+
+        private void ReactivarUsuario(int idUsuario)
+        {
+            try
+            {
+                using (var context = new AutonEntities())
+                {
+                    var usuario = context.Usuario.Find(idUsuario);
+                    if (usuario == null) return;
+
+                    // Reactivar
+                    usuario.estado = 1;
+                    usuario.idEmpleado = (int)cboEmpleado.SelectedValue;
+                    usuario.esAdministrador = chkEsAdministrador.Checked;
+                    usuario.usuarioRegistro = Util.usuario.usuario;
+                    usuario.fechaRegistro = DateTime.Now;
+
+                    // Solo actualizar clave si se ingresó una nueva
+                    if (!string.IsNullOrWhiteSpace(txtClave.Text))
+                    {
+                        usuario.clave = Util.Encrypt(txtClave.Text);
+                    }
+
+                    context.SaveChanges();
+
+                    MessageBox.Show(
+                        $"✅ Usuario '{usuario.usuario1}' reactivado exitosamente\n\n" +
+                        $"El usuario se ha vinculado al empleado seleccionado.",
+                        "Usuario Reactivado",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
+                    LimpiarFormulario();
+                    CargarUsuarios();
+                    CargarEmpleados();
+                    btnGuardar.Enabled = false;
+                    btnCancelar.Enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al reactivar usuario: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
 
         private void BtnAgregarEmpleado_Click(object sender, EventArgs e)
         {

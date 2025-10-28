@@ -25,31 +25,36 @@ namespace CpAuton
         private TextBox txtDireccion;
         private TextBox txtCelular;
 
-        // P/Invoke para establecer "cue banner" (placeholder) en TextBox (compatible con .NET Framework 4.8)
-        private const int EM_SETCUEBANNER = 0x1501;
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, string lParam);
-
         public FrmNuevoEmpleado()
         {
             InitializeComponent();
-            ConfigurarFormulario();
+            ConfigurarFormulario(); 
         }
+
+        //private void InitializeComponent()
+        //{
+        //    this.SuspendLayout();
+        //    this.ClientSize = new System.Drawing.Size(550, 520);
+        //    this.Name = "FrmNuevoEmpleado";
+        //    this.Text = "...::: Auton - Nuevo Empleado :::...";
+        //    this.StartPosition = FormStartPosition.CenterParent;
+        //    this.FormBorderStyle = FormBorderStyle.FixedDialog;
+        //    this.MaximizeBox = false;
+        //    this.MinimizeBox = false;
+        //    this.Font = new Font("Segoe UI", 10F);
+        //    this.Load += new System.EventHandler(this.FrmNuevoEmpleado_Load);
+
+        //    ConfigurarFormulario();
+
+        //    this.ResumeLayout(false);
+        //}
 
         private void ConfigurarFormulario()
         {
-            this.Text = "...::: Auton - Nuevo Empleado :::...";
-            this.Size = new Size(550, 550);
-            this.StartPosition = FormStartPosition.CenterParent;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Font = new Font("Segoe UI", 10F);
-
             Panel pnlPrincipal = new Panel
             {
                 Location = new Point(0, 0),
-                Size = new Size(534, 450),
+                Size = new Size(534, 750),
                 Padding = new Padding(20),
                 BackColor = Color.White
             };
@@ -74,6 +79,7 @@ namespace CpAuton
             AgregarLabel(pnlPrincipal, "Cargo:", 20, yPos, 150);
             cboCargo = new ComboBox
             {
+                Name = "cboCargo",
                 Location = new Point(180, yPos),
                 Size = new Size(320, 28),
                 DropDownStyle = ComboBoxStyle.DropDownList,
@@ -138,8 +144,16 @@ namespace CpAuton
                 MaxLength = 30
             };
             pnlPrincipal.Controls.Add(txtSegundoApellido);
-            // Establecer placeholder compatible con .NET Framework 4.8
-            SetPlaceholder(txtSegundoApellido, "(Opcional)");
+
+            Label lblOpcional = new Label
+            {
+                Text = "(Opcional)",
+                Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                ForeColor = Color.Gray,
+                Location = new Point(385, yPos + 32),
+                AutoSize = true
+            };
+            pnlPrincipal.Controls.Add(lblOpcional);
             yPos += lineHeight;
 
             // Dirección
@@ -237,58 +251,100 @@ namespace CpAuton
         private void FrmNuevoEmpleado_Load(object sender, EventArgs e)
         {
             CargarCargos();
-            txtNombres.Focus();
+
+            if (txtNombres != null)
+            {
+                txtNombres.Focus();
+            }
         }
 
         private void CargarCargos()
         {
             try
             {
-                // Método 1: Usando CargoCln
+                // Prueba directa con el contexto
                 var cargos = CargoCln.listar();
 
-                if (cargos == null)
+                if (cargos == null || cargos.Count == 0)
                 {
-                    MessageBox.Show("⚠️ CargoCln.listar() devolvió NULL",
-                        "Debug", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                if (cargos.Count == 0)
-                {
-                    MessageBox.Show("⚠️ No hay cargos en la base de datos.\n\n" +
-                                  "Por favor, inserte cargos primero:\n" +
-                                  "INSERT INTO Cargo (descripcion) VALUES ('Administrador'), ('Técnico');",
+                    MessageBox.Show("⚠️ No se encontraron cargos en la base de datos.\n\n" +
+                                  "Por favor, verifique que existan registros en la tabla Cargo.",
                         "Sin Cargos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+
+                    // Intentar insertar un cargo de prueba
+                    DialogResult resultado = MessageBox.Show(
+                        "¿Desea crear cargos de ejemplo?",
+                        "Crear Cargos",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        CrearCargosPorDefecto();
+                        cargos = CargoCln.listar();
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
 
-                // Limpiar ComboBox primero
+                // Asignar al ComboBox
                 cboCargo.DataSource = null;
                 cboCargo.Items.Clear();
-
-                // Asignar datos
                 cboCargo.DisplayMember = "descripcion";
                 cboCargo.ValueMember = "id";
                 cboCargo.DataSource = cargos;
                 cboCargo.SelectedIndex = -1;
-
-                MessageBox.Show($"✅ Cargos cargados exitosamente: {cargos.Count}",
-                    "Debug", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"❌ Error al cargar cargos:\n\n" +
                               $"Mensaje: {ex.Message}\n\n" +
-                              $"Inner: {ex.InnerException?.Message}\n\n" +
-                              $"Stack: {ex.StackTrace}",
-                    "Error Detallado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                              $"InnerException: {ex.InnerException?.Message}\n\n" +
+                              $"StackTrace: {ex.StackTrace}",
+                    "Error Completo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CrearCargosPorDefecto()
+        {
+            try
+            {
+                string[] cargosDefecto = new[]
+                {
+                    "Administrador Sistema",
+                    "Técnico Automotriz",
+                    "Evaluador Vehicular",
+                    "Consultor Ventas",
+                    "Mecánico General"
+                };
+
+                foreach (var descripcion in cargosDefecto)
+                {
+                    var cargo = new Cargo
+                    {
+                        descripcion = descripcion,
+                        estado = 1,
+                        usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : "sistema",
+                        fechaRegistro = DateTime.Now
+                    };
+
+                    CargoCln.insertar(cargo);
+                }
+
+                MessageBox.Show("✅ Cargos creados exitosamente", "Éxito",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al crear cargos: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void TxtCelular_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // Solo permitir números
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
@@ -341,8 +397,8 @@ namespace CpAuton
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al validar CI: {ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al validar CI: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -437,18 +493,6 @@ namespace CpAuton
                 MessageBox.Show($"❌ Error al guardar:\n\n{ex.Message}",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void SetPlaceholder(TextBox tb, string placeholder)
-        {
-            if (tb == null) return;
-            // wParam = (IntPtr)1 -> mostrar placeholder cuando el control no tiene foco y está vacío
-            SendMessage(tb.Handle, EM_SETCUEBANNER, (IntPtr)1, placeholder);
-        }
-
-        private void FrmNuevoEmpleado_Load_1(object sender, EventArgs e)
-        {
-
         }
     }
 }

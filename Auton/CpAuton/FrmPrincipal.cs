@@ -267,13 +267,26 @@ namespace CpAuton
             }
         }
 
-        // En tu FrmPrincipal o donde tengas el menú
         private void menuAdministrarUsuarios_Click(object sender, EventArgs e)
         {
             if (ValidarAutenticacion())
             {
                 var frmUsuarios = new FrmGestionarUsuarios();
                 frmUsuarios.ShowDialog(this);
+            }
+            else
+            {
+                MessageBox.Show("⚠️ Solo los administradores pueden gestionar usuarios.",
+                    "Acceso Denegado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void menuAdministrarEmpleados_Click(object sender, EventArgs e)
+        {
+            if (ValidarAutenticacion())
+            {
+                var frmEmpleados = new FrmGestionarEmpleados();
+                frmEmpleados.ShowDialog(this);
             }
             else
             {

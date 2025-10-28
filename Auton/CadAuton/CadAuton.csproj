@@ -89,6 +89,9 @@
     <Compile Include="paCargoListar_Result.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="paEmpleadoListar_Result.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="paMarcaPorProcedencia_Result.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
