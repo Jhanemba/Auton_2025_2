@@ -295,6 +295,14 @@ namespace CpAuton
             }
         }
 
+        private void btnAcercaDe_Click(object sender, EventArgs e)
+        {
+            using (var frmAcerca = new FrmAcercaDe())
+            {
+                frmAcerca.ShowDialog(this);
+            }
+        }
+
         private void MenuUsuarios_Click(object sender, EventArgs e)
         {
             if (ValidarAutenticacion())

@@ -60,6 +60,8 @@
             this.btnCaGestionarMarcasModelos = new C1.Win.Ribbon.RibbonButton();
             this.ribbonGroup11 = new C1.Win.Ribbon.RibbonGroup();
             this.btnCaAdministrarUsuarios = new C1.Win.Ribbon.RibbonButton();
+            this.ribbonGroup15 = new C1.Win.Ribbon.RibbonGroup();
+            this.ribbonButton2 = new C1.Win.Ribbon.RibbonButton();
             this.ribbonTab3 = new C1.Win.Ribbon.RibbonTab();
             this.ribbonGroup12 = new C1.Win.Ribbon.RibbonGroup();
             this.btnCaAcercaSistema = new C1.Win.Ribbon.RibbonButton();
@@ -67,8 +69,6 @@
             this.btnCaManualUsuario = new C1.Win.Ribbon.RibbonButton();
             this.ribbonTopToolBar1 = new C1.Win.Ribbon.RibbonTopToolBar();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.ribbonGroup15 = new C1.Win.Ribbon.RibbonGroup();
-            this.ribbonButton2 = new C1.Win.Ribbon.RibbonButton();
             ((System.ComponentModel.ISupportInitialize)(this.c1Ribbon1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -283,6 +283,18 @@
             this.btnCaAdministrarUsuarios.Text = "Administrar Usuarios";
             this.btnCaAdministrarUsuarios.Click += new System.EventHandler(this.menuAdministrarUsuarios_Click);
             // 
+            // ribbonGroup15
+            // 
+            this.ribbonGroup15.Items.Add(this.ribbonButton2);
+            this.ribbonGroup15.Name = "ribbonGroup15";
+            // 
+            // ribbonButton2
+            // 
+            this.ribbonButton2.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
+            this.ribbonButton2.Name = "ribbonButton2";
+            this.ribbonButton2.Text = "Administrar Empleados";
+            this.ribbonButton2.Click += new System.EventHandler(this.menuAdministrarEmpleados_Click);
+            // 
             // ribbonTab3
             // 
             this.ribbonTab3.Groups.Add(this.ribbonGroup12);
@@ -301,6 +313,7 @@
             this.btnCaAcercaSistema.IconSet.Add(new C1.Framework.C1BitmapIcon("SchHighImportance", new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, "Preset_LargeImages", 252));
             this.btnCaAcercaSistema.Name = "btnCaAcercaSistema";
             this.btnCaAcercaSistema.Text = "Acerca del Sistema";
+            this.btnCaAcercaSistema.Click += new System.EventHandler(this.btnAcercaDe_Click);
             // 
             // ribbonGroup13
             // 
@@ -328,18 +341,6 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
-            // 
-            // ribbonGroup15
-            // 
-            this.ribbonGroup15.Items.Add(this.ribbonButton2);
-            this.ribbonGroup15.Name = "ribbonGroup15";
-            // 
-            // ribbonButton2
-            // 
-            this.ribbonButton2.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
-            this.ribbonButton2.Name = "ribbonButton2";
-            this.ribbonButton2.Text = "Administrar Empleados";
-            this.ribbonButton2.Click += new System.EventHandler(this.menuAdministrarEmpleados_Click);
             // 
             // FrmPrincipal
             // 
