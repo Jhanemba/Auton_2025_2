@@ -3,7 +3,7 @@
   "WorkspaceRootPath": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|c:\\users\\kevin\\documents\\auton_2025_2\\auton\\cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
@@ -19,11 +19,11 @@
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmdetalleempleado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|c:\\users\\kevin\\documents\\auton_2025_2\\auton\\cpauton\\frmgestionarempleados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmgestionarempleados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmgestionarempleados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|c:\\users\\kevin\\documents\\auton_2025_2\\auton\\cpauton\\frmdetalleempleado.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmdetalleempleado.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmdetalleempleado.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -31,7 +31,7 @@
       "RelativeMoniker": "D:0:0:{7E0B6B9F-0457-48F6-A10A-7620642E51F2}|ClnAuton\\ClnAuton.csproj|solutionrelative:clnauton\\empleadocln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{179CFD5D-D9D2-441A-A027-26131244C01D}|CadAuton\\CadAuton.csproj|c:\\users\\kevin\\documents\\auton_2025_2\\auton\\cadauton\\modelo.edmx||{C99AEA30-8E36-4515-B76F-496F5A48A6AA}|",
+      "AbsoluteMoniker": "D:0:0:{179CFD5D-D9D2-441A-A027-26131244C01D}|CadAuton\\CadAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cadauton\\modelo.edmx||{C99AEA30-8E36-4515-B76F-496F5A48A6AA}|",
       "RelativeMoniker": "D:0:0:{179CFD5D-D9D2-441A-A027-26131244C01D}|CadAuton\\CadAuton.csproj|solutionrelative:cadauton\\modelo.edmx||{C99AEA30-8E36-4515-B76F-496F5A48A6AA}|"
     },
     {
@@ -273,8 +273,7 @@
               "RelativeToolTip": "CpAuton\\FrmGestionarEmpleados.cs",
               "ViewState": "AgIAAPgCAAAAAAAAAAAowAQDAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T23:59:25.754Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-27T23:59:25.754Z"
             },
             {
               "$type": "Document",
@@ -285,8 +284,7 @@
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmDetalleEmpleado.cs [Dise\u00F1o]",
               "RelativeToolTip": "CpAuton\\FrmDetalleEmpleado.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T23:48:28.403Z",
-              "EditorCaption": " [Dise\u00F1o]"
+              "WhenOpened": "2025-10-27T23:48:28.403Z"
             },
             {
               "$type": "Document",
@@ -309,8 +307,7 @@
               "RelativeToolTip": "CpAuton\\FrmDetalleEmpleado.cs",
               "ViewState": "AgIAABcAAAAAAAAAAAAmwCQAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T23:49:34.835Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-27T23:49:34.835Z"
             },
             {
               "$type": "Document",
@@ -334,8 +331,7 @@
               "RelativeToolTip": "CpAuton\\FrmPrincipal.cs",
               "ViewState": "AgIAABQBAAAAAAAAAAAwwCABAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-11T02:02:41.346Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-11T02:02:41.346Z"
             },
             {
               "$type": "Document",
@@ -346,8 +342,7 @@
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CadAuton\\Modelo.edmx [Diagram1]",
               "RelativeToolTip": "CadAuton\\Modelo.edmx [Diagram1]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001116|",
-              "WhenOpened": "2025-10-28T01:57:17.072Z",
-              "EditorCaption": " [Diagram1]"
+              "WhenOpened": "2025-10-28T01:57:17.072Z"
             },
             {
               "$type": "Document",
@@ -359,8 +354,7 @@
               "RelativeToolTip": "CpAuton\\FrmDetalleEmpleado.Designer.cs",
               "ViewState": "AgIAABwAAAAAAAAAAAAgwBwAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T01:58:13.435Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-28T01:58:13.435Z"
             },
             {
               "$type": "Document",
@@ -384,8 +378,7 @@
               "RelativeToolTip": "ClnAuton\\EmpleadoCln.cs",
               "ViewState": "AgIAAEEAAAAAAAAAAAAiwEkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-10T00:01:41.544Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-10T00:01:41.544Z"
             },
             {
               "$type": "Document",
@@ -396,8 +389,7 @@
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarEmpleados.cs [Dise\u00F1o]",
               "RelativeToolTip": "CpAuton\\FrmGestionarEmpleados.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T23:59:22.768Z",
-              "EditorCaption": " [Dise\u00F1o]"
+              "WhenOpened": "2025-10-27T23:59:22.768Z"
             },
             {
               "$type": "Document",
