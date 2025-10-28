@@ -42,9 +42,10 @@ namespace CpAuton
 
         private void ConfigurarFormulario()
         {
+            //this.Size = new Size(1400, 750);
+            //this.StartPosition = FormStartPosition.CenterScreen;
+
             this.Text = "👥 Gestión de Empleados - Sistema Auton";
-            this.Size = new Size(1400, 750);
-            this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.FromArgb(248, 249, 250);
 
             // Panel usuario actual
@@ -108,9 +109,10 @@ namespace CpAuton
                 Location = new Point(150, yPos),
                 Size = new Size(200, 25),
                 Font = new Font("Segoe UI", 10),
-                MaxLength = 12
+                MaxLength = 12,
+                CharacterCasing = CharacterCasing.Upper // Para que siempre sea mayúscula
             };
-            txtCI.KeyPress += TxtSoloNumeros_KeyPress;
+            txtCI.KeyPress += TxtCI_KeyPress;
             pnlForm.Controls.Add(txtCI);
             yPos += 45;
 
@@ -122,7 +124,6 @@ namespace CpAuton
                 Size = new Size(310, 25),
                 Font = new Font("Segoe UI", 10),
                 MaxLength = 50,
-                CharacterCasing = CharacterCasing.Upper
             };
             pnlForm.Controls.Add(txtNombres);
             yPos += 45;
@@ -135,7 +136,6 @@ namespace CpAuton
                 Size = new Size(310, 25),
                 Font = new Font("Segoe UI", 10),
                 MaxLength = 30,
-                CharacterCasing = CharacterCasing.Upper
             };
             pnlForm.Controls.Add(txtPrimerApellido);
             yPos += 45;
@@ -148,7 +148,6 @@ namespace CpAuton
                 Size = new Size(310, 25),
                 Font = new Font("Segoe UI", 10),
                 MaxLength = 30,
-                CharacterCasing = CharacterCasing.Upper
             };
             pnlForm.Controls.Add(txtSegundoApellido);
 
@@ -774,7 +773,17 @@ namespace CpAuton
 
         private void TxtSoloNumeros_KeyPress(object sender, KeyPressEventArgs e)
         {
+            // Solo números para celular
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TxtCI_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Números y letras para CI
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && !char.IsLetter(e.KeyChar))
             {
                 e.Handled = true;
             }

@@ -859,7 +859,7 @@ WHERE p.descripcion = 'Japonés'
 
 select * FROM Marca
 SELECT * FROM Procedencia WHERE estado != -1;
-SELECT * FROM Cargo WHERE estado != -1;
+SELECT * FROM Cargo
 
 PRINT '';
 PRINT 'USUARIOS:';
