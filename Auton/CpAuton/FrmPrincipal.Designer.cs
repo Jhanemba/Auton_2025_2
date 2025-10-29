@@ -326,6 +326,7 @@
             this.btnCaManualUsuario.IconSet.Add(new C1.Framework.C1BitmapIcon("Toolbox", new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, "Preset_LargeImages", 320));
             this.btnCaManualUsuario.Name = "btnCaManualUsuario";
             this.btnCaManualUsuario.Text = "Manual de Usuario";
+            this.btnCaManualUsuario.Click += new System.EventHandler(this.btnCaManualUsuario_Click);
             // 
             // ribbonTopToolBar1
             // 

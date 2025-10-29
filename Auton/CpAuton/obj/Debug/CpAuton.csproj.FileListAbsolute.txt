@@ -45,3 +45,4 @@ C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmNuevoEm
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmDetalleEmpleado.resources
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmGestionarEmpleados.resources
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmAcercaDe.resources
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmAyuda.resources

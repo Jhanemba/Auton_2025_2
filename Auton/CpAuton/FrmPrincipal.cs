@@ -374,5 +374,13 @@ namespace CpAuton
             }
             base.OnFormClosing(e);
         }
+
+        private void btnCaManualUsuario_Click(object sender, EventArgs e)
+        {
+            using (var frmAyuda = new FrmAyuda())
+            {
+                frmAyuda.ShowDialog(this);
+            }
+        }
     }
 }

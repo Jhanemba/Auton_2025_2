@@ -3,8 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|c:\\users\\kevin\\documents\\auton_2025_2\\auton\\cpauton\\frmacercade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|c:\\users\\kevin\\documents\\auton_2025_2\\auton\\cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmayuda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmayuda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmayuda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmayuda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmacercade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmacercade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmgestionarempleados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmgestionarempleados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmdetalleempleado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
@@ -15,20 +43,8 @@
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmacercade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmgestionarempleados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmgestionarempleados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmgestionarempleados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmgestionarempleados.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmdetalleempleado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -198,10 +214,6 @@
       "RelativeMoniker": "D:0:0:{7E0B6B9F-0457-48F6-A10A-7620642E51F2}|ClnAuton\\ClnAuton.csproj|solutionrelative:clnauton\\vehiculosjaponesescln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7E0B6B9F-0457-48F6-A10A-7620642E51F2}|ClnAuton\\ClnAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\clnauton\\vehiculosamericanoscln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E0B6B9F-0457-48F6-A10A-7620642E51F2}|ClnAuton\\ClnAuton.csproj|solutionrelative:clnauton\\vehiculosamericanoscln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -238,10 +250,6 @@
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmautenticacion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7E0B6B9F-0457-48F6-A10A-7620642E51F2}|ClnAuton\\ClnAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\clnauton\\vehiculocln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7E0B6B9F-0457-48F6-A10A-7620642E51F2}|ClnAuton\\ClnAuton.csproj|solutionrelative:clnauton\\vehiculocln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -257,7 +265,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -273,42 +281,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "FrmAcercaDe.cs",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAcercaDe.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmAcercaDe.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAcercaDe.cs",
-              "RelativeToolTip": "CpAuton\\FrmAcercaDe.cs",
-              "ViewState": "AgIAADAAAAAAAAAAAAAgwEEAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T19:46:36.033Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "FrmDetalleEmpleado.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmDetalleEmpleado.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmDetalleEmpleado.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmDetalleEmpleado.cs [Dise\u00F1o]",
-              "RelativeToolTip": "CpAuton\\FrmDetalleEmpleado.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T23:48:28.403Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "FrmGestionarEmpleados.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarEmpleados.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmGestionarEmpleados.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarEmpleados.cs [Dise\u00F1o]",
-              "RelativeToolTip": "CpAuton\\FrmGestionarEmpleados.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T23:59:22.768Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "FrmPrincipal.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmPrincipal.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmPrincipal.cs",
@@ -325,13 +298,95 @@
               "RelativeDocumentMoniker": "CpAuton\\FrmPrincipal.cs",
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmPrincipal.cs",
               "RelativeToolTip": "CpAuton\\FrmPrincipal.cs",
-              "ViewState": "AgIAACUBAAAAAAAAAAAwwC8BAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAHABAAAAAAAAAAAgwH8BAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-11T02:02:41.346Z"
             },
             {
               "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "FrmDetalleEmpleado.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmDetalleEmpleado.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmDetalleEmpleado.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmDetalleEmpleado.cs [Dise\u00F1o]",
+              "RelativeToolTip": "CpAuton\\FrmDetalleEmpleado.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-27T23:48:28.403Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FrmConsultaVehiculos.cs",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmConsultaVehiculos.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
+              "RelativeToolTip": "CpAuton\\FrmConsultaVehiculos.cs",
+              "ViewState": "AgIAAO4BAAAAAAAAAAAUwPwBAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-11T17:16:04.245Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "FrmAyuda.cs",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAyuda.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmAyuda.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAyuda.cs",
+              "RelativeToolTip": "CpAuton\\FrmAyuda.cs",
+              "ViewState": "AgIAALUBAAAAAAAAAAAiwMcBAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T23:05:55.328Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FrmConsultaVehiculos.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmConsultaVehiculos.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs [Dise\u00F1o]",
+              "RelativeToolTip": "CpAuton\\FrmConsultaVehiculos.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-11T15:03:39.902Z",
+              "EditorCaption": " [Dise\u00F1o]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "FrmGestionarEmpleados.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarEmpleados.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmGestionarEmpleados.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarEmpleados.cs [Dise\u00F1o]",
+              "RelativeToolTip": "CpAuton\\FrmGestionarEmpleados.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-27T23:59:22.768Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "FrmAcercaDe.cs",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAcercaDe.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmAcercaDe.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAcercaDe.cs",
+              "RelativeToolTip": "CpAuton\\FrmAcercaDe.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAgwEEAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T19:46:36.033Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FrmAyuda.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAyuda.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmAyuda.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAyuda.cs [Dise\u00F1o]",
+              "RelativeToolTip": "CpAuton\\FrmAyuda.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T22:58:50.623Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "FrmAcercaDe.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAcercaDe.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmAcercaDe.cs",
@@ -342,7 +397,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 11,
               "Title": "FrmDetalleEmpleado.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmDetalleEmpleado.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmDetalleEmpleado.cs",
@@ -354,7 +409,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 10,
               "Title": "FrmGestionarEmpleados.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarEmpleados.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmGestionarEmpleados.cs",
@@ -366,18 +421,18 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
               "Title": "ddl_dml_auton.sql",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\ddl_dml_auton.sql",
               "RelativeDocumentMoniker": "..\\ddl_dml_auton.sql",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\ddl_dml_auton.sql",
-              "RelativeToolTip": "..\\ddl_dml_auton.sql",
+              "ToolTip": "ddl_dml_auton.sql",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-09-11T18:26:52.073Z"
+              "WhenOpened": "2025-09-11T18:26:52.073Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 15,
               "Title": "Modelo.edmx [Diagram1]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CadAuton\\Modelo.edmx",
               "RelativeDocumentMoniker": "CadAuton\\Modelo.edmx",
@@ -388,7 +443,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 13,
               "Title": "FrmDetalleEmpleado.Designer.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmDetalleEmpleado.Designer.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmDetalleEmpleado.Designer.cs",
@@ -400,7 +455,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 20,
               "Title": "CargoCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\CargoCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\CargoCln.cs",
@@ -412,7 +467,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 14,
               "Title": "EmpleadoCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\EmpleadoCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\EmpleadoCln.cs",
@@ -424,7 +479,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 16,
               "Title": "FrmGestionarUsuarios.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarUsuarios.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmGestionarUsuarios.cs",
@@ -436,7 +491,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 17,
               "Title": "FrmNuevoEmpleado.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmNuevoEmpleado.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmNuevoEmpleado.cs",
@@ -447,7 +502,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 18,
               "Title": "FrmNuevoEmpleado.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmNuevoEmpleado.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmNuevoEmpleado.cs",
@@ -459,7 +514,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 19,
               "Title": "FrmNuevoModelo.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmNuevoModelo.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmNuevoModelo.cs",
@@ -471,7 +526,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 21,
               "Title": "FrmGestionarUsuarios.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarUsuarios.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmGestionarUsuarios.cs",
@@ -482,7 +537,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 55,
               "Title": "FrmVehiculosJaponeses.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosJaponeses.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosJaponeses.cs",
@@ -493,7 +548,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 56,
               "Title": "FrmAutenticacion.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAutenticacion.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmAutenticacion.cs",
@@ -505,7 +560,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 57,
               "Title": "FrmNuevaMarca.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmNuevaMarca.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmNuevaMarca.cs",
@@ -517,7 +572,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 58,
               "Title": "FrmNuevaMarca.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmNuevaMarca.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmNuevaMarca.cs",
@@ -528,7 +583,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 62,
               "Title": "VehiculoCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\VehiculoCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\VehiculoCln.cs",
@@ -540,7 +595,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 30,
               "Title": "TipoVehiculoCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\TipoVehiculoCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\TipoVehiculoCln.cs",
@@ -552,7 +607,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 31,
               "Title": "ProcedenciaCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\ProcedenciaCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\ProcedenciaCln.cs",
@@ -564,7 +619,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 59,
               "Title": "FrmRegistroVehiculo.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmRegistroVehiculo.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmRegistroVehiculo.cs",
@@ -576,7 +631,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 60,
               "Title": "FrmRegistroVehiculo.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmRegistroVehiculo.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmRegistroVehiculo.cs",
@@ -587,7 +642,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 58,
+              "DocumentIndex": 61,
               "Title": "FrmAutenticacion.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAutenticacion.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmAutenticacion.cs",
@@ -598,7 +653,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 61,
+              "DocumentIndex": 63,
               "Title": "Util.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\Util.cs",
               "RelativeDocumentMoniker": "CpAuton\\Util.cs",
@@ -610,7 +665,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 22,
               "Title": "FrmNuevoModelo.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmNuevoModelo.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmNuevoModelo.cs",
@@ -621,7 +676,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 23,
               "Title": "FrmVehiculosChinos.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosChinos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosChinos.cs",
@@ -633,7 +688,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 26,
               "Title": "FrmVehiculosChinos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosChinos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosChinos.cs",
@@ -644,7 +699,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 25,
               "Title": "UsuarioCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\UsuarioCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\UsuarioCln.cs",
@@ -656,7 +711,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 24,
               "Title": "FrmEstadisticas.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmEstadisticas.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmEstadisticas.cs",
@@ -667,7 +722,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 27,
               "Title": "FrmGestionarMarcasModelos.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarMarcasModelos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmGestionarMarcasModelos.cs",
@@ -679,7 +734,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 34,
               "Title": "FrmEstadisticas.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmEstadisticas.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmEstadisticas.cs",
@@ -691,7 +746,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 35,
               "Title": "FrmGestionarVehiculos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarVehiculos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmGestionarVehiculos.cs",
@@ -702,7 +757,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 29,
               "Title": "ModeloVehiculoCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\ModeloVehiculoCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\ModeloVehiculoCln.cs",
@@ -714,7 +769,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 28,
               "Title": "MarcaCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\MarcaCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\MarcaCln.cs",
@@ -726,7 +781,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 33,
               "Title": "FrmGestionarVehiculos.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarVehiculos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmGestionarVehiculos.cs",
@@ -738,7 +793,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 32,
               "Title": "FrmGestionarMarcasModelos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarMarcasModelos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmGestionarMarcasModelos.cs",
@@ -749,7 +804,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 40,
               "Title": "FrmBusquedaAvanzada.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmBusquedaAvanzada.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmBusquedaAvanzada.cs",
@@ -761,7 +816,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 39,
               "Title": "FrmBusquedaAvanzada.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmBusquedaAvanzada.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmBusquedaAvanzada.cs",
@@ -772,7 +827,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 41,
               "Title": "FrmVehiculosCoreanos.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosCoreanos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosCoreanos.cs",
@@ -784,7 +839,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 36,
               "Title": "FrmVehiculosCoreanos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosCoreanos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosCoreanos.cs",
@@ -795,7 +850,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 44,
               "Title": "VehiculosCoreanosCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\VehiculosCoreanosCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\VehiculosCoreanosCln.cs",
@@ -807,7 +862,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 43,
               "Title": "FrmVehiculosEuropeos.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosEuropeos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosEuropeos.cs",
@@ -819,7 +874,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 42,
               "Title": "FrmVehiculosEuropeos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosEuropeos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosEuropeos.cs",
@@ -830,7 +885,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 45,
               "Title": "VehiculosEuropeosCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\VehiculosEuropeosCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\VehiculosEuropeosCln.cs",
@@ -842,7 +897,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 46,
               "Title": "FrmVehiculosAlemanes.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosAlemanes.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosAlemanes.cs",
@@ -854,7 +909,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 47,
               "Title": "FrmVehiculosAlemanes.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosAlemanes.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosAlemanes.cs",
@@ -865,7 +920,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 48,
               "Title": "VehiculosAlemanesCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\VehiculosAlemanesCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\VehiculosAlemanesCln.cs",
@@ -877,7 +932,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 51,
               "Title": "ConsultaVehiculosChinosCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\ConsultaVehiculosChinosCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\ConsultaVehiculosChinosCln.cs",
@@ -889,7 +944,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 50,
               "Title": "FrmVehiculosAmericanos.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosAmericanos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosAmericanos.cs",
@@ -901,7 +956,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 49,
               "Title": "FrmVehiculosAmericanos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosAmericanos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosAmericanos.cs",
@@ -912,7 +967,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 53,
               "Title": "VehiculosAmericanosCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\VehiculosAmericanosCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\VehiculosAmericanosCln.cs",
@@ -924,7 +979,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 52,
               "Title": "VehiculosJaponesesCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\VehiculosJaponesesCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\VehiculosJaponesesCln.cs",
@@ -936,7 +991,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 54,
               "Title": "FrmVehiculosJaponeses.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosJaponeses.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosJaponeses.cs",
@@ -948,7 +1003,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 38,
               "Title": "ConsultaVehiculosCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\ConsultaVehiculosCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\ConsultaVehiculosCln.cs",
@@ -960,30 +1015,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
-              "Title": "FrmConsultaVehiculos.cs",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmConsultaVehiculos.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
-              "RelativeToolTip": "CpAuton\\FrmConsultaVehiculos.cs",
-              "ViewState": "AgIAAE8AAAAAAAAAAAAUwF0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-11T17:16:04.245Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 49,
-              "Title": "FrmConsultaVehiculos.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmConsultaVehiculos.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs [Dise\u00F1o]",
-              "RelativeToolTip": "CpAuton\\FrmConsultaVehiculos.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-11T15:03:39.902Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 37,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\Program.cs",
               "RelativeDocumentMoniker": "CpAuton\\Program.cs",
