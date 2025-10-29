@@ -25,7 +25,7 @@ namespace ClnAuton
         }
 
         /// <summary>
-        /// Actualiza un vehículo existente - VERSIÓN CORREGIDA
+        /// Actualiza un vehículo existente - VERSIÓN COMPLETA CON CHASIS
         /// </summary>
         /// <param name="vehiculo">Objeto Vehiculo con los datos actualizados</param>
         /// <returns>Número de registros afectados</returns>
@@ -36,11 +36,12 @@ namespace ClnAuton
                 var existente = context.Vehiculo.Find(vehiculo.id);
                 if (existente != null)
                 {
-                    // CAMPOS BÁSICOS
+                    // ⭐ CAMPOS BÁSICOS (INCLUYENDO CHASIS)
+                    existente.nroChasis = vehiculo.nroChasis;  // ← ESTE FALTABA
                     existente.idModeloVehiculo = vehiculo.idModeloVehiculo;
                     existente.anioFabricacion = vehiculo.anioFabricacion;
 
-                    // ⭐ CAMPOS QUE FALTABAN - CARACTERÍSTICAS ESPECÍFICAS
+                    // ⭐ CARACTERÍSTICAS ESPECÍFICAS
                     existente.generacion = vehiculo.generacion;
                     existente.paisFabricacion = vehiculo.paisFabricacion;
                     existente.transmision = vehiculo.transmision;
