@@ -845,8 +845,8 @@ namespace CpAuton
                 {
                     marca = new Marca
                     {
-                        estado = 1,  // ← CRÍTICO: Inicializar estado
-                        fechaRegistro = DateTime.Now  // ← CRÍTICO: Inicializar fecha
+                        estado = 1,  // CRÍTICO: Inicializar estado
+                        fechaRegistro = DateTime.Now  // CRÍTICO: Inicializar fecha
                     };
                 }
 
@@ -1124,8 +1124,8 @@ namespace CpAuton
                 {
                     modelo = new ModeloVehiculo
                     {
-                        estado = 1,  // ← CRÍTICO
-                        fechaRegistro = DateTime.Now  // ← CRÍTICO
+                        estado = 1,  // CRÍTICO
+                        fechaRegistro = DateTime.Now  // CRÍTICO
                     };
                 }
 
@@ -1336,14 +1336,5 @@ namespace CpAuton
             txtNombre.Clear();
             txtDescripcion.Clear();
         }
-
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.ClientSize = new System.Drawing.Size(1300, 750);
-        //    this.Name = "FrmGestionarMarcasModelos";
-        //    this.Load += new System.EventHandler(this.FrmGestionarMarcasModelos_Load);
-        //    this.ResumeLayout(false);
-        //}
     }
 }

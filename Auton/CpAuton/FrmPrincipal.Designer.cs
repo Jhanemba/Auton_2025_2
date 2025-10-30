@@ -291,6 +291,7 @@
             // ribbonButton2
             // 
             this.ribbonButton2.IconSet.Add(new C1.Framework.C1BitmapIcon("DefaultImage", new System.Drawing.Size(16, 16), System.Drawing.Color.Transparent, "DefaultImage", -1));
+            this.ribbonButton2.IconSet.Add(new C1.Framework.C1BitmapIcon("Hand", new System.Drawing.Size(32, 32), System.Drawing.Color.Transparent, "Preset_LargeImages", 128));
             this.ribbonButton2.Name = "ribbonButton2";
             this.ribbonButton2.Text = "Administrar Empleados";
             this.ribbonButton2.Click += new System.EventHandler(this.menuAdministrarEmpleados_Click);

@@ -42,7 +42,6 @@ namespace CpAuton
         private void ConfigurarFormulario()
         {
             this.Text = "👥 Gestión de Usuarios - Sistema Auton";
-            //this.Size = new Size(1300, 750);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.FromArgb(248, 249, 250);
 
@@ -458,7 +457,7 @@ namespace CpAuton
                         // En modo edición: cargar TODOS los empleados
                         var todosEmpleados = context.Empleado
                             .Where(e => e.estado != -1)
-                            .ToList() // ← IMPORTANTE: Ejecutar consulta primero
+                            .ToList() // IMPORTANTE: Ejecutar consulta primero
                             .Select(e => new EmpleadoDto
                             {
                                 id = e.id,
@@ -481,7 +480,7 @@ namespace CpAuton
 
                         var empleadosDisponibles = context.Empleado
                             .Where(e => e.estado != -1 && !empleadosConUsuario.Contains(e.id))
-                            .ToList() // ← IMPORTANTE: Ejecutar consulta primero
+                            .ToList() // IMPORTANTE: Ejecutar consulta primero
                             .Select(e => new EmpleadoDto
                             {
                                 id = e.id,
@@ -494,7 +493,7 @@ namespace CpAuton
 
                         cboEmpleado.DataSource = empleadosDisponibles;
 
-                        // ⚠️ ADVERTENCIA si no hay empleados disponibles
+                        // ADVERTENCIA si no hay empleados disponibles
                         if (empleadosDisponibles.Count == 0)
                         {
                             MessageBox.Show(
@@ -905,7 +904,7 @@ namespace CpAuton
                 }
             }
 
-            // ✅ CORRECCIÓN: Verificar si el usuario ya existe (solo ACTIVOS)
+            // CORRECCIÓN: Verificar si el usuario ya existe (solo ACTIVOS)
             if (!modoEdicion)
             {
                 try
@@ -914,7 +913,7 @@ namespace CpAuton
                     {
                         var usuarioExistente = context.Usuario
                             .FirstOrDefault(u => u.usuario1.ToLower() == txtUsuario.Text.Trim().ToLower()
-                                              && u.estado != -1); // ← SOLO usuarios activos
+                                              && u.estado != -1); // SOLO usuarios activos
 
                         if (usuarioExistente != null)
                         {
@@ -925,7 +924,7 @@ namespace CpAuton
                             return false;
                         }
 
-                        // ⚠️ ADVERTENCIA: Usuario eliminado
+                        // ADVERTENCIA: Usuario eliminado
                         var usuarioEliminado = context.Usuario
                             .FirstOrDefault(u => u.usuario1.ToLower() == txtUsuario.Text.Trim().ToLower()
                                               && u.estado == -1);
@@ -1040,14 +1039,5 @@ namespace CpAuton
             chkMostrarClave.Checked = false;
             cboEmpleado.Enabled = true;
         }
-
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.ClientSize = new System.Drawing.Size(1300, 750);
-        //    this.Name = "FrmGestionarUsuarios";
-        //    this.Load += new System.EventHandler(this.FrmGestionarUsuarios_Load);
-        //    this.ResumeLayout(false);
-        //}
     }
 }

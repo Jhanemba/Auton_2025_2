@@ -486,6 +486,12 @@ namespace CpAuton
             }
         }
 
+        private void btnNuevo_Click(object sender, EventArgs e)
+        {
+            //abrir formulario de registro de vehículo
+            new FrmRegistroVehiculo().ShowDialog();
+        }
+
         //private void InitializeComponent()
         //{
         //    this.SuspendLayout();

@@ -85,12 +85,12 @@
             this.dgvVehiculos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvVehiculos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvVehiculos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvVehiculos.Location = new System.Drawing.Point(3, 19);
+            this.dgvVehiculos.Location = new System.Drawing.Point(3, 26);
             this.dgvVehiculos.Name = "dgvVehiculos";
             this.dgvVehiculos.ReadOnly = true;
             this.dgvVehiculos.RowHeadersWidth = 62;
             this.dgvVehiculos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvVehiculos.Size = new System.Drawing.Size(1243, 269);
+            this.dgvVehiculos.Size = new System.Drawing.Size(1243, 262);
             this.dgvVehiculos.TabIndex = 0;
             this.dgvVehiculos.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellDoubleClick);
             // 
@@ -99,7 +99,7 @@
             this.txtBuscar.Location = new System.Drawing.Point(232, 98);
             this.txtBuscar.MaxLength = 100;
             this.txtBuscar.Name = "txtBuscar";
-            this.txtBuscar.Size = new System.Drawing.Size(680, 23);
+            this.txtBuscar.Size = new System.Drawing.Size(680, 30);
             this.txtBuscar.TabIndex = 44;
             this.txtBuscar.TextChanged += new System.EventHandler(this.txtBuscar_TextChanged);
             // 
@@ -108,7 +108,7 @@
             this.lblParametro.AutoSize = true;
             this.lblParametro.Location = new System.Drawing.Point(232, 79);
             this.lblParametro.Name = "lblParametro";
-            this.lblParametro.Size = new System.Drawing.Size(422, 17);
+            this.lblParametro.Size = new System.Drawing.Size(583, 25);
             this.lblParametro.TabIndex = 43;
             this.lblParametro.Text = "Buscar por Marca, Modelo, País, Tansmisión, Motor, Confiabilidad\r\n";
             // 
@@ -144,6 +144,7 @@
             this.btnNuevo.Text = "Nuevo";
             this.btnNuevo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnNuevo.UseVisualStyleBackColor = true;
+            this.btnNuevo.Click += new System.EventHandler(this.btnNuevo_Click);
             // 
             // btnExportar
             // 
@@ -178,7 +179,7 @@
             this.lblMarcas.AutoSize = true;
             this.lblMarcas.Location = new System.Drawing.Point(-97, 420);
             this.lblMarcas.Name = "lblMarcas";
-            this.lblMarcas.Size = new System.Drawing.Size(58, 17);
+            this.lblMarcas.Size = new System.Drawing.Size(83, 25);
             this.lblMarcas.TabIndex = 50;
             this.lblMarcas.Text = "Marcas:";
             // 
@@ -187,7 +188,7 @@
             this.lblEstadisticas.AutoSize = true;
             this.lblEstadisticas.Location = new System.Drawing.Point(275, 420);
             this.lblEstadisticas.Name = "lblEstadisticas";
-            this.lblEstadisticas.Size = new System.Drawing.Size(87, 17);
+            this.lblEstadisticas.Size = new System.Drawing.Size(122, 25);
             this.lblEstadisticas.TabIndex = 49;
             this.lblEstadisticas.Text = "Estadisticas:";
             // 
@@ -196,13 +197,13 @@
             this.lblTotal.AutoSize = true;
             this.lblTotal.Location = new System.Drawing.Point(912, 420);
             this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(129, 17);
+            this.lblTotal.Size = new System.Drawing.Size(180, 25);
             this.lblTotal.TabIndex = 48;
             this.lblTotal.Text = "Total de Vehículos:";
             // 
             // FrmVehiculosAlemanes
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
             this.ClientSize = new System.Drawing.Size(1264, 554);
@@ -218,6 +219,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmVehiculosAlemanes";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmVehiculosAlemanes";
             this.Load += new System.EventHandler(this.FrmVehiculosAlemanes_Load);

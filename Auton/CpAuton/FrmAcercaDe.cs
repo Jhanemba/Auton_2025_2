@@ -81,8 +81,8 @@ namespace CpAuton
             AgregarSeccion(pnlInfo, "📝 Descripción", ref yPos);
             Label lblDescripcion = new Label
             {
-                Text = "Sistema integral para la gestión y administración de vehículos automotores. " +
-                       "Permite el registro, control y seguimiento de vehículos, empleados, usuarios y " +
+                Text = "Sistema integral para la gestión y administración de vehículos automotores, " +
+                       "permite el registro, control y seguimiento de vehículos, empleados, usuarios y " +
                        "operaciones relacionadas con el mantenimiento y evaluación técnica vehicular.",
                 Font = new Font("Segoe UI", 10),
                 ForeColor = Color.FromArgb(52, 73, 94),
@@ -139,7 +139,7 @@ namespace CpAuton
                 Text = "© 2025 Sistema Auton - Todos los derechos reservados",
                 Font = new Font("Segoe UI", 9),
                 ForeColor = Color.FromArgb(127, 140, 141),
-                Location = new Point(150, 8),
+                Location = new Point(120, 8),
                 Size = new Size(400, 20),
                 TextAlign = ContentAlignment.MiddleCenter
             };
@@ -203,14 +203,5 @@ namespace CpAuton
             panel.Controls.Add(lblModulo);
             yPos += 28;
         }
-
-
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.ClientSize = new System.Drawing.Size(650, 700);
-        //    this.Name = "FrmAcercaDe";
-        //    this.ResumeLayout(false);
-        //}
     }
 }

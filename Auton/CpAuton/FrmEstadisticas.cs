@@ -42,7 +42,6 @@ namespace CpAuton
         private void MostrarEstadisticas()
         {
             this.Text = "📊 Estadísticas del Sistema Auton";
-            //this.Size = new Size(1200, 750);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.FromArgb(248, 249, 250);
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -293,7 +292,7 @@ namespace CpAuton
             Panel spacerTurboRango = new Panel
             {
                 Location = new Point(margin, yPos),
-                Size = new Size(1120, 20), // altura del espacio: 20px (ajustable)
+                Size = new Size(1120, 20),
                 BackColor = pnlPrincipal.BackColor,
                 BorderStyle = BorderStyle.None
             };
@@ -406,14 +405,5 @@ namespace CpAuton
 
             return card;
         }
-
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.ClientSize = new System.Drawing.Size(1200, 750);
-        //    this.Name = "FrmEstadisticas";
-        //    this.Load += new System.EventHandler(this.FrmEstadisticas_Load);
-        //    this.ResumeLayout(false);
-        //}
     }
 }

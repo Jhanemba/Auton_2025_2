@@ -26,7 +26,7 @@ namespace CpAuton
 
         private void ConfigurarFormulario()
         {
-            this.Text = "Sistema Auton - Confiabilidad Vehicular";
+            this.Text = "...::: Sistema Auton - Confiabilidad Vehicular :::...";
             this.WindowState = FormWindowState.Maximized;
 
             // Crear MenuStrip
@@ -179,7 +179,6 @@ namespace CpAuton
                 using (var frmRegistro = new FrmRegistroVehiculo())
                 {
                     frmRegistro.ShowDialog(this);
-                    // No necesitamos recargar nada aquí porque no tiene lista
                 }
             }
         }
@@ -231,16 +230,19 @@ namespace CpAuton
         {
             if (ValidarAutenticacion())
             {
-                new FrmConsultaVehiculos().ShowDialog();
-                //MessageBox.Show("Formulario de Editar Vehículo (Por implementar)",
-                //              "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                using (var frmEditar = new FrmConsultaVehiculos())
+                {
+                    frmEditar.ShowDialog(this);
+                }
             }
         }
 
         private void MenuEstadisticas_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Reporte de Estadísticas (Por implementar)",
-                          "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            using (var frmStats = new FrmEstadisticas())
+            {
+                frmStats.ShowDialog(this);
+            }
         }
 
         private void MenuGestionarVehiculos_Click(object sender, EventArgs e)
@@ -309,8 +311,10 @@ namespace CpAuton
             {
                 if (Util.EsAdministrador())
                 {
-                    MessageBox.Show("Gestión de Usuarios (Por implementar)",
-                                  "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    using (var frmUsu = new FrmGestionarUsuarios())
+                    {
+                        frmUsu.ShowDialog(this);
+                    }
                 }
                 else
                 {
@@ -326,8 +330,10 @@ namespace CpAuton
             {
                 if (Util.EsAdministrador())
                 {
-                    MessageBox.Show("Gestión de Empleados (Por implementar)",
-                                  "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    using (var frmEmple = new FrmGestionarEmpleados())
+                    {
+                        frmEmple.ShowDialog(this);
+                    }
                 }
                 else
                 {

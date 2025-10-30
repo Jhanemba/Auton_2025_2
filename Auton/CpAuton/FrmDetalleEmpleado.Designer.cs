@@ -39,6 +39,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FrmDetalleEmpleado";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "...::: Detalle del Empleado :::...";
             this.Load += new System.EventHandler(this.FrmDetalleEmpleado_Load);

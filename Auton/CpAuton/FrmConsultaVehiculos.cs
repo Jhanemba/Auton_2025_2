@@ -38,7 +38,7 @@ namespace CpAuton
                 Dock = DockStyle.Top,
                 Height = 50,
                 BackColor = Color.FromArgb(240, 240, 240),
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
             };
 
             btnSesion = new Button
@@ -66,6 +66,8 @@ namespace CpAuton
             pnlSesion.Controls.Add(lblEstadoUsuario);
 
             this.Controls.Add(pnlSesion);
+            //poner al frente
+            pnlSesion.BringToFront();
         }
 
         private void BtnSesion_Click(object sender, EventArgs e)
@@ -352,7 +354,7 @@ namespace CpAuton
                 AgregarSeccion(pnlPrincipal, "📋 IDENTIFICACIÓN DEL MODELO", 20, yPos, 540);
                 int yPosLeft = yPos + 38;
 
-                // Nro de Chasis (AHORA EDITABLE)
+                // Nro de Chasis que AHORA EDITABLE
                 AgregarLabel(pnlPrincipal, "Nro. Chasis:", 20, yPosLeft, labelWidth);
                 TextBox txtChasis = new TextBox
                 {
@@ -383,7 +385,7 @@ namespace CpAuton
                     return;
                 }
 
-                // Marca (AHORA EDITABLE)
+                // Marca que AHORA EDITABLE
                 AgregarLabel(pnlPrincipal, "Marca:", 20, yPosLeft, labelWidth);
                 ComboBox cboMarca = new ComboBox
                 {
@@ -397,7 +399,7 @@ namespace CpAuton
                 pnlPrincipal.Controls.Add(cboMarca);
                 yPosLeft += lineHeight;
 
-                // Modelo (AHORA EDITABLE - depende de marca)
+                // Modelo que AHORA EDITABLE - depende de marca
                 AgregarLabel(pnlPrincipal, "Modelo:", 20, yPosLeft, labelWidth);
                 ComboBox cboModelo = new ComboBox
                 {
@@ -411,7 +413,7 @@ namespace CpAuton
                 pnlPrincipal.Controls.Add(cboModelo);
                 yPosLeft += lineHeight;
 
-                // Tipo (AHORA EDITABLE)
+                // Tipo que AHORA EDITABLE
                 AgregarLabel(pnlPrincipal, "Tipo:", 20, yPosLeft, labelWidth);
                 ComboBox cboTipo = new ComboBox
                 {
@@ -546,7 +548,7 @@ namespace CpAuton
 
                         //MessageBox.Show(sb.ToString(), "DEBUG - Selección", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        // Seleccionar marca por ID (si existe)
+                        // Seleccionar marca por ID si existe
                         if (marcas != null && marcas.Any())
                         {
                             var marcaSeleccionada = marcas.FirstOrDefault(m => m.id == modeloActual?.idMarca);
@@ -556,7 +558,7 @@ namespace CpAuton
                                 cboMarca.SelectedIndex = -1;
                         }
 
-                        // Seleccionar tipo por ID (si existe)
+                        // Seleccionar tipo por ID si existe
                         if (tipos != null && tipos.Any())
                         {
                             var tipoSeleccionado = tipos.FirstOrDefault(t => t.id == modeloActual?.idTipoVehiculo);
@@ -611,7 +613,7 @@ namespace CpAuton
                     permitirEventos = true;
                 }
 
-                // Año de Fabricación (EDITABLE)
+                // Año de Fabricación EDITABLE
                 AgregarLabel(pnlPrincipal, "Año Fabricación:", 20, yPosLeft, labelWidth);
                 NumericUpDown nudAnio = new NumericUpDown
                 {
@@ -646,6 +648,8 @@ namespace CpAuton
                 };
                 pnlPrincipal.Controls.Add(txtGeneracion);
                 yPosRight += lineHeight;
+                //poner al frente
+                txtGeneracion.BringToFront();
 
                 // País de Fabricación (EDITABLE)
                 AgregarLabel(pnlPrincipal, "País Fabricación:", 590, yPosRight, labelWidth);
@@ -663,6 +667,7 @@ namespace CpAuton
                 cboPaisFabricacion.Text = vehiculoCompleto.paisFabricacion;
                 pnlPrincipal.Controls.Add(cboPaisFabricacion);
                 yPosRight += lineHeight;
+                cboPaisFabricacion.BringToFront();
 
                 // Transmisión (EDITABLE)
                 AgregarLabel(pnlPrincipal, "Transmisión:", 590, yPosRight, labelWidth);
@@ -679,6 +684,7 @@ namespace CpAuton
                 cboTransmision.Text = vehiculoCompleto.transmision;
                 pnlPrincipal.Controls.Add(cboTransmision);
                 yPosRight += lineHeight;
+                cboTransmision.BringToFront();
 
                 // Tiene Turbo (EDITABLE)
                 CheckBox chkTieneTurbo = new CheckBox
@@ -694,6 +700,7 @@ namespace CpAuton
                 };
                 pnlPrincipal.Controls.Add(chkTieneTurbo);
                 yPosRight += lineHeight;
+                chkTieneTurbo.BringToFront();
 
                 // Motor (EDITABLE)
                 AgregarLabel(pnlPrincipal, "Motor:", 590, yPosRight, labelWidth);
@@ -705,10 +712,11 @@ namespace CpAuton
                     Font = new Font("Segoe UI", 10F),
                     Text = vehiculoCompleto.motor,
                     ReadOnly = true,
-                    BackColor = Color.WhiteSmoke
+                    BackColor = Color.WhiteSmoke,
                 };
                 pnlPrincipal.Controls.Add(txtMotor);
                 yPosRight += lineHeight;
+                txtMotor.BringToFront();
 
                 // Combustible (EDITABLE)
                 AgregarLabel(pnlPrincipal, "Combustible:", 590, yPosRight, labelWidth);
@@ -725,6 +733,7 @@ namespace CpAuton
                 cboCombustible.Text = vehiculoCompleto.combustible;
                 pnlPrincipal.Controls.Add(cboCombustible);
                 yPosRight += lineHeight;
+                cboCombustible.BringToFront();
 
                 // ==================== SEGURIDAD ====================
                 yPos = Math.Max(yPosLeft, yPosRight) + 15;
@@ -800,6 +809,7 @@ namespace CpAuton
                 cboConfiabilidad.Text = vehiculoCompleto.confiabilidad;
                 pnlPrincipal.Controls.Add(cboConfiabilidad);
                 yPosRight += lineHeight;
+                cboConfiabilidad.BringToFront();
 
                 // Puntuación (EDITABLE)
                 AgregarLabel(pnlPrincipal, "Puntuación:", 590, yPosRight, labelWidth);
@@ -819,6 +829,7 @@ namespace CpAuton
                 };
                 pnlPrincipal.Controls.Add(nudPuntuacion);
                 yPosRight += lineHeight;
+                nudPuntuacion.BringToFront();
 
                 // ==================== OBSERVACIONES ====================
                 yPos = Math.Max(yPosLeft, yPosRight) + 15;
@@ -840,8 +851,8 @@ namespace CpAuton
                 // ==================== PANEL DE BOTONES ====================
                 Panel pnlBotones = new Panel
                 {
-                    Location = new Point(0, 750),
-                    Size = new Size(1184, 70),
+                    Location = new Point(0, 650),
+                    Size = new Size(1184, 70+20),
                     BackColor = Color.FromArgb(248, 249, 250),
                     BorderStyle = BorderStyle.FixedSingle
                 };
@@ -896,7 +907,7 @@ namespace CpAuton
                             btnEditar.Text = "💾 Guardar";
                             btnEditar.BackColor = Color.FromArgb(40, 167, 69);
                         }
-                        else
+                        else // GUARDAR
                         {
                             // VALIDAR ANTES DE GUARDAR
                             if (!ValidarEdicionCompleta(txtChasis.Text, cboModelo.SelectedIndex,
@@ -906,25 +917,44 @@ namespace CpAuton
 
                             try
                             {
-                                // Verificar si cambió el modelo
-                                int nuevoIdModelo = (int)cboModelo.SelectedValue;
-
-                                // Si cambió el modelo, verificamos que exista o lo creamos
-                                if (nuevoIdModelo != vehiculoCompleto.idModeloVehiculo)
+                                // VALIDACIONES PREVIAS
+                                if (cboModelo.SelectedValue == null || cboTipo.SelectedValue == null)
                                 {
-                                    var modeloSeleccionado = ModeloVehiculoCln.obtenerUno(nuevoIdModelo);
+                                    MessageBox.Show("⚠️ Debe seleccionar un modelo y un tipo válidos",
+                                                  "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    return;
+                                }
 
-                                    // Verificar si cambió el tipo y actualizar el modelo
-                                    int nuevoIdTipo = (int)cboTipo.SelectedValue;
-                                    if (modeloSeleccionado.idTipoVehiculo != nuevoIdTipo)
+                                int nuevoIdModelo = Convert.ToInt32(cboModelo.SelectedValue);
+                                int nuevoIdTipo = Convert.ToInt32(cboTipo.SelectedValue);
+
+                                // ACTUALIZAR EL TIPO DEL MODELO (SI CAMBIÓ)
+                                var modeloSeleccionado = ModeloVehiculoCln.obtenerUno(nuevoIdModelo);
+
+                                if (modeloSeleccionado == null)
+                                {
+                                    MessageBox.Show("❌ Error: No se pudo cargar el modelo seleccionado",
+                                                  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+
+                                // Si el tipo cambió, actualizar el modelo
+                                if (modeloSeleccionado.idTipoVehiculo != nuevoIdTipo)
+                                {
+                                    modeloSeleccionado.idTipoVehiculo = nuevoIdTipo;
+                                    modeloSeleccionado.usuarioRegistro = Util.usuario.usuario;
+
+                                    int resultadoModelo = ModeloVehiculoCln.actualizar(modeloSeleccionado);
+
+                                    if (resultadoModelo == 0)
                                     {
-                                        modeloSeleccionado.idTipoVehiculo = nuevoIdTipo;
-                                        modeloSeleccionado.usuarioRegistro = Util.usuario.usuario;
-                                        ModeloVehiculoCln.actualizar(modeloSeleccionado);
+                                        MessageBox.Show("❌ Error al actualizar el tipo del modelo",
+                                                      "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        return;
                                     }
                                 }
 
-                                // Actualizar vehículo
+                                // ACTUALIZAR VEHÍCULO
                                 vehiculoCompleto.nroChasis = txtChasis.Text.Trim().ToUpper();
                                 vehiculoCompleto.idModeloVehiculo = nuevoIdModelo;
                                 vehiculoCompleto.anioFabricacion = (int)nudAnio.Value;
@@ -976,8 +1006,11 @@ namespace CpAuton
                                     btnEditar.Text = "✏️ Editar";
                                     btnEditar.BackColor = Color.FromArgb(51, 122, 183);
 
-                                    MessageBox.Show("✅ Vehículo actualizado exitosamente",
+                                    MessageBox.Show("✅ Vehículo actualizado exitosamente\n" +
+                                                  $"Modelo: {modeloSeleccionado.nombre}\n" +
+                                                  $"Tipo actualizado: {cboTipo.Text}",
                                                   "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                                     frmDetalles.Close();
                                     CargarVehiculos("");
                                 }
@@ -989,8 +1022,8 @@ namespace CpAuton
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show($"❌ Error al guardar: {ex.Message}",
-                                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show($"❌ Error al guardar:\n{ex.Message}\n\nStackTrace:\n{ex.StackTrace}",
+                                              "Error Detallado", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
                     };

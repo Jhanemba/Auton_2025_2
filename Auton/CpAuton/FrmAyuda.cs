@@ -20,7 +20,7 @@ namespace CpAuton
 
         private void ConfigurarFormulario()
         {
-            this.Text = "📚 Manual de Usuario - Sistema Auton";
+            this.Text = "... ::: 📚 Manual de Usuario - Sistema Auton :::...";
             this.Size = new Size(1000, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
@@ -203,16 +203,14 @@ namespace CpAuton
         "✓ Calificación de seguridad",
         "✓ Confiabilidad",
         "✓ Puntuación (1.0 - 10.0)",
-        "✓ Observaciones"
+        "✓ Observaciones",
+        "✓ Número de chasis",
+        "✓ Marca del vehículo (En Gestión >> Marcas/Modelos)",
+        "✓ Modelo del vehícul",
+        "✓ Tipo de vehículo"
     }, ref yPos);
 
-                    AgregarSubtitulo(pnlContenido, "Campos NO editables:", ref yPos);
-                    AgregarLista(pnlContenido, new[] {
-        "✗ Número de chasis (es único)",
-        "✗ Marca del vehículo",
-        "✗ Modelo del vehículo",
-        "✗ Tipo de vehículo"
-    }, ref yPos);
+                  
 
                     AgregarSubtitulo(pnlContenido, "Pasos para editar:", ref yPos);
 
@@ -309,7 +307,7 @@ namespace CpAuton
 
                     AgregarPregunta(pnlContenido, "¿Qué significa la confiabilidad?",
                         "Es una evaluación de la durabilidad y fiabilidad del vehículo basada en su desempeño " +
-                        "histórico. Puede ser: Excelente, Bueno, Regular o Malo.", ref yPos);
+                        "histórico, puede ser: Excelente, Bueno, Regular o Malo.", ref yPos);
                     break;
             }
         }

@@ -458,6 +458,11 @@ namespace CpAuton
             }
         }
 
+        private void btnNuevo_Click(object sender, EventArgs e)
+        {
+            new FrmRegistroVehiculo().ShowDialog();
+        }
+
         //private void InitializeComponent()
         //{
         //    this.pnlSuperior = new System.Windows.Forms.Panel();
@@ -606,5 +611,5 @@ namespace CpAuton
         //    this.pnlSuperior.PerformLayout();
         //    ((System.ComponentModel.ISupportInitialize)(this.dgvVehiculos)).EndInit();
         //    this.pnlInferior.ResumeLayout(false);
-        }
+    }
 }

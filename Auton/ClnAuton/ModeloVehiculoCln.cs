@@ -27,16 +27,24 @@ namespace ClnAuton
 
                 if (existente == null)
                 {
-                    return 0; // ← CRÍTICO: Manejar cuando no existe
+                    return 0; // No existe el modelo
                 }
 
+                // ✅ ACTUALIZAR TODOS LOS CAMPOS
                 existente.idMarca = modelo.idMarca;
                 existente.idTipoVehiculo = modelo.idTipoVehiculo;
                 existente.nombre = modelo.nombre;
-                existente.descripcion = modelo.descripcion; // ← También actualizar descripción
+                existente.descripcion = modelo.descripcion;
                 existente.usuarioRegistro = modelo.usuarioRegistro;
 
-                return context.SaveChanges();
+                // ✅ MARCAR COMO MODIFICADO (forzar detección de cambios)
+                context.Entry(existente).State = System.Data.Entity.EntityState.Modified;
+
+                // Guardar cambios
+                context.SaveChanges();
+
+                // ✅ RETORNAR 1 SI NO HUBO EXCEPCIONES
+                return 1;
             }
         }
 
@@ -45,6 +53,10 @@ namespace ClnAuton
             using (var context = new AutonEntities())
             {
                 var modelo = context.ModeloVehiculo.Find(id);
+                if (modelo == null)
+                {
+                    return 0;
+                }
                 modelo.estado = -1;
                 modelo.usuarioRegistro = usuarioRegistro;
                 return context.SaveChanges();

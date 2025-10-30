@@ -52,7 +52,7 @@
             // 
             this.btnBuscar.Image = ((System.Drawing.Image)(resources.GetObject("btnBuscar.Image")));
             this.btnBuscar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnBuscar.Location = new System.Drawing.Point(864, 82);
+            this.btnBuscar.Location = new System.Drawing.Point(864, 88);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.btnBuscar.Size = new System.Drawing.Size(98, 40);
@@ -87,37 +87,37 @@
             this.dgvVehiculos.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.RaisedHorizontal;
             this.dgvVehiculos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvVehiculos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvVehiculos.Location = new System.Drawing.Point(3, 18);
+            this.dgvVehiculos.Location = new System.Drawing.Point(3, 26);
             this.dgvVehiculos.Name = "dgvVehiculos";
             this.dgvVehiculos.ReadOnly = true;
             this.dgvVehiculos.RowHeadersWidth = 62;
             this.dgvVehiculos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvVehiculos.Size = new System.Drawing.Size(1074, 284);
+            this.dgvVehiculos.Size = new System.Drawing.Size(1074, 276);
             this.dgvVehiculos.TabIndex = 0;
             this.dgvVehiculos.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellDoubleClick);
             // 
             // txtBuscar
             // 
-            this.txtBuscar.Location = new System.Drawing.Point(167, 91);
+            this.txtBuscar.Location = new System.Drawing.Point(167, 97);
             this.txtBuscar.MaxLength = 100;
             this.txtBuscar.Name = "txtBuscar";
-            this.txtBuscar.Size = new System.Drawing.Size(680, 22);
+            this.txtBuscar.Size = new System.Drawing.Size(680, 30);
             this.txtBuscar.TabIndex = 9;
             this.txtBuscar.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtClave_KeyPress);
             // 
             // lblParametro
             // 
             this.lblParametro.AutoSize = true;
-            this.lblParametro.Location = new System.Drawing.Point(167, 72);
+            this.lblParametro.Location = new System.Drawing.Point(167, 78);
             this.lblParametro.Name = "lblParametro";
-            this.lblParametro.Size = new System.Drawing.Size(399, 16);
+            this.lblParametro.Size = new System.Drawing.Size(583, 25);
             this.lblParametro.TabIndex = 8;
             this.lblParametro.Text = "Buscar por Marca, Modelo, País, Tansmisión, Motor, Confiabilidad\r\n";
             // 
             // lblTitulo
             // 
             this.lblTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitulo.Location = new System.Drawing.Point(162, 41);
+            this.lblTitulo.Location = new System.Drawing.Point(162, 47);
             this.lblTitulo.Name = "lblTitulo";
             this.lblTitulo.Size = new System.Drawing.Size(800, 31);
             this.lblTitulo.TabIndex = 7;
@@ -181,13 +181,13 @@
             this.lblTotal.AutoSize = true;
             this.lblTotal.Location = new System.Drawing.Point(753, 450);
             this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(122, 16);
+            this.lblTotal.Size = new System.Drawing.Size(180, 25);
             this.lblTotal.TabIndex = 14;
             this.lblTotal.Text = "Total de Vehículos:";
             // 
             // FrmConsultaVehiculos
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
             this.ClientSize = new System.Drawing.Size(1148, 554);

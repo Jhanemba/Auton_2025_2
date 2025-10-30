@@ -37,13 +37,13 @@
             this.lblParametro = new System.Windows.Forms.Label();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.pnlAcciones = new System.Windows.Forms.Panel();
+            this.btnNuevo = new System.Windows.Forms.Button();
+            this.btnExportar = new System.Windows.Forms.Button();
+            this.btnCerrar = new System.Windows.Forms.Button();
             this.lblMarcas = new System.Windows.Forms.Label();
             this.lblEstadisticas = new System.Windows.Forms.Label();
             this.lblTotal = new System.Windows.Forms.Label();
             this.btnBuscar = new System.Windows.Forms.Button();
-            this.btnNuevo = new System.Windows.Forms.Button();
-            this.btnExportar = new System.Windows.Forms.Button();
-            this.btnCerrar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.erpPrecioVenta)).BeginInit();
             this.gbxLista.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvVehiculos)).BeginInit();
@@ -119,6 +119,48 @@
             this.pnlAcciones.Size = new System.Drawing.Size(741, 47);
             this.pnlAcciones.TabIndex = 56;
             // 
+            // btnNuevo
+            // 
+            this.btnNuevo.Image = global::CpAuton.Properties.Resources.add_77928;
+            this.btnNuevo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNuevo.Location = new System.Drawing.Point(164, 3);
+            this.btnNuevo.Name = "btnNuevo";
+            this.btnNuevo.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.btnNuevo.Size = new System.Drawing.Size(111, 40);
+            this.btnNuevo.TabIndex = 12;
+            this.btnNuevo.Text = "Nuevo";
+            this.btnNuevo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnNuevo.UseVisualStyleBackColor = true;
+            this.btnNuevo.Click += new System.EventHandler(this.btnNuevo_Click);
+            // 
+            // btnExportar
+            // 
+            this.btnExportar.Image = ((System.Drawing.Image)(resources.GetObject("btnExportar.Image")));
+            this.btnExportar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnExportar.Location = new System.Drawing.Point(389, 3);
+            this.btnExportar.Name = "btnExportar";
+            this.btnExportar.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.btnExportar.Size = new System.Drawing.Size(111, 40);
+            this.btnExportar.TabIndex = 11;
+            this.btnExportar.Text = "Exportar";
+            this.btnExportar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnExportar.UseVisualStyleBackColor = true;
+            this.btnExportar.Click += new System.EventHandler(this.btnExportar_Click);
+            // 
+            // btnCerrar
+            // 
+            this.btnCerrar.Image = ((System.Drawing.Image)(resources.GetObject("btnCerrar.Image")));
+            this.btnCerrar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnCerrar.Location = new System.Drawing.Point(620, 4);
+            this.btnCerrar.Name = "btnCerrar";
+            this.btnCerrar.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.btnCerrar.Size = new System.Drawing.Size(116, 40);
+            this.btnCerrar.TabIndex = 9;
+            this.btnCerrar.Text = "Cerrar";
+            this.btnCerrar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnCerrar.UseVisualStyleBackColor = true;
+            this.btnCerrar.Click += new System.EventHandler(this.btnCerrar_Click);
+            // 
             // lblMarcas
             // 
             this.lblMarcas.AutoSize = true;
@@ -159,47 +201,6 @@
             this.btnBuscar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnBuscar.UseVisualStyleBackColor = true;
             // 
-            // btnNuevo
-            // 
-            this.btnNuevo.Image = global::CpAuton.Properties.Resources.add_77928;
-            this.btnNuevo.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnNuevo.Location = new System.Drawing.Point(164, 3);
-            this.btnNuevo.Name = "btnNuevo";
-            this.btnNuevo.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.btnNuevo.Size = new System.Drawing.Size(111, 40);
-            this.btnNuevo.TabIndex = 12;
-            this.btnNuevo.Text = "Nuevo";
-            this.btnNuevo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnNuevo.UseVisualStyleBackColor = true;
-            // 
-            // btnExportar
-            // 
-            this.btnExportar.Image = ((System.Drawing.Image)(resources.GetObject("btnExportar.Image")));
-            this.btnExportar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnExportar.Location = new System.Drawing.Point(389, 3);
-            this.btnExportar.Name = "btnExportar";
-            this.btnExportar.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.btnExportar.Size = new System.Drawing.Size(111, 40);
-            this.btnExportar.TabIndex = 11;
-            this.btnExportar.Text = "Exportar";
-            this.btnExportar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnExportar.UseVisualStyleBackColor = true;
-            this.btnExportar.Click += new System.EventHandler(this.btnExportar_Click);
-            // 
-            // btnCerrar
-            // 
-            this.btnCerrar.Image = ((System.Drawing.Image)(resources.GetObject("btnCerrar.Image")));
-            this.btnCerrar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnCerrar.Location = new System.Drawing.Point(620, 4);
-            this.btnCerrar.Name = "btnCerrar";
-            this.btnCerrar.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.btnCerrar.Size = new System.Drawing.Size(116, 40);
-            this.btnCerrar.TabIndex = 9;
-            this.btnCerrar.Text = "Cerrar";
-            this.btnCerrar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnCerrar.UseVisualStyleBackColor = true;
-            this.btnCerrar.Click += new System.EventHandler(this.btnCerrar_Click);
-            // 
             // FrmVehiculosEuropeos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -216,8 +217,9 @@
             this.Controls.Add(this.lblEstadisticas);
             this.Controls.Add(this.lblTotal);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmVehiculosEuropeos";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmVehiculosEuropeos";
             this.Load += new System.EventHandler(this.FrmVehiculosEuropeos_Load);

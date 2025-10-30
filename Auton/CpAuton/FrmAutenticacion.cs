@@ -62,8 +62,8 @@ namespace CpAuton
                     txtClave.Clear();
                     txtUsuario.Focus();
                     txtUsuario.SelectAll();
-                    this.DialogResult = DialogResult.OK;  // <-
-                    this.Close();                         // <-
+                    this.DialogResult = DialogResult.OK; 
+                    this.Close(); 
                 }
                 else
                 {

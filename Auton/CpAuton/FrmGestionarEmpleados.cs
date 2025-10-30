@@ -42,9 +42,6 @@ namespace CpAuton
 
         private void ConfigurarFormulario()
         {
-            //this.Size = new Size(1400, 750);
-            //this.StartPosition = FormStartPosition.CenterScreen;
-
             this.Text = "👥 Gestión de Empleados - Sistema Auton";
             this.BackColor = Color.FromArgb(248, 249, 250);
 
@@ -894,14 +891,5 @@ namespace CpAuton
             txtDireccion.Clear();
             txtCelular.Clear();
         }
-
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.ClientSize = new System.Drawing.Size(1400, 750);
-        //    this.Name = "FrmGestionarEmpleados";
-        //    this.Load += new System.EventHandler(this.FrmGestionarEmpleados_Load);
-        //    this.ResumeLayout(false);
-        //}
     }
 }

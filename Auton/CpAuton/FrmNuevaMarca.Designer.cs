@@ -32,10 +32,10 @@
             // 
             // FrmNuevaMarca
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(533, 292);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.BackColor = System.Drawing.Color.PapayaWhip;
+            this.ClientSize = new System.Drawing.Size(800, 449);
             this.Name = "FrmNuevaMarca";
             this.ShowInTaskbar = false;
             this.Text = "FrmNuevaMarca";

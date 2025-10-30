@@ -22,19 +22,6 @@ namespace CpAuton
             InitializeComponent();
         }
 
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.Text = "...::: Detalle del Empleado :::...";
-        //    this.ClientSize = new System.Drawing.Size(600, 500);
-        //    this.StartPosition = FormStartPosition.CenterParent;
-        //    this.FormBorderStyle = FormBorderStyle.FixedDialog;
-        //    this.MaximizeBox = false;
-        //    this.MinimizeBox = false;
-        //    this.BackColor = Color.White;
-        //    this.Load += new System.EventHandler(this.FrmDetalleEmpleado_Load);
-        //    this.ResumeLayout(false);
-        //}
 
         private void FrmDetalleEmpleado_Load(object sender, EventArgs e)
         {

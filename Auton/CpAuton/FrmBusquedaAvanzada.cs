@@ -29,7 +29,6 @@ namespace CpAuton
         private void ConfigurarFormulario()
         {
             this.Text = "🔍 Búsqueda Avanzada de Vehículos";
-            //this.Size = new Size(900, 650);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -42,7 +41,6 @@ namespace CpAuton
                 Location = new Point(20, 20),
                 Size = new Size(840, 550),
                 BorderStyle = BorderStyle.FixedSingle,
-                //BackColor = Color.White
             };
 
             // Título
@@ -393,7 +391,7 @@ namespace CpAuton
 
         private void CargarFiltros()
         {
-            // Método para cargar datos adicionales si es necesario
+            // Método para cargar datos adicionales que no
         }
 
         private void RealizarBusqueda(
@@ -490,14 +488,5 @@ namespace CpAuton
             lblResultados.Text = "Resultados: 0 vehículos encontrados";
             ResultadosBusqueda = null;
         }
-
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.ClientSize = new System.Drawing.Size(900, 650);
-        //    this.Name = "FrmBusquedaAvanzada";
-        //    this.Load += new System.EventHandler(this.FrmBusquedaAvanzada_Load);
-        //    this.ResumeLayout(false);
-        //}
     }
 }
