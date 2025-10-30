@@ -1020,7 +1020,7 @@ namespace CpAuton
 
                 // Asignar valores
                 txtChasis.Text = vehiculo.nroChasis;
-                txtChasis.ReadOnly = true; // El chasis no se puede modificar
+                txtChasis.ReadOnly = false; // El chasis no se puede modificar
 
                 var modelo = ModeloVehiculoCln.obtenerUno(vehiculo.idModeloVehiculo);
                 cboMarca.SelectedValue = modelo.idMarca;
@@ -1059,14 +1059,5 @@ namespace CpAuton
             var txt = sender as TextBox;
             CargarVehiculos(txt.Text.Trim());
         }
-
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.ClientSize = new System.Drawing.Size(1400, 800);
-        //    this.Name = "FrmGestionarVehiculos";
-        //    this.Load += new System.EventHandler(this.FrmGestionarVehiculos_Load);
-        //    this.ResumeLayout(false);
-        //}
     }
 }
