@@ -20,43 +20,55 @@ namespace ClnAuton
         }
 
         /// <summary>
-        /// Actualiza un vehículo - VERSIÓN COMPLETA CORREGIDA ✅
+        /// Actualiza un vehículo existente - VERSIÓN CORREGIDA
         /// </summary>
+        /// <param name="vehiculo">Objeto Vehiculo con los datos actualizados</param>
+        /// <returns>1 si se actualizó correctamente, 0 si no</returns>
         public static int actualizar(Vehiculo vehiculo)
         {
-            using (var context = new AutonEntities())
+            try
             {
-                var existente = context.Vehiculo.Find(vehiculo.id);
-                if (existente != null)
+                using (var context = new AutonEntities())
                 {
-                    // CAMPOS BÁSICOS
+                    // Buscar el vehículo existente
+                    var existente = context.Vehiculo.Find(vehiculo.id);
+
+                    if (existente == null)
+                    {
+                        return 0; // No existe el vehículo
+                    }
+
+                    // ⭐ ACTUALIZAR TODOS LOS CAMPOS
+                    existente.nroChasis = vehiculo.nroChasis;
                     existente.idModeloVehiculo = vehiculo.idModeloVehiculo;
                     existente.anioFabricacion = vehiculo.anioFabricacion;
-
-                    // ⭐ CARACTERÍSTICAS ESPECÍFICAS (LOS QUE FALTABAN)
                     existente.generacion = vehiculo.generacion;
-                    existente.paisFabricacion = vehiculo.paisFabricacion;  // ← ESTE ERA TU PROBLEMA
+                    existente.paisFabricacion = vehiculo.paisFabricacion;
                     existente.transmision = vehiculo.transmision;
                     existente.tieneTurbo = vehiculo.tieneTurbo;
                     existente.motor = vehiculo.motor;
                     existente.combustible = vehiculo.combustible;
-
-                    // ⭐ SEGURIDAD
                     existente.nroAirbags = vehiculo.nroAirbags;
                     existente.seguridadChoques = vehiculo.seguridadChoques;
                     existente.organizacionSeguridad = vehiculo.organizacionSeguridad;
-
-                    // ⭐ EVALUACIÓN
                     existente.confiabilidad = vehiculo.confiabilidad;
                     existente.puntuacion = vehiculo.puntuacion;
                     existente.kilometraje = vehiculo.kilometraje;
                     existente.observaciones = vehiculo.observaciones;
-
-                    // METADATA
                     existente.usuarioRegistro = vehiculo.usuarioRegistro;
 
-                    return context.SaveChanges();
+                    // ✅ MARCAR COMO MODIFICADO (forzar detección de cambios)
+                    context.Entry(existente).State = System.Data.Entity.EntityState.Modified;
+
+                    // Guardar cambios
+                    context.SaveChanges();
+
+                    // ✅ SIEMPRE RETORNAR 1 SI LLEGAMOS AQUÍ (no hubo excepciones)
+                    return 1;
                 }
+            }
+            catch
+            {
                 return 0;
             }
         }

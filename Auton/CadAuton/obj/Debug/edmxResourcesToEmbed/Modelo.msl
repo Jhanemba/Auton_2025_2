@@ -227,6 +227,7 @@
       <ResultMapping>
         <ComplexTypeMapping TypeName="AutonModel.paVehiculoListar_Result">
           <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="nroChasis" ColumnName="nroChasis" />
           <ScalarProperty Name="modelo" ColumnName="modelo" />
           <ScalarProperty Name="marca" ColumnName="marca" />
           <ScalarProperty Name="procedencia" ColumnName="procedencia" />
@@ -238,6 +239,8 @@
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
           <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+          <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+          <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
           <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
           <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
           <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />

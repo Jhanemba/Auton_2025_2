@@ -14,6 +14,7 @@ namespace CadAuton
     public partial class paVehiculoListar_Result
     {
         public int id { get; set; }
+        public string nroChasis { get; set; }
         public string modelo { get; set; }
         public string marca { get; set; }
         public string procedencia { get; set; }
@@ -25,6 +26,8 @@ namespace CadAuton
         public string motor { get; set; }
         public string combustible { get; set; }
         public int nroAirbags { get; set; }
+        public int seguridadChoques { get; set; }
+        public string organizacionSeguridad { get; set; }
         public int anioFabricacion { get; set; }
         public string confiabilidad { get; set; }
         public decimal puntuacion { get; set; }

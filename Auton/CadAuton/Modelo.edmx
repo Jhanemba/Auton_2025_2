@@ -778,6 +778,7 @@
         </ComplexType>
         <ComplexType Name="paVehiculoListar_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="nroChasis" Nullable="false" MaxLength="17" />
           <Property Type="String" Name="modelo" Nullable="false" MaxLength="100" />
           <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
@@ -789,6 +790,8 @@
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
           <Property Type="Int32" Name="nroAirbags" Nullable="false" />
+          <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
+          <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
           <Property Type="Int32" Name="anioFabricacion" Nullable="false" />
           <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
           <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
@@ -1168,6 +1171,7 @@
             <ResultMapping>
               <ComplexTypeMapping TypeName="AutonModel.paVehiculoListar_Result">
                 <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nroChasis" ColumnName="nroChasis" />
                 <ScalarProperty Name="modelo" ColumnName="modelo" />
                 <ScalarProperty Name="marca" ColumnName="marca" />
                 <ScalarProperty Name="procedencia" ColumnName="procedencia" />
@@ -1179,6 +1183,8 @@
                 <ScalarProperty Name="motor" ColumnName="motor" />
                 <ScalarProperty Name="combustible" ColumnName="combustible" />
                 <ScalarProperty Name="nroAirbags" ColumnName="nroAirbags" />
+                <ScalarProperty Name="seguridadChoques" ColumnName="seguridadChoques" />
+                <ScalarProperty Name="organizacionSeguridad" ColumnName="organizacionSeguridad" />
                 <ScalarProperty Name="anioFabricacion" ColumnName="anioFabricacion" />
                 <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
                 <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />

@@ -257,6 +257,31 @@ AS
     ORDER BY v.estado DESC, p.descripcion ASC, m.nombre ASC, mv.nombre ASC;
 
 GO
+ALTER PROC paVehiculoListar @parametro VARCHAR(100)
+AS
+    SELECT v.id, 
+           v.nroChasis,  -- ⭐ AGREGAR ESTA LÍNEA
+           mv.nombre AS modelo, 
+           m.nombre AS marca, 
+           p.descripcion AS procedencia,
+           tv.descripcion AS tipoVehiculo, 
+           v.generacion, v.paisFabricacion, v.transmision, v.tieneTurbo,
+           v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
+           v.anioFabricacion, v.confiabilidad, v.puntuacion,
+           v.kilometraje, v.observaciones, 
+           v.usuarioRegistro, v.fechaRegistro, v.estado
+    FROM Vehiculo v
+    INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+    INNER JOIN Marca m ON mv.idMarca = m.id
+    INNER JOIN Procedencia p ON m.idProcedencia = p.id
+    INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
+    WHERE v.estado <> -1 
+        AND (mv.nombre + m.nombre + p.descripcion + tv.descripcion + v.confiabilidad + 
+             v.generacion + v.paisFabricacion + v.transmision + ISNULL(v.motor, ''))
+            LIKE '%' + REPLACE(@parametro, ' ', '%') + '%'
+    ORDER BY v.estado DESC, p.descripcion ASC, m.nombre ASC, mv.nombre ASC;
+
+GO
 CREATE PROC paVehiculoInsertar
     @nroChasis VARCHAR(17),
     @idModeloVehiculo INT,
