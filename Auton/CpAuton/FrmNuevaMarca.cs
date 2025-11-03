@@ -191,12 +191,5 @@ namespace CpAuton
 
         private TextBox txtNombre;
         private TextBox txtDescripcion;
-
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.Name = "FrmNuevaMarca";
-        //    this.ResumeLayout(false);
-        //}
     }
 }

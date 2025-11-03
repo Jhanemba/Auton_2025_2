@@ -30,7 +30,6 @@ namespace CpAuton
         private void ConfigurarFormulario()
         {
             this.Text = "...::: Auton - Vehículos Japoneses :::...";
-            //this.Size = new Size(1083, 593);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.PapayaWhip;
 
@@ -491,13 +490,5 @@ namespace CpAuton
             //abrir formulario de registro de vehículo
             new FrmRegistroVehiculo().ShowDialog();
         }
-
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.Name = "FrmVehiculosJaponeses";
-        //    this.Load += new System.EventHandler(this.FrmVehiculosJaponeses_Load);
-        //    this.ResumeLayout(false);
-        //}
     }
 }

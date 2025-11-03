@@ -13,11 +13,7 @@ namespace CpAuton
         // Usuario actual del sistema (usamos el resultado del PA que tiene más info)
         public static paUsuarioValidar_Result usuario { get; set; }
 
-        /// <summary>
-        /// Encripta una cadena usando MD5
-        /// </summary>
-        /// <param name="texto">Texto a encriptar</param>
-        /// <returns>Texto encriptado en Base64</returns>
+        // Encripta una cadena usando MD5
         public static string Encrypt(string texto)
         {
             if (string.IsNullOrEmpty(texto))
@@ -28,45 +24,31 @@ namespace CpAuton
             return Convert.ToBase64String(data);
         }
 
-        /// <summary>
-        /// Verifica si hay un usuario logueado
-        /// </summary>
-        /// <returns>True si hay sesión activa</returns>
+        // Verifica si hay un usuario logueado
         public static bool HaySesionActiva()
         {
             return usuario != null;
         }
 
-        /// <summary>
-        /// Verifica si el usuario actual es administrador
-        /// </summary>
-        /// <returns>True si es administrador</returns>
+        // Verifica si el usuario actual es administrador
         public static bool EsAdministrador()
         {
             return usuario != null && usuario.esAdministrador;
         }
 
-        /// <summary>
-        /// Cierra la sesión actual
-        /// </summary>
+        // Cierra la sesión actual
         public static void CerrarSesion()
         {
             usuario = null;
         }
 
-        /// <summary>
-        /// Obtiene el nombre del usuario actual
-        /// </summary>
-        /// <returns>Nombre del usuario o "No logueado"</returns>
+        // Obtiene el nombre del usuario actual
         public static string ObtenerNombreUsuario()
         {
             return usuario != null ? usuario.nombreCompleto : "No logueado";
         }
 
-        /// <summary>
-        /// Obtiene el usuario del login
-        /// </summary>
-        /// <returns>Usuario de login</returns>
+        // Obtiene el usuario del login
         public static string ObtenerUsuarioLogin()
         {
             return usuario != null ? usuario.usuario : "";

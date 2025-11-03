@@ -66,7 +66,6 @@ namespace CpAuton
         private void ConfigurarFormulario()
         {
             this.Text = "...::: Auton - Registrar Nuevo Vehículo :::...";
-            //this.Size = new Size(1200, 1020);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -705,11 +704,11 @@ namespace CpAuton
             {
                 try
                 {
-                    // ✅ SIMPLIFICADO: Solo cargamos modelos (solo nombre)
+                    // SIMPLIFICADO: Solo cargamos modelos (solo nombre)
                     modelos = ModeloVehiculoCln.listar().Where(m => m.idMarca == idMarca && m.estado != -1).ToList();
 
                     cboModelo.DataSource = modelos;
-                    cboModelo.DisplayMember = "nombre"; // ✅ Solo nombre
+                    cboModelo.DisplayMember = "nombre"; // Solo nombre
                     cboModelo.ValueMember = "id";
                     cboModelo.Enabled = true;
                     btnAgregarModelo.Enabled = true;
@@ -742,7 +741,7 @@ namespace CpAuton
         {
             if (cboMarca.SelectedValue is int idMarca && cboTipo.SelectedValue is int idTipo)
             {
-                // ✅ SIMPLIFICADO: Solo pasamos marca y tipo
+                // SIMPLIFICADO: Solo pasamos marca y tipo
                 using (var frmNuevoModelo = new FrmNuevoModelo(idMarca, idTipo))
                 {
                     if (frmNuevoModelo.ShowDialog(this) == DialogResult.OK)
@@ -978,9 +977,7 @@ namespace CpAuton
         }
 
 
-        /// <summary>
-        /// Evento cuando se arrastra algo sobre el PictureBox
-        /// </summary>
+        // Evento cuando se arrastra algo sobre el PictureBox
         private void PbFotografia_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -999,9 +996,7 @@ namespace CpAuton
             }
         }
 
-        /// <summary>
-        /// Evento cuando se suelta el archivo en el PictureBox
-        /// </summary>
+        // Evento cuando se suelta el archivo en el PictureBox
         private void PbFotografia_DragDrop(object sender, DragEventArgs e)
         {
             pbFotografia.BackColor = Color.FromArgb(250, 250, 250); // Restaurar color
@@ -1021,9 +1016,7 @@ namespace CpAuton
             }
         }
 
-        /// <summary>
-        /// Dibuja instrucciones cuando no hay imagen
-        /// </summary>
+        // Dibuja instrucciones cuando no hay imagen
         private void PbFotografia_Paint(object sender, PaintEventArgs e)
         {
             if (pbFotografia.Image == null)
@@ -1047,9 +1040,7 @@ namespace CpAuton
             }
         }
 
-        /// <summary>
-        /// Botón para seleccionar archivo manualmente
-        /// </summary>
+        // Botón para seleccionar archivo manualmente
         private void BtnSeleccionarFoto_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
@@ -1073,9 +1064,7 @@ namespace CpAuton
             }
         }
 
-        /// <summary>
-        /// Carga una imagen desde un archivo
-        /// </summary>
+        // Carga una imagen desde un archivo
         private void CargarImagen(string rutaArchivo)
         {
             if (!ImagenHelper.EsImagenValida(rutaArchivo))
@@ -1111,9 +1100,7 @@ namespace CpAuton
             pbFotografia.Invalidate();
         }
 
-        /// <summary>
-        /// Elimina la foto cargada
-        /// </summary>
+        // Elimina la foto cargada
         private void EliminarFoto()
         {
             if (imagenActual != null)

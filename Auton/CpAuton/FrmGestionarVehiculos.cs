@@ -17,7 +17,7 @@ namespace CpAuton
         private bool modoEdicion = false;
         private int vehiculoSeleccionadoId = 0;
         private bool datosCopiados = false;
-        private bool permitirEventos = true; // ✅ CRÍTICO: Control de eventos
+        private bool permitirEventos = true; // CRÍTICO: Control de eventos
 
         public FrmGestionarVehiculos()
         {
@@ -129,7 +129,7 @@ namespace CpAuton
             panel.Controls.Add(lblTitulo);
             yPos += 45;
 
-            // ✅ NRO DE CHASIS
+            // NRO DE CHASIS
             AgregarLabel(panel, "Nro. Chasis:", 15, yPos, labelWidth);
             TextBox txtChasis = new TextBox
             {
@@ -143,7 +143,7 @@ namespace CpAuton
             panel.Controls.Add(txtChasis);
             yPos += 35;
 
-            // ✅ MARCA
+            // MARCA
             AgregarLabel(panel, "Marca:", 15, yPos, labelWidth);
             ComboBox cboMarca = new ComboBox
             {
@@ -157,7 +157,7 @@ namespace CpAuton
             panel.Controls.Add(cboMarca);
             yPos += 35;
 
-            // ✅ MODELO
+            // MODELO
             AgregarLabel(panel, "Modelo:", 15, yPos, labelWidth);
             ComboBox cboModelo = new ComboBox
             {
@@ -170,7 +170,7 @@ namespace CpAuton
             panel.Controls.Add(cboModelo);
             yPos += 35;
 
-            // ✅ TIPO
+            // TIPO
             AgregarLabel(panel, "Tipo:", 15, yPos, labelWidth);
             ComboBox cboTipo = new ComboBox
             {
@@ -183,7 +183,7 @@ namespace CpAuton
             panel.Controls.Add(cboTipo);
             yPos += 35;
 
-            // ✅ GENERACIÓN
+            // GENERACIÓN
             AgregarLabel(panel, "Generación:", 15, yPos, labelWidth);
             TextBox txtGeneracion = new TextBox
             {
@@ -196,7 +196,7 @@ namespace CpAuton
             panel.Controls.Add(txtGeneracion);
             yPos += 35;
 
-            // ✅ PAÍS FABRICACIÓN
+            // PAÍS FABRICACIÓN
             AgregarLabel(panel, "País Fabricación:", 15, yPos, labelWidth);
             ComboBox cboPais = new ComboBox
             {
@@ -211,7 +211,7 @@ namespace CpAuton
             panel.Controls.Add(cboPais);
             yPos += 35;
 
-            // ✅ AÑO FABRICACIÓN
+            // AÑO FABRICACIÓN
             AgregarLabel(panel, "Año Fabricación:", 15, yPos, labelWidth);
             NumericUpDown nudAnio = new NumericUpDown
             {
@@ -226,7 +226,7 @@ namespace CpAuton
             panel.Controls.Add(nudAnio);
             yPos += 35;
 
-            // ✅ TRANSMISIÓN
+            // TRANSMISIÓN
             AgregarLabel(panel, "Transmisión:", 15, yPos, labelWidth);
             ComboBox cboTransmision = new ComboBox
             {
@@ -240,7 +240,7 @@ namespace CpAuton
             panel.Controls.Add(cboTransmision);
             yPos += 35;
 
-            // ✅ TIENE TURBO
+            // TIENE TURBO
             CheckBox chkTurbo = new CheckBox
             {
                 Name = "chkTurbo",
@@ -253,7 +253,7 @@ namespace CpAuton
             panel.Controls.Add(chkTurbo);
             yPos += 35;
 
-            // ✅ MOTOR
+            // MOTOR
             AgregarLabel(panel, "Motor:", 15, yPos, labelWidth);
             TextBox txtMotor = new TextBox
             {
@@ -266,7 +266,7 @@ namespace CpAuton
             panel.Controls.Add(txtMotor);
             yPos += 35;
 
-            // ✅ COMBUSTIBLE
+            // COMBUSTIBLE
             AgregarLabel(panel, "Combustible:", 15, yPos, labelWidth);
             ComboBox cboCombustible = new ComboBox
             {
@@ -280,7 +280,7 @@ namespace CpAuton
             panel.Controls.Add(cboCombustible);
             yPos += 35;
 
-            // ✅ NRO AIRBAGS
+            // NRO AIRBAGS
             AgregarLabel(panel, "Nro. Airbags:", 15, yPos, labelWidth);
             NumericUpDown nudAirbags = new NumericUpDown
             {
@@ -295,7 +295,7 @@ namespace CpAuton
             panel.Controls.Add(nudAirbags);
             yPos += 35;
 
-            // ✅ SEGURIDAD CHOQUES
+            // SEGURIDAD CHOQUES
             AgregarLabel(panel, "Estrellas Seguridad:", 15, yPos, labelWidth);
             NumericUpDown nudEstrellas = new NumericUpDown
             {
@@ -310,7 +310,7 @@ namespace CpAuton
             panel.Controls.Add(nudEstrellas);
             yPos += 35;
 
-            // ✅ ORGANIZACIÓN SEGURIDAD
+            // ORGANIZACIÓN SEGURIDAD
             AgregarLabel(panel, "Organización:", 15, yPos, labelWidth);
             ComboBox cboOrganizacion = new ComboBox
             {
@@ -324,7 +324,7 @@ namespace CpAuton
             panel.Controls.Add(cboOrganizacion);
             yPos += 35;
 
-            // ✅ CONFIABILIDAD
+            // CONFIABILIDAD
             AgregarLabel(panel, "Confiabilidad:", 15, yPos, labelWidth);
             ComboBox cboConfiabilidad = new ComboBox
             {
@@ -338,7 +338,7 @@ namespace CpAuton
             panel.Controls.Add(cboConfiabilidad);
             yPos += 35;
 
-            // ✅ PUNTUACIÓN
+            // PUNTUACIÓN
             AgregarLabel(panel, "Puntuación:", 15, yPos, labelWidth);
             NumericUpDown nudPuntuacion = new NumericUpDown
             {
@@ -355,7 +355,7 @@ namespace CpAuton
             panel.Controls.Add(nudPuntuacion);
             yPos += 35;
 
-            // ✅ OBSERVACIONES
+            // OBSERVACIONES
             AgregarLabel(panel, "Observaciones:", 15, yPos, labelWidth);
             yPos += 25;
             TextBox txtObservaciones = new TextBox
@@ -497,7 +497,7 @@ namespace CpAuton
             btnEliminar.Click += BtnEliminar_Click;
             panel.Controls.Add(btnEliminar);
 
-            // ✅ NUEVO: Botón para Marcas/Modelos
+            // NUEVO: Botón para Marcas/Modelos
             Button btnMarcasModelos = new Button
             {
                 Text = "🏢 Marcas/Modelos",
@@ -567,12 +567,12 @@ namespace CpAuton
         {
             try
             {
-                permitirEventos = false; // ✅ DESACTIVAR EVENTOS
+                permitirEventos = false; // DESACTIVAMOS EVENTOS
 
                 var cboMarca = this.Controls.Find("cboMarca", true)[0] as ComboBox;
                 var cboTipo = this.Controls.Find("cboTipo", true)[0] as ComboBox;
 
-                // ✅ CARGAR MARCAS
+                // CARGAR MARCAS
                 var marcas = MarcaCln.listar()
                     .Where(m => m.estado != -1)
                     .OrderBy(m => m.nombre)
@@ -584,7 +584,7 @@ namespace CpAuton
                 cboMarca.DataSource = marcas;
                 cboMarca.SelectedIndex = -1;
 
-                // ✅ CARGAR TIPOS
+                // CARGAR TIPOS
                 var tipos = TipoVehiculoCln.listar()
                     .Where(t => t.estado != -1)
                     .OrderBy(t => t.descripcion)
@@ -596,7 +596,7 @@ namespace CpAuton
                 cboTipo.DataSource = tipos;
                 cboTipo.SelectedIndex = -1;
 
-                permitirEventos = true; // ✅ REACTIVAR EVENTOS
+                permitirEventos = true; // REACTIVAR EVENTOS
             }
             catch (Exception ex)
             {
@@ -608,14 +608,14 @@ namespace CpAuton
 
         private void CboMarca_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!permitirEventos) return; // ✅ CRÍTICO: Ignorar si eventos desactivados
+            if (!permitirEventos) return; // CRÍTICO: Ignorar si eventos desactivados
 
             try
             {
                 var cboMarca = sender as ComboBox;
                 var cboModelo = this.Controls.Find("cboModelo", true)[0] as ComboBox;
 
-                permitirEventos = false; // ✅ DESACTIVAR EVENTOS
+                permitirEventos = false; // DESACTIVAR EVENTOS
 
                 cboModelo.DataSource = null;
                 cboModelo.Items.Clear();
@@ -634,7 +634,7 @@ namespace CpAuton
                     cboModelo.SelectedIndex = -1;
                 }
 
-                permitirEventos = true; // ✅ REACTIVAR EVENTOS
+                permitirEventos = true; // REACTIVAR EVENTOS
             }
             catch (Exception ex)
             {
@@ -767,10 +767,10 @@ namespace CpAuton
         {
             try
             {
-                // ✅ CRÍTICO: Validar campos obligatorios PRIMERO
+                // CRÍTICO: Validar campos obligatorios PRIMERO
                 if (!ValidarFormulario()) return;
 
-                // ✅ Obtener controles
+                // Obtener controles
                 var txtChasis = this.Controls.Find("txtChasis", true)[0] as TextBox;
                 var cboModelo = this.Controls.Find("cboModelo", true)[0] as ComboBox;
                 var cboTipo = this.Controls.Find("cboTipo", true)[0] as ComboBox;
@@ -788,7 +788,7 @@ namespace CpAuton
                 var nudPuntuacion = this.Controls.Find("nudPuntuacion", true)[0] as NumericUpDown;
                 var txtObservaciones = this.Controls.Find("txtObservaciones", true)[0] as TextBox;
 
-                // ✅ CRÍTICO: Actualizar el tipo del modelo ANTES de guardar el vehículo
+                // CRÍTICO: Actualizar el tipo del modelo ANTES de guardar el vehículo
                 int nuevoIdModelo = (int)cboModelo.SelectedValue;
                 int nuevoIdTipo = (int)cboTipo.SelectedValue;
 
@@ -801,7 +801,7 @@ namespace CpAuton
                     return;
                 }
 
-                // ✅ Si el tipo cambió, actualizar el modelo
+                // Si el tipo cambió, actualizar el modelo
                 if (modeloSeleccionado.idTipoVehiculo != nuevoIdTipo)
                 {
                     modeloSeleccionado.idTipoVehiculo = nuevoIdTipo;
@@ -817,7 +817,7 @@ namespace CpAuton
                     }
                 }
 
-                // ✅ Crear o actualizar vehículo
+                // Crear o actualizar vehículo
                 Vehiculo vehiculo;
 
                 if (modoEdicion)
@@ -839,7 +839,7 @@ namespace CpAuton
                     };
                 }
 
-                // ✅ Asignar TODOS los valores
+                // Asignar TODOS los valores
                 vehiculo.nroChasis = txtChasis.Text.Trim().ToUpper();
                 vehiculo.idModeloVehiculo = nuevoIdModelo;
                 vehiculo.generacion = txtGeneracion.Text.Trim();
@@ -917,7 +917,7 @@ namespace CpAuton
             var cboOrganizacion = this.Controls.Find("cboOrganizacion", true)[0] as ComboBox;
             var cboConfiabilidad = this.Controls.Find("cboConfiabilidad", true)[0] as ComboBox;
 
-            // ✅ VALIDAR CHASIS (solo en modo nuevo)
+            // VALIDAR CHASIS (solo en modo nuevo)
             if (!modoEdicion && string.IsNullOrWhiteSpace(txtChasis.Text))
             {
                 MessageBox.Show("⚠️ El número de chasis es obligatorio", "Validación",
@@ -1094,7 +1094,7 @@ namespace CpAuton
 
         private void LimpiarFormulario()
         {
-            permitirEventos = false; // ✅ DESACTIVAR EVENTOS
+            permitirEventos = false; // DESACTIVAR EVENTOS
 
             foreach (Control ctrl in this.Controls)
             {
@@ -1123,7 +1123,7 @@ namespace CpAuton
                 }
             }
 
-            permitirEventos = true; // ✅ REACTIVAR EVENTOS
+            permitirEventos = true; // REACTIVAR EVENTOS
         }
 
         private void DgvVehiculos_SelectionChanged(object sender, EventArgs e)
@@ -1147,7 +1147,7 @@ namespace CpAuton
         {
             try
             {
-                permitirEventos = false; // ✅ DESACTIVAR EVENTOS
+                permitirEventos = false; // DESACTIVAR EVENTOS
 
                 var vehiculo = ConsultaVehiculosCln.obtenerUno(id);
                 if (vehiculo == null) return;
@@ -1175,7 +1175,7 @@ namespace CpAuton
 
                 txtChasis.Text = vehiculo.nroChasis;
 
-                // ✅ Obtener modelo y cargar marca/modelos
+                // Obtener modelo y cargar marca/modelos
                 var modelo = ModeloVehiculoCln.obtenerUno(vehiculo.idModeloVehiculo);
 
                 if (modelo != null)
@@ -1213,7 +1213,7 @@ namespace CpAuton
                 nudPuntuacion.Value = vehiculo.puntuacion;
                 txtObservaciones.Text = vehiculo.observaciones ?? "";
 
-                permitirEventos = true; // ✅ REACTIVAR EVENTOS
+                permitirEventos = true; // REACTIVAR EVENTOS
 
                 var btnGuardar = this.Controls.Find("btnGuardar", true)[0] as Button;
                 var btnCancelar = this.Controls.Find("btnCancelar", true)[0] as Button;

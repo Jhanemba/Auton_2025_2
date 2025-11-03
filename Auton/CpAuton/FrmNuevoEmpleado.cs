@@ -28,26 +28,8 @@ namespace CpAuton
         public FrmNuevoEmpleado()
         {
             InitializeComponent();
-            ConfigurarFormulario(); 
+            ConfigurarFormulario();
         }
-
-        //private void InitializeComponent()
-        //{
-        //    this.SuspendLayout();
-        //    this.ClientSize = new System.Drawing.Size(550, 520);
-        //    this.Name = "FrmNuevoEmpleado";
-        //    this.Text = "...::: Auton - Nuevo Empleado :::...";
-        //    this.StartPosition = FormStartPosition.CenterParent;
-        //    this.FormBorderStyle = FormBorderStyle.FixedDialog;
-        //    this.MaximizeBox = false;
-        //    this.MinimizeBox = false;
-        //    this.Font = new Font("Segoe UI", 10F);
-        //    this.Load += new System.EventHandler(this.FrmNuevoEmpleado_Load);
-
-        //    ConfigurarFormulario();
-
-        //    this.ResumeLayout(false);
-        //}
 
         private void ConfigurarFormulario()
         {

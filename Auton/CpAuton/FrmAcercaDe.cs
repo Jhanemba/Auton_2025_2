@@ -113,7 +113,7 @@ namespace CpAuton
             // Botón cerrar
             //Button btnCerrar = new Button
             //{
-            //    Text = "✅ Cerrar",
+            //    Text = "Cerrar",
             //    Size = new Size(150, 45),
             //    Location = new Point(250, 610),
             //    BackColor = Color.FromArgb(41, 128, 185),

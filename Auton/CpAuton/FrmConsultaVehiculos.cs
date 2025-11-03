@@ -7,9 +7,12 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace CpAuton
 {
@@ -565,13 +568,12 @@ namespace CpAuton
                 ComboBox cboMarca = new ComboBox
                 {
                     Name = "cboMarca",
-                    Location = new Point(colLeftX, yPosLeft),
+                    //Location = new Point(colLeftX, yPosLeft),
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
                     Enabled = false
                 };
-                pnlPrincipal.Controls.Add(cboMarca);
 
                 // Botón + para agregar nueva marca (visible solo en modo edición)
                 Button btnAddMarca = new Button
@@ -579,7 +581,7 @@ namespace CpAuton
                     Name = "btnAddMarca",
                     Text = "+",
                     Size = new Size(30, 28),
-                    Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft-1),
+                    //Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft-1),
                     BackColor = Color.FromArgb(40, 167, 69),
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
@@ -610,6 +612,7 @@ namespace CpAuton
                                     .OrderBy(m => m.nombre)
                                     .ToList();
 
+                                // Actualizamos el ComboBox dentro del FlowLayoutPanel
                                 cboMarca.DataSource = null;
                                 cboMarca.DisplayMember = "nombre";
                                 cboMarca.ValueMember = "id";
@@ -627,7 +630,22 @@ namespace CpAuton
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 };
-                pnlPrincipal.Controls.Add(btnAddMarca);
+                // Agregamos ComboBox y botón '+' dentro de un FlowLayoutPanel para que se desplacen juntos con AutoScroll
+                FlowLayoutPanel flpMarcaRow = new FlowLayoutPanel
+                {
+                    Name = "flpMarcaRow",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth + 50, 28),
+                    FlowDirection = FlowDirection.LeftToRight,
+                    WrapContents = false,
+                    AutoSize = false
+                };
+                cboMarca.Location = new Point(0, 0);
+                cboMarca.Size = new Size(ctrlWidth, 28);
+                btnAddMarca.Margin = new Padding(8, 0, 0, 0);
+                flpMarcaRow.Controls.Add(cboMarca);
+                flpMarcaRow.Controls.Add(btnAddMarca);
+                pnlPrincipal.Controls.Add(flpMarcaRow);
 
                 yPosLeft += lineHeight;
 
@@ -636,13 +654,12 @@ namespace CpAuton
                 ComboBox cboModelo = new ComboBox
                 {
                     Name = "cboModelo",
-                    Location = new Point(colLeftX, yPosLeft),
+                    //Location = new Point(colLeftX, yPosLeft),
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
                     Enabled = false
                 };
-                pnlPrincipal.Controls.Add(cboModelo);
 
                 // Botón + para agregar nuevo modelo (visible solo en modo edición)
                 Button btnAddModelo = new Button
@@ -650,7 +667,7 @@ namespace CpAuton
                     Name = "btnAddModelo",
                     Text = "+",
                     Size = new Size(30, 28),
-                    Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft),
+                    //Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft),
                     BackColor = Color.FromArgb(40, 167, 69),
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
@@ -678,7 +695,6 @@ namespace CpAuton
                         }
 
                         int idMarcaSeleccionada = Convert.ToInt32(cboMarca.SelectedValue);
-                        // No usar cboTipo here because it's declared later; use modeloActual as fallback
                         int idTipoSeleccionado = (modeloActual != null) ? modeloActual.idTipoVehiculo : 0;
 
                         using (var frm = new FrmNuevoModelo(idMarcaSeleccionada, idTipoSeleccionado))
@@ -709,7 +725,23 @@ namespace CpAuton
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 };
-                pnlPrincipal.Controls.Add(btnAddModelo);
+
+                // Agregar ComboBox y botón '+' dentro de un FlowLayoutPanel para modelo
+                FlowLayoutPanel flpModeloRow = new FlowLayoutPanel
+                {
+                    Name = "flpModeloRow",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth + 50, 28),
+                    FlowDirection = FlowDirection.LeftToRight,
+                    WrapContents = false,
+                    AutoSize = false
+                };
+                cboModelo.Location = new Point(0, 0);
+                cboModelo.Size = new Size(ctrlWidth, 28);
+                btnAddModelo.Margin = new Padding(8, 0, 0, 0);
+                flpModeloRow.Controls.Add(cboModelo);
+                flpModeloRow.Controls.Add(btnAddModelo);
+                pnlPrincipal.Controls.Add(flpModeloRow);
 
                 yPosLeft += lineHeight;
 
@@ -761,10 +793,10 @@ namespace CpAuton
 
                 cboMarca.SelectedIndexChanged += marcaCambiadaHandler;
 
-                // 1. Cargar Marcas, Tipos y Modelos (DisplayMember/ValueMember ANTES del DataSource)
+                // 1. Cargamos Marcas, Tipos y Modelos (DisplayMember/ValueMember ANTES del DataSource)
                 try
                 {
-                    // 1. Cargar Marcas
+                    // 1. Cargamos Marcas
                     var marcas = MarcaCln.listar()
                         .Where(m => m.estado != -1)
                         .OrderBy(m => m.nombre)
@@ -776,7 +808,7 @@ namespace CpAuton
                     cboMarca.DataSource = marcas;
                     cboMarca.BindingContext = new BindingContext();
 
-                    // 2. Cargar Tipos
+                    // 2. Cargando Tipos
                     var tipos = TipoVehiculoCln.listar()
                         .Where(t => t.estado != -1)
                         .OrderBy(t => t.descripcion)
@@ -788,7 +820,7 @@ namespace CpAuton
                     cboTipo.DataSource = tipos;
                     cboTipo.BindingContext = new BindingContext();
 
-                    // 3. Cargar Modelos de la marca actual
+                    // 3. Cargando Modelos de la marca actual
                     var modelos = ModeloVehiculoCln.listar()
                         .Where(m => m.idMarca == modeloActual.idMarca && m.estado != -1)
                         .OrderBy(m => m.nombre)
@@ -848,7 +880,7 @@ namespace CpAuton
 
                         //MessageBox.Show(sb.ToString(), "DEBUG - Selección", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        // Seleccionar marca por ID si existe
+                        // Seleccionamos marca por ID si existe
                         if (marcas != null && marcas.Any())
                         {
                             var marcaSeleccionada = marcas.FirstOrDefault(m => m.id == modeloActual?.idMarca);
@@ -886,7 +918,7 @@ namespace CpAuton
                             }
                         }
 
-                        // Seleccionar modelo por ID
+                        // Seleccionamos modelo por ID
                         if (modelos != null && modelos.Any())
                         {
                             var modeloSeleccionado = modelos.FirstOrDefault(m => m.id == vehiculoCompleto.idModeloVehiculo);
@@ -962,12 +994,10 @@ namespace CpAuton
                     Font = new Font("Segoe UI", 10F),
                     Enabled = false
                 };
-                cboPaisFabricacion.Items.AddRange(new[] { "Japón", "Alemania", "Estados Unidos", "Corea del Sur",
-            "China", "India", "Brasil", "México", "España", "Francia", "Italia", "Reino Unido", "Turquía",
-            "Suecia", "Bélgica", "Austria", "Suiza", "Noruega", "Dinamarca", "Países Bajos", "Finlandia",
-            "Hungría", "República Checa", "Polonia", "Rumania", "Bulgaria", "Grecia", "Portugal", "Irlanda",
-            "Brasil", "Argentina", "Chile", "Colombia", "Perú", "Venezuela", "Sudáfrica", "Australia", "Nueva Zelanda",
-            "Filipinas", "Malasia", "Tailandia", "Vietnam", "Indonesia", "Unión Europea", "OTAN", "Otros" });
+                cboPaisFabricacion.Items.AddRange(new[] { "Japón", "Alemania", "Estados Unidos", "Corea del Sur", "China",
+                "India", "Brasil", "México", "España", "Francia", "Italia",
+                "Reino Unido", "Tailandia", "Hungría", "República Checa",
+                "Turquía", "Argentina", "Sudáfrica", "Australia", "Canadá" });
                 cboPaisFabricacion.Text = vehiculoCompleto.paisFabricacion;
                 pnlPrincipal.Controls.Add(cboPaisFabricacion);
                 yPosRight += lineHeight;

@@ -34,7 +34,7 @@ namespace ClnAuton
                 existente.idEmpleado = usuario.idEmpleado;
                 existente.usuario1 = usuario.usuario1;
 
-                // Solo actualizar la clave si viene con valor
+                // Solo actualizamos la clave si viene con valor
                 if (!string.IsNullOrEmpty(usuario.clave))
                 {
                     existente.clave = usuario.clave;

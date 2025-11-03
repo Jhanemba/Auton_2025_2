@@ -9,11 +9,7 @@ namespace ClnAuton
 {
     public class VehiculosJaponesesCln
     {
-        /// <summary>
-        /// Inserta un nuevo vehículo
-        /// </summary>
-        /// <param name="vehiculo">Objeto Vehiculo a insertar</param>
-        /// <returns>ID del nuevo vehículo</returns>
+        // Inserta un nuevo vehículo
         public static int insertar(Vehiculo vehiculo)
         {
             using (var context = new AutonEntities())
@@ -24,11 +20,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Actualiza un vehículo existente (SIN KILOMETRAJE)
-        /// </summary>
-        /// <param name="vehiculo">Objeto Vehiculo con los datos actualizados</param>
-        /// <returns>Número de registros afectados</returns>
+        // Actualiza un vehículo existente (SIN KILOMETRAJE)
         public static int actualizar(Vehiculo vehiculo)
         {
             using (var context = new AutonEntities())
@@ -62,12 +54,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Elimina lógicamente un vehículo (estado = -1)
-        /// </summary>
-        /// <param name="id">ID del vehículo a eliminar</param>
-        /// <param name="usuario">Usuario que realiza la eliminación</param>
-        /// <returns>Número de registros afectados</returns>
+        // Elimina lógicamente un vehículo (estado = -1)
         public static int eliminar(int id, string usuario)
         {
             using (var context = new AutonEntities())
@@ -83,11 +70,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Obtiene un vehículo por su ID
-        /// </summary>
-        /// <param name="id">ID del vehículo</param>
-        /// <returns>Objeto Vehiculo</returns>
+        // Obtiene un vehículo por su ID
         public static Vehiculo obtenerUno(int id)
         {
             using (var context = new AutonEntities())
@@ -96,10 +79,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Lista todos los vehículos activos
-        /// </summary>
-        /// <returns>Lista de vehículos</returns>
+        // Lista todos los vehículos activos
         public static List<Vehiculo> listar()
         {
             using (var context = new AutonEntities())
@@ -108,11 +88,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Lista vehículos usando el procedimiento almacenado con parámetro de búsqueda
-        /// </summary>
-        /// <param name="parametro">Parámetro de búsqueda (marca, modelo, etc.)</param>
-        /// <returns>Lista de resultados del procedimiento almacenado</returns>
+        // Lista vehículos usando el procedimiento almacenado con parámetro de búsqueda
         public static List<paVehiculoListar_Result> listarPa(string parametro)
         {
             using (var context = new AutonEntities())
@@ -121,10 +97,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Lista todos los vehículos usando procedimiento almacenado (sin filtro)
-        /// </summary>
-        /// <returns>Lista de vehículos completa</returns>
+        // Lista todos los vehículos usando procedimiento almacenado (sin filtro)
         public static List<paVehiculoListar_Result> listarTodosPa()
         {
             using (var context = new AutonEntities())
@@ -133,10 +106,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Obtiene el total de vehículos activos
-        /// </summary>
-        /// <returns>Número total de vehículos</returns>
+        // Obtiene el total de vehículos activos
         public static int obtenerTotalVehiculos()
         {
             using (var context = new AutonEntities())
@@ -145,11 +115,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Lista vehículos por confiabilidad
-        /// </summary>
-        /// <param name="confiabilidad">Nivel de confiabilidad (Excelente, Bueno, Regular, Malo)</param>
-        /// <returns>Lista de vehículos filtrados por confiabilidad</returns>
+        // Lista vehículos por confiabilidad
         public static List<Vehiculo> listarPorConfiabilidad(string confiabilidad)
         {
             using (var context = new AutonEntities())
@@ -160,12 +126,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Lista vehículos por rango de años
-        /// </summary>
-        /// <param name="anioInicio">Año de inicio</param>
-        /// <param name="anioFin">Año de fin</param>
-        /// <returns>Lista de vehículos en el rango de años</returns>
+        // Lista vehículos por rango de años
         public static List<Vehiculo> listarPorRangoAnios(int anioInicio, int anioFin)
         {
             using (var context = new AutonEntities())

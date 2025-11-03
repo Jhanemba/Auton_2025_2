@@ -37,8 +37,7 @@ namespace CpAuton
 
             ConfigurarFormulario();
 
-            // IMPORTANTE: Cargar datos DESPUÉS de crear el formulario
-            // para que los controles ya existan
+            // IMPORTANTE: Cargar datos DESPUÉS de crear el formulario para que los controles ya existan
             this.Shown += (s, ev) =>
             {
                 CargarProcedencias();

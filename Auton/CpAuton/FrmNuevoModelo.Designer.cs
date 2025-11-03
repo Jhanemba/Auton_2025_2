@@ -34,7 +34,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 449);
+            this.BackColor = System.Drawing.Color.PapayaWhip;
+            this.ClientSize = new System.Drawing.Size(748, 374);
             this.Name = "FrmNuevoModelo";
             this.ShowInTaskbar = false;
             this.Text = "FrmNuevoModelo";

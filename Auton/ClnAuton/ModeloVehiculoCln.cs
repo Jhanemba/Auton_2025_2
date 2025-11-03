@@ -30,20 +30,20 @@ namespace ClnAuton
                     return 0; // No existe el modelo
                 }
 
-                // ✅ ACTUALIZAR TODOS LOS CAMPOS
+                // ACTUALIZAR TODOS LOS CAMPOS
                 existente.idMarca = modelo.idMarca;
                 existente.idTipoVehiculo = modelo.idTipoVehiculo;
                 existente.nombre = modelo.nombre;
                 existente.descripcion = modelo.descripcion;
                 existente.usuarioRegistro = modelo.usuarioRegistro;
 
-                // ✅ MARCAR COMO MODIFICADO (forzar detección de cambios)
+                // MARCAR COMO MODIFICADO (forzar detección de cambios)
                 context.Entry(existente).State = System.Data.Entity.EntityState.Modified;
 
                 // Guardar cambios
                 context.SaveChanges();
 
-                // ✅ RETORNAR 1 SI NO HUBO EXCEPCIONES
+                // RETORNAR 1 SI NO HUBO EXCEPCIONES
                 return 1;
             }
         }

@@ -7,15 +7,10 @@ using System.Threading.Tasks;
 
 namespace ClnAuton
 {
-    /// <summary>
-    /// Clase de negocio para gestionar vehículos de procedencia coreana
-    /// </summary>
+    // Clase de negocio para gestionar vehículos de procedencia coreana
     public class VehiculosCoreanosCln
     {
-        /// <summary>
-        /// Lista todos los vehículos de procedencia coreana
-        /// </summary>
-        /// <returns>Lista de vehículos coreanos</returns>
+        // Lista todos los vehículos de procedencia coreana
         public static List<paVehiculosCoreanos_Result> listar()
         {
             using (var context = new AutonEntities())
@@ -24,11 +19,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Busca vehículos coreanos por un parámetro
-        /// </summary>
-        /// <param name="parametro">Texto a buscar en marca, modelo, generación o motor</param>
-        /// <returns>Lista filtrada de vehículos coreanos</returns>
+        // Busca vehículos coreanos por un parámetro
         public static List<paVehiculosCoreanos_Result> buscar(string parametro)
         {
             using (var context = new AutonEntities())
@@ -37,10 +28,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Obtiene el total de vehículos coreanos activos
-        /// </summary>
-        /// <returns>Número total de vehículos coreanos</returns>
+        // Obtiene el total de vehículos coreanos activos
         public static int obtenerTotal()
         {
             using (var context = new AutonEntities())
@@ -49,10 +37,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Obtiene estadísticas de vehículos coreanos
-        /// </summary>
-        /// <returns>Objeto con estadísticas</returns>
+        // Obtiene estadísticas de vehículos coreanos
         public static EstadisticasCoreanos obtenerEstadisticas()
         {
             using (var context = new AutonEntities())
@@ -79,11 +64,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Lista vehículos coreanos por marca específica
-        /// </summary>
-        /// <param name="marca">Nombre de la marca</param>
-        /// <returns>Lista de vehículos de esa marca</returns>
+        // Lista vehículos coreanos por marca específica
         public static List<paVehiculosCoreanos_Result> listarPorMarca(string marca)
         {
             using (var context = new AutonEntities())
@@ -92,11 +73,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Lista vehículos coreanos por nivel de confiabilidad
-        /// </summary>
-        /// <param name="confiabilidad">Nivel de confiabilidad (Excelente, Bueno, Regular, Malo)</param>
-        /// <returns>Lista de vehículos con ese nivel de confiabilidad</returns>
+        // Lista vehículos coreanos por nivel de confiabilidad
         public static List<paVehiculosCoreanos_Result> listarPorConfiabilidad(string confiabilidad)
         {
             using (var context = new AutonEntities())
@@ -107,10 +84,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Lista vehículos coreanos con turbo
-        /// </summary>
-        /// <returns>Lista de vehículos turbo</returns>
+        // Lista vehículos coreanos con turbo
         public static List<paVehiculosCoreanos_Result> listarConTurbo()
         {
             using (var context = new AutonEntities())
@@ -121,11 +95,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Lista vehículos coreanos por país de fabricación
-        /// </summary>
-        /// <param name="pais">País de fabricación</param>
-        /// <returns>Lista de vehículos fabricados en ese país</returns>
+        // Lista vehículos coreanos por país de fabricación
         public static List<paVehiculosCoreanos_Result> listarPorPaisFabricacion(string pais)
         {
             using (var context = new AutonEntities())
@@ -137,12 +107,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Lista vehículos coreanos por rango de años
-        /// </summary>
-        /// <param name="anioInicio">Año de inicio</param>
-        /// <param name="anioFin">Año de fin</param>
-        /// <returns>Lista de vehículos en ese rango</returns>
+        // Lista vehículos coreanos por rango de años
         public static List<paVehiculosCoreanos_Result> listarPorRangoAnios(int anioInicio, int anioFin)
         {
             using (var context = new AutonEntities())
@@ -153,11 +118,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Obtiene el top N de vehículos coreanos mejor puntuados
-        /// </summary>
-        /// <param name="cantidad">Cantidad de vehículos a retornar</param>
-        /// <returns>Lista de los mejores vehículos</returns>
+        // Obtiene el top N de vehículos coreanos mejor puntuados
         public static List<paVehiculosCoreanos_Result> obtenerTopMejores(int cantidad = 10)
         {
             using (var context = new AutonEntities())
@@ -171,9 +132,7 @@ namespace ClnAuton
         }
     }
 
-    /// <summary>
-    /// Clase para almacenar estadísticas de vehículos coreanos
-    /// </summary>
+    // Clase para almacenar estadísticas de vehículos coreanos
     public class EstadisticasCoreanos
     {
         public int TotalVehiculos { get; set; }

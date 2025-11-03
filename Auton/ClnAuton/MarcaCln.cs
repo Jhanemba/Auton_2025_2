@@ -27,7 +27,7 @@ namespace ClnAuton
 
                 if (existente == null)
                 {
-                    return 0; // ← CRÍTICO: Manejar cuando no existe
+                    return 0; // CRÍTICO: Manejar cuando no existe
                 }
 
                 existente.idProcedencia = marca.idProcedencia;

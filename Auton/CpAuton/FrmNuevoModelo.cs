@@ -32,7 +32,6 @@ namespace CpAuton
         private void ConfigurarFormulario()
         {
             this.Text = "...::: Auton - Registrar Nuevo Modelo :::...";
-            this.Size = new Size(600, 350);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -44,7 +43,7 @@ namespace CpAuton
                 Location = new Point(0, 0),
                 Size = new Size(584, 250),
                 Padding = new Padding(25),
-                BackColor = Color.White
+                BackColor = Color.PapayaWhip
             };
 
             int yPos = 10;
@@ -101,7 +100,7 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(lblEjemplo);
             yPos += lineHeight;
 
-            // Descripción (Opcional)
+            // Descripción
             AgregarLabel(pnlPrincipal, "Descripción:", 25, yPos, labelWidth);
             txtDescripcion = new TextBox
             {
@@ -118,7 +117,7 @@ namespace CpAuton
             {
                 Location = new Point(0, 250),
                 Size = new Size(584, 70),
-                BackColor = Color.FromArgb(248, 249, 250),
+                BackColor = Color.FromArgb(52, 58, 64),
                 BorderStyle = BorderStyle.FixedSingle
             };
 
@@ -192,7 +191,7 @@ namespace CpAuton
                 return false;
             }
 
-            // ✅ VALIDACIÓN SIMPLE: Solo nombre + marca
+            // VALIDACIÓN SIMPLE: Solo nombre + marca
             try
             {
                 var todosLosModelos = ModeloVehiculoCln.listar();

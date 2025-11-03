@@ -10,9 +10,7 @@ namespace ClnAuton
 {
     public class VehiculoCln
     {
-        /// <summary>
-        /// Inserta un nuevo vehículo CON fotografía
-        /// </summary>
+        // Inserta un nuevo vehículo CON fotografía
         public static int insertar(Vehiculo vehiculo)
         {
             using (var context = new AutonEntities())
@@ -23,9 +21,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Actualiza un vehículo existente - CON FOTOGRAFÍA
-        /// </summary>
+        // Actualiza un vehículo existente - CON FOTOGRAFÍA
         public static int actualizar(Vehiculo vehiculo, bool actualizarFoto = true)
         {
             try
@@ -76,9 +72,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Elimina lógicamente un vehículo
-        /// </summary>
+        // Elimina lógicamente un vehículo
         public static int eliminar(int id, string usuarioRegistro)
         {
             using (var context = new AutonEntities())
@@ -94,9 +88,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Obtiene un vehículo por su ID (CON fotografía)
-        /// </summary>
+        // Obtiene un vehículo por su ID (CON fotografía)
         public static Vehiculo obtenerUno(int id)
         {
             using (var context = new AutonEntities())
@@ -105,10 +97,8 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// ⭐ NUEVO: Obtiene SOLO la fotografía de un vehículo
-        /// (Optimizado para no cargar todos los datos)
-        /// </summary>
+        // ⭐ NUEVO: Obtiene SOLO la fotografía de un vehículo
+        // (Optimizado para no cargar todos los datos)
         public static byte[] obtenerFotografia(int id)
         {
             using (var context = new AutonEntities())
@@ -122,9 +112,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// ⭐ NUEVO: Actualiza SOLO la fotografía de un vehículo
-        /// </summary>
+        // ⭐ NUEVO: Actualiza SOLO la fotografía de un vehículo
         public static int actualizarFotografia(int id, byte[] fotografia, string usuario)
         {
             try
@@ -146,17 +134,13 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// ⭐ NUEVO: Elimina la fotografía de un vehículo
-        /// </summary>
+        // ⭐ NUEVO: Elimina la fotografía de un vehículo
         public static int eliminarFotografia(int id, string usuario)
         {
             return actualizarFotografia(id, null, usuario);
         }
 
-        /// <summary>
-        /// Lista todos los vehículos activos
-        /// </summary>
+        // Lista todos los vehículos activos
         public static List<Vehiculo> listar()
         {
             using (var context = new AutonEntities())
@@ -165,9 +149,7 @@ namespace ClnAuton
             }
         }
 
-        /// <summary>
-        /// Lista vehículos usando procedimiento almacenado
-        /// </summary>
+        // Lista vehículos usando procedimiento almacenado
         public static List<paVehiculoListar_Result> listarPa(string parametro)
         {
             using (var context = new AutonEntities())
