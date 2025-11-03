@@ -102,24 +102,9 @@ namespace CpAuton
             CrearPestaniaModelos(tabModelos);
             tabControl.TabPages.Add(tabModelos);
 
-            // Botón cerrar
-            Button btnCerrar = new Button
-            {
-                Text = "❌ Cerrar",
-                Size = new Size(150, 45),
-                Location = new Point(1120, 700),
-                BackColor = Color.FromArgb(52, 58, 64),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Cursor = Cursors.Hand
-            };
-            btnCerrar.FlatAppearance.BorderSize = 0;
-            btnCerrar.Click += (s, e) => this.Close();
-
             this.Controls.Add(pnlUsuario);
             this.Controls.Add(tabControl);
-            this.Controls.Add(btnCerrar);
+            // Nota: Eliminado btnCerrar de aquí, ahora está dentro de las pestañas
         }
 
         // ===== PESTAÑA MARCAS =====
@@ -344,7 +329,7 @@ namespace CpAuton
                 Name = "btnEliminarMarca",
                 Text = "🗑️ Eliminar Marca",
                 Size = new Size(160, 40),
-                Location = new Point(640, 520),
+                Location = new Point(530, 520),  // Ajustado para hacer espacio a la derecha
                 BackColor = Color.FromArgb(220, 53, 69),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -355,6 +340,22 @@ namespace CpAuton
             btnEliminarMarca.FlatAppearance.BorderSize = 0;
             btnEliminarMarca.Click += BtnEliminarMarca_Click;
             pnlGridMarca.Controls.Add(btnEliminarMarca);
+
+            // Botón Cerrar a la derecha de Eliminar
+            Button btnCerrarMarca = new Button
+            {
+                Text = "❌ Cerrar",
+                Size = new Size(120, 40),
+                Location = new Point(700, 520),  // A la derecha de btnEliminarMarca (530 + 160 + 10 = 700)
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnCerrarMarca.FlatAppearance.BorderSize = 0;
+            btnCerrarMarca.Click += (s, e) => this.Close();
+            pnlGridMarca.Controls.Add(btnCerrarMarca);
 
             tab.Controls.Add(pnlFormMarca);
             tab.Controls.Add(pnlGridMarca);
@@ -604,7 +605,7 @@ namespace CpAuton
                 Name = "btnEliminarModelo",
                 Text = "🗑️ Eliminar Modelo",
                 Size = new Size(160, 40),
-                Location = new Point(640, 520),
+                Location = new Point(530, 520),  // Ajustado para hacer espacio a la derecha
                 BackColor = Color.FromArgb(220, 53, 69),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -615,6 +616,22 @@ namespace CpAuton
             btnEliminarModelo.FlatAppearance.BorderSize = 0;
             btnEliminarModelo.Click += BtnEliminarModelo_Click;
             pnlGridModelo.Controls.Add(btnEliminarModelo);
+
+            // Botón Cerrar a la derecha de Eliminar
+            Button btnCerrarModelo = new Button
+            {
+                Text = "❌ Cerrar",
+                Size = new Size(120, 40),
+                Location = new Point(700, 520),  // A la derecha de btnEliminarModelo (530 + 160 + 10 = 700)
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnCerrarModelo.FlatAppearance.BorderSize = 0;
+            btnCerrarModelo.Click += (s, e) => this.Close();
+            pnlGridModelo.Controls.Add(btnCerrarModelo);
 
             tab.Controls.Add(pnlFormModelo);
             tab.Controls.Add(pnlGridModelo);

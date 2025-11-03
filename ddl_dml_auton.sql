@@ -218,6 +218,12 @@ CREATE TABLE VehiculoMantenimiento (
     CONSTRAINT FK_VehiculoMantenimiento_Vehiculo FOREIGN KEY (idVehiculo) REFERENCES Vehiculo(id)
 );
 
+
+ALTER TABLE Vehiculo
+ADD fotografia VARBINARY(MAX) NULL;
+
+PRINT 'Campo fotografia agregado a la tabla Vehiculo';
+
 -- =====================================================
 -- PROCEDIMIENTOS ALMACENADOS
 -- =====================================================
@@ -235,15 +241,22 @@ AS
     INNER JOIN Cargo c ON e.idCargo = c.id
     WHERE u.usuario = @usuario AND u.clave = @clave AND u.estado = 1 AND e.estado = 1;
 
+
 GO
-CREATE PROC paVehiculoListar @parametro VARCHAR(100)
+ALTER PROC paVehiculoListar @parametro VARCHAR(100)
 AS
-    SELECT v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
+    SELECT v.id, 
+           v.nroChasis,
+           mv.nombre AS modelo, 
+           m.nombre AS marca, 
+           p.descripcion AS procedencia,
            tv.descripcion AS tipoVehiculo, 
            v.generacion, v.paisFabricacion, v.transmision, v.tieneTurbo,
-           v.motor, v.combustible, v.nroAirbags,
+           v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
            v.anioFabricacion, v.confiabilidad, v.puntuacion,
-           v.kilometraje, v.observaciones, 
+           v.kilometraje, v.observaciones,
+           -- ⭐ NUEVO: Indicador de si tiene foto (no devolvemos la foto completa para optimizar)
+           CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
            v.usuarioRegistro, v.fechaRegistro, v.estado
     FROM Vehiculo v
     INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
@@ -255,6 +268,7 @@ AS
              v.generacion + v.paisFabricacion + v.transmision + ISNULL(v.motor, ''))
             LIKE '%' + REPLACE(@parametro, ' ', '%') + '%'
     ORDER BY v.estado DESC, p.descripcion ASC, m.nombre ASC, mv.nombre ASC;
+
 
 GO
 ALTER PROC paVehiculoListar @parametro VARCHAR(100)
@@ -412,47 +426,24 @@ AS
 -- PROCEDIMIENTO: Vehículos Japoneses
 -- =====================================================
 GO
-CREATE PROC paVehiculosJaponeses
-    @parametro VARCHAR(100) = ''
+ALTER PROC paVehiculosJaponeses @parametro VARCHAR(100) = ''
 AS
 BEGIN
     SELECT 
-        v.id, 
-        mv.nombre AS modelo, 
-        m.nombre AS marca, 
-        p.descripcion AS procedencia,
-        tv.descripcion AS tipoVehiculo, 
-        v.generacion, 
-        v.paisFabricacion, 
-        v.transmision, 
-        v.tieneTurbo,
-        v.motor, 
-        v.combustible, 
-        v.nroAirbags,
-        v.seguridadChoques,
-        v.organizacionSeguridad,
-        v.anioFabricacion, 
-        v.confiabilidad, 
-        v.puntuacion,
-        v.observaciones, 
-        v.usuarioRegistro, 
-        v.fechaRegistro, 
-        v.estado
+        v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
+        tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, v.transmision, v.tieneTurbo,
+        v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
+        v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
+        CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
+        v.usuarioRegistro, v.fechaRegistro, v.estado
     FROM Vehiculo v
     INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
     INNER JOIN Marca m ON mv.idMarca = m.id
     INNER JOIN Procedencia p ON m.idProcedencia = p.id
     INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
-    WHERE v.estado <> -1 
-        AND p.descripcion = 'Japonés'
-        AND (
-            @parametro = '' 
-            OR mv.nombre LIKE '%' + @parametro + '%'
-            OR m.nombre LIKE '%' + @parametro + '%'
-            OR v.generacion LIKE '%' + @parametro + '%'
-            OR v.motor LIKE '%' + @parametro + '%'
-            OR v.paisFabricacion LIKE '%' + @parametro + '%'
-        )
+    WHERE v.estado <> -1 AND p.descripcion = 'Japonés'
+        AND (@parametro = '' OR mv.nombre LIKE '%' + @parametro + '%'
+            OR m.nombre LIKE '%' + @parametro + '%' OR v.generacion LIKE '%' + @parametro + '%')
     ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
 END
 GO
@@ -460,7 +451,7 @@ GO
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Americanos
 -- =====================================================
-CREATE PROC paVehiculosAmericanos
+ALTER PROC paVehiculosAmericanos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -483,9 +474,8 @@ BEGIN
         v.confiabilidad, 
         v.puntuacion,
         v.observaciones, 
-        v.usuarioRegistro, 
-        v.fechaRegistro, 
-        v.estado
+          CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
+        v.usuarioRegistro, v.fechaRegistro, v.estado
     FROM Vehiculo v
     INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
     INNER JOIN Marca m ON mv.idMarca = m.id
@@ -508,7 +498,7 @@ GO
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Chinos
 -- =====================================================
-CREATE PROC paVehiculosChinos
+ALTER PROC paVehiculosChinos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -531,9 +521,8 @@ BEGIN
         v.confiabilidad, 
         v.puntuacion,
         v.observaciones, 
-        v.usuarioRegistro, 
-        v.fechaRegistro, 
-        v.estado
+          CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
+        v.usuarioRegistro, v.fechaRegistro, v.estado
     FROM Vehiculo v
     INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
     INNER JOIN Marca m ON mv.idMarca = m.id
@@ -556,7 +545,7 @@ GO
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Alemanes
 -- =====================================================
-CREATE PROC paVehiculosAlemanes
+ALTER PROC paVehiculosAlemanes
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -579,9 +568,8 @@ BEGIN
         v.confiabilidad, 
         v.puntuacion,
         v.observaciones, 
-        v.usuarioRegistro, 
-        v.fechaRegistro, 
-        v.estado
+          CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
+        v.usuarioRegistro, v.fechaRegistro, v.estado
     FROM Vehiculo v
     INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
     INNER JOIN Marca m ON mv.idMarca = m.id
@@ -604,7 +592,7 @@ GO
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Europeos
 -- =====================================================
-CREATE PROC paVehiculosEuropeos
+ALTER PROC paVehiculosEuropeos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -627,9 +615,8 @@ BEGIN
         v.confiabilidad, 
         v.puntuacion,
         v.observaciones, 
-        v.usuarioRegistro, 
-        v.fechaRegistro, 
-        v.estado
+         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
+        v.usuarioRegistro, v.fechaRegistro, v.estado
     FROM Vehiculo v
     INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
     INNER JOIN Marca m ON mv.idMarca = m.id
@@ -652,7 +639,7 @@ GO
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Coreanos
 -- =====================================================
-CREATE PROC paVehiculosCoreanos
+ALTER PROC paVehiculosCoreanos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -675,9 +662,8 @@ BEGIN
         v.confiabilidad, 
         v.puntuacion,
         v.observaciones, 
-        v.usuarioRegistro, 
-        v.fechaRegistro, 
-        v.estado
+          CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
+        v.usuarioRegistro, v.fechaRegistro, v.estado
     FROM Vehiculo v
     INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
     INNER JOIN Marca m ON mv.idMarca = m.id
@@ -695,6 +681,109 @@ BEGIN
         )
     ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
 END
+
+-- =====================================================
+-- NUEVO: PROCEDIMIENTO PARA OBTENER SOLO LA FOTOGRAFÍA
+-- =====================================================
+
+GO
+CREATE PROC paVehiculoObtenerFotografia
+    @id INT
+AS
+BEGIN
+    SELECT fotografia
+    FROM Vehiculo
+    WHERE id = @id AND estado != -1;
+END
+
+
+-- =====================================================
+-- ACTUALIZAR: PROCEDIMIENTO DE INSERCIÓN
+-- =====================================================
+GO
+ALTER PROC paVehiculoInsertar
+    @nroChasis VARCHAR(17),
+    @idModeloVehiculo INT,
+    @generacion VARCHAR(50),
+    @paisFabricacion VARCHAR(50),
+    @transmision VARCHAR(20),
+    @tieneTurbo BIT,
+    @motor VARCHAR(50),
+    @combustible VARCHAR(20),
+    @nroAirbags INT,
+    @seguridadChoques INT,
+    @organizacionSeguridad VARCHAR(50),
+    @anioFabricacion INT,
+    @confiabilidad VARCHAR(10),
+    @puntuacion DECIMAL(3,1),
+    @kilometraje INT = NULL,
+    @observaciones VARCHAR(500) = NULL,
+    @fotografia VARBINARY(MAX) = NULL  -- ⭐ NUEVO PARÁMETRO
+AS
+    INSERT INTO Vehiculo (
+        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision,
+        tieneTurbo, motor, combustible, nroAirbags, seguridadChoques, organizacionSeguridad,
+        anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones, fotografia
+    )
+    VALUES (
+        @nroChasis, @idModeloVehiculo, @generacion, @paisFabricacion, @transmision,
+        @tieneTurbo, @motor, @combustible, @nroAirbags, @seguridadChoques, @organizacionSeguridad,
+        @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones, @fotografia
+    );
+    
+    SELECT SCOPE_IDENTITY() AS nuevoId;
+
+    -- =====================================================
+-- ACTUALIZAR: PROCEDIMIENTO DE ACTUALIZACIÓN
+-- =====================================================
+GO
+ALTER PROC paVehiculoActualizar
+    @id INT,
+    @generacion VARCHAR(50),
+    @paisFabricacion VARCHAR(50),
+    @transmision VARCHAR(20),
+    @tieneTurbo BIT,
+    @motor VARCHAR(50),
+    @combustible VARCHAR(20),
+    @nroAirbags INT,
+    @seguridadChoques INT,
+    @organizacionSeguridad VARCHAR(50),
+    @anioFabricacion INT,
+    @confiabilidad VARCHAR(10),
+    @puntuacion DECIMAL(3,1),
+    @kilometraje INT = NULL,
+    @observaciones VARCHAR(500) = NULL,
+    @fotografia VARBINARY(MAX) = NULL  -- ⭐ NUEVO PARÁMETRO
+AS
+    -- Guardar historial si cambia la confiabilidad
+    IF EXISTS (SELECT 1 FROM Vehiculo WHERE id = @id AND confiabilidad != @confiabilidad)
+        INSERT INTO HistorialConfiabilidad (idVehiculo, confiabilidadAnterior, confiabilidadNueva, 
+                                           puntuacionAnterior, puntuacionNueva, motivo)
+        SELECT @id, confiabilidad, @confiabilidad, puntuacion, @puntuacion, 
+               'Actualización manual de confiabilidad'
+        FROM Vehiculo WHERE id = @id;
+    
+    UPDATE Vehiculo 
+    SET generacion = @generacion,
+        paisFabricacion = @paisFabricacion,
+        transmision = @transmision,
+        tieneTurbo = @tieneTurbo,
+        motor = @motor,
+        combustible = @combustible,
+        nroAirbags = @nroAirbags,
+        seguridadChoques = @seguridadChoques,
+        organizacionSeguridad = @organizacionSeguridad,
+        anioFabricacion = @anioFabricacion,
+        confiabilidad = @confiabilidad,
+        puntuacion = @puntuacion,
+        kilometraje = @kilometraje,
+        observaciones = @observaciones,
+        fotografia = ISNULL(@fotografia, fotografia)  -- ⭐ Solo actualiza si se proporciona
+    WHERE id = @id;
+    
+    SELECT 'Actualizado correctamente' AS mensaje;
+
+
 
 
 EXEC paVehiculosJaponeses ''

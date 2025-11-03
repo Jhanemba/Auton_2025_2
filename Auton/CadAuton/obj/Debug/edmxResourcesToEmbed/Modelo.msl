@@ -131,6 +131,7 @@
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
+          <ScalarProperty Name="fotografia" ColumnName="fotografia" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -246,12 +247,14 @@
           <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
           <ScalarProperty Name="kilometraje" ColumnName="kilometraje" />
           <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+          <ScalarProperty Name="tieneFotografia" ColumnName="tieneFotografia" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="paVehiculoObtenerFotografia" FunctionName="AutonModel.Store.paVehiculoObtenerFotografia" />
     <FunctionImportMapping FunctionImportName="paVehiculosAlemanes" FunctionName="AutonModel.Store.paVehiculosAlemanes">
       <ResultMapping>
         <ComplexTypeMapping TypeName="AutonModel.paVehiculosAlemanes_Result">
@@ -273,6 +276,7 @@
           <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
           <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
           <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+          <ScalarProperty Name="tieneFotografia" ColumnName="tieneFotografia" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
@@ -300,6 +304,7 @@
           <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
           <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
           <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+          <ScalarProperty Name="tieneFotografia" ColumnName="tieneFotografia" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
@@ -327,6 +332,7 @@
           <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
           <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
           <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+          <ScalarProperty Name="tieneFotografia" ColumnName="tieneFotografia" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
@@ -354,6 +360,7 @@
           <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
           <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
           <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+          <ScalarProperty Name="tieneFotografia" ColumnName="tieneFotografia" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
@@ -381,6 +388,7 @@
           <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
           <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
           <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+          <ScalarProperty Name="tieneFotografia" ColumnName="tieneFotografia" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
@@ -408,6 +416,7 @@
           <ScalarProperty Name="confiabilidad" ColumnName="confiabilidad" />
           <ScalarProperty Name="puntuacion" ColumnName="puntuacion" />
           <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+          <ScalarProperty Name="tieneFotografia" ColumnName="tieneFotografia" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />

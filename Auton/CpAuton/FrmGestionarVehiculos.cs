@@ -16,7 +16,8 @@ namespace CpAuton
     {
         private bool modoEdicion = false;
         private int vehiculoSeleccionadoId = 0;
-        private bool datosCopiados = false; // ✅ NUEVO: Para controlar el toggle del botón Nuevo
+        private bool datosCopiados = false;
+        private bool permitirEventos = true; // ✅ CRÍTICO: Control de eventos
 
         public FrmGestionarVehiculos()
         {
@@ -128,7 +129,7 @@ namespace CpAuton
             panel.Controls.Add(lblTitulo);
             yPos += 45;
 
-            // ✅ NRO DE CHASIS (EDITABLE)
+            // ✅ NRO DE CHASIS
             AgregarLabel(panel, "Nro. Chasis:", 15, yPos, labelWidth);
             TextBox txtChasis = new TextBox
             {
@@ -169,7 +170,7 @@ namespace CpAuton
             panel.Controls.Add(cboModelo);
             yPos += 35;
 
-            // ✅ TIPO (ESTE FALTABA)
+            // ✅ TIPO
             AgregarLabel(panel, "Tipo:", 15, yPos, labelWidth);
             ComboBox cboTipo = new ComboBox
             {
@@ -210,7 +211,7 @@ namespace CpAuton
             panel.Controls.Add(cboPais);
             yPos += 35;
 
-            // ✅ AÑO FABRICACIÓN (CON VALOR POR DEFECTO 2020)
+            // ✅ AÑO FABRICACIÓN
             AgregarLabel(panel, "Año Fabricación:", 15, yPos, labelWidth);
             NumericUpDown nudAnio = new NumericUpDown
             {
@@ -220,7 +221,7 @@ namespace CpAuton
                 Font = new Font("Segoe UI", 10),
                 Minimum = 1900,
                 Maximum = DateTime.Now.Year,
-                Value = 2020  // ✅ VALOR POR DEFECTO 2020
+                Value = 2020
             };
             panel.Controls.Add(nudAnio);
             yPos += 35;
@@ -361,13 +362,14 @@ namespace CpAuton
             {
                 Name = "txtObservaciones",
                 Location = new Point(15, yPos),
-                Size = new Size(415, 100),
+                Size = new Size(415, 100+100),
                 Multiline = true,
                 ScrollBars = ScrollBars.Vertical,
                 Font = new Font("Segoe UI", 10),
                 MaxLength = 500
             };
             panel.Controls.Add(txtObservaciones);
+            txtObservaciones.BringToFront();
         }
 
         private void CrearPanelGrid(Panel panel)
@@ -495,11 +497,36 @@ namespace CpAuton
             btnEliminar.Click += BtnEliminar_Click;
             panel.Controls.Add(btnEliminar);
 
+            // ✅ NUEVO: Botón para Marcas/Modelos
+            Button btnMarcasModelos = new Button
+            {
+                Text = "🏢 Marcas/Modelos",
+                Size = new Size(180, 45),
+                Location = new Point(700, 8),
+                BackColor = Color.FromArgb(255, 193, 7),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnMarcasModelos.FlatAppearance.BorderSize = 0;
+            btnMarcasModelos.Click += (s, e) =>
+            {
+                using (var frmMarcasModelos = new FrmGestionarMarcasModelos())
+                {
+                    frmMarcasModelos.ShowDialog(this);
+                    // Recargar combos después de gestionar marcas/modelos
+                    CargarCombos();
+                    CargarVehiculos("");
+                }
+            };
+            panel.Controls.Add(btnMarcasModelos);
+
             Button btnCerrar = new Button
             {
                 Text = "❌ Cerrar",
                 Size = new Size(150, 45),
-                Location = new Point(1130, 8),
+                Location = new Point(900, 8),
                 BackColor = Color.FromArgb(52, 58, 64),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -540,6 +567,8 @@ namespace CpAuton
         {
             try
             {
+                permitirEventos = false; // ✅ DESACTIVAR EVENTOS
+
                 var cboMarca = this.Controls.Find("cboMarca", true)[0] as ComboBox;
                 var cboTipo = this.Controls.Find("cboTipo", true)[0] as ComboBox;
 
@@ -549,6 +578,7 @@ namespace CpAuton
                     .OrderBy(m => m.nombre)
                     .ToList();
 
+                cboMarca.DataSource = null;
                 cboMarca.DisplayMember = "nombre";
                 cboMarca.ValueMember = "id";
                 cboMarca.DataSource = marcas;
@@ -560,13 +590,17 @@ namespace CpAuton
                     .OrderBy(t => t.descripcion)
                     .ToList();
 
+                cboTipo.DataSource = null;
                 cboTipo.DisplayMember = "descripcion";
                 cboTipo.ValueMember = "id";
                 cboTipo.DataSource = tipos;
                 cboTipo.SelectedIndex = -1;
+
+                permitirEventos = true; // ✅ REACTIVAR EVENTOS
             }
             catch (Exception ex)
             {
+                permitirEventos = true;
                 MessageBox.Show($"Error al cargar combos: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -574,10 +608,14 @@ namespace CpAuton
 
         private void CboMarca_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!permitirEventos) return; // ✅ CRÍTICO: Ignorar si eventos desactivados
+
             try
             {
                 var cboMarca = sender as ComboBox;
                 var cboModelo = this.Controls.Find("cboModelo", true)[0] as ComboBox;
+
+                permitirEventos = false; // ✅ DESACTIVAR EVENTOS
 
                 cboModelo.DataSource = null;
                 cboModelo.Items.Clear();
@@ -595,9 +633,12 @@ namespace CpAuton
                     cboModelo.DataSource = modelos;
                     cboModelo.SelectedIndex = -1;
                 }
+
+                permitirEventos = true; // ✅ REACTIVAR EVENTOS
             }
             catch (Exception ex)
             {
+                permitirEventos = true;
                 MessageBox.Show($"Error al cargar modelos: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -659,7 +700,6 @@ namespace CpAuton
             var btnCancelar = this.Controls.Find("btnCancelar", true)[0] as Button;
             var btnNuevo = sender as Button;
 
-            // ✅ TOGGLE: Si ya hay datos copiados, limpiar todo
             if (datosCopiados)
             {
                 LimpiarFormulario();
@@ -668,7 +708,7 @@ namespace CpAuton
                 btnGuardar.Text = "💾 Guardar";
                 btnGuardar.Enabled = true;
                 btnCancelar.Enabled = true;
-                btnNuevo.BackColor = Color.FromArgb(40, 167, 69); // Verde
+                btnNuevo.BackColor = Color.FromArgb(40, 167, 69);
 
                 modoEdicion = false;
                 vehiculoSeleccionadoId = 0;
@@ -679,18 +719,15 @@ namespace CpAuton
                 return;
             }
 
-            // ✅ MODO COPIAR: Si hay un vehículo seleccionado, copiar sus datos
             if (dgv.CurrentRow != null)
             {
                 var vehiculo = (paVehiculoListar_Result)dgv.CurrentRow.DataBoundItem;
                 CargarDatosVehiculo(vehiculo.id);
 
-                // Cambiar a modo NUEVO (no edición)
                 modoEdicion = false;
                 vehiculoSeleccionadoId = 0;
                 datosCopiados = true;
 
-                // Limpiar el chasis para que ingrese uno nuevo
                 var txtChasis = this.Controls.Find("txtChasis", true)[0] as TextBox;
                 txtChasis.Clear();
                 txtChasis.Focus();
@@ -698,7 +735,7 @@ namespace CpAuton
                 btnGuardar.Text = "💾 Guardar Nuevo";
                 btnGuardar.Enabled = true;
                 btnCancelar.Enabled = true;
-                btnNuevo.BackColor = Color.FromArgb(255, 193, 7); // Amarillo para indicar que la próxima vez limpiará
+                btnNuevo.BackColor = Color.FromArgb(255, 193, 7);
 
                 MessageBox.Show("ℹ️ Datos copiados del vehículo seleccionado.\n\n" +
                               "• Ingrese un nuevo número de chasis\n" +
@@ -709,7 +746,6 @@ namespace CpAuton
             }
             else
             {
-                // ✅ NO HAY SELECCIÓN: Limpiar y crear desde cero
                 LimpiarFormulario();
                 dgv.ClearSelection();
 
@@ -720,7 +756,7 @@ namespace CpAuton
                 btnGuardar.Text = "💾 Guardar";
                 btnGuardar.Enabled = true;
                 btnCancelar.Enabled = true;
-                btnNuevo.BackColor = Color.FromArgb(40, 167, 69); // Verde
+                btnNuevo.BackColor = Color.FromArgb(40, 167, 69);
 
                 var txtChasis = this.Controls.Find("txtChasis", true)[0] as TextBox;
                 txtChasis.Focus();
@@ -728,113 +764,144 @@ namespace CpAuton
         }
 
         private void BtnGuardar_Click(object sender, EventArgs e)
-{
-    try
-    {
-        // Validar campos obligatorios
-        if (!ValidarFormulario()) return;
-
-        // Obtener controles
-        var txtChasis = this.Controls.Find("txtChasis", true)[0] as TextBox;
-        var cboModelo = this.Controls.Find("cboModelo", true)[0] as ComboBox;
-        var txtGeneracion = this.Controls.Find("txtGeneracion", true)[0] as TextBox;
-        var cboPais = this.Controls.Find("cboPais", true)[0] as ComboBox;
-        var nudAnio = this.Controls.Find("nudAnio", true)[0] as NumericUpDown;
-        var cboTransmision = this.Controls.Find("cboTransmision", true)[0] as ComboBox;
-        var chkTurbo = this.Controls.Find("chkTurbo", true)[0] as CheckBox;
-        var txtMotor = this.Controls.Find("txtMotor", true)[0] as TextBox;
-        var cboCombustible = this.Controls.Find("cboCombustible", true)[0] as ComboBox;
-        var nudAirbags = this.Controls.Find("nudAirbags", true)[0] as NumericUpDown;
-        var nudEstrellas = this.Controls.Find("nudEstrellas", true)[0] as NumericUpDown;
-        var cboOrganizacion = this.Controls.Find("cboOrganizacion", true)[0] as ComboBox;
-        var cboConfiabilidad = this.Controls.Find("cboConfiabilidad", true)[0] as ComboBox;
-        var nudPuntuacion = this.Controls.Find("nudPuntuacion", true)[0] as NumericUpDown;
-        var txtObservaciones = this.Controls.Find("txtObservaciones", true)[0] as TextBox;
-
-        // Crear o actualizar vehículo
-        Vehiculo vehiculo;
-
-        if (modoEdicion)
         {
-            vehiculo = VehiculoCln.obtenerUno(vehiculoSeleccionadoId);
-            if (vehiculo == null)
+            try
             {
-                MessageBox.Show("❌ No se encontró el vehículo a actualizar", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                // ✅ CRÍTICO: Validar campos obligatorios PRIMERO
+                if (!ValidarFormulario()) return;
+
+                // ✅ Obtener controles
+                var txtChasis = this.Controls.Find("txtChasis", true)[0] as TextBox;
+                var cboModelo = this.Controls.Find("cboModelo", true)[0] as ComboBox;
+                var cboTipo = this.Controls.Find("cboTipo", true)[0] as ComboBox;
+                var txtGeneracion = this.Controls.Find("txtGeneracion", true)[0] as TextBox;
+                var cboPais = this.Controls.Find("cboPais", true)[0] as ComboBox;
+                var nudAnio = this.Controls.Find("nudAnio", true)[0] as NumericUpDown;
+                var cboTransmision = this.Controls.Find("cboTransmision", true)[0] as ComboBox;
+                var chkTurbo = this.Controls.Find("chkTurbo", true)[0] as CheckBox;
+                var txtMotor = this.Controls.Find("txtMotor", true)[0] as TextBox;
+                var cboCombustible = this.Controls.Find("cboCombustible", true)[0] as ComboBox;
+                var nudAirbags = this.Controls.Find("nudAirbags", true)[0] as NumericUpDown;
+                var nudEstrellas = this.Controls.Find("nudEstrellas", true)[0] as NumericUpDown;
+                var cboOrganizacion = this.Controls.Find("cboOrganizacion", true)[0] as ComboBox;
+                var cboConfiabilidad = this.Controls.Find("cboConfiabilidad", true)[0] as ComboBox;
+                var nudPuntuacion = this.Controls.Find("nudPuntuacion", true)[0] as NumericUpDown;
+                var txtObservaciones = this.Controls.Find("txtObservaciones", true)[0] as TextBox;
+
+                // ✅ CRÍTICO: Actualizar el tipo del modelo ANTES de guardar el vehículo
+                int nuevoIdModelo = (int)cboModelo.SelectedValue;
+                int nuevoIdTipo = (int)cboTipo.SelectedValue;
+
+                var modeloSeleccionado = ModeloVehiculoCln.obtenerUno(nuevoIdModelo);
+
+                if (modeloSeleccionado == null)
+                {
+                    MessageBox.Show("❌ Error: No se pudo cargar el modelo seleccionado",
+                                  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // ✅ Si el tipo cambió, actualizar el modelo
+                if (modeloSeleccionado.idTipoVehiculo != nuevoIdTipo)
+                {
+                    modeloSeleccionado.idTipoVehiculo = nuevoIdTipo;
+                    modeloSeleccionado.usuarioRegistro = Util.usuario.usuario;
+
+                    int resultadoModelo = ModeloVehiculoCln.actualizar(modeloSeleccionado);
+
+                    if (resultadoModelo == 0)
+                    {
+                        MessageBox.Show("❌ Error al actualizar el tipo del modelo",
+                                      "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+
+                // ✅ Crear o actualizar vehículo
+                Vehiculo vehiculo;
+
+                if (modoEdicion)
+                {
+                    vehiculo = VehiculoCln.obtenerUno(vehiculoSeleccionadoId);
+                    if (vehiculo == null)
+                    {
+                        MessageBox.Show("❌ No se encontró el vehículo a actualizar", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    vehiculo = new Vehiculo
+                    {
+                        estado = 1,
+                        fechaRegistro = DateTime.Now
+                    };
+                }
+
+                // ✅ Asignar TODOS los valores
+                vehiculo.nroChasis = txtChasis.Text.Trim().ToUpper();
+                vehiculo.idModeloVehiculo = nuevoIdModelo;
+                vehiculo.generacion = txtGeneracion.Text.Trim();
+                vehiculo.paisFabricacion = cboPais.Text.Trim();
+                vehiculo.anioFabricacion = (int)nudAnio.Value;
+                vehiculo.transmision = cboTransmision.Text;
+                vehiculo.tieneTurbo = chkTurbo.Checked;
+                vehiculo.motor = txtMotor.Text.Trim();
+                vehiculo.combustible = cboCombustible.Text;
+                vehiculo.nroAirbags = (int)nudAirbags.Value;
+                vehiculo.seguridadChoques = (int)nudEstrellas.Value;
+                vehiculo.organizacionSeguridad = cboOrganizacion.Text;
+                vehiculo.confiabilidad = cboConfiabilidad.Text;
+                vehiculo.puntuacion = nudPuntuacion.Value;
+                vehiculo.observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ?
+                    null : txtObservaciones.Text.Trim();
+                vehiculo.usuarioRegistro = Util.usuario.usuario;
+
+                int resultado;
+                string mensaje;
+
+                if (modoEdicion)
+                {
+                    resultado = VehiculoCln.actualizar(vehiculo);
+                    mensaje = resultado > 0 ?
+                        "✅ Vehículo actualizado exitosamente" :
+                        "❌ No se pudo actualizar el vehículo";
+                }
+                else
+                {
+                    resultado = VehiculoCln.insertar(vehiculo);
+                    mensaje = resultado > 0 ?
+                        "✅ Vehículo registrado exitosamente" :
+                        "❌ No se pudo registrar el vehículo";
+                }
+
+                if (resultado > 0)
+                {
+                    MessageBox.Show(mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LimpiarFormulario();
+                    CargarVehiculos("");
+
+                    var btnGuardar = this.Controls.Find("btnGuardar", true)[0] as Button;
+                    var btnCancelar = this.Controls.Find("btnCancelar", true)[0] as Button;
+                    btnGuardar.Enabled = false;
+                    btnCancelar.Enabled = false;
+
+                    modoEdicion = false;
+                    vehiculoSeleccionadoId = 0;
+                    datosCopiados = false;
+                }
+                else
+                {
+                    MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            
-            // ⭐ AGREGAR: Actualizar el nroChasis también en modo edición
-            vehiculo.nroChasis = txtChasis.Text.Trim().ToUpper();
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Error al guardar: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        else
-        {
-            vehiculo = new Vehiculo();
-            vehiculo.nroChasis = txtChasis.Text.Trim().ToUpper();
-        }
-
-        // Asignar valores (resto del código sin cambios)
-        vehiculo.idModeloVehiculo = (int)cboModelo.SelectedValue;
-        vehiculo.generacion = txtGeneracion.Text.Trim();
-        vehiculo.paisFabricacion = cboPais.Text.Trim();
-        vehiculo.anioFabricacion = (int)nudAnio.Value;
-        vehiculo.transmision = cboTransmision.Text;
-        vehiculo.tieneTurbo = chkTurbo.Checked;
-        vehiculo.motor = txtMotor.Text.Trim();
-        vehiculo.combustible = cboCombustible.Text;
-        vehiculo.nroAirbags = (int)nudAirbags.Value;
-        vehiculo.seguridadChoques = (int)nudEstrellas.Value;
-        vehiculo.organizacionSeguridad = cboOrganizacion.Text;
-        vehiculo.confiabilidad = cboConfiabilidad.Text;
-        vehiculo.puntuacion = nudPuntuacion.Value;
-        vehiculo.observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ?
-            null : txtObservaciones.Text.Trim();
-        vehiculo.usuarioRegistro = Util.usuario.usuario;
-
-        int resultado;
-        string mensaje;
-
-        if (modoEdicion)
-        {
-            resultado = VehiculoCln.actualizar(vehiculo);
-            mensaje = resultado > 0 ?
-                "✅ Vehículo actualizado exitosamente" :
-                "❌ No se pudo actualizar el vehículo";
-        }
-        else
-        {
-            resultado = VehiculoCln.insertar(vehiculo);
-            mensaje = resultado > 0 ?
-                "✅ Vehículo registrado exitosamente" :
-                "❌ No se pudo registrar el vehículo";
-        }
-
-        if (resultado > 0)
-        {
-            MessageBox.Show(mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            LimpiarFormulario();
-            CargarVehiculos("");
-
-            // Deshabilitar botones de acción después de guardar
-            var btnGuardar = this.Controls.Find("btnGuardar", true)[0] as Button;
-            var btnCancelar = this.Controls.Find("btnCancelar", true)[0] as Button;
-            btnGuardar.Enabled = false;
-            btnCancelar.Enabled = false;
-
-            modoEdicion = false;
-            vehiculoSeleccionadoId = 0;
-        }
-        else
-        {
-            MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-    catch (Exception ex)
-    {
-        MessageBox.Show($"❌ Error al guardar: {ex.Message}", "Error",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
-    }
-}
 
         private bool ValidarFormulario()
         {
@@ -850,6 +917,7 @@ namespace CpAuton
             var cboOrganizacion = this.Controls.Find("cboOrganizacion", true)[0] as ComboBox;
             var cboConfiabilidad = this.Controls.Find("cboConfiabilidad", true)[0] as ComboBox;
 
+            // ✅ VALIDAR CHASIS (solo en modo nuevo)
             if (!modoEdicion && string.IsNullOrWhiteSpace(txtChasis.Text))
             {
                 MessageBox.Show("⚠️ El número de chasis es obligatorio", "Validación",
@@ -954,7 +1022,7 @@ namespace CpAuton
             LimpiarFormulario();
             modoEdicion = false;
             vehiculoSeleccionadoId = 0;
-            datosCopiados = false; // ✅ RESETEAR ESTADO
+            datosCopiados = false;
 
             var btnGuardar = this.Controls.Find("btnGuardar", true)[0] as Button;
             var btnCancelar = this.Controls.Find("btnCancelar", true)[0] as Button;
@@ -965,7 +1033,7 @@ namespace CpAuton
             btnGuardar.Enabled = false;
             btnCancelar.Enabled = false;
             btnEliminar.Enabled = false;
-            btnNuevo.BackColor = Color.FromArgb(40, 167, 69); // ✅ VOLVER A VERDE
+            btnNuevo.BackColor = Color.FromArgb(40, 167, 69);
 
             var dgv = this.Controls.Find("dgvVehiculos", true)[0] as DataGridView;
             dgv.ClearSelection();
@@ -1026,6 +1094,8 @@ namespace CpAuton
 
         private void LimpiarFormulario()
         {
+            permitirEventos = false; // ✅ DESACTIVAR EVENTOS
+
             foreach (Control ctrl in this.Controls)
             {
                 if (ctrl is Panel panel)
@@ -1038,7 +1108,6 @@ namespace CpAuton
                             cbo.SelectedIndex = -1;
                         else if (subCtrl is NumericUpDown nud)
                         {
-                            // ✅ MANTENER VALORES POR DEFECTO AL LIMPIAR
                             if (nud.Name == "nudAnio")
                                 nud.Value = 2020;
                             else if (nud.Name == "nudAirbags")
@@ -1053,6 +1122,8 @@ namespace CpAuton
                     }
                 }
             }
+
+            permitirEventos = true; // ✅ REACTIVAR EVENTOS
         }
 
         private void DgvVehiculos_SelectionChanged(object sender, EventArgs e)
@@ -1076,6 +1147,8 @@ namespace CpAuton
         {
             try
             {
+                permitirEventos = false; // ✅ DESACTIVAR EVENTOS
+
                 var vehiculo = ConsultaVehiculosCln.obtenerUno(id);
                 if (vehiculo == null) return;
 
@@ -1102,10 +1175,29 @@ namespace CpAuton
 
                 txtChasis.Text = vehiculo.nroChasis;
 
+                // ✅ Obtener modelo y cargar marca/modelos
                 var modelo = ModeloVehiculoCln.obtenerUno(vehiculo.idModeloVehiculo);
-                cboMarca.SelectedValue = modelo.idMarca;
-                cboModelo.SelectedValue = vehiculo.idModeloVehiculo;
-                cboTipo.SelectedValue = modelo.idTipoVehiculo;
+
+                if (modelo != null)
+                {
+                    // Seleccionar marca
+                    cboMarca.SelectedValue = modelo.idMarca;
+
+                    // Cargar modelos de esa marca
+                    var modelos = ModeloVehiculoCln.listar()
+                        .Where(m => m.idMarca == modelo.idMarca && m.estado != -1)
+                        .OrderBy(m => m.nombre)
+                        .ToList();
+
+                    cboModelo.DataSource = null;
+                    cboModelo.DisplayMember = "nombre";
+                    cboModelo.ValueMember = "id";
+                    cboModelo.DataSource = modelos;
+                    cboModelo.SelectedValue = vehiculo.idModeloVehiculo;
+
+                    // Seleccionar tipo
+                    cboTipo.SelectedValue = modelo.idTipoVehiculo;
+                }
 
                 txtGeneracion.Text = vehiculo.generacion;
                 cboPais.Text = vehiculo.paisFabricacion;
@@ -1121,6 +1213,8 @@ namespace CpAuton
                 nudPuntuacion.Value = vehiculo.puntuacion;
                 txtObservaciones.Text = vehiculo.observaciones ?? "";
 
+                permitirEventos = true; // ✅ REACTIVAR EVENTOS
+
                 var btnGuardar = this.Controls.Find("btnGuardar", true)[0] as Button;
                 var btnCancelar = this.Controls.Find("btnCancelar", true)[0] as Button;
                 btnGuardar.Text = "💾 Actualizar";
@@ -1129,6 +1223,7 @@ namespace CpAuton
             }
             catch (Exception ex)
             {
+                permitirEventos = true;
                 MessageBox.Show($"Error al cargar datos del vehículo: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

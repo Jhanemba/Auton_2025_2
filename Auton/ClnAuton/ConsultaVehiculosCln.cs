@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace ClnAuton
 {
     public class ConsultaVehiculosCln
     {
-        // <summary>
-        /// Inserta un nuevo vehículo
+        /// <summary>
+        /// Inserta un nuevo vehículo CON fotografía
         /// </summary>
-        /// <param name="vehiculo">Objeto Vehiculo a insertar</param>
-        /// <returns>ID del nuevo vehículo</returns>
         public static int insertar(Vehiculo vehiculo)
         {
             using (var context = new AutonEntities())
@@ -24,27 +23,23 @@ namespace ClnAuton
             }
         }
 
-
         /// <summary>
-        /// Actualiza un vehículo existente - VERSIÓN CORREGIDA
+        /// Actualiza un vehículo existente - CON FOTOGRAFÍA
         /// </summary>
-        /// <param name="vehiculo">Objeto Vehiculo con los datos actualizados</param>
-        /// <returns>1 si se actualizó correctamente, 0 si no</returns>
         public static int actualizar(Vehiculo vehiculo)
         {
             try
             {
                 using (var context = new AutonEntities())
                 {
-                    // Buscar el vehículo existente
                     var existente = context.Vehiculo.Find(vehiculo.id);
 
                     if (existente == null)
                     {
-                        return 0; // No existe el vehículo
+                        return 0;
                     }
 
-                    // ⭐ ACTUALIZAR TODOS LOS CAMPOS
+                    // Actualizar TODOS los campos incluyendo fotografía
                     existente.nroChasis = vehiculo.nroChasis;
                     existente.idModeloVehiculo = vehiculo.idModeloVehiculo;
                     existente.anioFabricacion = vehiculo.anioFabricacion;
@@ -63,19 +58,37 @@ namespace ClnAuton
                     existente.observaciones = vehiculo.observaciones;
                     existente.usuarioRegistro = vehiculo.usuarioRegistro;
 
-                    // ✅ MARCAR COMO MODIFICADO (forzar detección de cambios)
-                    context.Entry(existente).State = System.Data.Entity.EntityState.Modified;
+                    // ⭐ FOTOGRAFÍA: Solo actualizar si no es null
+                    if (vehiculo.fotografia != null)
+                    {
+                        existente.fotografia = vehiculo.fotografia;
+                    }
 
-                    // Guardar cambios
+                    context.Entry(existente).State = EntityState.Modified;
                     context.SaveChanges();
 
-                    // ✅ SIEMPRE RETORNAR 1 SI LLEGAMOS AQUÍ (no hubo excepciones)
                     return 1;
                 }
             }
             catch
             {
                 return 0;
+            }
+        }
+
+        /// <summary>
+        /// ⭐ NUEVO: Obtiene la fotografía de un vehículo
+        /// </summary>
+        public static byte[] obtenerFotografia(int id)
+        {
+            using (var context = new AutonEntities())
+            {
+                var vehiculo = context.Vehiculo
+                    .Where(v => v.id == id && v.estado != -1)
+                    .Select(v => v.fotografia)
+                    .FirstOrDefault();
+
+                return vehiculo;
             }
         }
 

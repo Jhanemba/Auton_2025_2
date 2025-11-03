@@ -123,6 +123,7 @@
     <Property Name="usuarioRegistro" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="fechaRegistro" Type="datetime" Nullable="false" />
     <Property Name="estado" Type="smallint" Nullable="false" />
+    <Property Name="fotografia" Type="varbinary(max)" />
   </EntityType>
   <EntityType Name="VehiculoMantenimiento">
     <Key>
@@ -267,6 +268,7 @@
     <Parameter Name="puntuacion" Type="decimal" Mode="In" />
     <Parameter Name="kilometraje" Type="int" Mode="In" />
     <Parameter Name="observaciones" Type="varchar" Mode="In" />
+    <Parameter Name="fotografia" Type="varbinary(max)" Mode="In" />
   </Function>
   <Function Name="paVehiculoEliminar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="id" Type="int" Mode="In" />
@@ -288,9 +290,13 @@
     <Parameter Name="puntuacion" Type="decimal" Mode="In" />
     <Parameter Name="kilometraje" Type="int" Mode="In" />
     <Parameter Name="observaciones" Type="varchar" Mode="In" />
+    <Parameter Name="fotografia" Type="varbinary(max)" Mode="In" />
   </Function>
   <Function Name="paVehiculoListar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="parametro" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="paVehiculoObtenerFotografia" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="id" Type="int" Mode="In" />
   </Function>
   <Function Name="paVehiculosAlemanes" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="parametro" Type="varchar" Mode="In" />

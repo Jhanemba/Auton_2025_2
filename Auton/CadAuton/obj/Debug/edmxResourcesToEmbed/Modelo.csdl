@@ -135,6 +135,7 @@
     <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="estado" Type="Int16" Nullable="false" />
+    <Property Name="fotografia" Type="Binary" MaxLength="Max" FixedLength="false" />
     <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="Vehiculo" ToRole="HistorialConfiabilidad" />
     <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="Vehiculo" ToRole="ModeloVehiculo" />
     <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="Vehiculo" ToRole="VehiculoMantenimiento" />
@@ -326,6 +327,7 @@
       <Parameter Name="puntuacion" Mode="In" Type="Decimal" />
       <Parameter Name="kilometraje" Mode="In" Type="Int32" />
       <Parameter Name="observaciones" Mode="In" Type="String" />
+      <Parameter Name="fotografia" Mode="In" Type="Binary" />
     </FunctionImport>
     <FunctionImport Name="paVehiculoEliminar" ReturnType="Collection(String)">
       <Parameter Name="id" Mode="In" Type="Int32" />
@@ -347,9 +349,13 @@
       <Parameter Name="puntuacion" Mode="In" Type="Decimal" />
       <Parameter Name="kilometraje" Mode="In" Type="Int32" />
       <Parameter Name="observaciones" Mode="In" Type="String" />
+      <Parameter Name="fotografia" Mode="In" Type="Binary" />
     </FunctionImport>
     <FunctionImport Name="paVehiculoListar" ReturnType="Collection(AutonModel.paVehiculoListar_Result)">
       <Parameter Name="parametro" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="paVehiculoObtenerFotografia" ReturnType="Collection(Binary)">
+      <Parameter Name="id" Mode="In" Type="Int32" />
     </FunctionImport>
     <FunctionImport Name="paVehiculosAlemanes" ReturnType="Collection(AutonModel.paVehiculosAlemanes_Result)">
       <Parameter Name="parametro" Mode="In" Type="String" />
@@ -433,6 +439,7 @@
     <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
     <Property Type="Int32" Name="kilometraje" Nullable="true" />
     <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+    <Property Type="Int32" Name="tieneFotografia" Nullable="false" />
     <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
     <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
     <Property Type="Int16" Name="estado" Nullable="false" />
@@ -456,6 +463,7 @@
     <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
     <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
     <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+    <Property Type="Int32" Name="tieneFotografia" Nullable="false" />
     <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
     <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
     <Property Type="Int16" Name="estado" Nullable="false" />
@@ -479,6 +487,7 @@
     <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
     <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
     <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+    <Property Type="Int32" Name="tieneFotografia" Nullable="false" />
     <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
     <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
     <Property Type="Int16" Name="estado" Nullable="false" />
@@ -502,6 +511,7 @@
     <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
     <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
     <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+    <Property Type="Int32" Name="tieneFotografia" Nullable="false" />
     <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
     <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
     <Property Type="Int16" Name="estado" Nullable="false" />
@@ -525,6 +535,7 @@
     <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
     <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
     <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+    <Property Type="Int32" Name="tieneFotografia" Nullable="false" />
     <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
     <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
     <Property Type="Int16" Name="estado" Nullable="false" />
@@ -548,6 +559,7 @@
     <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
     <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
     <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+    <Property Type="Int32" Name="tieneFotografia" Nullable="false" />
     <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
     <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
     <Property Type="Int16" Name="estado" Nullable="false" />
@@ -571,6 +583,7 @@
     <Property Type="String" Name="confiabilidad" Nullable="false" MaxLength="10" />
     <Property Type="Decimal" Name="puntuacion" Nullable="false" Precision="3" Scale="1" />
     <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
+    <Property Type="Int32" Name="tieneFotografia" Nullable="false" />
     <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
     <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
     <Property Type="Int16" Name="estado" Nullable="false" />

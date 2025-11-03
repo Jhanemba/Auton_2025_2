@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -50,6 +51,12 @@ namespace CpAuton
         private CheckBox chkKilometrajeDesconocido;
         private TextBox txtObservaciones;
 
+        private PictureBox pbFotografia;
+        private Label lblFotoInfo;
+        private Button btnSeleccionarFoto;
+        private Button btnEliminarFoto;
+        private Image imagenActual = null;
+
         public FrmRegistroVehiculo()
         {
             InitializeComponent();
@@ -59,21 +66,31 @@ namespace CpAuton
         private void ConfigurarFormulario()
         {
             this.Text = "...::: Auton - Registrar Nuevo Vehículo :::...";
-            this.Size = new Size(1200, 850);
+            //this.Size = new Size(1200, 1020);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Font = new Font("Segoe UI", 10F);
-            this.AutoScroll = true;
+            //this.AutoScroll = true;
+            //this.AutoScrollMinSize = new Size(0, 1150);  // Fuerza scroll
+
+            Panel pnlContenedor = new Panel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                BackColor = Color.White,
+                Padding = new Padding(20)
+            };
+            this.Controls.Add(pnlContenedor);
 
             Panel pnlPrincipal = new Panel
             {
                 Location = new Point(0, 0),
-                Size = new Size(1184, 750),
+                Size = new Size(1184, 750+270),
                 Padding = new Padding(20),
                 BackColor = Color.White,
-                AutoScroll = true
+                //AutoScroll = true
             };
 
             int yPos = 15;
@@ -433,11 +450,105 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(txtObservaciones);
             SetCueBanner(txtObservaciones, "Detalles adicionales del vehículo...");
 
+            // ==================== FOTOGRAFÍA ====================
+            yPos = Math.Max(yPosLeft, yPosRight) + 80;
+            AgregarSeccion(pnlPrincipal, "📷 FOTOGRAFÍA DEL VEHÍCULO", 20, yPos, 1140);
+            yPos += 40;
+
+            // PictureBox para mostrar la foto
+            pbFotografia = new PictureBox
+            {
+                Location = new Point(40, yPos),
+                Size = new Size(400, 300),
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.FromArgb(250, 250, 250),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                AllowDrop = true  // ⭐ HABILITAR DRAG & DROP
+            };
+
+            // ⭐ EVENTOS DE DRAG & DROP
+            pbFotografia.DragEnter += PbFotografia_DragEnter;
+            pbFotografia.DragDrop += PbFotografia_DragDrop;
+            pbFotografia.Paint += PbFotografia_Paint;  // Para dibujar instrucciones
+
+            pnlPrincipal.Controls.Add(pbFotografia);
+
+            // Panel de controles de foto
+            Panel pnlControlesFoto = new Panel
+            {
+                Location = new Point(460, yPos),
+                Size = new Size(700, 300),
+                BackColor = Color.White
+            };
+
+            Label lblInstrucciones = new Label
+            {
+                Text = "📋 CÓMO AGREGAR UNA FOTOGRAFÍA:\n\n" +
+                       "1️⃣ Arrastra una imagen desde tu explorador de archivos\n" +
+                       "2️⃣ O haz clic en 'Seleccionar Archivo' para buscar\n\n" +
+                       "✅ Formatos aceptados: JPG, PNG, BMP, GIF\n" +
+                       "⚠️ Tamaño máximo recomendado: 5 MB\n" +
+                       "💡 La imagen se optimizará automáticamente",
+                Font = new Font("Segoe UI", 10F),
+                ForeColor = Color.FromArgb(52, 58, 64),
+                Location = new Point(10, 10),
+                Size = new Size(680, 150),
+                TextAlign = ContentAlignment.TopLeft
+            };
+            pnlControlesFoto.Controls.Add(lblInstrucciones);
+
+            // Botones de control
+            btnSeleccionarFoto = new Button
+            {
+                Text = "📂 Seleccionar Archivo",
+                Size = new Size(200, 40),
+                Location = new Point(10, 170-300),
+                BackColor = Color.FromArgb(51, 122, 183),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnSeleccionarFoto.FlatAppearance.BorderSize = 0;
+            btnSeleccionarFoto.Click += BtnSeleccionarFoto_Click;
+            pnlControlesFoto.Controls.Add(btnSeleccionarFoto);
+
+            btnEliminarFoto = new Button
+            {
+                Text = "🗑️ Quitar Foto",
+                Size = new Size(200, 40),
+                Location = new Point(220, 170),
+                BackColor = Color.FromArgb(217, 83, 79),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnEliminarFoto.FlatAppearance.BorderSize = 0;
+            btnEliminarFoto.Click += (s, e) => EliminarFoto();
+            pnlControlesFoto.Controls.Add(btnEliminarFoto);
+
+            // Label de información
+            lblFotoInfo = new Label
+            {
+                Text = "📷 Sin fotografía seleccionada",
+                Font = new Font("Segoe UI", 9F, FontStyle.Italic),
+                ForeColor = Color.Gray,
+                Location = new Point(10, 220),
+                Size = new Size(680, 50),
+                TextAlign = ContentAlignment.TopLeft
+            };
+            pnlControlesFoto.Controls.Add(lblFotoInfo);
+
+            pnlPrincipal.Controls.Add(pnlControlesFoto);
+
+
             // Panel de botones
             Panel pnlBotones = new Panel
             {
-                Location = new Point(0, 650),
-                Size = new Size(1184, 70),
+                Location = new Point(0, 750+250),
+                Size = new Size(1184, 70+30),
                 BackColor = Color.FromArgb(248, 249, 250),
                 BorderStyle = BorderStyle.FixedSingle
             };
@@ -446,7 +557,7 @@ namespace CpAuton
             {
                 Text = "💾 Guardar Vehículo",
                 Size = new Size(200, 45),
-                Location = new Point(450, 12),
+                Location = new Point(450-90, 12),
                 BackColor = Color.FromArgb(51, 122, 183),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -460,7 +571,7 @@ namespace CpAuton
             {
                 Text = "❌ Cancelar",
                 Size = new Size(200, 45),
-                Location = new Point(670, 12),
+                Location = new Point(670-50, 12),
                 BackColor = Color.FromArgb(217, 83, 79),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -473,8 +584,22 @@ namespace CpAuton
             pnlBotones.Controls.Add(btnGuardar);
             pnlBotones.Controls.Add(btnCancelar);
 
-            this.Controls.Add(pnlBotones);
-            this.Controls.Add(pnlPrincipal);
+            pnlContenedor.Controls.Add(pnlPrincipal);
+            pnlContenedor.Controls.Add(pnlBotones);
+            this.Load += (s, e) =>
+            {
+                pnlBotones.Top = pnlPrincipal.Bottom + 20;
+            };
+
+            this.Shown += (s, e) =>
+            {
+                this.BeginInvoke(new Action(() =>
+                {
+                    pnlContenedor.VerticalScroll.Value = 0;
+                }));
+            };
+
+
         }
 
         private void AgregarSeccion(Panel panel, string titulo, int x, int yPos, int width)
@@ -753,36 +878,63 @@ namespace CpAuton
                         estrellas = 5 - cboSeguridadChoques.SelectedIndex;
                     }
 
-                    // ✅ NUEVO: Vehículo con TODAS las características
+                    // Convertir imagen a bytes si existe
+                    byte[] fotografiaBytes = null;
+                    if (imagenActual != null)
+                    {
+                        try
+                        {
+                            fotografiaBytes = ImagenHelper.ConvertirImagenABytes(imagenActual);
+                            double tamanoKB = ImagenHelper.ObtenerTamanoKB(fotografiaBytes);
+
+                            // Advertir si la imagen es muy grande
+                            if (tamanoKB > 2048) // Más de 2MB
+                            {
+                                DialogResult result = MessageBox.Show(
+                                    $"⚠️ La imagen optimizada pesa {Math.Round(tamanoKB / 1024, 2)} MB.\n\n" +
+                                    $"Se recomienda usar imágenes más pequeñas.\n" +
+                                    $"¿Desea continuar?",
+                                    "Imagen Grande",
+                                    MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Question);
+
+                                if (result != DialogResult.Yes)
+                                    return;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"❌ Error al procesar la fotografía:\n{ex.Message}\n\n" +
+                                          "El vehículo se guardará sin fotografía.",
+                                          "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            fotografiaBytes = null;
+                        }
+                    }
+
+                    // NUEVO: Vehículo con TODAS las características
                     var nuevoVehiculo = new Vehiculo
                     {
                         nroChasis = txtNroChasis.Text.Trim().ToUpper(),
                         idModeloVehiculo = idModelo,
                         anioFabricacion = anio,
-
-                        // Características específicas
                         generacion = txtGeneracion.Text.Trim(),
                         paisFabricacion = cboPaisFabricacion.SelectedItem.ToString(),
                         transmision = cboTransmision.SelectedItem.ToString(),
                         tieneTurbo = chkTieneTurbo.Checked,
                         motor = txtMotor.Text.Trim(),
                         combustible = cboCombustible.SelectedItem.ToString(),
-
-                        // Seguridad
                         nroAirbags = (int)nudAirbags.Value,
                         seguridadChoques = estrellas,
                         organizacionSeguridad = cboOrganizacionSeguridad.SelectedItem?.ToString() ?? "Sin calificación",
-
-                        // Evaluación
                         confiabilidad = cboConfiabilidad.SelectedItem.ToString(),
                         puntuacion = puntuacion,
-                        //kilometraje = kilometraje,
                         observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ? null : txtObservaciones.Text.Trim(),
-
+                        fotografia = fotografiaBytes,  // ⭐ AGREGAMOS ESTA LÍNEA
                         estado = 1,
                         usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : Environment.UserName,
                         fechaRegistro = DateTime.Now
                     };
+
 
                     int resultado = VehiculoCln.insertar(nuevoVehiculo);
 
@@ -825,18 +977,184 @@ namespace CpAuton
             catch { }
         }
 
+
+        /// <summary>
+        /// Evento cuando se arrastra algo sobre el PictureBox
+        /// </summary>
+        private void PbFotografia_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] archivos = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (archivos.Length > 0 && ImagenHelper.EsImagenValida(archivos[0]))
+                {
+                    e.Effect = DragDropEffects.Copy;
+                    pbFotografia.BackColor = Color.FromArgb(220, 255, 220); // Verde claro
+                }
+                else
+                {
+                    e.Effect = DragDropEffects.None;
+                    pbFotografia.BackColor = Color.FromArgb(255, 220, 220); // Rojo claro
+                }
+            }
+        }
+
+        /// <summary>
+        /// Evento cuando se suelta el archivo en el PictureBox
+        /// </summary>
+        private void PbFotografia_DragDrop(object sender, DragEventArgs e)
+        {
+            pbFotografia.BackColor = Color.FromArgb(250, 250, 250); // Restaurar color
+
+            try
+            {
+                string[] archivos = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (archivos.Length > 0)
+                {
+                    CargarImagen(archivos[0]);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Error al cargar la imagen:\n{ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Dibuja instrucciones cuando no hay imagen
+        /// </summary>
+        private void PbFotografia_Paint(object sender, PaintEventArgs e)
+        {
+            if (pbFotografia.Image == null)
+            {
+                string texto = "📷\n\nArrastra aquí\nuna imagen\n\n🖱️ o haz clic en\n'Seleccionar Archivo'";
+                using (Font font = new Font("Segoe UI", 12, FontStyle.Bold))
+                using (StringFormat sf = new StringFormat())
+                {
+                    sf.Alignment = StringAlignment.Center;
+                    sf.LineAlignment = StringAlignment.Center;
+                    e.Graphics.DrawString(texto, font, Brushes.Gray,
+                        new RectangleF(0, 0, pbFotografia.Width, pbFotografia.Height), sf);
+                }
+
+                // Dibujar borde punteado
+                using (Pen pen = new Pen(Color.Gray, 2))
+                {
+                    pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                    e.Graphics.DrawRectangle(pen, 5, 5, pbFotografia.Width - 10, pbFotografia.Height - 10);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Botón para seleccionar archivo manualmente
+        /// </summary>
+        private void BtnSeleccionarFoto_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Title = "Seleccionar Fotografía del Vehículo";
+                ofd.Filter = "Imágenes|*.jpg;*.jpeg;*.png;*.bmp;*.gif|Todos los archivos|*.*";
+                ofd.FilterIndex = 1;
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        CargarImagen(ofd.FileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ Error al cargar la imagen:\n{ex.Message}",
+                                      "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Carga una imagen desde un archivo
+        /// </summary>
+        private void CargarImagen(string rutaArchivo)
+        {
+            if (!ImagenHelper.EsImagenValida(rutaArchivo))
+            {
+                MessageBox.Show("⚠️ El archivo seleccionado no es una imagen válida",
+                              "Archivo Inválido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Liberar imagen anterior si existe
+            if (imagenActual != null)
+            {
+                imagenActual.Dispose();
+                imagenActual = null;
+            }
+
+            // Cargar nueva imagen
+            imagenActual = ImagenHelper.CargarImagenDesdeArchivo(rutaArchivo);
+            ImagenHelper.AjustarImagenPictureBox(pbFotografia, imagenActual);
+
+            // Actualizar información
+            FileInfo fi = new FileInfo(rutaArchivo);
+            double tamanoMB = Math.Round(fi.Length / (1024.0 * 1024.0), 2);
+
+            lblFotoInfo.Text = $"✅ Imagen cargada: {Path.GetFileName(rutaArchivo)}\n" +
+                              $"📏 Dimensiones: {imagenActual.Width} x {imagenActual.Height} px\n" +
+                              $"💾 Tamaño original: {tamanoMB} MB";
+            lblFotoInfo.ForeColor = Color.Green;
+
+            btnEliminarFoto.Enabled = true;
+
+            // Forzar repintado
+            pbFotografia.Invalidate();
+        }
+
+        /// <summary>
+        /// Elimina la foto cargada
+        /// </summary>
+        private void EliminarFoto()
+        {
+            if (imagenActual != null)
+            {
+                imagenActual.Dispose();
+                imagenActual = null;
+            }
+
+            pbFotografia.Image = null;
+            lblFotoInfo.Text = "📷 Sin fotografía seleccionada";
+            lblFotoInfo.ForeColor = Color.Gray;
+            btnEliminarFoto.Enabled = false;
+
+            // Forzar repintado para mostrar instrucciones
+            pbFotografia.Invalidate();
+        }
+
         private void InitializeComponent()
         {
             this.SuspendLayout();
             // 
             // FrmRegistroVehiculo
             // 
-            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ClientSize = new System.Drawing.Size(1162, 994);
             this.Name = "FrmRegistroVehiculo";
             this.ShowInTaskbar = false;
             this.Load += new System.EventHandler(this.FrmRegistroVehiculo_Load);
             this.ResumeLayout(false);
 
         }
+        //protected override void Dispose(bool disposing)
+        //{
+        //    if (disposing)
+        //    {
+        //        if (imagenActual != null)
+        //        {
+        //            imagenActual.Dispose();
+        //            imagenActual = null;
+        //        }
+        //    }
+        //    base.Dispose(disposing);
+        //}
     }
 }

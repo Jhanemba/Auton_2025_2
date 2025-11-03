@@ -218,6 +218,14 @@ namespace CpAuton
                 HeaderText = "Combustible",
                 Width = 80
             });
+
+            dgvVehiculos.Columns.Add(new DataGridViewImageColumn
+            {
+                Name = "colFoto",
+                HeaderText = "Foto",
+                Width = 50,
+                ImageLayout = DataGridViewImageCellLayout.Zoom
+            });
         }
 
         private void CargarVehiculos(string parametro)
@@ -233,6 +241,7 @@ namespace CpAuton
                 }
 
                 ColorearFilasPorConfiabilidad();
+                ActualizarIconosFoto();
             }
             catch (Exception ex)
             {
@@ -291,6 +300,10 @@ namespace CpAuton
             {
                 var vehiculo = (paVehiculoListar_Result)dgvVehiculos.CurrentRow.DataBoundItem;
                 var vehiculoCompleto = ConsultaVehiculosCln.obtenerUno(vehiculo.id);
+                PictureBox pbFotoDetalle = null;
+                Button btnCambiarFoto = null;
+                Button btnEliminarFotoDetalle = null;
+                Image imagenCargada = null;
 
                 // ===== FORMULARIO PRINCIPAL =====
                 Form frmDetalles = new Form
@@ -303,13 +316,14 @@ namespace CpAuton
                     MinimizeBox = false,
                     Font = new Font("Segoe UI", 10F),
                     AutoScroll = true,
-                    ShowInTaskbar = false
+                    ShowInTaskbar = false,
+
                 };
 
                 Panel pnlPrincipal = new Panel
                 {
                     Location = new Point(0, 0),
-                    Size = new Size(1184, 700),
+                    Size = new Size(1184, 700-120),
                     Padding = new Padding(20),
                     BackColor = Color.White,
                     AutoScroll = true
@@ -350,8 +364,169 @@ namespace CpAuton
                 pnlPrincipal.Controls.Add(lblEstado);
                 yPos += 35;
 
+                // ==================== FOTOGRAFÍA ====================
+                yPos += 35;
+                Panel pnlFotografia = new Panel
+                {
+                    Location = new Point(20+575, yPos+500),
+                    Size = new Size(540, 320),
+                    BackColor = Color.White,
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+
+                Label lblTituloFoto = new Label
+                {
+                    Text = "📷 FOTOGRAFÍA DEL VEHÍCULO",
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(51, 122, 183),
+                    Location = new Point(10, 10),
+                    Size = new Size(520, 25),
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                pnlFotografia.Controls.Add(lblTituloFoto);
+
+                pbFotoDetalle = new PictureBox
+                {
+                    Location = new Point(10, 45),
+                    Size = new Size(520, 220),
+                    BorderStyle = BorderStyle.FixedSingle,
+                    BackColor = Color.FromArgb(250, 250, 250),
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    AllowDrop = true
+                };
+
+                pbFotoDetalle.DragEnter += (s, ev) =>
+                {
+                    if (lblEstado.Text.Contains("EDICIÓN") && ev.Data.GetDataPresent(DataFormats.FileDrop))
+                    {
+                        string[] archivos = (string[])ev.Data.GetData(DataFormats.FileDrop);
+                        if (archivos.Length > 0 && ImagenHelper.EsImagenValida(archivos[0]))
+                        {
+                            ev.Effect = DragDropEffects.Copy;
+                            pbFotoDetalle.BackColor = Color.FromArgb(220, 255, 220);
+                        }
+                    }
+                };
+
+                pbFotoDetalle.DragDrop += (s, ev) =>
+                {
+                    pbFotoDetalle.BackColor = Color.FromArgb(250, 250, 250);
+                    if (lblEstado.Text.Contains("EDICIÓN"))
+                    {
+                        try
+                        {
+                            string[] archivos = (string[])ev.Data.GetData(DataFormats.FileDrop);
+                            if (archivos.Length > 0)
+                            {
+                                if (imagenCargada != null) imagenCargada.Dispose();
+                                imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(archivos[0]);
+                                ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                                btnEliminarFotoDetalle.Enabled = true;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error al cargar imagen: {ex.Message}", "Error",
+                                          MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                };
+
+                pnlFotografia.Controls.Add(pbFotoDetalle);
+
+                // Botones de control de foto (solo visibles en modo edición)
+                Panel pnlBotonesFoto = new Panel
+                {
+                    Location = new Point(10, 275),
+                    Size = new Size(520, 35)
+                };
+
+                btnCambiarFoto = new Button
+                {
+                    Text = "📂 Cambiar Foto",
+                    Size = new Size(150, 30),
+                    Location = new Point(0, 0),
+                    BackColor = Color.FromArgb(51, 122, 183),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false
+                };
+                btnCambiarFoto.FlatAppearance.BorderSize = 0;
+                btnCambiarFoto.Click += (s, ev) =>
+                {
+                    using (OpenFileDialog ofd = new OpenFileDialog())
+                    {
+                        ofd.Filter = "Imágenes|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
+                        if (ofd.ShowDialog() == DialogResult.OK)
+                        {
+                            try
+                            {
+                                if (imagenCargada != null) imagenCargada.Dispose();
+                                imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(ofd.FileName);
+                                ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                                btnEliminarFotoDetalle.Enabled = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Error: {ex.Message}", "Error",
+                                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                };
+                pnlBotonesFoto.Controls.Add(btnCambiarFoto);
+
+                btnEliminarFotoDetalle = new Button
+                {
+                    Text = "🗑️ Quitar Foto",
+                    Size = new Size(150, 30),
+                    Location = new Point(160, 0),
+                    BackColor = Color.FromArgb(217, 83, 79),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false,
+                    Enabled = false
+                };
+                btnEliminarFotoDetalle.FlatAppearance.BorderSize = 0;
+                btnEliminarFotoDetalle.Click += (s, ev) =>
+                {
+                    if (imagenCargada != null) imagenCargada.Dispose();
+                    imagenCargada = null;
+                    pbFotoDetalle.Image = null;
+                    ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
+                    btnEliminarFotoDetalle.Enabled = false;
+                };
+                pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
+
+                pnlFotografia.Controls.Add(pnlBotonesFoto);
+                pnlPrincipal.Controls.Add(pnlFotografia);
+
+
+                try
+                {
+                    byte[] fotoBytes = ConsultaVehiculosCln.obtenerFotografia(vehiculo.id);
+                    if (fotoBytes != null && fotoBytes.Length > 0)
+                    {
+                        imagenCargada = ImagenHelper.ConvertirBytesAImagen(fotoBytes);
+                        ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                    }
+                    else
+                    {
+                        ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cargar fotografía: {ex.Message}", "Advertencia",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
+                }
+
+
                 // ==================== COLUMNA IZQUIERDA ====================
-                AgregarSeccion(pnlPrincipal, "📋 IDENTIFICACIÓN DEL MODELO", 20, yPos, 540);
+                AgregarSeccion(pnlPrincipal, "📋 IDENTIFICACIÓN DEL MODELO", 590, yPos, 560);
                 int yPosLeft = yPos + 38;
 
                 // Nro de Chasis que AHORA EDITABLE
@@ -838,7 +1013,7 @@ namespace CpAuton
                 {
                     Name = "txtObservaciones",
                     Location = new Point(colLeftX, yPos),
-                    Size = new Size(990, 65),
+                    Size = new Size(990/2-100, 65+200),
                     Multiline = true,
                     ScrollBars = ScrollBars.Vertical,
                     Font = new Font("Segoe UI", 10F),
@@ -851,8 +1026,8 @@ namespace CpAuton
                 // ==================== PANEL DE BOTONES ====================
                 Panel pnlBotones = new Panel
                 {
-                    Location = new Point(0, 650),
-                    Size = new Size(1184, 70+20),
+                    Location = new Point(0, 650-65),
+                    Size = new Size(1184, 70-05),
                     BackColor = Color.FromArgb(248, 249, 250),
                     BorderStyle = BorderStyle.FixedSingle
                 };
@@ -878,6 +1053,13 @@ namespace CpAuton
                     {
                         if (btnEditar.Text == "✏️ Editar")
                         {
+                            // Habilitar controles de foto
+                            pbFotoDetalle.AllowDrop = true;
+                            btnCambiarFoto.Visible = true;
+                            btnEliminarFotoDetalle.Visible = true;
+                            if (pbFotoDetalle.Image != null)
+                                btnEliminarFotoDetalle.Enabled = true;
+
                             // ACTIVAR MODO EDICIÓN - HABILITAR TODO
                             txtChasis.ReadOnly = false;
                             txtChasis.BackColor = Color.White;
@@ -909,6 +1091,10 @@ namespace CpAuton
                         }
                         else // GUARDAR
                         {
+                            // Deshabilitar controles de foto
+                            pbFotoDetalle.AllowDrop = false;
+                            btnCambiarFoto.Visible = false;
+                            btnEliminarFotoDetalle.Visible = false;
                             // VALIDAR ANTES DE GUARDAR
                             if (!ValidarEdicionCompleta(txtChasis.Text, cboModelo.SelectedIndex,
                                 txtGeneracion.Text, cboPaisFabricacion.SelectedIndex,
@@ -952,6 +1138,26 @@ namespace CpAuton
                                                       "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                         return;
                                     }
+                                }
+
+                                // Procesar fotografía si cambió
+                                if (imagenCargada != null)
+                                {
+                                    byte[] fotoBytes = ImagenHelper.ConvertirImagenABytes(imagenCargada);
+                                    vehiculoCompleto.fotografia = fotoBytes;
+
+                                    double tamanoKB = ImagenHelper.ObtenerTamanoKB(fotoBytes);
+                                    if (tamanoKB > 2048)
+                                    {
+                                        MessageBox.Show($"⚠️ Fotografía optimizada: {Math.Round(tamanoKB / 1024, 2)} MB\n" +
+                                                      "Se recomienda usar imágenes más pequeñas.",
+                                                      "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    }
+                                }
+                                else if (pbFotoDetalle.Image == null)
+                                {
+                                    // Si se eliminó la foto
+                                    vehiculoCompleto.fotografia = null;
                                 }
 
                                 // ACTUALIZAR VEHÍCULO
@@ -1064,6 +1270,15 @@ namespace CpAuton
                 frmDetalles.Controls.Add(pnlBotones);
                 frmDetalles.Controls.Add(pnlPrincipal);
                 frmDetalles.AcceptButton = btnCerrar;
+
+                frmDetalles.FormClosing += (s, ev) =>
+                {
+                    if (imagenCargada != null)
+                    {
+                        imagenCargada.Dispose();
+                        imagenCargada = null;
+                    }
+                };
 
                 frmDetalles.ShowDialog(this);
             }
@@ -1309,6 +1524,46 @@ namespace CpAuton
         private void txtClave_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter) btnBuscar.PerformClick();
+        }
+
+        private void ActualizarIconosFoto()
+        {
+            try
+            {
+                // Crear íconos pequeños
+                Bitmap iconoConFoto = new Bitmap(24, 24);
+                using (Graphics g = Graphics.FromImage(iconoConFoto))
+                {
+                    g.Clear(Color.White);
+                    g.DrawString("📷", new Font("Segoe UI", 14), Brushes.Green, new PointF(-2, -2));
+                }
+
+                Bitmap iconoSinFoto = new Bitmap(24, 24);
+                using (Graphics g = Graphics.FromImage(iconoSinFoto))
+                {
+                    g.Clear(Color.White);
+                    g.DrawString("📷", new Font("Segoe UI", 14), Brushes.LightGray, new PointF(-2, -2));
+                }
+
+                foreach (DataGridViewRow row in dgvVehiculos.Rows)
+                {
+                    if (row.Cells["colId"].Value != null)
+                    {
+                        int idVehiculo = Convert.ToInt32(row.Cells["colId"].Value);
+                        byte[] foto = ConsultaVehiculosCln.obtenerFotografia(idVehiculo);
+
+                        if (row.Cells["colFoto"] is DataGridViewImageCell cell)
+                        {
+                            cell.Value = (foto != null && foto.Length > 0) ? iconoConFoto : iconoSinFoto;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Silenciar errores de íconos para no interrumpir la carga
+                System.Diagnostics.Debug.WriteLine($"Error actualizando íconos: {ex.Message}");
+            }
         }
     }
 }

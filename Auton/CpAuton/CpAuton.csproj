@@ -192,6 +192,7 @@
     <Compile Include="FrmVehiculosJaponeses.Designer.cs">
       <DependentUpon>FrmVehiculosJaponeses.cs</DependentUpon>
     </Compile>
+    <Compile Include="ImagenHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
