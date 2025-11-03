@@ -89,7 +89,7 @@ namespace CpAuton
                 Location = new Point(0, 0),
                 Size = new Size(1184, 750+270),
                 Padding = new Padding(20),
-                BackColor = Color.White,
+                BackColor = Color.PapayaWhip,
                 //AutoScroll = true
             };
 
@@ -549,7 +549,7 @@ namespace CpAuton
             {
                 Location = new Point(0, 750+250),
                 Size = new Size(1184, 70+30),
-                BackColor = Color.FromArgb(248, 249, 250),
+                BackColor = Color.FromArgb(52, 58, 64),
                 BorderStyle = BorderStyle.FixedSingle
             };
 
@@ -1137,6 +1137,7 @@ namespace CpAuton
             // 
             // FrmRegistroVehiculo
             // 
+            this.BackColor = System.Drawing.Color.PapayaWhip;
             this.ClientSize = new System.Drawing.Size(1162, 994);
             this.Name = "FrmRegistroVehiculo";
             this.ShowInTaskbar = false;

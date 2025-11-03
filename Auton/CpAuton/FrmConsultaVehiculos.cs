@@ -325,7 +325,7 @@ namespace CpAuton
                     Location = new Point(0, 0),
                     Size = new Size(1184, 700-120),
                     Padding = new Padding(20),
-                    BackColor = Color.White,
+                    BackColor = Color.PapayaWhip,
                     AutoScroll = true
                 };
 
@@ -572,6 +572,63 @@ namespace CpAuton
                     Enabled = false
                 };
                 pnlPrincipal.Controls.Add(cboMarca);
+
+                // Botón + para agregar nueva marca (visible solo en modo edición)
+                Button btnAddMarca = new Button
+                {
+                    Name = "btnAddMarca",
+                    Text = "+",
+                    Size = new Size(30, 28),
+                    Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft-1),
+                    BackColor = Color.FromArgb(40, 167, 69),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false
+                };
+                btnAddMarca.FlatAppearance.BorderSize = 0;
+                btnAddMarca.Click += (s, e) =>
+                {
+                    // Solo usuarios autenticados pueden agregar
+                    if (Util.usuario == null)
+                    {
+                        MessageBox.Show("Debe autenticarse para agregar una nueva marca", "Autenticación",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    try
+                    {
+                        using (var frm = new FrmNuevaMarca(0))
+                        {
+                            if (frm.ShowDialog(this) == DialogResult.OK)
+                            {
+                                int nuevoIdMarca = frm.NuevoIdMarca;
+                                var marcas = MarcaCln.listar()
+                                    .Where(m => m.estado != -1)
+                                    .OrderBy(m => m.nombre)
+                                    .ToList();
+
+                                cboMarca.DataSource = null;
+                                cboMarca.DisplayMember = "nombre";
+                                cboMarca.ValueMember = "id";
+                                cboMarca.DataSource = marcas;
+                                cboMarca.BindingContext = new BindingContext();
+
+                                if (nuevoIdMarca > 0 && marcas.Any(m => m.id == nuevoIdMarca))
+                                    cboMarca.SelectedValue = nuevoIdMarca;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al agregar marca: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnAddMarca);
+
                 yPosLeft += lineHeight;
 
                 // Modelo que AHORA EDITABLE - depende de marca
@@ -586,6 +643,74 @@ namespace CpAuton
                     Enabled = false
                 };
                 pnlPrincipal.Controls.Add(cboModelo);
+
+                // Botón + para agregar nuevo modelo (visible solo en modo edición)
+                Button btnAddModelo = new Button
+                {
+                    Name = "btnAddModelo",
+                    Text = "+",
+                    Size = new Size(30, 28),
+                    Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft),
+                    BackColor = Color.FromArgb(40, 167, 69),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false
+                };
+                btnAddModelo.FlatAppearance.BorderSize = 0;
+                btnAddModelo.Click += (s, e) =>
+                {
+                    if (Util.usuario == null)
+                    {
+                        MessageBox.Show("Debe autenticarse para agregar un nuevo modelo", "Autenticación",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    try
+                    {
+                        if (cboMarca.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione primero una marca para asociar el nuevo modelo", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        int idMarcaSeleccionada = Convert.ToInt32(cboMarca.SelectedValue);
+                        // No usar cboTipo here because it's declared later; use modeloActual as fallback
+                        int idTipoSeleccionado = (modeloActual != null) ? modeloActual.idTipoVehiculo : 0;
+
+                        using (var frm = new FrmNuevoModelo(idMarcaSeleccionada, idTipoSeleccionado))
+                        {
+                            if (frm.ShowDialog(this) == DialogResult.OK)
+                            {
+                                int nuevoIdModelo = frm.NuevoIdModelo;
+
+                                var modelos = ModeloVehiculoCln.listar()
+                                    .Where(m => m.idMarca == idMarcaSeleccionada && m.estado != -1)
+                                    .OrderBy(m => m.nombre)
+                                    .ToList();
+
+                                cboModelo.DataSource = null;
+                                cboModelo.DisplayMember = "nombre";
+                                cboModelo.ValueMember = "id";
+                                cboModelo.DataSource = modelos;
+                                cboModelo.BindingContext = new BindingContext();
+
+                                if (nuevoIdModelo > 0 && modelos.Any(m => m.id == nuevoIdModelo))
+                                    cboModelo.SelectedValue = nuevoIdModelo;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al agregar modelo: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnAddModelo);
+
                 yPosLeft += lineHeight;
 
                 // Tipo que AHORA EDITABLE
@@ -838,7 +963,11 @@ namespace CpAuton
                     Enabled = false
                 };
                 cboPaisFabricacion.Items.AddRange(new[] { "Japón", "Alemania", "Estados Unidos", "Corea del Sur",
-            "China", "India", "Brasil", "México", "España", "Francia", "Italia", "Reino Unido" });
+            "China", "India", "Brasil", "México", "España", "Francia", "Italia", "Reino Unido", "Turquía",
+            "Suecia", "Bélgica", "Austria", "Suiza", "Noruega", "Dinamarca", "Países Bajos", "Finlandia",
+            "Hungría", "República Checa", "Polonia", "Rumania", "Bulgaria", "Grecia", "Portugal", "Irlanda",
+            "Brasil", "Argentina", "Chile", "Colombia", "Perú", "Venezuela", "Sudáfrica", "Australia", "Nueva Zelanda",
+            "Filipinas", "Malasia", "Tailandia", "Vietnam", "Indonesia", "Unión Europea", "OTAN", "Otros" });
                 cboPaisFabricacion.Text = vehiculoCompleto.paisFabricacion;
                 pnlPrincipal.Controls.Add(cboPaisFabricacion);
                 yPosRight += lineHeight;
@@ -1028,7 +1157,8 @@ namespace CpAuton
                 {
                     Location = new Point(0, 650-65),
                     Size = new Size(1184, 70-05),
-                    BackColor = Color.FromArgb(248, 249, 250),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    //BackColor = Color.FromArgb(248, 249, 250),
                     BorderStyle = BorderStyle.FixedSingle
                 };
 
@@ -1082,6 +1212,10 @@ namespace CpAuton
                             nudPuntuacion.Enabled = true;
                             txtObservaciones.ReadOnly = false;
                             txtObservaciones.BackColor = Color.White;
+
+                            // Mostrar botones + para agregar marca/modelo
+                            btnAddMarca.Visible = true;
+                            btnAddModelo.Visible = true;
 
                             lblEstado.Text = "✏️ MODO EDICIÓN - Modifique los campos necesarios";
                             lblEstado.ForeColor = Color.Green;
@@ -1205,6 +1339,10 @@ namespace CpAuton
                                     nudPuntuacion.Enabled = false;
                                     txtObservaciones.ReadOnly = true;
                                     txtObservaciones.BackColor = Color.WhiteSmoke;
+
+                                    // Ocultar botones +
+                                    btnAddMarca.Visible = false;
+                                    btnAddModelo.Visible = false;
 
                                     lblEstado.Text = "🔒 MODO LECTURA";
                                     lblEstado.ForeColor = Color.Red;
