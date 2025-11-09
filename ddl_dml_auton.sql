@@ -19,8 +19,11 @@ USE Auton
 GO
 CREATE USER usrauton FOR LOGIN usrauton
 GO
-ALTER ROLE [db_owner] ADD MEMBER usrauton
+CREATE ROLE [db_owner] ADD MEMBER usrauton
 GO
+
+USE Auton;
+
 
 -- Eliminar objetos si existen
 DROP TABLE IF EXISTS VehiculoMantenimiento;
@@ -219,7 +222,7 @@ CREATE TABLE VehiculoMantenimiento (
 );
 
 
-ALTER TABLE Vehiculo
+CREATE TABLE Vehiculo
 ADD fotografia VARBINARY(MAX) NULL;
 
 PRINT 'Campo fotografia agregado a la tabla Vehiculo';
@@ -243,7 +246,7 @@ AS
 
 
 GO
-ALTER PROC paVehiculoListar @parametro VARCHAR(100)
+CREATE PROC paVehiculoListar @parametro VARCHAR(100)
 AS
     SELECT v.id, 
            v.nroChasis,
@@ -426,7 +429,7 @@ AS
 -- PROCEDIMIENTO: Vehículos Japoneses
 -- =====================================================
 GO
-ALTER PROC paVehiculosJaponeses @parametro VARCHAR(100) = ''
+CREATE PROC paVehiculosJaponeses @parametro VARCHAR(100) = ''
 AS
 BEGIN
     SELECT 
@@ -451,7 +454,7 @@ GO
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Americanos
 -- =====================================================
-ALTER PROC paVehiculosAmericanos
+CREATE PROC paVehiculosAmericanos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -498,7 +501,7 @@ GO
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Chinos
 -- =====================================================
-ALTER PROC paVehiculosChinos
+CREATE PROC paVehiculosChinos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -545,7 +548,7 @@ GO
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Alemanes
 -- =====================================================
-ALTER PROC paVehiculosAlemanes
+CREATE PROC paVehiculosAlemanes
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -592,7 +595,7 @@ GO
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Europeos
 -- =====================================================
-ALTER PROC paVehiculosEuropeos
+CREATE PROC paVehiculosEuropeos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -639,7 +642,7 @@ GO
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Coreanos
 -- =====================================================
-ALTER PROC paVehiculosCoreanos
+CREATE PROC paVehiculosCoreanos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
