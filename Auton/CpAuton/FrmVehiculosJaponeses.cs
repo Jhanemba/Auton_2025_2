@@ -21,11 +21,11 @@ namespace CpAuton
 
         private void FrmVehiculosJaponeses_Load(object sender, EventArgs e)
         {
-            string c1 = Application.StartupPath + @"\Audio\imaseNIGHT DANCERinstrumental.mp3";
-            string c2 = Application.StartupPath + @"\Audio\Teriyaki Boyz - Tokyo Drift Instrumental.mp3";
+            string c1 = Application.StartupPath + @"\Audio\Teriyaki Boyz - Tokyo Drift Instrumental.mp3";
+            string c2 = Application.StartupPath + @"\Audio\imaseNIGHT DANCERinstrumental.mp3";
 
             AudioManager.SetPlaylist(new List<string> { c1, c2 });
-            AudioManager.PlayPlaylist(50, 15); // volumen
+            AudioManager.PlayPlaylist(20, 50); // volumen
 
             ConfigurarFormulario();
             ConfigurarDataGridView();

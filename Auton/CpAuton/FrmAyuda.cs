@@ -305,11 +305,11 @@ namespace CpAuton
                     AgregarTitulo(pnlContenido, "❓ Preguntas Frecuentes", ref yPos);
 
                     AgregarPregunta(pnlContenido, "¿Cómo puedo editar un vehículo?",
-                        "Debe iniciar sesión primero. Luego, en el módulo de consulta, haga doble clic " +
+                        "Debe iniciar sesión primero, luego en el módulo de consulta, haga doble clic " +
                         "sobre el vehículo y presione el botón 'Editar'.", ref yPos);
 
                     AgregarPregunta(pnlContenido, "¿Por qué no puedo registrar vehículos?",
-                        "Para registrar vehículos debe estar autenticado. Vaya a Sistema → Iniciar Sesión.", ref yPos);
+                        "Para registrar vehículos debe estar autenticado, vaya a Sistema → Iniciar Sesión.", ref yPos);
 
                     AgregarPregunta(pnlContenido, "¿Cómo exporto los datos?",
                         "En cualquier listado de vehículos, encontrará un botón 'Exportar CSV' que genera " +
