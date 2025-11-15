@@ -45,3 +45,16 @@ C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.csproj.Cor
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.csproj.Up2Date
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.exe
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.pdb
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Interop.WMPLib.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\AxInterop.WMPLib.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\Interop.WMPLib.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\AxInterop.WMPLib.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.csproj.ResolveComReference.cache
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\攬佬SKAI ISYOURGODAR劉夫陽大展鴻圖HD 高清官方歌词版MV.mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\Interop.MediaPlayer.dll
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\imaseNIGHT DANCERinstrumental.mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\Teriyaki Boyz - Tokyo Drift Instrumental.mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\Amerika.mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.exe.config
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\JVKE - golden hour (instrumental).mp3

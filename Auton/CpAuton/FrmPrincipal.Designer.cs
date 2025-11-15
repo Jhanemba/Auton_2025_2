@@ -69,8 +69,10 @@
             this.btnCaManualUsuario = new C1.Win.Ribbon.RibbonButton();
             this.ribbonTopToolBar1 = new C1.Win.Ribbon.RibbonTopToolBar();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.wmpPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             ((System.ComponentModel.ISupportInitialize)(this.c1Ribbon1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.wmpPlayer)).BeginInit();
             this.SuspendLayout();
             // 
             // c1Ribbon1
@@ -82,7 +84,7 @@
             this.c1Ribbon1.Location = new System.Drawing.Point(0, 0);
             this.c1Ribbon1.Name = "c1Ribbon1";
             this.c1Ribbon1.QatHolder = this.ribbonQat1;
-            this.c1Ribbon1.Size = new System.Drawing.Size(1067, 241);
+            this.c1Ribbon1.Size = new System.Drawing.Size(1067, 161);
             this.c1Ribbon1.Tabs.Add(this.ribbonTab1);
             this.c1Ribbon1.Tabs.Add(this.ribbonTab2);
             this.c1Ribbon1.Tabs.Add(this.ribbonTab3);
@@ -337,19 +339,29 @@
             // 
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(0, 241);
+            this.pictureBox1.Location = new System.Drawing.Point(0, 161);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1067, 313);
+            this.pictureBox1.Size = new System.Drawing.Size(1067, 393);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
+            // wmpPlayer
+            // 
+            this.wmpPlayer.Enabled = true;
+            this.wmpPlayer.Location = new System.Drawing.Point(1019, 24);
+            this.wmpPlayer.Name = "wmpPlayer";
+            this.wmpPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("wmpPlayer.OcxState")));
+            this.wmpPlayer.Size = new System.Drawing.Size(261, 78);
+            this.wmpPlayer.TabIndex = 3;
+            // 
             // FrmPrincipal
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
             this.ClientSize = new System.Drawing.Size(1067, 554);
+            this.Controls.Add(this.wmpPlayer);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.c1Ribbon1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -358,8 +370,11 @@
             this.Name = "FrmPrincipal";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "...::: Auton - Menú :::...";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.FrmPrincipal_Load);
             ((System.ComponentModel.ISupportInitialize)(this.c1Ribbon1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.wmpPlayer)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -407,5 +422,6 @@
         private C1.Win.Ribbon.RibbonButton ribbonButton1;
         private C1.Win.Ribbon.RibbonGroup ribbonGroup15;
         private C1.Win.Ribbon.RibbonButton ribbonButton2;
+        protected internal AxWMPLib.AxWindowsMediaPlayer wmpPlayer;
     }
 }

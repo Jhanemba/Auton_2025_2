@@ -105,7 +105,9 @@ namespace CpAuton
             // Desarrollador
             AgregarSeccion(pnlInfo, "👨‍💻 Desarrollo", ref yPos);
             AgregarInfo(pnlInfo, "Desarrollado por:", "Kevin Car", ref yPos);
-            AgregarInfo(pnlInfo, "Institución:", "Universidad Real y Pontificia San Francisco Xavier de Chuquisaca", ref yPos);
+            AgregarInfo(pnlInfo, "Institución:", "Universidad Mayor, Real Y Pontificia de", ref yPos);
+            AgregarInfo(pnlInfo, "", "San Francisco Xavier de Chuquisaca", ref yPos);
+            AgregarInfo(pnlInfo, "", "", ref yPos);
             AgregarInfo(pnlInfo, "Ubicación:", "Sucre, Bolivia", ref yPos);
             yPos += 155;
 
@@ -202,6 +204,19 @@ namespace CpAuton
             };
             panel.Controls.Add(lblModulo);
             yPos += 28;
+        }
+
+        private void FrmAcercaDe_Load(object sender, EventArgs e)
+        {
+            string ruta = Application.StartupPath + @"\Audio\JVKE - golden hour (instrumental).mp3";
+            AudioManager.Reproducir(ruta, true, 25 - 10);
+        }
+
+        private void FrmVehiculosChinos_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
         }
     }
 }

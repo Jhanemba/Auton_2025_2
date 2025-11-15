@@ -21,10 +21,17 @@ namespace CpAuton
 
         private void FrmVehiculosJaponeses_Load(object sender, EventArgs e)
         {
+            string c1 = Application.StartupPath + @"\Audio\imaseNIGHT DANCERinstrumental.mp3";
+            string c2 = Application.StartupPath + @"\Audio\Teriyaki Boyz - Tokyo Drift Instrumental.mp3";
+
+            AudioManager.SetPlaylist(new List<string> { c1, c2 });
+            AudioManager.PlayPlaylist(50, 15); // volumen
+
             ConfigurarFormulario();
             ConfigurarDataGridView();
             CargarVehiculosJaponeses();
             btnNuevo.Visible = Util.usuario != null;
+
         }
 
         private void ConfigurarFormulario()
@@ -437,6 +444,10 @@ namespace CpAuton
 
         private void btnCerrar_Click(object sender, EventArgs e)
         {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
+            
             this.Close();
         }
 
@@ -489,6 +500,13 @@ namespace CpAuton
         {
             //abrir formulario de registro de vehículo
             new FrmRegistroVehiculo().ShowDialog();
+        }
+
+        private void FrmVehiculosChinos_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
         }
     }
 }

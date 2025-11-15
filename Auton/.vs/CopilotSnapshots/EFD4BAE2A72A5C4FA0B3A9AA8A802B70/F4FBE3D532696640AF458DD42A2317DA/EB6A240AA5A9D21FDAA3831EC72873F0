@@ -1,0 +1,216 @@
+﻿using AxWMPLib;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CpAuton
+{
+    public static class AudioManager
+    {
+        private static AxWindowsMediaPlayer _player;
+        private static List<string> _playlist = new List<string>();
+        private static List<int> _volumes = null; // volúmenes por pista (opcional)
+        private static int _index = 0;
+        private static bool _userStopped = false;
+        private static int _lastPlayState = 0;
+        private static int _defaultVolume = 60; // volumen por defecto si no hay volumen por pista
+
+        public static void Inicializar(AxWindowsMediaPlayer reproductor)
+        {
+            _player = reproductor;
+
+            if (_player != null)
+            {
+                _player.PlayStateChange += Player_PlayStateChange;
+                _lastPlayState = 0;
+            }
+        }
+
+        // ----------- NUEVO: Playlist -------------
+        // Compatibilidad: SetPlaylist existente
+        public static void SetPlaylist(List<string> canciones)
+        {
+            SetPlaylist(canciones, null);
+        }
+
+        // Nueva sobrecarga: playlist con volúmenes por pista
+        public static void SetPlaylist(List<string> canciones, List<int> volumesPerTrack)
+        {
+            _playlist = canciones ?? new List<string>();
+            _index = 0;
+            _userStopped = false;
+
+            if (volumesPerTrack != null && volumesPerTrack.Count > 0)
+            {
+                // Si la lista de volúmenes tiene menos elementos que la playlist, completar con el último valor o valor por defecto
+                _volumes = new List<int>(volumesPerTrack);
+                if (_volumes.Count < _playlist.Count)
+                {
+                    int fill = _volumes.Count > 0 ? _volumes[_volumes.Count - 1] : _defaultVolume;
+                    while (_volumes.Count < _playlist.Count)
+                        _volumes.Add(fill);
+                }
+            }
+            else
+            {
+                _volumes = null;
+            }
+        }
+
+        // PlayPlaylist: volumen es fallback si no hay volumen por pista
+        public static void PlayPlaylist(int volumen = 60)
+        {
+            if (_player == null || _playlist.Count == 0) return;
+
+            _userStopped = false;
+            _defaultVolume = volumen;
+            // Establecer volumen para la pista actual (si existe volumen por pista usarlo)
+            int volToUse = (_volumes != null && _index >= 0 && _index < _volumes.Count) ? _volumes[_index] : _defaultVolume;
+            _player.settings.volume = volToUse;
+            _player.settings.setMode("loop", false);
+            try
+            {
+                _player.settings.autoStart = true;
+            }
+            catch { }
+
+            // establecer la primera URL y reproducir
+            _player.URL = _playlist[_index];
+            try { _player.Ctlcontrols.play(); } catch { }
+        }
+
+        // Cuando termina una canción
+        private static void Player_PlayStateChange(object sender, _WMPOCXEvents_PlayStateChangeEvent e)
+        {
+            if (_player == null) return;
+
+            // actualizar estado anterior / actual
+            int prevState = _lastPlayState;
+            _lastPlayState = e.newState;
+
+            if (_userStopped) return; // si el usuario paró manualmente, no avanzar
+
+            bool mediaEnded = false;
+
+            // 8 = MediaEnded -> fin claro
+            if (e.newState == 8)
+            {
+                mediaEnded = true;
+            }
+            else
+            {
+                // Algunos sistemas/reportes muestran 1 (Stopped) o 10 (Ready) al terminar.
+                // Detectar transición desde Playing (3) o MediaEnded (8) a Stopped/Ready y confirmar posición final.
+                if ((e.newState == 1 || e.newState == 10) && (prevState == 3 || prevState == 8))
+                {
+                    try
+                    {
+                        var media = _player.currentMedia;
+                        if (media != null)
+                        {
+                            double dur = media.duration;
+                            double pos = _player.Ctlcontrols.currentPosition;
+                            // Si la duración es válida y la posición está muy cerca del final, asumimos fin de media
+                            if (dur > 0 && (dur - pos) <= 1.5)
+                            {
+                                mediaEnded = true;
+                            }
+                            else
+                            {
+                                // En algunos casos duration puede ser 0 inicialmente; como respaldo
+                                // si prevState ya era MediaEnded, avanzar también
+                                if (prevState == 8)
+                                    mediaEnded = true;
+                            }
+                        }
+                        else
+                        {
+                            // si no hay currentMedia, asumir fin
+                            mediaEnded = true;
+                        }
+                    }
+                    catch
+                    {
+                        // en caso de error al consultar, asumir fin para no bloquear playlist
+                        mediaEnded = true;
+                    }
+                }
+            }
+
+            if (mediaEnded)
+            {
+                if (_playlist.Count <= 1) return; // si es 1 canción, no hace ciclo
+
+                // avanzar al siguiente índice
+                _index++;
+                if (_index >= _playlist.Count)
+                    _index = 0; // vuelve a la primera canción
+
+                try
+                {
+                    // Asegurarse de ejecutar en el hilo del control para que play funcione correctamente
+                    if (_player != null && _player.IsHandleCreated)
+                    {
+                        _player.BeginInvoke(new Action(() =>
+                        {
+                            try
+                            {
+                                // seleccionar volumen para la pista siguiente
+                                int vol = (_volumes != null && _index >= 0 && _index < _volumes.Count) ? _volumes[_index] : _defaultVolume;
+                                _player.settings.volume = vol;
+
+                                _player.settings.autoStart = true;
+                                _player.Ctlcontrols.stop();
+                                _player.URL = _playlist[_index];
+                                _player.Ctlcontrols.play();
+                            }
+                            catch
+                            {
+                                // ignorar errores
+                            }
+                        }));
+                    }
+                    else
+                    {
+                        // fallback sin BeginInvoke
+                        int vol = (_volumes != null && _index >= 0 && _index < _volumes.Count) ? _volumes[_index] : _defaultVolume;
+                        _player.settings.volume = vol;
+
+                        _player.settings.autoStart = true;
+                        _player.Ctlcontrols.stop();
+                        _player.URL = _playlist[_index];
+                        _player.Ctlcontrols.play();
+                    }
+                }
+                catch
+                {
+                    // evitar excepciones en el hilo del UI
+                }
+            }
+        }
+
+        // ----------- Forma original (1 canción) ------------
+
+        public static void Reproducir(string ruta, bool loop = true, int volumen = 60)
+        {
+            if (_player == null) return;
+
+            _playlist.Clear(); // no usar playlist
+            _userStopped = false;
+            _player.settings.volume = volumen;
+            _player.settings.setMode("loop", loop);
+            try { _player.settings.autoStart = true; } catch { }
+            _player.URL = ruta;
+            _player.Ctlcontrols.play();
+        }
+
+        public static void Detener()
+        {
+            if (_player == null) return;
+            _userStopped = true;
+            _player.Ctlcontrols.stop();
+        }
+    }
+}

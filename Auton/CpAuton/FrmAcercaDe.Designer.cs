@@ -42,6 +42,8 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmAcercaDe";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmVehiculosChinos_FormClosed);
+            this.Load += new System.EventHandler(this.FrmAcercaDe_Load);
             this.ResumeLayout(false);
 
         }

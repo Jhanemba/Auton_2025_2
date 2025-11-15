@@ -388,5 +388,15 @@ namespace CpAuton
                 frmAyuda.ShowDialog(this);
             }
         }
+
+        private void FrmPrincipal_Load(object sender, EventArgs e)
+        {
+            // Inicializa pasando el control wmpPlayer que colocaste en el diseñador
+            AudioManager.Inicializar(this.wmpPlayer);
+
+            // Reproducir música del menú
+            string ruta = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(ruta, true, 60);
+        }
     }
 }

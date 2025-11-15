@@ -26,6 +26,9 @@ namespace CpAuton
 
         private void FrmVehiculosAmericanos_Load(object sender, EventArgs e)
         {
+            string ruta = Application.StartupPath + @"\Audio\Amerika.mp3";
+            AudioManager.Reproducir(ruta, true, 25 - 10);
+
             ConfigurarFormulario();
             ConfigurarDataGridView();
             CargarVehiculosAmericanos();
@@ -405,6 +408,10 @@ namespace CpAuton
 
         private void btnCerrar_Click(object sender, EventArgs e)
         {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
+
             this.Close();
         }
 
@@ -456,6 +463,13 @@ namespace CpAuton
         private void btnNuevo_Click(object sender, EventArgs e)
         {
             new FrmRegistroVehiculo().ShowDialog();
+        }
+
+        private void FrmVehiculosChinos_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
         }
     }
 }

@@ -137,7 +137,17 @@ namespace CpAuton
                         "   • admin / admin123 (Administrador)\n" +
                         "   • maria.fernandez / maria123 (Usuario normal)",
                         ref yPos);
-                    break;
+                    // Mostrar la advertencia solo si el usuario está autenticado
+                    // (Util.usuario es null cuando no hay sesión iniciada)
+                    // Si no está autenticado, no mostramos los credenciales por defecto.
+                    if (Util.usuario == null)
+                    {
+                        // Remover la advertencia añadida anteriormente
+                        // Buscamos el último control de tipo Panel que contenga el texto de advertencia y lo removemos
+                        var last = pnlContenido.Controls.Cast<Control>().OfType<Panel>().LastOrDefault(p => p.Controls.OfType<Label>().Any(l => l.Text != null && l.Text.Contains("Usuarios por defecto")));
+                        if (last != null) pnlContenido.Controls.Remove(last);
+                    }
+                     break;
 
                 case "consulta":
                     AgregarTitulo(pnlContenido, "🚗 Consultar Vehículos", ref yPos);
@@ -480,6 +490,19 @@ namespace CpAuton
             };
             panel.Controls.Add(lblRespuesta);
             yPos += lblRespuesta.Height + 25;
+        }
+
+        private void FrmAyuda_Load(object sender, EventArgs e)
+        {
+            string ruta = Application.StartupPath + @"\Audio\JVKE - golden hour (instrumental).mp3";
+            AudioManager.Reproducir(ruta, true, 25 - 10);
+        }
+
+        private void FrmVehiculosChinos_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
         }
     }
 }

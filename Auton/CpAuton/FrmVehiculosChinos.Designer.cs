@@ -222,6 +222,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmConsultaVehiculosChinos";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmVehiculosChinos_FormClosed);
             this.Load += new System.EventHandler(this.FrmVehiculosChinos_Load);
             ((System.ComponentModel.ISupportInitialize)(this.erpPrecioVenta)).EndInit();
             this.gbxLista.ResumeLayout(false);

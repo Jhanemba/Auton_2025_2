@@ -307,6 +307,7 @@ namespace CpAuton
                 Button btnCambiarFoto = null;
                 Button btnEliminarFotoDetalle = null;
                 Image imagenCargada = null;
+                bool fotoEliminada = false;
 
                 // ===== FORMULARIO PRINCIPAL =====
                 Form frmDetalles = new Form
@@ -425,6 +426,7 @@ namespace CpAuton
                                 imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(archivos[0]);
                                 ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
                                 btnEliminarFotoDetalle.Enabled = true;
+                                fotoEliminada = false; // usuario cargó nueva imagen -> no eliminar
                             }
                         }
                         catch (Exception ex)
@@ -469,6 +471,7 @@ namespace CpAuton
                                 imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(ofd.FileName);
                                 ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
                                 btnEliminarFotoDetalle.Enabled = true;
+                                fotoEliminada = false; // nueva imagen cargada
                             }
                             catch (Exception ex)
                             {
@@ -479,6 +482,45 @@ namespace CpAuton
                     }
                 };
                 pnlBotonesFoto.Controls.Add(btnCambiarFoto);
+
+                // NEW: Button to view photo fullscreen (eye)
+                Button btnVerFotoGrande = new Button
+                {
+                    Name = "btnVerFotoGrande",
+                    Text = "👁️ Ver Foto",
+                    Size = new Size(120, 30),
+                    Location = new Point(320, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false // will enable when image is present
+                };
+                btnVerFotoGrande.FlatAppearance.BorderSize = 0;
+                btnVerFotoGrande.Click += (s, ev) =>
+                {
+                    try
+                    {
+                        if (imagenCargada != null)
+                        {
+                            using (var frmFull = new FullscreenImageForm((Image)imagenCargada.Clone()))
+                            {
+                                frmFull.ShowDialog(frmDetalles);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No hay fotografía disponible para mostrar.", "Información",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al mostrar fotografía: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlBotonesFoto.Controls.Add(btnVerFotoGrande);
 
                 btnEliminarFotoDetalle = new Button
                 {
@@ -500,9 +542,11 @@ namespace CpAuton
                     pbFotoDetalle.Image = null;
                     ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
                     btnEliminarFotoDetalle.Enabled = false;
+                    btnVerFotoGrande.Visible = false;
+                    fotoEliminada = true; // marcar para que al guardar se elimine la foto en BD
                 };
                 pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
-
+                
                 pnlFotografia.Controls.Add(pnlBotonesFoto);
                 pnlPrincipal.Controls.Add(pnlFotografia);
 
@@ -514,10 +558,15 @@ namespace CpAuton
                     {
                         imagenCargada = ImagenHelper.ConvertirBytesAImagen(fotoBytes);
                         ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                        // Show fullscreen button when there is an image
+                        btnVerFotoGrande.Visible = true;
+                        fotoEliminada = false;
                     }
                     else
                     {
                         ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
+                        btnVerFotoGrande.Visible = false;
+                        fotoEliminada = false;
                     }
                 }
                 catch (Exception ex)
@@ -525,6 +574,8 @@ namespace CpAuton
                     MessageBox.Show($"Error al cargar fotografía: {ex.Message}", "Advertencia",
                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
+                    btnVerFotoGrande.Visible = false;
+                    fotoEliminada = false;
                 }
 
 
@@ -1318,9 +1369,9 @@ namespace CpAuton
                                                       "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     }
                                 }
-                                else if (pbFotoDetalle.Image == null)
+                                else if (fotoEliminada)
                                 {
-                                    // Si se eliminó la foto
+                                    // Si el usuario eliminó la foto explícitamente
                                     vehiculoCompleto.fotografia = null;
                                 }
 

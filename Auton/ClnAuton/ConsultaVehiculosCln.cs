@@ -21,8 +21,8 @@ namespace ClnAuton
             }
         }
 
-        // Actualiza un vehículo existente - CON FOTOGRAFÍA
-        public static int actualizar(Vehiculo vehiculo)
+        // Actualiza un vehículo existente - permite indicar si se debe actualizar la fotografía
+        public static int actualizar(Vehiculo vehiculo, bool actualizarFoto = true)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace ClnAuton
                         return 0;
                     }
 
-                    // Actualizar TODOS los campos incluyendo fotografía
+                    // Actualizar TODOS los campos
                     existente.nroChasis = vehiculo.nroChasis;
                     existente.idModeloVehiculo = vehiculo.idModeloVehiculo;
                     existente.anioFabricacion = vehiculo.anioFabricacion;
@@ -54,8 +54,8 @@ namespace ClnAuton
                     existente.observaciones = vehiculo.observaciones;
                     existente.usuarioRegistro = vehiculo.usuarioRegistro;
 
-                    // ⭐ FOTOGRAFÍA: Solo actualizar si no es null
-                    if (vehiculo.fotografia != null)
+                    // ⭐ FOTOGRAFÍA: actualizar solo si se indicó (permite establecer null para eliminar)
+                    if (actualizarFoto)
                     {
                         existente.fotografia = vehiculo.fotografia;
                     }
