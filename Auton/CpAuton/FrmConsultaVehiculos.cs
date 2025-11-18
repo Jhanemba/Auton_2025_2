@@ -396,12 +396,14 @@ namespace CpAuton
                     BorderStyle = BorderStyle.FixedSingle,
                     BackColor = Color.FromArgb(250, 250, 250),
                     SizeMode = PictureBoxSizeMode.Zoom,
-                    AllowDrop = true
+                    // Start with AllowDrop = false; it will be enabled when user enters edit mode
+                    AllowDrop = false
                 };
 
+                // Use AllowDrop as the single source of truth for permitting drag&drop
                 pbFotoDetalle.DragEnter += (s, ev) =>
                 {
-                    if (lblEstado.Text.Contains("EDICIÓN") && ev.Data.GetDataPresent(DataFormats.FileDrop))
+                    if (pbFotoDetalle.AllowDrop && ev.Data.GetDataPresent(DataFormats.FileDrop))
                     {
                         string[] archivos = (string[])ev.Data.GetData(DataFormats.FileDrop);
                         if (archivos.Length > 0 && ImagenHelper.EsImagenValida(archivos[0]))
@@ -415,7 +417,7 @@ namespace CpAuton
                 pbFotoDetalle.DragDrop += (s, ev) =>
                 {
                     pbFotoDetalle.BackColor = Color.FromArgb(250, 250, 250);
-                    if (lblEstado.Text.Contains("EDICIÓN"))
+                    if (pbFotoDetalle.AllowDrop && ev.Data.GetDataPresent(DataFormats.FileDrop))
                     {
                         try
                         {

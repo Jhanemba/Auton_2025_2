@@ -42,7 +42,6 @@ namespace CpAuton
             {
                 CargarProcedencias();
                 CargarMarcasCombo();
-                CargarTiposVehiculo();
                 CargarMarcas();
                 CargarModelos();
             };
@@ -407,27 +406,6 @@ namespace CpAuton
             pnlFormModelo.Controls.Add(cboMarcaModelo);
             yPos += 40;
 
-            // Tipo Vehículo
-            Label lblTipo = new Label
-            {
-                Text = "Tipo:",
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                Location = new Point(15, yPos + 3),
-                Size = new Size(120, 25)
-            };
-            pnlFormModelo.Controls.Add(lblTipo);
-
-            ComboBox cboTipoModelo = new ComboBox
-            {
-                Name = "cboTipoModelo",
-                Location = new Point(140, yPos),
-                Size = new Size(240, 25),
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                Font = new Font("Segoe UI", 10)
-            };
-            pnlFormModelo.Controls.Add(cboTipoModelo);
-            yPos += 40;
-
             // Nombre Modelo
             Label lblNombreModelo = new Label
             {
@@ -709,26 +687,6 @@ namespace CpAuton
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar marcas: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void CargarTiposVehiculo()
-        {
-            try
-            {
-                var cboTipo = BuscarControlEnTab("cboTipoModelo", "MODELOS") as ComboBox;
-                if (cboTipo == null) return;
-
-                var tipos = TipoVehiculoCln.listar();
-                cboTipo.DataSource = tipos;
-                cboTipo.DisplayMember = "descripcion";
-                cboTipo.ValueMember = "id";
-                cboTipo.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar tipos: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1096,7 +1054,6 @@ namespace CpAuton
             try
             {
                 var cboMarca = BuscarControlEnTab("cboMarcaModelo", "MODELOS") as ComboBox;
-                var cboTipo = BuscarControlEnTab("cboTipoModelo", "MODELOS") as ComboBox;
                 var txtNombre = BuscarControlEnTab("txtNombreModelo", "MODELOS") as TextBox;
                 var txtDescripcion = BuscarControlEnTab("txtDescripcionModelo", "MODELOS") as TextBox;
 
@@ -1106,14 +1063,6 @@ namespace CpAuton
                     MessageBox.Show("⚠️ Debe seleccionar una marca", "Validación",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cboMarca.Focus();
-                    return;
-                }
-
-                if (cboTipo.SelectedIndex == -1)
-                {
-                    MessageBox.Show("⚠️ Debe seleccionar un tipo de vehículo", "Validación",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    cboTipo.Focus();
                     return;
                 }
 
@@ -1146,7 +1095,25 @@ namespace CpAuton
                 }
 
                 modelo.idMarca = (int)cboMarca.SelectedValue;
-                modelo.idTipoVehiculo = (int)cboTipo.SelectedValue;
+
+                // Si estamos creando un nuevo modelo y no manejamos tipo en el formulario,
+                // asignamos un tipo por defecto (primero disponible) para cumplir la FK.
+                if (!modoEdicionModelo)
+                {
+                    try
+                    {
+                        var tipos = TipoVehiculoCln.listar();
+                        if (tipos != null && tipos.Any())
+                            modelo.idTipoVehiculo = tipos.First().id;
+                        else
+                            modelo.idTipoVehiculo = 1; // fallback
+                    }
+                    catch
+                    {
+                        modelo.idTipoVehiculo = 1; // fallback seguro
+                    }
+                }
+
                 modelo.nombre = txtNombre.Text.Trim();
                 modelo.descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text) ?
                     null : txtDescripcion.Text.Trim();
@@ -1285,12 +1252,12 @@ namespace CpAuton
                 modeloSeleccionadoId = id;
 
                 var cboMarca = this.Controls.Find("cboMarcaModelo", true)[0] as ComboBox;
-                var cboTipo = this.Controls.Find("cboTipoModelo", true)[0] as ComboBox;
+                // var cboTipo = this.Controls.Find("cboTipoModelo", true)[0] as ComboBox; // removed
                 var txtNombre = this.Controls.Find("txtNombreModelo", true)[0] as TextBox;
                 var txtDescripcion = this.Controls.Find("txtDescripcionModelo", true)[0] as TextBox;
 
                 cboMarca.SelectedValue = modelo.idMarca;
-                cboTipo.SelectedValue = modelo.idTipoVehiculo;
+                // cboTipo.SelectedValue = modelo.idTipoVehiculo; // removed
                 txtNombre.Text = modelo.nombre;
                 txtDescripcion.Text = modelo.descripcion ?? "";
 
@@ -1343,12 +1310,12 @@ namespace CpAuton
         private void LimpiarFormularioModelo()
         {
             var cboMarca = this.Controls.Find("cboMarcaModelo", true)[0] as ComboBox;
-            var cboTipo = this.Controls.Find("cboTipoModelo", true)[0] as ComboBox;
+            // var cboTipo = this.Controls.Find("cboTipoModelo", true)[0] as ComboBox; // removed
             var txtNombre = this.Controls.Find("txtNombreModelo", true)[0] as TextBox;
             var txtDescripcion = this.Controls.Find("txtDescripcionModelo", true)[0] as TextBox;
 
             cboMarca.SelectedIndex = -1;
-            cboTipo.SelectedIndex = -1;
+            // cboTipo.SelectedIndex = -1; // removed
             txtNombre.Clear();
             txtDescripcion.Clear();
         }

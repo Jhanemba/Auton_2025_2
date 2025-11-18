@@ -501,7 +501,7 @@ namespace CpAuton
             {
                 Text = "📂 Seleccionar Archivo",
                 Size = new Size(200, 40),
-                Location = new Point(10, 170-300),
+                Location = new Point(10, 170), // Fixed: was 170-300 which placed the button outside the panel
                 BackColor = Color.FromArgb(51, 122, 183),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -511,6 +511,7 @@ namespace CpAuton
             btnSeleccionarFoto.FlatAppearance.BorderSize = 0;
             btnSeleccionarFoto.Click += BtnSeleccionarFoto_Click;
             pnlControlesFoto.Controls.Add(btnSeleccionarFoto);
+            btnSeleccionarFoto.BringToFront();
 
             btnEliminarFoto = new Button
             {
