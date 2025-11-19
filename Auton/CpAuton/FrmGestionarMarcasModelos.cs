@@ -570,7 +570,7 @@ namespace CpAuton
 
             dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colIdModelo", DataPropertyName = "id", HeaderText = "ID", Width = 60 });
             dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colMarcaModelo", DataPropertyName = "marca", HeaderText = "Marca", Width = 150 });
-            dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colTipoModelo", DataPropertyName = "tipoVehiculo", HeaderText = "Tipo", Width = 120 });
+            //dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colTipoModelo", DataPropertyName = "tipoVehiculo", HeaderText = "Tipo", Width = 120 });
             dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colNombreModelo", DataPropertyName = "nombre", HeaderText = "Modelo", Width = 200 });
             dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colDescModelo", DataPropertyName = "descripcion", HeaderText = "Descripción", Width = 230 });
 
@@ -742,7 +742,7 @@ namespace CpAuton
                         {
                             m.id,
                             marca = m.Marca.nombre,
-                            tipoVehiculo = m.TipoVehiculo.descripcion,
+                            //tipoVehiculo = m.TipoVehiculo.descripcion,
                             m.nombre,
                             m.descripcion
                         })
@@ -1098,21 +1098,21 @@ namespace CpAuton
 
                 // Si estamos creando un nuevo modelo y no manejamos tipo en el formulario,
                 // asignamos un tipo por defecto (primero disponible) para cumplir la FK.
-                if (!modoEdicionModelo)
-                {
-                    try
-                    {
-                        var tipos = TipoVehiculoCln.listar();
-                        if (tipos != null && tipos.Any())
-                            modelo.idTipoVehiculo = tipos.First().id;
-                        else
-                            modelo.idTipoVehiculo = 1; // fallback
-                    }
-                    catch
-                    {
-                        modelo.idTipoVehiculo = 1; // fallback seguro
-                    }
-                }
+                //if (!modoEdicionModelo)
+                //{
+                //    try
+                //    {
+                //        var tipos = TipoVehiculoCln.listar();
+                //        if (tipos != null && tipos.Any())
+                //            modelo.idTipoVehiculo = tipos.First().id;
+                //        else
+                //            modelo.idTipoVehiculo = 1; // fallback
+                //    }
+                //    catch
+                //    {
+                //        modelo.idTipoVehiculo = 1; // fallback seguro
+                //    }
+                //}
 
                 modelo.nombre = txtNombre.Text.Trim();
                 modelo.descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text) ?
@@ -1286,13 +1286,13 @@ namespace CpAuton
 
                 var modelos = ModeloVehiculoCln.listar()
                     .Where(m => m.nombre.ToLower().Contains(filtro) ||
-                               m.Marca.nombre.ToLower().Contains(filtro) ||
-                               m.TipoVehiculo.descripcion.ToLower().Contains(filtro))
+                               m.Marca.nombre.ToLower().Contains(filtro))
+                               //m.TipoVehiculo.descripcion.ToLower().Contains(filtro))
                     .Select(m => new
                     {
                         m.id,
                         marca = m.Marca.nombre,
-                        tipoVehiculo = m.TipoVehiculo.descripcion,
+                        //tipoVehiculo = m.TipoVehiculo.descripcion,
                         m.nombre,
                         m.descripcion
                     }).ToList();

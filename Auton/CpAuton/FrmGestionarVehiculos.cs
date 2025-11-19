@@ -240,6 +240,89 @@ namespace CpAuton
             panel.Controls.Add(cboTransmision);
             yPos += 35;
 
+            AgregarLabel(panel, "Velocidades:", 15, yPos, labelWidth);
+
+            // NumericUpDown para velocidades
+            NumericUpDown nudVelocidades = new NumericUpDown
+            {
+                Name = "nudVelocidades",
+                Location = new Point(160, yPos),
+                Size = new Size(100, 25),
+                Font = new Font("Segoe UI", 10),
+                Minimum = 4,
+                Maximum = 10,
+                Value = 5,
+                TextAlign = HorizontalAlignment.Center,
+                Enabled = false // Deshabilitado por defecto hasta seleccionar transmisión
+            };
+            panel.Controls.Add(nudVelocidades);
+
+            // Label informativo
+            Label lblInfoVelocidades = new Label
+            {
+                Name = "lblInfoVelocidades",
+                Location = new Point(270, yPos + 3),
+                Size = new Size(160, 25),
+                Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                ForeColor = Color.Gray,
+                Text = "Seleccione transmisión",
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            panel.Controls.Add(lblInfoVelocidades);
+            yPos += 35;
+
+            // ⭐ EVENTO: Actualizar velocidades cuando cambia la transmisión
+            cboTransmision.SelectedIndexChanged += (s, e) =>
+            {
+                if (!permitirEventos) return; // Control de eventos
+
+                string tipoTrans = cboTransmision.Text;
+
+                switch (tipoTrans)
+                {
+                    case "Manual":
+                        nudVelocidades.Minimum = 4;
+                        nudVelocidades.Maximum = 6;
+                        nudVelocidades.Value = 5;
+                        nudVelocidades.Enabled = true;
+                        lblInfoVelocidades.Text = "4-6 velocidades";
+                        lblInfoVelocidades.ForeColor = Color.FromArgb(40, 167, 69);
+                        break;
+
+                    case "Automática":
+                        nudVelocidades.Minimum = 4;
+                        nudVelocidades.Maximum = 10;
+                        nudVelocidades.Value = 6;
+                        nudVelocidades.Enabled = true;
+                        lblInfoVelocidades.Text = "4-10 velocidades";
+                        lblInfoVelocidades.ForeColor = Color.FromArgb(0, 123, 255);
+                        break;
+
+                    case "CVT":
+                        nudVelocidades.Value = nudVelocidades.Minimum; // Valor dummy
+                        nudVelocidades.Enabled = false;
+                        lblInfoVelocidades.Text = "Sin velocidades discretas";
+                        lblInfoVelocidades.ForeColor = Color.FromArgb(108, 117, 125);
+                        break;
+
+                    case "Semiautomática":
+                    case "Doble Embrague":
+                        nudVelocidades.Minimum = 6;
+                        nudVelocidades.Maximum = 8;
+                        nudVelocidades.Value = 7;
+                        nudVelocidades.Enabled = true;
+                        lblInfoVelocidades.Text = "6-8 velocidades";
+                        lblInfoVelocidades.ForeColor = Color.FromArgb(255, 193, 7);
+                        break;
+
+                    default:
+                        nudVelocidades.Enabled = false;
+                        lblInfoVelocidades.Text = "Seleccione transmisión";
+                        lblInfoVelocidades.ForeColor = Color.Gray;
+                        break;
+                }
+            };
+
             // TIENE TURBO
             CheckBox chkTurbo = new CheckBox
             {
@@ -778,6 +861,7 @@ namespace CpAuton
                 var cboPais = this.Controls.Find("cboPais", true)[0] as ComboBox;
                 var nudAnio = this.Controls.Find("nudAnio", true)[0] as NumericUpDown;
                 var cboTransmision = this.Controls.Find("cboTransmision", true)[0] as ComboBox;
+                var nudVelocidades = this.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
                 var chkTurbo = this.Controls.Find("chkTurbo", true)[0] as CheckBox;
                 var txtMotor = this.Controls.Find("txtMotor", true)[0] as TextBox;
                 var cboCombustible = this.Controls.Find("cboCombustible", true)[0] as ComboBox;
@@ -846,6 +930,14 @@ namespace CpAuton
                 vehiculo.paisFabricacion = cboPais.Text.Trim();
                 vehiculo.anioFabricacion = (int)nudAnio.Value;
                 vehiculo.transmision = cboTransmision.Text;
+                if (cboTransmision.Text == "CVT")
+                {
+                    vehiculo.nroVelocidades = null;
+                }
+                else
+                {
+                    vehiculo.nroVelocidades = (int)nudVelocidades.Value;
+                }
                 vehiculo.tieneTurbo = chkTurbo.Checked;
                 vehiculo.motor = txtMotor.Text.Trim();
                 vehiculo.combustible = cboCombustible.Text;
@@ -982,6 +1074,22 @@ namespace CpAuton
                 return false;
             }
 
+            var nudVelocidades = this.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+            if (cboTransmision.Text != "CVT" && !nudVelocidades.Enabled)
+            {
+                MessageBox.Show("⚠️ Debe especificar el número de velocidades", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtMotor.Text))
+            {
+                MessageBox.Show("⚠️ El motor es obligatorio", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtMotor.Focus();
+                return false;
+            }
+
             if (string.IsNullOrWhiteSpace(txtMotor.Text))
             {
                 MessageBox.Show("⚠️ El motor es obligatorio", "Validación",
@@ -1114,11 +1222,21 @@ namespace CpAuton
                                 nud.Value = 2;
                             else if (nud.Name == "nudPuntuacion")
                                 nud.Value = 5.0m;
+                            else if (nud.Name == "nudVelocidades")  // New
+                            {
+                                nud.Value = 5;
+                                nud.Enabled = false;
+                            }
                             else
                                 nud.Value = nud.Minimum;
                         }
                         else if (subCtrl is CheckBox chk)
                             chk.Checked = false;
+                        else if (subCtrl is Label lbl && lbl.Name == "lblInfoVelocidades")  // New
+                        {
+                            lbl.Text = "Seleccione transmisión";
+                            lbl.ForeColor = Color.Gray;
+                        }
                     }
                 }
             }
@@ -1203,6 +1321,44 @@ namespace CpAuton
                 cboPais.Text = vehiculo.paisFabricacion;
                 nudAnio.Value = vehiculo.anioFabricacion;
                 cboTransmision.Text = vehiculo.transmision;
+                var nudVelocidades = this.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                var lblInfoVel = this.Controls.Find("lblInfoVelocidades", true)[0] as Label;
+
+                if (vehiculo.transmision == "CVT")
+                {
+                    nudVelocidades.Enabled = false;
+                    lblInfoVel.Text = "Sin velocidades discretas";
+                    lblInfoVel.ForeColor = Color.FromArgb(108, 117, 125);
+                }
+                else if (vehiculo.nroVelocidades.HasValue)
+                {
+                    // Configurar rango según transmisión
+                    switch (vehiculo.transmision)
+                    {
+                        case "Manual":
+                            nudVelocidades.Minimum = 4;
+                            nudVelocidades.Maximum = 6;
+                            lblInfoVel.Text = "4-6 velocidades";
+                            lblInfoVel.ForeColor = Color.FromArgb(40, 167, 69);
+                            break;
+                        case "Automática":
+                            nudVelocidades.Minimum = 4;
+                            nudVelocidades.Maximum = 10;
+                            lblInfoVel.Text = "4-10 velocidades";
+                            lblInfoVel.ForeColor = Color.FromArgb(0, 123, 255);
+                            break;
+                        case "Semiautomática":
+                        case "Doble Embrague":
+                            nudVelocidades.Minimum = 6;
+                            nudVelocidades.Maximum = 8;
+                            lblInfoVel.Text = "6-8 velocidades";
+                            lblInfoVel.ForeColor = Color.FromArgb(255, 193, 7);
+                            break;
+                    }
+
+                    nudVelocidades.Value = vehiculo.nroVelocidades.Value;
+                    nudVelocidades.Enabled = true;
+                }
                 chkTurbo.Checked = vehiculo.tieneTurbo;
                 txtMotor.Text = vehiculo.motor;
                 cboCombustible.Text = vehiculo.combustible;

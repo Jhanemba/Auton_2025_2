@@ -22,6 +22,7 @@ namespace CadAuton
         public string generacion { get; set; }
         public string paisFabricacion { get; set; }
         public string transmision { get; set; }
+        public Nullable<int> nroVelocidades { get; set; }
         public bool tieneTurbo { get; set; }
         public string motor { get; set; }
         public string combustible { get; set; }
@@ -33,7 +34,6 @@ namespace CadAuton
         public decimal puntuacion { get; set; }
         public Nullable<int> kilometraje { get; set; }
         public string observaciones { get; set; }
-        public int tieneFotografia { get; set; }
         public string usuarioRegistro { get; set; }
         public System.DateTime fechaRegistro { get; set; }
         public short estado { get; set; }

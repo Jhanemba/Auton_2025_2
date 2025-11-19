@@ -698,6 +698,66 @@ namespace CpAuton
                 btnAddMarca.Margin = new Padding(8, 0, 0, 0);
                 flpMarcaRow.Controls.Add(cboMarca);
                 flpMarcaRow.Controls.Add(btnAddMarca);
+
+                // Botón ojo para ver descripción de la MARCA (siempre visible)
+                Button btnVerMarcaDesc_small = new Button
+                {
+                    Name = "btnVerMarcaDesc",
+                    Text = "👁️",
+                    Size = new Size(36, 28),
+                    Margin = new Padding(8, 0, 0, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = true
+                };
+                btnVerMarcaDesc_small.FlatAppearance.BorderSize = 0;
+                btnVerMarcaDesc_small.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string descripcion = null;
+                        if (cboMarca.SelectedValue != null)
+                        {
+                            int idSel = Convert.ToInt32(cboMarca.SelectedValue);
+                            if (cboMarca.DataSource is System.Collections.IEnumerable ds)
+                            {
+                                foreach (var item in ds)
+                                {
+                                    var propId = item.GetType().GetProperty("id");
+                                    if (propId != null && Convert.ToInt32(propId.GetValue(item)) == idSel)
+                                    {
+                                        var propDesc = item.GetType().GetProperty("descripcion");
+                                        if (propDesc != null)
+                                            descripcion = propDesc.GetValue(item) as string;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Intentar obtener desde la colección completa
+                            if (string.IsNullOrWhiteSpace(descripcion))
+                            {
+                                var marcaObj = MarcaCln.listar().FirstOrDefault(m => m.id == idSel);
+                                if (marcaObj != null)
+                                    descripcion = marcaObj.descripcion;
+                            }
+                        }
+
+                        if (string.IsNullOrWhiteSpace(descripcion))
+                            descripcion = "(Sin descripción disponible)";
+
+                        MessageBox.Show(descripcion, "Descripción de la Marca", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al obtener descripción de la marca: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                flpMarcaRow.Controls.Add(btnVerMarcaDesc_small);
                 pnlPrincipal.Controls.Add(flpMarcaRow);
 
                 yPosLeft += lineHeight;
@@ -794,6 +854,69 @@ namespace CpAuton
                 btnAddModelo.Margin = new Padding(8, 0, 0, 0);
                 flpModeloRow.Controls.Add(cboModelo);
                 flpModeloRow.Controls.Add(btnAddModelo);
+
+                // Botón ojo para ver descripción del MODELO (siempre visible)
+                Button btnVerModeloDesc_small = new Button
+                {
+                    Name = "btnVerModeloDesc",
+                    Text = "👁️",
+                    Size = new Size(36, 28),
+                    Margin = new Padding(8, 0, 0, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = true
+                };
+                btnVerModeloDesc_small.FlatAppearance.BorderSize = 0;
+                btnVerModeloDesc_small.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string descripcion = null;
+                        // Intentar obtener desde la lista de modelos cargada (si existe)
+                        if (cboModelo.SelectedValue != null)
+                        {
+                            int idSel = Convert.ToInt32(cboModelo.SelectedValue);
+                            // Intentar buscar en la fuente enlazada
+                            if (cboModelo.DataSource is System.Collections.IEnumerable ds)
+                            {
+                                // Buscar propiedad 'id' y 'descripcion' mediante reflection-safe approach
+                                foreach (var item in ds)
+                                {
+                                    var propId = item.GetType().GetProperty("id");
+                                    if (propId != null && Convert.ToInt32(propId.GetValue(item)) == idSel)
+                                    {
+                                        var propDesc = item.GetType().GetProperty("descripcion");
+                                        if (propDesc != null)
+                                            descripcion = propDesc.GetValue(item) as string;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Si no se obtuvo, pedir al servidor la entidad completa
+                            if (string.IsNullOrWhiteSpace(descripcion))
+                            {
+                                var modeloObj = ModeloVehiculoCln.obtenerUno(idSel);
+                                if (modeloObj != null)
+                                    descripcion = modeloObj.descripcion;
+                            }
+                        }
+
+                        if (string.IsNullOrWhiteSpace(descripcion))
+                            descripcion = "(Sin descripción disponible)";
+
+                        MessageBox.Show(descripcion, "Descripción del Modelo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al obtener descripción del modelo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                flpModeloRow.Controls.Add(btnVerModeloDesc_small);
                 pnlPrincipal.Controls.Add(flpModeloRow);
 
                 yPosLeft += lineHeight;
@@ -1073,6 +1196,60 @@ namespace CpAuton
                 yPosRight += lineHeight;
                 cboTransmision.BringToFront();
 
+
+                AgregarLabel(pnlPrincipal, "Velocidades:", 590, yPosRight, labelWidth);
+                NumericUpDown nudVelocidades = new NumericUpDown
+                {
+                    Name = "nudVelocidades",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(100, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 4,
+                    Maximum = 10,
+                    Value = vehiculoCompleto.nroVelocidades ?? 5,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = false
+                };
+
+                // Label informativo que cambia según transmisión
+                Label lblInfoVelocidades = new Label
+                {
+                    Name = "lblInfoVelocidades",
+                    Location = new Point(colRightX + 190, yPosRight + 3),
+                    Size = new Size(150, 25),
+                    Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                    ForeColor = Color.Gray,
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+
+                // Add controls to panel BEFORE configuring so the NumericUpDown has a Parent
+                pnlPrincipal.Controls.Add(nudVelocidades);
+                pnlPrincipal.Controls.Add(lblInfoVelocidades);
+
+                // Configurar según tipo de transmisión actual
+                // NOTA: no habilitamos la edición aún; la edición se habilita cuando el usuario pulsa 'Editar'
+                ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
+
+                yPosRight += lineHeight;
+                nudVelocidades.BringToFront();
+                lblInfoVelocidades.BringToFront();
+
+                // ⭐ EVENTO: Cambiar opciones cuando cambia la transmisión
+                cboTransmision.SelectedIndexChanged += (s, ev) =>
+                {
+                    // Cuando cambia la transmisión, reconfiguramos las velocidades.
+                    // Solo permitimos editar si el control de transmisión está habilitado (modo edición).
+                    if (cboTransmision.Enabled) // Solo si está en modo edición
+                    {
+                        ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, null, true);
+                    }
+                    else
+                    {
+                        // Modo lectura: aseguramos que no se permita editar
+                        ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, null, false);
+                    }
+                };
+
                 // Tiene Turbo (EDITABLE)
                 CheckBox chkTieneTurbo = new CheckBox
                 {
@@ -1284,6 +1461,10 @@ namespace CpAuton
                             txtGeneracion.BackColor = Color.White;
                             cboPaisFabricacion.Enabled = true;
                             cboTransmision.Enabled = true;
+                            var nudVelocidadesEdit = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                            // Reconfigurar velocidades para permitir edición ahora que estamos en modo edición
+                            ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesEdit, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, true);
+
                             chkTieneTurbo.Enabled = true;
                             txtMotor.ReadOnly = false;
                             txtMotor.BackColor = Color.White;
@@ -1384,6 +1565,16 @@ namespace CpAuton
                                 vehiculoCompleto.generacion = txtGeneracion.Text.Trim();
                                 vehiculoCompleto.paisFabricacion = cboPaisFabricacion.Text.Trim();
                                 vehiculoCompleto.transmision = cboTransmision.Text;
+                                if (cboTransmision.Text == "CVT")
+                                {
+                                    vehiculoCompleto.nroVelocidades = null;
+                                }
+                                else
+                                {
+                                    var nudVel = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                                    vehiculoCompleto.nroVelocidades = (int)nudVel.Value;
+                                }
+
                                 vehiculoCompleto.tieneTurbo = chkTieneTurbo.Checked;
                                 vehiculoCompleto.motor = txtMotor.Text.Trim();
                                 vehiculoCompleto.combustible = cboCombustible.Text;
@@ -1411,6 +1602,10 @@ namespace CpAuton
                                     txtGeneracion.BackColor = Color.WhiteSmoke;
                                     cboPaisFabricacion.Enabled = false;
                                     cboTransmision.Enabled = false;
+                                    var nudVelocidadesRead = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                                    // Al salir de edición, reconfiguramos para modo lectura (deshabilitado o placeholder si CVT)
+                                    ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesRead, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
+
                                     chkTieneTurbo.Enabled = false;
                                     txtMotor.ReadOnly = true;
                                     txtMotor.BackColor = Color.WhiteSmoke;
@@ -1786,5 +1981,112 @@ namespace CpAuton
                 System.Diagnostics.Debug.WriteLine($"Error actualizando íconos: {ex.Message}");
             }
         }
+
+        private void ConfigurarVelocidades(string tipoTransmision, NumericUpDown nudVel, Label lblInfo, int? valorActual, bool permitirEdicion)
+         {
+            // Ensure there is a placeholder label to show a dash for CVT (so NumericUpDown doesn't display a numeric minimum)
+            Label lblPlaceholder = null;
+            try
+            {
+                var found = nudVel.Parent.Controls.Find("lblVelocidadesPlaceholder", true);
+                if (found != null && found.Length > 0 && found[0] is Label)
+                    lblPlaceholder = (Label)found[0];
+            }
+            catch { }
+
+            if (lblPlaceholder == null)
+            {
+                lblPlaceholder = new Label
+                {
+                    Name = "lblVelocidadesPlaceholder",
+                    Location = nudVel.Location,
+                    Size = nudVel.Size,
+                    Font = new Font("Segoe UI", 10F),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    ForeColor = Color.Gray,
+                    BackColor = Color.Transparent,
+                    Visible = false
+                };
+                // Add to same parent so it scrolls/moves together
+                nudVel.Parent.Controls.Add(lblPlaceholder);
+                lblPlaceholder.BringToFront();
+            }
+
+            switch (tipoTransmision)
+            {
+                case "Manual":
+                    nudVel.Visible = true;
+                    lblPlaceholder.Visible = false;
+                    nudVel.Minimum = 4;
+                    nudVel.Maximum = 6;
+                    nudVel.Enabled = permitirEdicion;
+                    {
+                        decimal min = nudVel.Minimum;
+                        decimal max = nudVel.Maximum;
+                        decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 5m;
+                        if (val < min) val = min;
+                        if (val > max) val = max;
+                        nudVel.Value = val;
+                    }
+                    lblInfo.Text = "(4-6 velocidades)";
+                    lblInfo.ForeColor = Color.FromArgb(40, 167, 69);
+                    break;
+
+                case "Automática":
+                    nudVel.Visible = true;
+                    lblPlaceholder.Visible = false;
+                    nudVel.Minimum = 4;
+                    nudVel.Maximum = 10;
+                    nudVel.Enabled = permitirEdicion;
+                    {
+                        decimal min = nudVel.Minimum;
+                        decimal max = nudVel.Maximum;
+                        decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 6m;
+                        if (val < min) val = min;
+                        if (val > max) val = max;
+                        nudVel.Value = val;
+                    }
+                    lblInfo.Text = "(4-10 velocidades)";
+                    lblInfo.ForeColor = Color.FromArgb(0, 123, 255);
+                    break;
+
+                case "CVT":
+                    // For CVT we show a placeholder dash instead of a numeric value
+                    nudVel.Visible = false;
+                    // ensure control remains disabled
+                    nudVel.Enabled = false;
+                    lblPlaceholder.Text = "-";
+                    lblPlaceholder.Visible = true;
+                    lblInfo.Text = "(Sin velocidades)";
+                    lblInfo.ForeColor = Color.FromArgb(108, 117, 125);
+                    break;
+
+                case "Semiautomática":
+                case "Doble Embrague":
+                    nudVel.Visible = true;
+                    lblPlaceholder.Visible = false;
+                    nudVel.Minimum = 6;
+                    nudVel.Maximum = 8;
+                    nudVel.Enabled = permitirEdicion;
+                    {
+                        decimal min = nudVel.Minimum;
+                        decimal max = nudVel.Maximum;
+                        decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 7m;
+                        if (val < min) val = min;
+                        if (val > max) val = max;
+                        nudVel.Value = val;
+                    }
+                    lblInfo.Text = "(6-8 velocidades)";
+                    lblInfo.ForeColor = Color.FromArgb(255, 193, 7);
+                    break;
+
+                default:
+                    nudVel.Visible = true;
+                    lblPlaceholder.Visible = false;
+                    nudVel.Enabled = false;
+                    lblInfo.Text = "";
+                    break;
+            }
+         }
     }
 }

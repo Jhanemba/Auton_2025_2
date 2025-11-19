@@ -1,4 +1,5 @@
-﻿using CadAuton;
+﻿
+using CadAuton;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,35 @@ namespace ClnAuton
         {
             using (var context = new AutonEntities())
             {
+                // Normalizar nombre para comparación
+                var nombre = (modelo.nombre ?? string.Empty).Trim();
+
+                // Buscar si ya existe un modelo con mismo nombre e idMarca
+                var existente = context.ModeloVehiculo
+                    .FirstOrDefault(m => m.idMarca == modelo.idMarca && m.nombre.ToLower() == nombre.ToLower());
+
+                if (existente != null)
+                {
+                    // Si existe y está eliminado lógicamente, reactivar y actualizar datos
+                    if (existente.estado == -1)
+                    {
+                        existente.estado = 1;
+                        existente.descripcion = string.IsNullOrWhiteSpace(modelo.descripcion) ? null : modelo.descripcion;
+                        existente.usuarioRegistro = string.IsNullOrWhiteSpace(modelo.usuarioRegistro) ? existente.usuarioRegistro : modelo.usuarioRegistro;
+                        existente.fechaRegistro = DateTime.Now;
+
+                        // Forzar estado modificado y guardar
+                        context.Entry(existente).State = System.Data.Entity.EntityState.Modified;
+                        context.SaveChanges();
+                        return existente.id;
+                    }
+
+                    // Si existe y está activo, no permitir duplicado
+                    return 0;
+                }
+
+                // No existe: insertar nuevo
+                modelo.nombre = nombre;
                 context.ModeloVehiculo.Add(modelo);
                 context.SaveChanges();
                 return modelo.id;

@@ -21,6 +21,7 @@ namespace CadAuton
         public string generacion { get; set; }
         public string paisFabricacion { get; set; }
         public string transmision { get; set; }
+        public Nullable<int> nroVelocidades { get; set; }
         public bool tieneTurbo { get; set; }
         public string motor { get; set; }
         public string combustible { get; set; }

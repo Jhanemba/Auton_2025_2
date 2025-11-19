@@ -36,6 +36,8 @@ namespace CpAuton
         private ComboBox cboPaisFabricacion;
         private ComboBox cboTransmision;
         private CheckBox chkTieneTurbo;
+        private NumericUpDown nudVelocidades;
+        private Label lblInfoVelocidades;
         private TextBox txtMotor;
         private ComboBox cboCombustible;
 
@@ -277,6 +279,40 @@ namespace CpAuton
             cboTransmision.Items.AddRange(new[] { "Manual", "Automática", "CVT", "Semiautomática", "Doble Embrague" });
             pnlPrincipal.Controls.Add(cboTransmision);
             yPosRight += lineHeight;
+
+
+            AgregarLabel(pnlPrincipal, "Velocidades:", 580, yPosRight, labelWidth);
+            nudVelocidades = new NumericUpDown
+            {
+                Location = new Point(colRightX + 80, yPosRight),
+                Size = new Size(100, 28),
+                Font = new Font("Segoe UI", 10F),
+                Minimum = 4,
+                Maximum = 10,
+                Value = 5,
+                TextAlign = HorizontalAlignment.Center,
+                Enabled = false // Deshabilitado hasta seleccionar transmisión
+            };
+            pnlPrincipal.Controls.Add(nudVelocidades);
+
+            // Label informativo dinámico
+            lblInfoVelocidades = new Label
+            {
+                Location = new Point(colRightX + 190, yPosRight + 3),
+                Size = new Size(180, 25),
+                Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                ForeColor = Color.Gray,
+                Text = "Seleccione transmisión",
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            pnlPrincipal.Controls.Add(lblInfoVelocidades);
+            yPosRight += lineHeight;
+
+            // EVENTO: Configurar velocidades según transmisión
+            cboTransmision.SelectedIndexChanged += (s, e) =>
+            {
+                ConfigurarVelocidades(cboTransmision.Text);
+            };
 
             // Turbo
             chkTieneTurbo = new CheckBox
@@ -833,6 +869,22 @@ namespace CpAuton
                 return false;
             }
 
+            if (cboTransmision.Text != "CVT" && !nudVelocidades.Enabled)
+            {
+                MessageBox.Show("⚠️ Debe configurar el número de velocidades", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboTransmision.Focus();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtMotor.Text))
+            {
+                MessageBox.Show("⚠️ Debe ingresar el tipo de motor", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtMotor.Focus();
+                return false;
+            }
+
             if (string.IsNullOrWhiteSpace(txtMotor.Text))
             {
                 MessageBox.Show("⚠️ Debe ingresar el tipo de motor", "Validación",
@@ -920,6 +972,10 @@ namespace CpAuton
                         generacion = txtGeneracion.Text.Trim(),
                         paisFabricacion = cboPaisFabricacion.SelectedItem.ToString(),
                         transmision = cboTransmision.SelectedItem.ToString(),
+                        nroVelocidades = cboTransmision.Text == "CVT"
+                         ? (int?)null
+                        : (int)nudVelocidades.Value,
+
                         tieneTurbo = chkTieneTurbo.Checked,
                         motor = txtMotor.Text.Trim(),
                         combustible = cboCombustible.SelectedItem.ToString(),
@@ -941,6 +997,10 @@ namespace CpAuton
                     if (resultado > 0)
                     {
                         string turboInfo = chkTieneTurbo.Checked ? " 🚀 CON TURBO" : "";
+                        string velocidadesInfo = cboTransmision.Text == "CVT"
+                            ? " (CVT)"
+                            : $" ({nudVelocidades.Value} velocidades)";
+
                         string modeloNombre = cboModelo.Text;
 
                         MessageBox.Show($"✅ Vehículo registrado exitosamente\n\n" +
@@ -948,7 +1008,7 @@ namespace CpAuton
                                       $"Modelo: {modeloNombre}\n" +
                                       $"Generación: {txtGeneracion.Text}\n" +
                                       $"País: {cboPaisFabricacion.Text}\n" +
-                                      $"Transmisión: {cboTransmision.Text}{turboInfo}",
+                                      $"Transmisión: {cboTransmision.Text}{velocidadesInfo}{turboInfo}",
                                       "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
                         this.Close();
@@ -1145,5 +1205,52 @@ namespace CpAuton
         //    }
         //    base.Dispose(disposing);
         //}
+        private void ConfigurarVelocidades(string tipoTransmision)
+        {
+            switch (tipoTransmision)
+            {
+                case "Manual":
+                    nudVelocidades.Minimum = 4;
+                    nudVelocidades.Maximum = 6;
+                    nudVelocidades.Value = 5;
+                    nudVelocidades.Enabled = true;
+                    lblInfoVelocidades.Text = "(4-6 velocidades)";
+                    lblInfoVelocidades.ForeColor = Color.FromArgb(40, 167, 69);
+                    break;
+
+                case "Automática":
+                    nudVelocidades.Minimum = 4;
+                    nudVelocidades.Maximum = 10;
+                    nudVelocidades.Value = 6;
+                    nudVelocidades.Enabled = true;
+                    lblInfoVelocidades.Text = "(4-10 velocidades)";
+                    lblInfoVelocidades.ForeColor = Color.FromArgb(0, 123, 255);
+                    break;
+
+                case "CVT":
+                    nudVelocidades.Value = nudVelocidades.Minimum; // Valor dummy
+                    nudVelocidades.Enabled = false;
+                    lblInfoVelocidades.Text = "(Sin velocidades)";
+                    lblInfoVelocidades.ForeColor = Color.FromArgb(108, 117, 125);
+                    break;
+
+                case "Semiautomática":
+                case "Doble Embrague":
+                    nudVelocidades.Minimum = 6;
+                    nudVelocidades.Maximum = 8;
+                    nudVelocidades.Value = 7;
+                    nudVelocidades.Enabled = true;
+                    lblInfoVelocidades.Text = "(6-8 velocidades)";
+                    lblInfoVelocidades.ForeColor = Color.FromArgb(255, 193, 7);
+                    break;
+
+                default:
+                    nudVelocidades.Enabled = false;
+                    lblInfoVelocidades.Text = "Seleccione transmisión";
+                    lblInfoVelocidades.ForeColor = Color.Gray;
+                    break;
+            }
+        }
+
     }
 }

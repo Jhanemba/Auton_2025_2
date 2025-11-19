@@ -1,0 +1,963 @@
+﻿using CadAuton;
+using ClnAuton;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+
+namespace CpAuton
+{
+    public partial class FrmConsultaVehiculos : Form
+    {
+        private Label lblEstadoUsuario;
+        private Button btnSesion;
+
+        public FrmConsultaVehiculos()
+        {
+            InitializeComponent();
+        }
+
+        private void FrmConsultaVehiculos_Load(object sender, EventArgs e)
+        {
+            AgregarBotonesSesion();
+            ConfigurarDataGridView();
+            CargarVehiculos("");
+            btnNuevo.Visible = Util.usuario != null;
+        }
+
+        private void AgregarBotonesSesion()
+        {
+            Panel pnlSesion = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 50,
+                BackColor = Color.FromArgb(240, 240, 240),
+                BorderStyle = BorderStyle.FixedSingle,
+            };
+
+            btnSesion = new Button
+            {
+                Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión",
+                Size = new Size(120, 35),
+                Location = new Point(10, 7),
+                BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Arial", 9, FontStyle.Bold)
+            };
+            btnSesion.Click += BtnSesion_Click;
+
+            lblEstadoUsuario = new Label
+            {
+                Text = Util.usuario != null ? $"Usuario: {Util.usuario.nombreCompleto}" : "Usuario: No autenticado",
+                Size = new Size(400, 35),
+                Location = new Point(140, 7),
+                Font = new Font("Arial", 9),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+
+            pnlSesion.Controls.Add(btnSesion);
+            pnlSesion.Controls.Add(lblEstadoUsuario);
+
+            this.Controls.Add(pnlSesion);
+            //poner al frente
+            pnlSesion.BringToFront();
+        }
+
+        private void BtnSesion_Click(object sender, EventArgs e)
+        {
+            if (Util.usuario != null)
+            {
+                DialogResult resultado = MessageBox.Show("¿Desea cerrar la sesión?",
+                                                        "Cerrar Sesión",
+                                                        MessageBoxButtons.YesNo,
+                                                        MessageBoxIcon.Question);
+                if (resultado == DialogResult.Yes)
+                {
+                    Util.CerrarSesion();
+                    ActualizarInterfazSesion();
+                }
+            }
+            else
+            {
+                FrmAutenticacion frmAuth = new FrmAutenticacion();
+                if (frmAuth.ShowDialog(this) == DialogResult.OK)
+                {
+                    ActualizarInterfazSesion();
+                }
+            }
+            btnNuevo.Visible = Util.usuario != null;
+        }
+
+        private void ActualizarInterfazSesion()
+        {
+            if (btnSesion != null)
+            {
+                btnSesion.Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión";
+                btnSesion.BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183);
+            }
+
+            if (lblEstadoUsuario != null)
+            {
+                lblEstadoUsuario.Text = Util.usuario != null ? $"Usuario: {Util.usuario.nombreCompleto}" : "Usuario: No autenticado";
+            }
+        }
+
+        private void ConfigurarDataGridView()
+        {
+            dgvVehiculos.AutoGenerateColumns = false;
+            dgvVehiculos.AllowUserToAddRows = false;
+            dgvVehiculos.AllowUserToDeleteRows = false;
+            dgvVehiculos.ReadOnly = true;
+            dgvVehiculos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvVehiculos.MultiSelect = false;
+            dgvVehiculos.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
+
+            dgvVehiculos.Columns.Clear();
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colId",
+                DataPropertyName = "id",
+                HeaderText = "ID",
+                Width = 50,
+                Visible = false
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colMarca",
+                DataPropertyName = "marca",
+                HeaderText = "Marca",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colModelo",
+                DataPropertyName = "modelo",
+                HeaderText = "Modelo",
+                Width = 120
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colGeneracion",
+                DataPropertyName = "generacion",
+                HeaderText = "Generación",
+                Width = 120
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPais",
+                DataPropertyName = "paisFabricacion",
+                HeaderText = "País",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colAnio",
+                DataPropertyName = "anioFabricacion",
+                HeaderText = "Año",
+                Width = 60
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colTransmision",
+                DataPropertyName = "transmision",
+                HeaderText = "Transmisión",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewCheckBoxColumn
+            {
+                Name = "colTurbo",
+                DataPropertyName = "tieneTurbo",
+                HeaderText = "Turbo",
+                Width = 60
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colMotor",
+                DataPropertyName = "motor",
+                HeaderText = "Motor",
+                Width = 80
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colConfiabilidad",
+                DataPropertyName = "confiabilidad",
+                HeaderText = "Confiabilidad",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPuntuacion",
+                DataPropertyName = "puntuacion",
+                HeaderText = "Puntuación",
+                Width = 80,
+                DefaultCellStyle = { Format = "N1" }
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colCombustible",
+                DataPropertyName = "combustible",
+                HeaderText = "Combustible",
+                Width = 80
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewImageColumn
+            {
+                Name = "colFoto",
+                HeaderText = "Foto",
+                Width = 50,
+                ImageLayout = DataGridViewImageCellLayout.Zoom
+            });
+        }
+
+        private void CargarVehiculos(string parametro)
+        {
+            try
+            {
+                var vehiculos = ConsultaVehiculosCln.listarPa(parametro ?? "");
+                dgvVehiculos.DataSource = vehiculos;
+
+                if (lblTotal != null)
+                {
+                    lblTotal.Text = $"Total de vehículos: {vehiculos.Count}";
+                }
+
+                ColorearFilasPorConfiabilidad();
+                ActualizarIconosFoto();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar los vehículos: {ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ColorearFilasPorConfiabilidad()
+        {
+            foreach (DataGridViewRow row in dgvVehiculos.Rows)
+            {
+                if (row.Cells["colConfiabilidad"].Value != null)
+                {
+                    string confiabilidad = row.Cells["colConfiabilidad"].Value.ToString();
+                    switch (confiabilidad)
+                    {
+                        case "Excelente":
+                            row.DefaultCellStyle.BackColor = Color.LightGreen;
+                            break;
+                        case "Bueno":
+                            row.DefaultCellStyle.BackColor = Color.LightBlue;
+                            break;
+                        case "Regular":
+                            row.DefaultCellStyle.BackColor = Color.LightYellow;
+                            break;
+                        case "Malo":
+                            row.DefaultCellStyle.BackColor = Color.LightCoral;
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void txtBuscar_TextChanged(object sender, EventArgs e)
+        {
+            CargarVehiculos(txtBuscar.Text.Trim());
+        }
+
+        private void btnCerrar_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void dgvVehiculos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                MostrarDetallesVehiculo();
+            }
+        }
+
+        private void MostrarDetallesVehiculo()
+        {
+            if (dgvVehiculos.CurrentRow != null)
+            {
+                var vehiculo = (paVehiculoListar_Result)dgvVehiculos.CurrentRow.DataBoundItem;
+                var vehiculoCompleto = ConsultaVehiculosCln.obtenerUno(vehiculo.id);
+                PictureBox pbFotoDetalle = null;
+                Button btnCambiarFoto = null;
+                Button btnEliminarFotoDetalle = null;
+                Image imagenCargada = null;
+                bool fotoEliminada = false;
+
+                // ===== FORMULARIO PRINCIPAL =====
+                Form frmDetalles = new Form
+                {
+                    Text = $"Detalles del Vehículo - {vehiculo.marca} {vehiculo.modelo}",
+                    Size = new Size(1200, 850),
+                    StartPosition = FormStartPosition.CenterParent,
+                    FormBorderStyle = FormBorderStyle.FixedDialog,
+                    MaximizeBox = false,
+                    MinimizeBox = false,
+                    Font = new Font("Segoe UI", 10F),
+                    AutoScroll = true,
+                    ShowInTaskbar = false,
+
+                };
+
+                Panel pnlPrincipal = new Panel
+                {
+                    Location = new Point(0, 0),
+                    Size = new Size(1184, 700-120),
+                    Padding = new Padding(20),
+                    BackColor = Color.PapayaWhip,
+                    AutoScroll = true
+                };
+
+                int yPos = 15;
+                int lineHeight = 45;
+                int labelWidth = 150;
+                int ctrlWidth = 250;
+                int colLeftX = 170;
+                int colRightX = 650;
+
+                // ===== TÍTULO Y ESTADO =====
+                Label lblTitulo = new Label
+                {
+                    Text = "📋 CONSULTA/EDICIÓN DE VEHÍCULO",
+                    Font = new Font("Segoe UI", 15, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(51, 122, 183),
+                    Location = new Point(20, yPos),
+                    Size = new Size(1140, 32),
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                pnlPrincipal.Controls.Add(lblTitulo);
+                yPos += 40;
+
+                Label lblEstado = new Label
+                {
+                    Name = "lblEstado",
+                    Text = "🔒 MODO LECTURA",
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    ForeColor = Color.Red,
+                    Location = new Point(20, yPos),
+                    Size = new Size(1140, 25),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    BackColor = Color.FromArgb(255, 230, 230),
+                    Padding = new Padding(5)
+                };
+                pnlPrincipal.Controls.Add(lblEstado);
+                yPos += 35;
+
+                // ==================== FOTOGRAFÍA ====================
+                yPos += 35;
+                Panel pnlFotografia = new Panel
+                {
+                    Location = new Point(20+575, yPos+500),
+                    Size = new Size(540, 320),
+                    BackColor = Color.White,
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+
+                Label lblTituloFoto = new Label
+                {
+                    Text = "📷 FOTOGRAFÍA DEL VEHÍCULO",
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(51, 122, 183),
+                    Location = new Point(10, 10),
+                    Size = new Size(520, 25),
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                pnlFotografia.Controls.Add(lblTituloFoto);
+
+                pbFotoDetalle = new PictureBox
+                {
+                    Location = new Point(10, 45),
+                    Size = new Size(520, 220),
+                    BorderStyle = BorderStyle.FixedSingle,
+                    BackColor = Color.FromArgb(250, 250, 250),
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    // Start with AllowDrop = false; it will be enabled when user enters edit mode
+                    AllowDrop = false
+                };
+
+                // Use AllowDrop as the single source of truth for permitting drag&drop
+                pbFotoDetalle.DragEnter += (s, ev) =>
+                {
+                    if (pbFotoDetalle.AllowDrop && ev.Data.GetDataPresent(DataFormats.FileDrop))
+                    {
+                        string[] archivos = (string[])ev.Data.GetData(DataFormats.FileDrop);
+                        if (archivos.Length > 0 && ImagenHelper.EsImagenValida(archivos[0]))
+                        {
+                            ev.Effect = DragDropEffects.Copy;
+                            pbFotoDetalle.BackColor = Color.FromArgb(220, 255, 220);
+                        }
+                    }
+                };
+
+                pbFotoDetalle.DragDrop += (s, ev) =>
+                {
+                    pbFotoDetalle.BackColor = Color.FromArgb(250, 250, 250);
+                    if (pbFotoDetalle.AllowDrop && ev.Data.GetDataPresent(DataFormats.FileDrop))
+                    {
+                        try
+                        {
+                            string[] archivos = (string[])ev.Data.GetData(DataFormats.FileDrop);
+                            if (archivos.Length > 0)
+                            {
+                                if (imagenCargada != null) imagenCargada.Dispose();
+                                imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(archivos[0]);
+                                ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                                btnEliminarFotoDetalle.Enabled = true;
+                                fotoEliminada = false; // usuario cargó nueva imagen -> no eliminar
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error al cargar imagen: {ex.Message}", "Error",
+                                          MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                };
+
+                pnlFotografia.Controls.Add(pbFotoDetalle);
+
+                // Botones de control de foto (solo visibles en modo edición)
+                Panel pnlBotonesFoto = new Panel
+                {
+                    Location = new Point(10, 275),
+                    Size = new Size(520, 35)
+                };
+
+                btnCambiarFoto = new Button
+                {
+                    Text = "📂 Cambiar Foto",
+                    Size = new Size(150, 30),
+                    Location = new Point(0, 0),
+                    BackColor = Color.FromArgb(51, 122, 183),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false
+                };
+                btnCambiarFoto.FlatAppearance.BorderSize = 0;
+                btnCambiarFoto.Click += (s, ev) =>
+                {
+                    using (OpenFileDialog ofd = new OpenFileDialog())
+                    {
+                        ofd.Filter = "Imágenes|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
+                        if (ofd.ShowDialog() == DialogResult.OK)
+                        {
+                            try
+                            {
+                                if (imagenCargada != null) imagenCargada.Dispose();
+                                imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(ofd.FileName);
+                                ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                                btnEliminarFotoDetalle.Enabled = true;
+                                fotoEliminada = false; // nueva imagen cargada
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Error: {ex.Message}", "Error",
+                                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                };
+                pnlBotonesFoto.Controls.Add(btnCambiarFoto);
+
+                // NEW: Button to view photo fullscreen (eye)
+                Button btnVerFotoGrande = new Button
+                {
+                    Name = "btnVerFotoGrande",
+                    Text = "👁️ Ver Foto",
+                    Size = new Size(120, 30),
+                    Location = new Point(320, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false // will enable when image is present
+                };
+                btnVerFotoGrande.FlatAppearance.BorderSize = 0;
+                btnVerFotoGrande.Click += (s, ev) =>
+                {
+                    try
+                    {
+                        if (imagenCargada != null)
+                        {
+                            using (var frmFull = new FullscreenImageForm((Image)imagenCargada.Clone()))
+                            {
+                                frmFull.ShowDialog(frmDetalles);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No hay fotografía disponible para mostrar.", "Información",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al mostrar fotografía: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlBotonesFoto.Controls.Add(btnVerFotoGrande);
+
+                btnEliminarFotoDetalle = new Button
+                {
+                    Text = "🗑️ Quitar Foto",
+                    Size = new Size(150, 30),
+                    Location = new Point(160, 0),
+                    BackColor = Color.FromArgb(217, 83, 79),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false
+                };
+                btnEliminarFotoDetalle.FlatAppearance.BorderSize = 0;
+                btnEliminarFotoDetalle.Click += (s, ev) =>
+                {
+                    if (MessageBox.Show("¿Está seguro de quitar la fotografía del vehículo?",
+                                        "Confirmar",
+                                        MessageBoxButtons.YesNo,
+                                        MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        if (imagenCargada != null) imagenCargada.Dispose();
+                        pbFotoDetalle.Image = null;
+                        btnEliminarFotoDetalle.Enabled = false;
+                        fotoEliminada = true; // marcar como eliminada
+                    }
+                };
+                pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
+
+                pnlFotografia.Controls.Add(pnlBotonesFoto);
+                pnlPrincipal.Controls.Add(pnlFotografia);
+
+                yPos += 240; // ajustar posición para la siguiente sección
+
+                // ==================== DATOS DEL VEHÍCULO ====================
+                // Sección ahora siempre visible pero en modo solo lectura
+                GroupBox gbDatosVehiculo = new GroupBox
+                {
+                    Text = "Información del Vehículo",
+                    Location = new Point(20, yPos),
+                    Size = new Size(540, 200),
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(51, 122, 183),
+                    BackColor = Color.FromArgb(255, 255, 255, 128),
+                    BorderColor = Color.FromArgb(51, 122, 183),
+                    BorderThickness = 2
+                };
+                pnlPrincipal.Controls.Add(gbDatosVehiculo);
+
+                // Etiquetas informativas (solo lectura)
+                int yPosDato = 30;
+                foreach (var prop in typeof(paVehiculoListar_Result).GetProperties())
+                {
+                    if (prop.Name == "id" || prop.Name == "marca" || prop.Name == "modelo" || prop.Name == "anioFabricacion") continue;
+
+                    Label lblDato = new Label
+                    {
+                        Text = $"{prop.Name.Replace('_', ' ')}:",
+                        Location = new Point(20, yPosDato),
+                        Size = new Size(150, 25),
+                        Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                        ForeColor = Color.FromArgb(33, 37, 41),
+                        BackColor = Color.Transparent
+                    };
+                    gbDatosVehiculo.Controls.Add(lblDato);
+
+                    TextBox txtDato = new TextBox
+                    {
+                        Name = $"txt{prop.Name}",
+                        Location = new Point(180, yPosDato),
+                        Size = new Size(340, 25),
+                        Font = new Font("Segoe UI", 9F),
+                        ReadOnly = true,
+                        BackColor = Color.FromArgb(240, 240, 240),
+                        BorderStyle = BorderStyle.None
+                    };
+                    txtDato.DataBindings.Add("Text", vehiculoCompleto, prop.Name, true, DataSourceUpdateMode.OnPropertyChanged);
+                    gbDatosVehiculo.Controls.Add(txtDato);
+
+                    yPosDato += 30;
+                }
+
+                // ==================== MARCA Y MODELO ====================
+                // ComboBox para Marca (ahora editable y con botón + para agregar)
+                Label lblMarca = new Label
+                {
+                    Text = "Marca:",
+                    Location = new Point(20, 20),
+                    Size = new Size(labelWidth, 25),
+                    Font = new Font("Segoe UI", 10F, FontStyle.Regular),
+                    ForeColor = Color.FromArgb(33, 37, 41)
+                };
+                pnlPrincipal.Controls.Add(lblMarca);
+
+                ComboBox cboMarca = new ComboBox
+                {
+                    Name = "cboMarca",
+                    //Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = true
+                };
+                cboMarca.DataBindings.Add("SelectedValue", vehiculoCompleto, "idMarca", true, DataSourceUpdateMode.OnPropertyChanged);
+                cboMarca.SelectedIndexChanged += (s, e) =>
+                {
+                    if (cboMarca.SelectedValue == null) return;
+
+                    int idMarcaSel = Convert.ToInt32(cboMarca.SelectedValue);
+                    var modelos = ModeloVehiculoCln.listar()
+                        .Where(m => m.idMarca == idMarcaSel && m.estado != -1)
+                        .OrderBy(m => m.nombre)
+                        .ToList();
+
+                    ComboBox cboModelo = (ComboBox)pnlPrincipal.Controls.Find("cboModelo", true).FirstOrDefault();
+                    if (cboModelo != null)
+                    {
+                        cboModelo.DataSource = null;
+                        cboModelo.DisplayMember = "nombre";
+                        cboModelo.ValueMember = "id";
+                        cboModelo.DataSource = modelos;
+                        cboModelo.BindingContext = new BindingContext();
+
+                        // Seleccionar el primer modelo si hay alguno disponible
+                        if (modelos.Count > 0)
+                            cboModelo.SelectedIndex = 0;
+                    }
+                };
+
+                // Botón + para agregar nueva marca (siempre visible)
+                Button btnAddMarca = new Button
+                {
+                    Name = "btnAddMarca",
+                    Text = "+",
+                    Size = new Size(30, 28),
+                    //Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft),
+                    BackColor = Color.FromArgb(40, 167, 69),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = true
+                };
+                btnAddMarca.FlatAppearance.BorderSize = 0;
+                btnAddMarca.Click += (s, e) =>
+                {
+                    if (Util.usuario == null)
+                    {
+                        MessageBox.Show("Debe autenticarse para agregar una nueva marca", "Autenticación",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    try
+                    {
+                        using (var frm = new FrmNuevaMarca())
+                        {
+                            if (frm.ShowDialog(this) == DialogResult.OK)
+                            {
+                                int nuevaIdMarca = frm.NuevaIdMarca;
+
+                                // Volver a cargar las marcas para reflejar el cambio
+                                var marcas = MarcaCln.listar()
+                                    .Where(m => m.estado != -1)
+                                    .OrderBy(m => m.nombre)
+                                    .ToList();
+
+                                cboMarca.DataSource = null;
+                                cboMarca.DisplayMember = "nombre";
+                                cboMarca.ValueMember = "id";
+                                cboMarca.DataSource = marcas;
+                                cboMarca.BindingContext = new BindingContext();
+
+                                // Seleccionar la nueva marca si fue creada con éxito
+                                if (nuevaIdMarca > 0 && marcas.Any(m => m.id == nuevaIdMarca))
+                                    cboMarca.SelectedValue = nuevaIdMarca;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al agregar marca: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                // Button to view Marca description (visible even when not authenticated)
+                Button btnVerMarcaDesc = new Button
+                {
+                    Name = "btnVerMarcaDesc",
+                    Text = "👁️",
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = true
+                };
+                btnVerMarcaDesc.FlatAppearance.BorderSize = 0;
+                btnVerMarcaDesc.Click += (s, e) =>
+                {
+                    try
+                    {
+                        if (cboMarca.SelectedValue == null)
+                        {
+                            MessageBox.Show("No hay marca seleccionada.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        int idMarcaSel = Convert.ToInt32(cboMarca.SelectedValue);
+                        var marcaObj = MarcaCln.obtenerUno(idMarcaSel);
+                        string descripcion = (marcaObj != null && !string.IsNullOrWhiteSpace(marcaObj.descripcion)) ? marcaObj.descripcion : "(Sin descripción)";
+                        MessageBox.Show(descripcion, $"Descripción - {marcaObj?.nombre ?? "Marca"}", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al obtener descripción de la marca: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                btnAddMarca.Margin = new Padding(8, 0, 0, 0);
+                flpMarcaRow.Controls.Add(cboMarca);
+                flpMarcaRow.Controls.Add(btnVerMarcaDesc);
+                flpMarcaRow.Controls.Add(btnAddMarca);
+                pnlPrincipal.Controls.Add(flpMarcaRow);
+
+                yPosLeft += lineHeight;
+
+                // Modelo que AHORA EDITABLE - depende de marca
+                AgregarLabel(pnlPrincipal, "Modelo:", 20, yPosLeft, labelWidth);
+                ComboBox cboModelo = new ComboBox
+                {
+                    Name = "cboModelo",
+                    //Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+
+                // Botón + para agregar nuevo modelo (visible solo en modo edición)
+                Button btnAddModelo = new Button
+                {
+                    Name = "btnAddModelo",
+                    Text = "+",
+                    Size = new Size(30, 28),
+                    //Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft),
+                    BackColor = Color.FromArgb(40, 167, 69),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false
+                };
+                btnAddModelo.FlatAppearance.BorderSize = 0;
+                btnAddModelo.Click += (s, e) =>
+                {
+                    if (Util.usuario == null)
+                    {
+                        MessageBox.Show("Debe autenticarse para agregar un nuevo modelo", "Autenticación",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    try
+                    {
+                        if (cboMarca.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione primero una marca para asociar el nuevo modelo", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        int idMarcaSeleccionada = Convert.ToInt32(cboMarca.SelectedValue);
+                        int idTipoSeleccionado = (modeloActual != null) ? modeloActual.idTipoVehiculo : 0;
+
+                        using (var frm = new FrmNuevoModelo(idMarcaSeleccionada, idTipoSeleccionado))
+                        {
+                            if (frm.ShowDialog(this) == DialogResult.OK)
+                            {
+                                int nuevoIdModelo = frm.NuevoIdModelo;
+
+                                var modelos = ModeloVehiculoCln.listar()
+                                    .Where(m => m.idMarca == idMarcaSeleccionada && m.estado != -1)
+                                    .OrderBy(m => m.nombre)
+                                    .ToList();
+
+                                cboModelo.DataSource = null;
+                                cboModelo.DisplayMember = "nombre";
+                                cboModelo.ValueMember = "id";
+                                cboModelo.DataSource = modelos;
+                                cboModelo.BindingContext = new BindingContext();
+
+                                if (nuevoIdModelo > 0 && modelos.Any(m => m.id == nuevoIdModelo))
+                                    cboModelo.SelectedValue = nuevoIdModelo;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al agregar modelo: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                // Button to view Modelo description (visible even when not authenticated)
+                Button btnVerModeloDesc = new Button
+                {
+                    Name = "btnVerModeloDesc",
+                    Text = "👁️",
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = true
+                };
+                btnVerModeloDesc.FlatAppearance.BorderSize = 0;
+                btnVerModeloDesc.Click += (s, e) =>
+                {
+                    try
+                    {
+                        if (cboModelo.SelectedValue == null)
+                        {
+                            MessageBox.Show("No hay modelo seleccionado.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        int idModeloSel = Convert.ToInt32(cboModelo.SelectedValue);
+                        var modeloObj = ModeloVehiculoCln.obtenerUno(idModeloSel);
+                        string descripcion = (modeloObj != null && !string.IsNullOrWhiteSpace(modeloObj.descripcion)) ? modeloObj.descripcion : "(Sin descripción)";
+                        MessageBox.Show(descripcion, $"Descripción - {modeloObj?.nombre ?? "Modelo"}", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al obtener descripción del modelo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                // Agregar ComboBox y botón '+' dentro de un FlowLayoutPanel para modelo
+                FlowLayoutPanel flpModeloRow = new FlowLayoutPanel
+                {
+                    Name = "flpModeloRow",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth + 50, 28),
+                    FlowDirection = FlowDirection.LeftToRight,
+                    WrapContents = false,
+                    AutoSize = false
+                };
+                cboModelo.Location = new Point(0, 0);
+                cboModelo.Size = new Size(ctrlWidth, 28);
+                btnAddModelo.Margin = new Padding(8, 0, 0, 0);
+                flpModeloRow.Controls.Add(cboModelo);
+                flpModeloRow.Controls.Add(btnVerModeloDesc);
+                flpModeloRow.Controls.Add(btnAddModelo);
+                pnlPrincipal.Controls.Add(flpModeloRow);
+
+                yPosLeft += lineHeight;
+
+                // ==================== botones guardar/cancelar ====================
+                yPos += 20;
+                Button btnGuardar = new Button
+                {
+                    Text = "💾 Guardar Cambios",
+                    Location = new Point(20, yPos),
+                    Size = new Size(150, 40),
+                    BackColor = Color.FromArgb(40, 167, 69),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Enabled = false // habilitar solo en modo edición
+                };
+                btnGuardar.FlatAppearance.BorderSize = 0;
+                btnGuardar.Click += (s, e) =>
+                {
+                    try
+                    {
+                        // Validar campos requeridos
+                        foreach (Control ctrl in pnlPrincipal.Controls)
+                        {
+                            if (ctrl is TextBox txt && txt.ReadOnly == false && string.IsNullOrWhiteSpace(txt.Text))
+                            {
+                                MessageBox.Show($"El campo {ctrl.Tag} es obligatorio.", "Validación",
+                                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                txt.Focus();
+                                return;
+                            }
+                        }
+
+                        if (cboMarca.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione una marca válida.", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            cboMarca.Focus();
+                            return;
+                        }
+
+                        if (cboModelo.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione un modelo válido.", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            cboModelo.Focus();
+                            return;
+                        }
+
+                        // Obtener datos del vehículo desde los controles
+                        var vehiculoActualizar = new paVehiculoListar_Result
+                        {
+                            id = vehiculo.id,
+                            idMarca = Convert.ToInt32(cboMarca.SelectedValue),
+                            idModelo = Convert.ToInt32(cboModelo.SelectedValue),
+                            anioFabricacion = short.Parse(txtAnioFabricacion.Text),
+                            transmision = txtTransmision.Text,
+                            tieneTurbo = chkTurbo.Checked,
+                            motor = txtMotor.Text,
+                            confiabilidad = txtConfiabilidad.Text,
+                            puntuacion = decimal.Parse(txtPuntuacion.Text),
+                            combustible = txtCombustible.Text,
+                            foto = null // manejar por separado si se carga una nueva foto
+                        };
+
+                        // Si se eliminó la foto, establecer foto como null
+                        if (fotoEliminada)
+                        {
+                            vehiculoActualizar.foto = null;
+                        }
+                        else if (imagenCargada != null)
+                        {
+                            // Si se cargó una nueva foto, convertir a byte[]
+                            using (var ms = new System.IO.MemoryStream())
+                            {
+                                imagenCargada.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                                vehiculoActualizar.foto = ms.ToArray();
+                            }
+                        }
+
+                        // Actualizar vehículo en la base de datos

@@ -42,6 +42,7 @@ namespace ClnAuton
                     existente.generacion = vehiculo.generacion;
                     existente.paisFabricacion = vehiculo.paisFabricacion;
                     existente.transmision = vehiculo.transmision;
+                    existente.nroVelocidades = vehiculo.nroVelocidades;  // ⭐ NUEVO CAMPO
                     existente.tieneTurbo = vehiculo.tieneTurbo;
                     existente.motor = vehiculo.motor;
                     existente.combustible = vehiculo.combustible;
@@ -54,7 +55,7 @@ namespace ClnAuton
                     existente.observaciones = vehiculo.observaciones;
                     existente.usuarioRegistro = vehiculo.usuarioRegistro;
 
-                    // ⭐ FOTOGRAFÍA: actualizar solo si se indicó (permite establecer null para eliminar)
+                    // FOTOGRAFÍA: actualizar solo si se indicó
                     if (actualizarFoto)
                     {
                         existente.fotografia = vehiculo.fotografia;

@@ -227,6 +227,13 @@ ADD fotografia VARBINARY(MAX) NULL;
 
 PRINT 'Campo fotografia agregado a la tabla Vehiculo';
 
+ALTER TABLE Vehiculo
+ADD nroVelocidades INT NULL 
+    CHECK (nroVelocidades >= 4 AND nroVelocidades <= 10);
+
+PRINT 'Campo nroVelocidades agregado a la tabla Vehiculo';
+GO
+
 -- =====================================================
 -- PROCEDIMIENTOS ALMACENADOS
 -- =====================================================
@@ -244,9 +251,8 @@ AS
     INNER JOIN Cargo c ON e.idCargo = c.id
     WHERE u.usuario = @usuario AND u.clave = @clave AND u.estado = 1 AND e.estado = 1;
 
-
 GO
-CREATE PROC paVehiculoListar @parametro VARCHAR(100)
+ALTER PROC paVehiculoListar @parametro VARCHAR(100)
 AS
     SELECT v.id, 
            v.nroChasis,
@@ -254,57 +260,85 @@ AS
            m.nombre AS marca, 
            p.descripcion AS procedencia,
            tv.descripcion AS tipoVehiculo, 
-           v.generacion, v.paisFabricacion, v.transmision, v.tieneTurbo,
-           v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
-           v.anioFabricacion, v.confiabilidad, v.puntuacion,
-           v.kilometraje, v.observaciones,
-           -- ⭐ NUEVO: Indicador de si tiene foto (no devolvemos la foto completa para optimizar)
-           CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
-           v.usuarioRegistro, v.fechaRegistro, v.estado
+           v.generacion, 
+           v.paisFabricacion, 
+           v.transmision, 
+           v.nroVelocidades,
+           v.tieneTurbo,
+           v.motor, 
+           v.combustible, 
+           v.nroAirbags, 
+           v.seguridadChoques, 
+           v.organizacionSeguridad,
+           v.anioFabricacion, 
+           v.confiabilidad, 
+           v.puntuacion,
+           v.kilometraje, 
+           v.observaciones, 
+           v.usuarioRegistro, 
+           v.fechaRegistro, 
+           v.estado
     FROM Vehiculo v
     INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
     INNER JOIN Marca m ON mv.idMarca = m.id
     INNER JOIN Procedencia p ON m.idProcedencia = p.id
     INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
     WHERE v.estado <> -1 
-        AND (mv.nombre + m.nombre + p.descripcion + tv.descripcion + v.confiabilidad + 
-             v.generacion + v.paisFabricacion + v.transmision + ISNULL(v.motor, ''))
-            LIKE '%' + REPLACE(@parametro, ' ', '%') + '%'
+        AND (
+            CONCAT(
+                ISNULL(mv.nombre,''), ' ',
+                ISNULL(m.nombre,''), ' ',
+                ISNULL(p.descripcion,''), ' ',
+                ISNULL(tv.descripcion,''), ' ',
+                ISNULL(v.confiabilidad,''), ' ',
+                ISNULL(v.generacion,''), ' ',
+                ISNULL(v.paisFabricacion,''), ' ',
+                CAST(ISNULL(v.anioFabricacion, 0) AS VARCHAR(10)), ' ',
+                ISNULL(v.transmision,''), ' ',
+                ISNULL(v.motor,''), ' ',
+                CAST(ISNULL(v.puntuacion, 0) AS VARCHAR(10)), ' ',
+                ISNULL(v.combustible,'')
+            )
+        ) LIKE '%' + REPLACE(@parametro, ' ', '%') + '%'
     ORDER BY v.estado DESC, p.descripcion ASC, m.nombre ASC, mv.nombre ASC;
+GO
 
+PRINT 'Procedimiento paVehiculoListar actualizado';
+
+
+--GO
+--ALTER PROC paVehiculoListar @parametro VARCHAR(100)
+--AS
+--    SELECT v.id, 
+--           v.nroChasis,  -- ⭐ AGREGAR ESTA LÍNEA
+--           mv.nombre AS modelo, 
+--           m.nombre AS marca, 
+--           p.descripcion AS procedencia,
+--           tv.descripcion AS tipoVehiculo, 
+--           v.generacion, v.paisFabricacion, v.transmision, v.tieneTurbo,
+--           v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
+--           v.anioFabricacion, v.confiabilidad, v.puntuacion,
+--           v.kilometraje, v.observaciones, 
+--           v.usuarioRegistro, v.fechaRegistro, v.estado
+--    FROM Vehiculo v
+--    INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+--    INNER JOIN Marca m ON mv.idMarca = m.id
+--    INNER JOIN Procedencia p ON m.idProcedencia = p.id
+--    INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
+--    WHERE v.estado <> -1 
+--        AND (mv.nombre + m.nombre + p.descripcion + tv.descripcion + v.confiabilidad + 
+--             v.generacion + v.paisFabricacion + v.anioFabricacion + v.transmision + ISNULL(v.motor, '') + v.puntuacion + v.combustible)
+--            LIKE '%' + REPLACE(@parametro, ' ', '%') + '%'
+--    ORDER BY v.estado DESC, p.descripcion ASC, m.nombre ASC, mv.nombre ASC;
 
 GO
-ALTER PROC paVehiculoListar @parametro VARCHAR(100)
-AS
-    SELECT v.id, 
-           v.nroChasis,  -- ⭐ AGREGAR ESTA LÍNEA
-           mv.nombre AS modelo, 
-           m.nombre AS marca, 
-           p.descripcion AS procedencia,
-           tv.descripcion AS tipoVehiculo, 
-           v.generacion, v.paisFabricacion, v.transmision, v.tieneTurbo,
-           v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
-           v.anioFabricacion, v.confiabilidad, v.puntuacion,
-           v.kilometraje, v.observaciones, 
-           v.usuarioRegistro, v.fechaRegistro, v.estado
-    FROM Vehiculo v
-    INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
-    INNER JOIN Marca m ON mv.idMarca = m.id
-    INNER JOIN Procedencia p ON m.idProcedencia = p.id
-    INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
-    WHERE v.estado <> -1 
-        AND (mv.nombre + m.nombre + p.descripcion + tv.descripcion + v.confiabilidad + 
-             v.generacion + v.paisFabricacion + v.transmision + ISNULL(v.motor, ''))
-            LIKE '%' + REPLACE(@parametro, ' ', '%') + '%'
-    ORDER BY v.estado DESC, p.descripcion ASC, m.nombre ASC, mv.nombre ASC;
-
-GO
-CREATE PROC paVehiculoInsertar
+ALTER PROC paVehiculoInsertar
     @nroChasis VARCHAR(17),
     @idModeloVehiculo INT,
     @generacion VARCHAR(50),
     @paisFabricacion VARCHAR(50),
     @transmision VARCHAR(20),
+    @nroVelocidades INT = NULL,  -- ⭐ NUEVO PARÁMETRO
     @tieneTurbo BIT,
     @motor VARCHAR(50),
     @combustible VARCHAR(20),
@@ -315,27 +349,49 @@ CREATE PROC paVehiculoInsertar
     @confiabilidad VARCHAR(10),
     @puntuacion DECIMAL(3,1),
     @kilometraje INT = NULL,
-    @observaciones VARCHAR(500) = NULL
+    @observaciones VARCHAR(500) = NULL,
+    @fotografia VARBINARY(MAX) = NULL
 AS
+BEGIN
+    -- Validación: CVT no debe tener velocidades
+    IF @transmision = 'CVT' AND @nroVelocidades IS NOT NULL
+    BEGIN
+        RAISERROR('Las transmisiones CVT no tienen velocidades discretas', 16, 1);
+        RETURN;
+    END
+
+    -- Validación: Otras transmisiones deben tener velocidades
+    IF @transmision != 'CVT' AND @nroVelocidades IS NULL
+    BEGIN
+        RAISERROR('Debe especificar el número de velocidades para este tipo de transmisión', 16, 1);
+        RETURN;
+    END
+
     INSERT INTO Vehiculo (
-        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision,
+        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision, nroVelocidades,
         tieneTurbo, motor, combustible, nroAirbags, seguridadChoques, organizacionSeguridad,
-        anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones
+        anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones, fotografia
     )
     VALUES (
-        @nroChasis, @idModeloVehiculo, @generacion, @paisFabricacion, @transmision,
+        @nroChasis, @idModeloVehiculo, @generacion, @paisFabricacion, @transmision, @nroVelocidades,
         @tieneTurbo, @motor, @combustible, @nroAirbags, @seguridadChoques, @organizacionSeguridad,
-        @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones
+        @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones, @fotografia
     );
     
     SELECT SCOPE_IDENTITY() AS nuevoId;
+END
+GO
+
+PRINT 'Procedimiento paVehiculoInsertar actualizado';
+
 
 GO
-CREATE PROC paVehiculoActualizar
+ALTER PROC paVehiculoActualizar
     @id INT,
     @generacion VARCHAR(50),
     @paisFabricacion VARCHAR(50),
     @transmision VARCHAR(20),
+    @nroVelocidades INT = NULL,  --NUEVO PARÁMETRO
     @tieneTurbo BIT,
     @motor VARCHAR(50),
     @combustible VARCHAR(20),
@@ -346,8 +402,24 @@ CREATE PROC paVehiculoActualizar
     @confiabilidad VARCHAR(10),
     @puntuacion DECIMAL(3,1),
     @kilometraje INT = NULL,
-    @observaciones VARCHAR(500) = NULL
+    @observaciones VARCHAR(500) = NULL,
+    @fotografia VARBINARY(MAX) = NULL
 AS
+BEGIN
+    -- Validación: CVT no debe tener velocidades
+    IF @transmision = 'CVT' AND @nroVelocidades IS NOT NULL
+    BEGIN
+        RAISERROR('Las transmisiones CVT no tienen velocidades discretas', 16, 1);
+        RETURN;
+    END
+
+    -- Validación: Otras transmisiones deben tener velocidades
+    IF @transmision != 'CVT' AND @nroVelocidades IS NULL
+    BEGIN
+        RAISERROR('Debe especificar el número de velocidades para este tipo de transmisión', 16, 1);
+        RETURN;
+    END
+
     -- Guardar historial si cambia la confiabilidad
     IF EXISTS (SELECT 1 FROM Vehiculo WHERE id = @id AND confiabilidad != @confiabilidad)
         INSERT INTO HistorialConfiabilidad (idVehiculo, confiabilidadAnterior, confiabilidadNueva, 
@@ -360,6 +432,7 @@ AS
     SET generacion = @generacion,
         paisFabricacion = @paisFabricacion,
         transmision = @transmision,
+        nroVelocidades = @nroVelocidades,  -- ⭐ ACTUALIZAR CAMPO
         tieneTurbo = @tieneTurbo,
         motor = @motor,
         combustible = @combustible,
@@ -370,10 +443,17 @@ AS
         confiabilidad = @confiabilidad,
         puntuacion = @puntuacion,
         kilometraje = @kilometraje,
-        observaciones = @observaciones
+        observaciones = @observaciones,
+        fotografia = ISNULL(@fotografia, fotografia)
     WHERE id = @id;
     
     SELECT 'Actualizado correctamente' AS mensaje;
+END
+GO
+
+PRINT 'Procedimiento paVehiculoActualizar actualizado';
+
+
 
 GO
 CREATE PROC paVehiculoEliminar
@@ -429,12 +509,13 @@ AS
 -- PROCEDIMIENTO: Vehículos Japoneses
 -- =====================================================
 GO
-CREATE PROC paVehiculosJaponeses @parametro VARCHAR(100) = ''
+ALTER PROC paVehiculosJaponeses @parametro VARCHAR(100) = ''
 AS
 BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
-        tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, v.transmision, v.tieneTurbo,
+        tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
+        v.transmision, v.nroVelocidades, v.tieneTurbo,  -- ⭐ CAMPO AGREGADO
         v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
@@ -445,47 +526,44 @@ BEGIN
     INNER JOIN Procedencia p ON m.idProcedencia = p.id
     INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
     WHERE v.estado <> -1 AND p.descripcion = 'Japonés'
-        AND (@parametro = '' OR mv.nombre LIKE '%' + @parametro + '%'
-            OR m.nombre LIKE '%' + @parametro + '%' OR v.generacion LIKE '%' + @parametro + '%')
+          AND (
+            @parametro = '' 
+            OR mv.nombre LIKE '%' + @parametro + '%'
+            OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.generacion LIKE '%' + @parametro + '%'
+            OR v.motor LIKE '%' + @parametro + '%'
+            OR v.paisFabricacion LIKE '%' + @parametro + '%'
+            OR v.anioFabricacion LIKE '%' + @parametro + '%'
+            OR v.transmision LIKE '%' + @parametro + '%'
+            OR v.combustible LIKE '%' + @parametro + '%'
+            OR v.confiabilidad LIKE '%' + @parametro + '%'
+            OR v.puntuacion LIKE '%' + @parametro + '%'
+        )
+
     ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
 END
-GO
 
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Americanos
 -- =====================================================
-CREATE PROC paVehiculosAmericanos
-    @parametro VARCHAR(100) = ''
+GO
+ALTER PROC paVehiculosAmericanos @parametro VARCHAR(100) = ''
 AS
 BEGIN
     SELECT 
-        v.id, 
-        mv.nombre AS modelo, 
-        m.nombre AS marca, 
-        p.descripcion AS procedencia,
-        tv.descripcion AS tipoVehiculo, 
-        v.generacion, 
-        v.paisFabricacion, 
-        v.transmision, 
-        v.tieneTurbo,
-        v.motor, 
-        v.combustible, 
-        v.nroAirbags,
-        v.seguridadChoques,
-        v.organizacionSeguridad,
-        v.anioFabricacion, 
-        v.confiabilidad, 
-        v.puntuacion,
-        v.observaciones, 
-          CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
+        v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
+        tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
+        v.transmision, v.nroVelocidades, v.tieneTurbo,
+        v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
+        v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
+        CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
         v.usuarioRegistro, v.fechaRegistro, v.estado
     FROM Vehiculo v
     INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
     INNER JOIN Marca m ON mv.idMarca = m.id
     INNER JOIN Procedencia p ON m.idProcedencia = p.id
     INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
-    WHERE v.estado <> -1 
-        AND p.descripcion = 'Americano'
+    WHERE v.estado <> -1 AND p.descripcion = 'Americano'
         AND (
             @parametro = '' 
             OR mv.nombre LIKE '%' + @parametro + '%'
@@ -493,38 +571,30 @@ BEGIN
             OR v.generacion LIKE '%' + @parametro + '%'
             OR v.motor LIKE '%' + @parametro + '%'
             OR v.paisFabricacion LIKE '%' + @parametro + '%'
+            OR v.anioFabricacion LIKE '%' + @parametro + '%'
+            OR v.transmision LIKE '%' + @parametro + '%'
+            OR v.combustible LIKE '%' + @parametro + '%'
+            OR v.confiabilidad LIKE '%' + @parametro + '%'
+            OR v.puntuacion LIKE '%' + @parametro + '%'
         )
     ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
 END
-GO
 
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Chinos
 -- =====================================================
-CREATE PROC paVehiculosChinos
+GO
+ALTER PROC paVehiculosChinos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
     SELECT 
-        v.id, 
-        mv.nombre AS modelo, 
-        m.nombre AS marca, 
-        p.descripcion AS procedencia,
-        tv.descripcion AS tipoVehiculo, 
-        v.generacion, 
-        v.paisFabricacion, 
-        v.transmision, 
-        v.tieneTurbo,
-        v.motor, 
-        v.combustible, 
-        v.nroAirbags,
-        v.seguridadChoques,
-        v.organizacionSeguridad,
-        v.anioFabricacion, 
-        v.confiabilidad, 
-        v.puntuacion,
-        v.observaciones, 
-          CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
+        v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
+        tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
+        v.transmision, v.nroVelocidades, v.tieneTurbo,
+        v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
+        v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
+        CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
         v.usuarioRegistro, v.fechaRegistro, v.estado
     FROM Vehiculo v
     INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
@@ -540,15 +610,20 @@ BEGIN
             OR v.generacion LIKE '%' + @parametro + '%'
             OR v.motor LIKE '%' + @parametro + '%'
             OR v.paisFabricacion LIKE '%' + @parametro + '%'
+            OR v.anioFabricacion LIKE '%' + @parametro + '%'
+            OR v.transmision LIKE '%' + @parametro + '%'
+            OR v.combustible LIKE '%' + @parametro + '%'
+            OR v.confiabilidad LIKE '%' + @parametro + '%'
+            OR v.puntuacion LIKE '%' + @parametro + '%'
         )
     ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
 END
-GO
 
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Alemanes
 -- =====================================================
-CREATE PROC paVehiculosAlemanes
+GO
+ALTER PROC paVehiculosAlemanes
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -561,6 +636,7 @@ BEGIN
         v.generacion, 
         v.paisFabricacion, 
         v.transmision, 
+        v.nroVelocidades,
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
@@ -580,22 +656,27 @@ BEGIN
     INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
     WHERE v.estado <> -1 
         AND p.descripcion = 'Alemán'
-        AND (
+         AND (
             @parametro = '' 
             OR mv.nombre LIKE '%' + @parametro + '%'
             OR m.nombre LIKE '%' + @parametro + '%'
             OR v.generacion LIKE '%' + @parametro + '%'
             OR v.motor LIKE '%' + @parametro + '%'
             OR v.paisFabricacion LIKE '%' + @parametro + '%'
+            OR v.anioFabricacion LIKE '%' + @parametro + '%'
+            OR v.transmision LIKE '%' + @parametro + '%'
+            OR v.combustible LIKE '%' + @parametro + '%'
+            OR v.confiabilidad LIKE '%' + @parametro + '%'
+            OR v.puntuacion LIKE '%' + @parametro + '%'
         )
     ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
 END
-GO
 
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Europeos
 -- =====================================================
-CREATE PROC paVehiculosEuropeos
+GO
+ALTER PROC paVehiculosEuropeos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -608,6 +689,7 @@ BEGIN
         v.generacion, 
         v.paisFabricacion, 
         v.transmision, 
+        v.nroVelocidades,
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
@@ -627,22 +709,28 @@ BEGIN
     INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
     WHERE v.estado <> -1 
         AND p.descripcion = 'Europeo'
-        AND (
+         AND (
             @parametro = '' 
             OR mv.nombre LIKE '%' + @parametro + '%'
             OR m.nombre LIKE '%' + @parametro + '%'
             OR v.generacion LIKE '%' + @parametro + '%'
             OR v.motor LIKE '%' + @parametro + '%'
             OR v.paisFabricacion LIKE '%' + @parametro + '%'
+            OR v.anioFabricacion LIKE '%' + @parametro + '%'
+            OR v.transmision LIKE '%' + @parametro + '%'
+            OR v.combustible LIKE '%' + @parametro + '%'
+            OR v.confiabilidad LIKE '%' + @parametro + '%'
+            OR v.puntuacion LIKE '%' + @parametro + '%'
         )
     ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
 END
-GO
+
 
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Coreanos
 -- =====================================================
-CREATE PROC paVehiculosCoreanos
+GO
+ALTER PROC paVehiculosCoreanos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -655,6 +743,7 @@ BEGIN
         v.generacion, 
         v.paisFabricacion, 
         v.transmision, 
+        v.nroVelocidades,
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
@@ -674,13 +763,18 @@ BEGIN
     INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
     WHERE v.estado <> -1 
         AND p.descripcion = 'Coreano'
-        AND (
+         AND (
             @parametro = '' 
             OR mv.nombre LIKE '%' + @parametro + '%'
             OR m.nombre LIKE '%' + @parametro + '%'
             OR v.generacion LIKE '%' + @parametro + '%'
             OR v.motor LIKE '%' + @parametro + '%'
             OR v.paisFabricacion LIKE '%' + @parametro + '%'
+            OR v.anioFabricacion LIKE '%' + @parametro + '%'
+            OR v.transmision LIKE '%' + @parametro + '%'
+            OR v.combustible LIKE '%' + @parametro + '%'
+            OR v.confiabilidad LIKE '%' + @parametro + '%'
+            OR v.puntuacion LIKE '%' + @parametro + '%'
         )
     ORDER BY m.nombre ASC, mv.nombre ASC, v.anioFabricacion DESC;
 END
@@ -916,6 +1010,33 @@ INSERT INTO Vehiculo (
 -- Ford F-150 - Con y sin turbo
 ('8FTFW1ET5BFA67890', 7, 'Gen 14 (2021-actual)', 'Estados Unidos', 'Manual', 0, 'V8 5.0L', 'Gasolina', 6, 4, 'NHTSA', 2022, 'Excelente', 9.0, 12000, 'Motor V8 aspirado muy confiable'),
 ('9FTEW1E58BKE78901', 7, 'Gen 14 (2021-actual)', 'Estados Unidos', 'Automática', 1, '3.5L EcoBoost', 'Gasolina', 6, 4, 'NHTSA', 2022, 'Bueno', 7.5, 25000, 'Turbo tiene problemas ocasionales');
+
+
+-- Establecer velocidades por defecto según tipo de transmisión
+UPDATE Vehiculo
+SET nroVelocidades = CASE 
+    WHEN transmision = 'Manual' THEN 5
+    WHEN transmision = 'Automática' THEN 6
+    WHEN transmision = 'Semiautomática' THEN 6
+    WHEN transmision = 'Doble Embrague' THEN 7
+    WHEN transmision = 'CVT' THEN NULL
+    ELSE 5
+END
+WHERE nroVelocidades IS NULL;
+
+PRINT 'Datos existentes actualizados con valores por defecto';
+
+
+
+PRINT '========================================';
+PRINT 'CAMPO VELOCIDADES IMPLEMENTADO';
+PRINT '========================================';
+PRINT 'Reglas aplicadas:';
+PRINT '  • Manual: 4-6 velocidades';
+PRINT '  • Automática: 4-10 velocidades';
+PRINT '  • CVT: NULL (sin velocidades)';
+PRINT '  • Semiautomática/Doble Embrague: 6-8 vel.';
+PRINT '========================================';
 
 
 -- =====================================================
