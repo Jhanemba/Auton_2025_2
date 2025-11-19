@@ -1,0 +1,1322 @@
+﻿using CadAuton;
+using ClnAuton;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace CpAuton
+{
+    public partial class FrmGestionarMarcasModelos : Form
+    {
+        private bool modoEdicionMarca = false;
+        private bool modoEdicionModelo = false;
+        private int marcaSeleccionadaId = 0;
+        private int modeloSeleccionadoId = 0;
+
+        public FrmGestionarMarcasModelos()
+        {
+            InitializeComponent();
+        }
+
+        private void FrmGestionarMarcasModelos_Load(object sender, EventArgs e)
+        {
+            // Validar autenticación
+            if (Util.usuario == null)
+            {
+                MessageBox.Show("⚠️ Debe iniciar sesión para gestionar marcas y modelos.",
+                    "Acceso Restringido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.Close();
+                return;
+            }
+
+            ConfigurarFormulario();
+
+            // IMPORTANTE: Cargar datos DESPUÉS de crear el formulario para que los controles ya existan
+            this.Shown += (s, ev) =>
+            {
+                CargarProcedencias();
+                CargarMarcasCombo();
+                CargarMarcas();
+                CargarModelos();
+            };
+        }
+
+        private void ConfigurarFormulario()
+        {
+            this.Text = "🏭 Gestión de Marcas y Modelos - Sistema Auton";
+            this.Size = new Size(1300, 750);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = Color.FromArgb(248, 249, 250);
+
+            // Panel usuario
+            Panel pnlUsuario = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 50,
+                BackColor = Color.FromArgb(52, 58, 64),
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            Label lblUsuario = new Label
+            {
+                Text = $"👤 Usuario: {Util.usuario.nombreCompleto} | {Util.usuario.cargo}",
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                ForeColor = Color.White,
+                Location = new Point(20, 12),
+                AutoSize = true
+            };
+            pnlUsuario.Controls.Add(lblUsuario);
+
+            // TabControl principal
+            TabControl tabControl = new TabControl
+            {
+                Name = "tabControl",
+                Location = new Point(10, 60),
+                Size = new Size(1260, 630),
+                Font = new Font("Segoe UI", 10, FontStyle.Bold)
+            };
+
+            // Tab Marcas
+            TabPage tabMarcas = new TabPage
+            {
+                Text = "🏢 MARCAS",
+                BackColor = Color.White
+            };
+            CrearPestaniaMarcas(tabMarcas);
+            tabControl.TabPages.Add(tabMarcas);
+
+            // Tab Modelos
+            TabPage tabModelos = new TabPage
+            {
+                Text = "🚗 MODELOS",
+                BackColor = Color.White
+            };
+            CrearPestaniaModelos(tabModelos);
+            tabControl.TabPages.Add(tabModelos);
+
+            this.Controls.Add(pnlUsuario);
+            this.Controls.Add(tabControl);
+            // Nota: Eliminado btnCerrar de aquí, ahora está dentro de las pestañas
+        }
+
+        // ===== PESTAÑA MARCAS =====
+        private void CrearPestaniaMarcas(TabPage tab)
+        {
+            // Panel izquierdo - Formulario
+            Panel pnlFormMarca = new Panel
+            {
+                Location = new Point(10, 10),
+                Size = new Size(400, 560),
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            int yPos = 15;
+
+            Label lblTitulo = new Label
+            {
+                Text = "📋 DATOS DE LA MARCA",
+                Font = new Font("Segoe UI", 13, FontStyle.Bold),
+                ForeColor = Color.FromArgb(51, 122, 183),
+                Location = new Point(15, yPos),
+                Size = new Size(370, 30),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            pnlFormMarca.Controls.Add(lblTitulo);
+            yPos += 50;
+
+            // Procedencia
+            Label lblProcedencia = new Label
+            {
+                Text = "Procedencia:",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Location = new Point(15, yPos + 3),
+                Size = new Size(120, 25)
+            };
+            pnlFormMarca.Controls.Add(lblProcedencia);
+
+            ComboBox cboProcedenciaMarca = new ComboBox
+            {
+                Name = "cboProcedenciaMarca",
+                Location = new Point(140, yPos),
+                Size = new Size(240, 25),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10)
+            };
+            pnlFormMarca.Controls.Add(cboProcedenciaMarca);
+            yPos += 40;
+
+            // Nombre
+            Label lblNombre = new Label
+            {
+                Text = "Nombre:",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Location = new Point(15, yPos + 3),
+                Size = new Size(120, 25)
+            };
+            pnlFormMarca.Controls.Add(lblNombre);
+
+            TextBox txtNombreMarca = new TextBox
+            {
+                Name = "txtNombreMarca",
+                Location = new Point(140, yPos),
+                Size = new Size(240, 25),
+                Font = new Font("Segoe UI", 10),
+                MaxLength = 50
+            };
+            pnlFormMarca.Controls.Add(txtNombreMarca);
+            yPos += 40;
+
+            // Descripción
+            Label lblDescripcion = new Label
+            {
+                Text = "Descripción:",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Location = new Point(15, yPos + 3),
+                Size = new Size(120, 25)
+            };
+            pnlFormMarca.Controls.Add(lblDescripcion);
+            yPos += 30;
+
+            TextBox txtDescripcionMarca = new TextBox
+            {
+                Name = "txtDescripcionMarca",
+                Location = new Point(15, yPos),
+                Size = new Size(365, 100),
+                Multiline = true,
+                ScrollBars = ScrollBars.Vertical,
+                Font = new Font("Segoe UI", 10),
+                MaxLength = 250
+            };
+            pnlFormMarca.Controls.Add(txtDescripcionMarca);
+            yPos += 120;
+
+            // Botones
+            Button btnNuevoMarca = new Button
+            {
+                Name = "btnNuevoMarca",
+                Text = "➕ Nuevo",
+                Size = new Size(110, 40),
+                Location = new Point(15, yPos),
+                BackColor = Color.FromArgb(40, 167, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnNuevoMarca.FlatAppearance.BorderSize = 0;
+            btnNuevoMarca.Click += BtnNuevoMarca_Click;
+            pnlFormMarca.Controls.Add(btnNuevoMarca);
+
+            Button btnGuardarMarca = new Button
+            {
+                Name = "btnGuardarMarca",
+                Text = "💾 Guardar",
+                Size = new Size(110, 40),
+                Location = new Point(140, yPos),
+                BackColor = Color.FromArgb(0, 123, 255),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnGuardarMarca.FlatAppearance.BorderSize = 0;
+            btnGuardarMarca.Click += BtnGuardarMarca_Click;
+            pnlFormMarca.Controls.Add(btnGuardarMarca);
+
+            Button btnCancelarMarca = new Button
+            {
+                Name = "btnCancelarMarca",
+                Text = "🚫 Cancelar",
+                Size = new Size(110, 40),
+                Location = new Point(265, yPos),
+                BackColor = Color.FromArgb(108, 117, 125),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnCancelarMarca.FlatAppearance.BorderSize = 0;
+            btnCancelarMarca.Click += BtnCancelarMarca_Click;
+            pnlFormMarca.Controls.Add(btnCancelarMarca);
+
+            // Panel derecho - Grid
+            Panel pnlGridMarca = new Panel
+            {
+                Location = new Point(420, 10),
+                Size = new Size(820, 560),
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            Label lblTituloGrid = new Label
+            {
+                Text = "📊 LISTA DE MARCAS",
+                Font = new Font("Segoe UI", 13, FontStyle.Bold),
+                ForeColor = Color.FromArgb(51, 122, 183),
+                Location = new Point(15, 15),
+                Size = new Size(790, 30),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            pnlGridMarca.Controls.Add(lblTituloGrid);
+
+            // Búsqueda
+            Label lblBuscarMarca = new Label
+            {
+                Text = "🔍 Buscar:",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Location = new Point(15, 55),
+                Size = new Size(80, 25)
+            };
+            pnlGridMarca.Controls.Add(lblBuscarMarca);
+
+            TextBox txtBuscarMarca = new TextBox
+            {
+                Name = "txtBuscarMarca",
+                Location = new Point(100, 55),
+                Size = new Size(400, 25),
+                Font = new Font("Segoe UI", 10)
+            };
+            txtBuscarMarca.TextChanged += TxtBuscarMarca_TextChanged;
+            pnlGridMarca.Controls.Add(txtBuscarMarca);
+
+            Label lblTotalMarcas = new Label
+            {
+                Name = "lblTotalMarcas",
+                Text = "Total: 0 marcas",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.FromArgb(52, 58, 64),
+                Location = new Point(520, 55),
+                Size = new Size(250, 25)
+            };
+            pnlGridMarca.Controls.Add(lblTotalMarcas);
+
+            DataGridView dgvMarcas = new DataGridView
+            {
+                Name = "dgvMarcas",
+                Location = new Point(15, 90),
+                Size = new Size(790, 420),
+                AutoGenerateColumns = false,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                ReadOnly = true,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                MultiSelect = false,
+                BackgroundColor = Color.White,
+                Font = new Font("Segoe UI", 9)
+            };
+
+            dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colIdMarca", DataPropertyName = "id", HeaderText = "ID", Width = 60 });
+            dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colProcedencia", DataPropertyName = "procedencia", HeaderText = "Procedencia", Width = 150 });
+            dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colNombreMarca", DataPropertyName = "nombre", HeaderText = "Marca", Width = 200 });
+            dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colDescripcionMarca", DataPropertyName = "descripcion", HeaderText = "Descripción", Width = 350 });
+
+            dgvMarcas.SelectionChanged += DgvMarcas_SelectionChanged;
+            pnlGridMarca.Controls.Add(dgvMarcas);
+
+            Button btnEliminarMarca = new Button
+            {
+                Name = "btnEliminarMarca",
+                Text = "🗑️ Eliminar Marca",
+                Size = new Size(160, 40),
+                Location = new Point(530, 520),  // Ajustado para hacer espacio a la derecha
+                BackColor = Color.FromArgb(220, 53, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnEliminarMarca.FlatAppearance.BorderSize = 0;
+            btnEliminarMarca.Click += BtnEliminarMarca_Click;
+            pnlGridMarca.Controls.Add(btnEliminarMarca);
+
+            // Botón Cerrar a la derecha de Eliminar
+            Button btnCerrarMarca = new Button
+            {
+                Text = "❌ Cerrar",
+                Size = new Size(120, 40),
+                Location = new Point(700, 520),  // A la derecha de btnEliminarMarca (530 + 160 + 10 = 700)
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnCerrarMarca.FlatAppearance.BorderSize = 0;
+            btnCerrarMarca.Click += (s, e) => this.Close();
+            pnlGridMarca.Controls.Add(btnCerrarMarca);
+
+            tab.Controls.Add(pnlFormMarca);
+            tab.Controls.Add(pnlGridMarca);
+        }
+
+        // ===== PESTAÑA MODELOS =====
+        private void CrearPestaniaModelos(TabPage tab)
+        {
+            // Panel izquierdo - Formulario
+            Panel pnlFormModelo = new Panel
+            {
+                Location = new Point(10, 10),
+                Size = new Size(400, 560),
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            int yPos = 15;
+
+            Label lblTitulo = new Label
+            {
+                Text = "📋 DATOS DEL MODELO",
+                Font = new Font("Segoe UI", 13, FontStyle.Bold),
+                ForeColor = Color.FromArgb(51, 122, 183),
+                Location = new Point(15, yPos),
+                Size = new Size(370, 30),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            pnlFormModelo.Controls.Add(lblTitulo);
+            yPos += 50;
+
+            // Marca
+            Label lblMarca = new Label
+            {
+                Text = "Marca:",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Location = new Point(15, yPos + 3),
+                Size = new Size(120, 25)
+            };
+            pnlFormModelo.Controls.Add(lblMarca);
+
+            ComboBox cboMarcaModelo = new ComboBox
+            {
+                Name = "cboMarcaModelo",
+                Location = new Point(140, yPos),
+                Size = new Size(240, 25),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10)
+            };
+            pnlFormModelo.Controls.Add(cboMarcaModelo);
+            yPos += 40;
+
+            // Nombre Modelo
+            Label lblNombreModelo = new Label
+            {
+                Text = "Nombre:",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Location = new Point(15, yPos + 3),
+                Size = new Size(120, 25)
+            };
+            pnlFormModelo.Controls.Add(lblNombreModelo);
+
+            TextBox txtNombreModelo = new TextBox
+            {
+                Name = "txtNombreModelo",
+                Location = new Point(140, yPos),
+                Size = new Size(240, 25),
+                Font = new Font("Segoe UI", 10),
+                MaxLength = 100
+            };
+            pnlFormModelo.Controls.Add(txtNombreModelo);
+            yPos += 40;
+
+            // Descripción
+            Label lblDescModelo = new Label
+            {
+                Text = "Descripción:",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Location = new Point(15, yPos + 3),
+                Size = new Size(120, 25)
+            };
+            pnlFormModelo.Controls.Add(lblDescModelo);
+            yPos += 30;
+
+            TextBox txtDescripcionModelo = new TextBox
+            {
+                Name = "txtDescripcionModelo",
+                Location = new Point(15, yPos),
+                Size = new Size(365, 100),
+                Multiline = true,
+                ScrollBars = ScrollBars.Vertical,
+                Font = new Font("Segoe UI", 10),
+                MaxLength = 500
+            };
+            pnlFormModelo.Controls.Add(txtDescripcionModelo);
+            yPos += 120;
+
+            // Botones
+            Button btnNuevoModelo = new Button
+            {
+                Name = "btnNuevoModelo",
+                Text = "➕ Nuevo",
+                Size = new Size(110, 40),
+                Location = new Point(15, yPos),
+                BackColor = Color.FromArgb(40, 167, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnNuevoModelo.FlatAppearance.BorderSize = 0;
+            btnNuevoModelo.Click += BtnNuevoModelo_Click;
+            pnlFormModelo.Controls.Add(btnNuevoModelo);
+
+            Button btnGuardarModelo = new Button
+            {
+                Name = "btnGuardarModelo",
+                Text = "💾 Guardar",
+                Size = new Size(110, 40),
+                Location = new Point(140, yPos),
+                BackColor = Color.FromArgb(0, 123, 255),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnGuardarModelo.FlatAppearance.BorderSize = 0;
+            btnGuardarModelo.Click += BtnGuardarModelo_Click;
+            pnlFormModelo.Controls.Add(btnGuardarModelo);
+
+            Button btnCancelarModelo = new Button
+            {
+                Name = "btnCancelarModelo",
+                Text = "🚫 Cancelar",
+                Size = new Size(110, 40),
+                Location = new Point(265, yPos),
+                BackColor = Color.FromArgb(108, 117, 125),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnCancelarModelo.FlatAppearance.BorderSize = 0;
+            btnCancelarModelo.Click += BtnCancelarModelo_Click;
+            pnlFormModelo.Controls.Add(btnCancelarModelo);
+
+            // Panel derecho - Grid
+            Panel pnlGridModelo = new Panel
+            {
+                Location = new Point(420, 10),
+                Size = new Size(820, 560),
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            Label lblTituloGridMod = new Label
+            {
+                Text = "📊 LISTA DE MODELOS",
+                Font = new Font("Segoe UI", 13, FontStyle.Bold),
+                ForeColor = Color.FromArgb(51, 122, 183),
+                Location = new Point(15, 15),
+                Size = new Size(790, 30),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            pnlGridModelo.Controls.Add(lblTituloGridMod);
+
+            // Búsqueda
+            Label lblBuscarModelo = new Label
+            {
+                Text = "🔍 Buscar:",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Location = new Point(15, 55),
+                Size = new Size(80, 25)
+            };
+            pnlGridModelo.Controls.Add(lblBuscarModelo);
+
+            TextBox txtBuscarModelo = new TextBox
+            {
+                Name = "txtBuscarModelo",
+                Location = new Point(100, 55),
+                Size = new Size(400, 25),
+                Font = new Font("Segoe UI", 10)
+            };
+            txtBuscarModelo.TextChanged += TxtBuscarModelo_TextChanged;
+            pnlGridModelo.Controls.Add(txtBuscarModelo);
+
+            Label lblTotalModelos = new Label
+            {
+                Name = "lblTotalModelos",
+                Text = "Total: 0 modelos",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.FromArgb(52, 58, 64),
+                Location = new Point(520, 55),
+                Size = new Size(250, 25)
+            };
+            pnlGridModelo.Controls.Add(lblTotalModelos);
+
+            DataGridView dgvModelos = new DataGridView
+            {
+                Name = "dgvModelos",
+                Location = new Point(15, 90),
+                Size = new Size(790, 420),
+                AutoGenerateColumns = false,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                ReadOnly = true,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                MultiSelect = false,
+                BackgroundColor = Color.White,
+                Font = new Font("Segoe UI", 9)
+            };
+
+            dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colIdModelo", DataPropertyName = "id", HeaderText = "ID", Width = 60 });
+            dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colMarcaModelo", DataPropertyName = "marca", HeaderText = "Marca", Width = 150 });
+            //dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colTipoModelo", DataPropertyName = "tipoVehiculo", HeaderText = "Tipo", Width = 120 });
+            dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colNombreModelo", DataPropertyName = "nombre", HeaderText = "Modelo", Width = 200 });
+            dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colDescModelo", DataPropertyName = "descripcion", HeaderText = "Descripción", Width = 230 });
+
+            dgvModelos.SelectionChanged += DgvModelos_SelectionChanged;
+            pnlGridModelo.Controls.Add(dgvModelos);
+
+            Button btnEliminarModelo = new Button
+            {
+                Name = "btnEliminarModelo",
+                Text = "🗑️ Eliminar Modelo",
+                Size = new Size(160, 40),
+                Location = new Point(530, 520),  // Ajustado para hacer espacio a la derecha
+                BackColor = Color.FromArgb(220, 53, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnEliminarModelo.FlatAppearance.BorderSize = 0;
+            btnEliminarModelo.Click += BtnEliminarModelo_Click;
+            pnlGridModelo.Controls.Add(btnEliminarModelo);
+
+            // Botón Cerrar a la derecha de Eliminar
+            Button btnCerrarModelo = new Button
+            {
+                Text = "❌ Cerrar",
+                Size = new Size(120, 40),
+                Location = new Point(700, 520),  // A la derecha de btnEliminarModelo (530 + 160 + 10 = 700)
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnCerrarModelo.FlatAppearance.BorderSize = 0;
+            btnCerrarModelo.Click += (s, e) => this.Close();
+            pnlGridModelo.Controls.Add(btnCerrarModelo);
+
+            tab.Controls.Add(pnlFormModelo);
+            tab.Controls.Add(pnlGridModelo);
+        }
+
+        // ===== MÉTODOS AUXILIARES =====
+        private Control BuscarControlEnTab(string nombreControl, string nombreTab)
+        {
+            var tabControl = this.Controls.Find("tabControl", true).FirstOrDefault() as TabControl;
+            if (tabControl == null) return null;
+
+            TabPage tab = null;
+            foreach (TabPage tp in tabControl.TabPages)
+            {
+                if (tp.Text.Contains(nombreTab))
+                {
+                    tab = tp;
+                    break;
+                }
+            }
+
+            if (tab == null) return null;
+
+            return BuscarControlRecursivo(tab, nombreControl);
+        }
+
+        private Control BuscarControlRecursivo(Control parent, string nombre)
+        {
+            if (parent.Name == nombre)
+                return parent;
+
+            foreach (Control child in parent.Controls)
+            {
+                var found = BuscarControlRecursivo(child, nombre);
+                if (found != null)
+                    return found;
+            }
+
+            return null;
+        }
+
+        // ===== MÉTODOS DE CARGA =====
+        private void CargarProcedencias()
+        {
+            try
+            {
+                var cboProcedencia = BuscarControlEnTab("cboProcedenciaMarca", "MARCAS") as ComboBox;
+                if (cboProcedencia == null) return;
+
+                var procedencias = ProcedenciaCln.listar();
+                cboProcedencia.DataSource = procedencias;
+                cboProcedencia.DisplayMember = "descripcion";
+                cboProcedencia.ValueMember = "id";
+                cboProcedencia.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar procedencias: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CargarMarcasCombo()
+        {
+            try
+            {
+                var cboMarca = BuscarControlEnTab("cboMarcaModelo", "MODELOS") as ComboBox;
+                if (cboMarca == null) return;
+
+                var marcas = MarcaCln.listar();
+                cboMarca.DataSource = marcas;
+                cboMarca.DisplayMember = "nombre";
+                cboMarca.ValueMember = "id";
+                cboMarca.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar marcas: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CargarMarcas()
+        {
+            try
+            {
+                var dgv = BuscarControlEnTab("dgvMarcas", "MARCAS") as DataGridView;
+                if (dgv == null) return;
+
+                // Forzar la carga de datos DENTRO del contexto
+                using (var context = new AutonEntities())
+                {
+                    var marcas = context.Marca
+                        .Where(m => m.estado != -1)
+                        .Select(m => new
+                        {
+                            m.id,
+                            procedencia = m.Procedencia.descripcion,
+                            m.nombre,
+                            m.descripcion
+                        })
+                        .ToList(); // ToList() ejecuta la consulta ANTES de cerrar el contexto
+
+                    dgv.DataSource = marcas;
+
+                    var lblTotal = BuscarControlEnTab("lblTotalMarcas", "MARCAS") as Label;
+                    if (lblTotal != null)
+                        lblTotal.Text = $"Total: {marcas.Count} marcas";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar marcas: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CargarModelos()
+        {
+            try
+            {
+                var dgv = BuscarControlEnTab("dgvModelos", "MODELOS") as DataGridView;
+                if (dgv == null) return;
+
+                // Forzar la carga de datos DENTRO del contexto
+                using (var context = new AutonEntities())
+                {
+                    var modelos = context.ModeloVehiculo
+                        .Where(m => m.estado != -1)
+                        .Select(m => new
+                        {
+                            m.id,
+                            marca = m.Marca.nombre,
+                            //tipoVehiculo = m.TipoVehiculo.descripcion,
+                            m.nombre,
+                            m.descripcion
+                        })
+                        .ToList(); // ToList() ejecuta la consulta ANTES de cerrar el contexto
+
+                    dgv.DataSource = modelos;
+
+                    var lblTotal = BuscarControlEnTab("lblTotalModelos", "MODELOS") as Label;
+                    if (lblTotal != null)
+                        lblTotal.Text = $"Total: {modelos.Count} modelos";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar modelos: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ===== EVENTOS MARCAS =====
+        private void BtnNuevoMarca_Click(object sender, EventArgs e)
+        {
+            modoEdicionMarca = false;
+            marcaSeleccionadaId = 0;
+            LimpiarFormularioMarca();
+
+            var btnGuardar = BuscarControlEnTab("btnGuardarMarca", "MARCAS") as Button;
+            var btnCancelar = BuscarControlEnTab("btnCancelarMarca", "MARCAS") as Button;
+
+            if (btnGuardar != null) { btnGuardar.Text = "💾 Guardar"; btnGuardar.Enabled = true; }
+            if (btnCancelar != null) btnCancelar.Enabled = true;
+
+            var txtNombre = BuscarControlEnTab("txtNombreMarca", "MARCAS") as TextBox;
+            if (txtNombre != null) txtNombre.Focus();
+        }
+
+        private void BtnGuardarMarca_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var cboProcedencia = BuscarControlEnTab("cboProcedenciaMarca", "MARCAS") as ComboBox;
+                var txtNombre = BuscarControlEnTab("txtNombreMarca", "MARCAS") as TextBox;
+                var txtDescripcion = BuscarControlEnTab("txtDescripcionMarca", "MARCAS") as TextBox;
+
+                // Validaciones
+                if (cboProcedencia.SelectedIndex == -1)
+                {
+                    MessageBox.Show("⚠️ Debe seleccionar una procedencia", "Validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cboProcedencia.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtNombre.Text))
+                {
+                    MessageBox.Show("⚠️ El nombre de la marca es obligatorio", "Validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtNombre.Focus();
+                    return;
+                }
+
+                Marca marca;
+                if (modoEdicionMarca)
+                {
+                    marca = MarcaCln.obtenerUno(marcaSeleccionadaId);
+                    if (marca == null)
+                    {
+                        MessageBox.Show("❌ No se encontró la marca a actualizar", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    marca = new Marca
+                    {
+                        estado = 1,  // CRÍTICO: Inicializar estado
+                        fechaRegistro = DateTime.Now  // CRÍTICO: Inicializar fecha
+                    };
+                }
+
+                marca.idProcedencia = (int)cboProcedencia.SelectedValue;
+                marca.nombre = txtNombre.Text.Trim();
+                marca.descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text) ?
+                    null : txtDescripcion.Text.Trim();
+                marca.usuarioRegistro = Util.usuario.usuario;
+
+                int resultado;
+                string mensaje;
+
+                if (modoEdicionMarca)
+                {
+                    resultado = MarcaCln.actualizar(marca);
+                    mensaje = resultado > 0 ?
+                        "✅ Marca actualizada exitosamente" :
+                        "❌ No se pudo actualizar la marca";
+                }
+                else
+                {
+                    resultado = MarcaCln.insertar(marca);
+                    mensaje = resultado > 0 ?
+                        "✅ Marca registrada exitosamente" :
+                        "❌ No se pudo registrar la marca";
+                }
+
+                if (resultado > 0)
+                {
+                    MessageBox.Show(mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LimpiarFormularioMarca();
+                    CargarMarcas();
+                    CargarMarcasCombo();
+
+                    var btnGuardar = BuscarControlEnTab("btnGuardarMarca", "MARCAS") as Button;
+                    var btnCancelar = BuscarControlEnTab("btnCancelarMarca", "MARCAS") as Button;
+                    if (btnGuardar != null) btnGuardar.Enabled = false;
+                    if (btnCancelar != null) btnCancelar.Enabled = false;
+                }
+                else
+                {
+                    MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Error al guardar marca: {ex.Message}\n\nStack Trace: {ex.StackTrace}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnCancelarMarca_Click(object sender, EventArgs e)
+        {
+            LimpiarFormularioMarca();
+            modoEdicionMarca = false;
+            marcaSeleccionadaId = 0;
+
+            var btnGuardar = this.Controls.Find("btnGuardarMarca", true)[0] as Button;
+            var btnCancelar = this.Controls.Find("btnCancelarMarca", true)[0] as Button;
+            btnGuardar.Enabled = false;
+            btnCancelar.Enabled = false;
+
+            var dgv = this.Controls.Find("dgvMarcas", true)[0] as DataGridView;
+            dgv.ClearSelection();
+        }
+
+        private void BtnEliminarMarca_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var dgv = this.Controls.Find("dgvMarcas", true)[0] as DataGridView;
+
+                if (dgv.CurrentRow == null)
+                {
+                    MessageBox.Show("⚠️ Debe seleccionar una marca para eliminar", "Validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int idMarca = Convert.ToInt32(dgv.CurrentRow.Cells["colIdMarca"].Value);
+                string nombreMarca = dgv.CurrentRow.Cells["colNombreMarca"].Value.ToString();
+
+                DialogResult resultado = MessageBox.Show(
+                    $"⚠️ ¿Está seguro que desea eliminar la marca '{nombreMarca}'?\n\n" +
+                    $"ADVERTENCIA: Esto eliminará también todos los modelos asociados.",
+                    "Confirmar Eliminación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (resultado == DialogResult.Yes)
+                {
+                    int resultadoOp = MarcaCln.eliminar(idMarca, Util.usuario.usuario);
+
+                    if (resultadoOp > 0)
+                    {
+                        MessageBox.Show("✅ Marca eliminada exitosamente", "Éxito",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        CargarMarcas();
+                        CargarModelos();
+                        CargarMarcasCombo();
+                        LimpiarFormularioMarca();
+                    }
+                    else
+                    {
+                        MessageBox.Show("❌ No se pudo eliminar la marca", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Error al eliminar: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void DgvMarcas_SelectionChanged(object sender, EventArgs e)
+        {
+            var dgv = sender as DataGridView;
+            var btnEliminar = BuscarControlEnTab("btnEliminarMarca", "MARCAS") as Button;
+
+            if (dgv.CurrentRow != null && btnEliminar != null)
+            {
+                btnEliminar.Enabled = true;
+                int idMarca = Convert.ToInt32(dgv.CurrentRow.Cells["colIdMarca"].Value);
+                CargarDatosMarca(idMarca);
+            }
+            else
+            {
+                if (btnEliminar != null) btnEliminar.Enabled = false;
+            }
+        }
+
+        private void CargarDatosMarca(int id)
+        {
+            try
+            {
+                var marca = MarcaCln.obtenerUno(id);
+                if (marca == null) return;
+
+                modoEdicionMarca = true;
+                marcaSeleccionadaId = id;
+
+                var cboProcedencia = BuscarControlEnTab("cboProcedenciaMarca", "MARCAS") as ComboBox;
+                var txtNombre = BuscarControlEnTab("txtNombreMarca", "MARCAS") as TextBox;
+                var txtDescripcion = BuscarControlEnTab("txtDescripcionMarca", "MARCAS") as TextBox;
+
+                if (cboProcedencia != null) cboProcedencia.SelectedValue = marca.idProcedencia;
+                if (txtNombre != null) txtNombre.Text = marca.nombre;
+                if (txtDescripcion != null) txtDescripcion.Text = marca.descripcion ?? "";
+
+                var btnGuardar = BuscarControlEnTab("btnGuardarMarca", "MARCAS") as Button;
+                var btnCancelar = BuscarControlEnTab("btnCancelarMarca", "MARCAS") as Button;
+                if (btnGuardar != null) { btnGuardar.Text = "💾 Actualizar"; btnGuardar.Enabled = true; }
+                if (btnCancelar != null) btnCancelar.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar datos de la marca: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void TxtBuscarMarca_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                var txt = sender as TextBox;
+                var dgv = BuscarControlEnTab("dgvMarcas", "MARCAS") as DataGridView;
+                var lblTotal = BuscarControlEnTab("lblTotalMarcas", "MARCAS") as Label;
+
+                if (dgv == null) return;
+
+                string filtro = txt.Text.Trim().ToLower();
+
+                using (var context = new AutonEntities())
+                {
+                    var marcas = context.Marca
+                        .Where(m => m.estado != -1 &&
+                               (m.nombre.ToLower().Contains(filtro) ||
+                                m.Procedencia.descripcion.ToLower().Contains(filtro)))
+                        .Select(m => new
+                        {
+                            m.id,
+                            procedencia = m.Procedencia.descripcion,
+                            m.nombre,
+                            m.descripcion
+                        })
+                        .ToList();
+
+                    dgv.DataSource = marcas;
+                    if (lblTotal != null) lblTotal.Text = $"Total: {marcas.Count} marcas";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error en búsqueda: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LimpiarFormularioMarca()
+        {
+            var cboProcedencia = BuscarControlEnTab("cboProcedenciaMarca", "MARCAS") as ComboBox;
+            var txtNombre = BuscarControlEnTab("txtNombreMarca", "MARCAS") as TextBox;
+            var txtDescripcion = BuscarControlEnTab("txtDescripcionMarca", "MARCAS") as TextBox;
+
+            if (cboProcedencia != null) cboProcedencia.SelectedIndex = -1;
+            if (txtNombre != null) txtNombre.Clear();
+            if (txtDescripcion != null) txtDescripcion.Clear();
+        }
+
+        // ===== EVENTOS MODELOS =====
+        private void BtnNuevoModelo_Click(object sender, EventArgs e)
+        {
+            modoEdicionModelo = false;
+            modeloSeleccionadoId = 0;
+            LimpiarFormularioModelo();
+
+            var btnGuardar = BuscarControlEnTab("btnGuardarModelo", "MODELOS") as Button;
+            var btnCancelar = BuscarControlEnTab("btnCancelarModelo", "MODELOS") as Button;
+            if (btnGuardar != null) { btnGuardar.Text = "💾 Guardar"; btnGuardar.Enabled = true; }
+            if (btnCancelar != null) btnCancelar.Enabled = true;
+
+            var cboMarca = BuscarControlEnTab("cboMarcaModelo", "MODELOS") as ComboBox;
+            if (cboMarca != null) cboMarca.Focus();
+        }
+
+        private void BtnGuardarModelo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var cboMarca = BuscarControlEnTab("cboMarcaModelo", "MODELOS") as ComboBox;
+                var txtNombre = BuscarControlEnTab("txtNombreModelo", "MODELOS") as TextBox;
+                var txtDescripcion = BuscarControlEnTab("txtDescripcionModelo", "MODELOS") as TextBox;
+
+                // Validaciones
+                if (cboMarca.SelectedIndex == -1)
+                {
+                    MessageBox.Show("⚠️ Debe seleccionar una marca", "Validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cboMarca.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtNombre.Text))
+                {
+                    MessageBox.Show("⚠️ El nombre del modelo es obligatorio", "Validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtNombre.Focus();
+                    return;
+                }
+
+                ModeloVehiculo modelo;
+                if (modoEdicionModelo)
+                {
+                    modelo = ModeloVehiculoCln.obtenerUno(modeloSeleccionadoId);
+                    if (modelo == null)
+                    {
+                        MessageBox.Show("❌ No se encontró el modelo a actualizar", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    modelo = new ModeloVehiculo
+                    {
+                        estado = 1,  // CRÍTICO
+                        fechaRegistro = DateTime.Now  // CRÍTICO
+                    };
+                }
+
+                modelo.idMarca = (int)cboMarca.SelectedValue;
+
+                // Asignar tipo por defecto si no se proporcionó (evita FK null/0)
+                if (modelo.idTipoVehiculo == 0)
+                {
+                    try
+                    {
+                        var tipos = TipoVehiculoCln.listar();
+                        if (tipos != null && tipos.Any())
+                            modelo.idTipoVehiculo = tipos.First().id;
+                        else
+                            modelo.idTipoVehiculo = 1; // fallback seguro
+                    }
+                    catch
+                    {
+                        modelo.idTipoVehiculo = 1; // fallback seguro
+                    }
+                }
+
+                modelo.nombre = txtNombre.Text.Trim();
+                modelo.descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text) ?
+                    null : txtDescripcion.Text.Trim();
+                modelo.usuarioRegistro = Util.usuario.usuario;
+
+                int resultado;
+                string mensaje;
+
+                if (modoEdicionModelo)
+                {
+                    resultado = ModeloVehiculoCln.actualizar(modelo);
+                    mensaje = resultado > 0 ?
+                        "✅ Modelo actualizado exitosamente" :
+                        "❌ No se pudo actualizar el modelo";
+                }
+                else
+                {
+                    resultado = ModeloVehiculoCln.insertar(modelo);
+                    mensaje = resultado > 0 ?
+                        "✅ Modelo registrado exitosamente" :
+                        "❌ No se pudo registrar el modelo";
+                }
+
+                if (resultado > 0)
+                {
+                    MessageBox.Show(mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LimpiarFormularioModelo();
+                    CargarModelos();
+
+                    var btnGuardar = BuscarControlEnTab("btnGuardarModelo", "MODELOS") as Button;
+                    var btnCancelar = BuscarControlEnTab("btnCancelarModelo", "MODELOS") as Button;
+                    if (btnGuardar != null) btnGuardar.Enabled = false;
+                    if (btnCancelar != null) btnCancelar.Enabled = false;
+                }
+                else
+                {
+                    MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Error al guardar modelo: {ex.Message}\n\nStack Trace: {ex.StackTrace}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnCancelarModelo_Click(object sender, EventArgs e)
+        {
+            LimpiarFormularioModelo();
+            modoEdicionModelo = false;
+            modeloSeleccionadoId = 0;
+
+            var btnGuardar = this.Controls.Find("btnGuardarModelo", true)[0] as Button;
+            var btnCancelar = this.Controls.Find("btnCancelarModelo", true)[0] as Button;
+            btnGuardar.Enabled = false;
+            btnCancelar.Enabled = false;
+
+            var dgv = this.Controls.Find("dgvModelos", true)[0] as DataGridView;
+            dgv.ClearSelection();
+        }
+
+        private void BtnEliminarModelo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var dgv = this.Controls.Find("dgvModelos", true)[0] as DataGridView;
+
+                if (dgv.CurrentRow == null)
+                {
+                    MessageBox.Show("⚠️ Debe seleccionar un modelo para eliminar", "Validación",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                int idModelo = Convert.ToInt32(dgv.CurrentRow.Cells["colIdModelo"].Value);
+                string nombreModelo = dgv.CurrentRow.Cells["colNombreModelo"].Value.ToString();
+                string marca = dgv.CurrentRow.Cells["colMarcaModelo"].Value.ToString();
+
+                DialogResult resultado = MessageBox.Show(
+                    $"⚠️ ¿Está seguro que desea eliminar el modelo '{marca} {nombreModelo}'?\n\n" +
+                    $"Esta acción no se puede deshacer.",
+                    "Confirmar Eliminación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (resultado == DialogResult.Yes)
+                {
+                    int resultadoOp = ModeloVehiculoCln.eliminar(idModelo, Util.usuario.usuario);
+
+                    if (resultadoOp > 0)
+                    {
+                        MessageBox.Show("✅ Modelo eliminado exitosamente", "Éxito",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        CargarModelos();
+                        LimpiarFormularioModelo();
+                    }
+                    else
+                    {
+                        MessageBox.Show("❌ No se pudo eliminar el modelo", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Error al eliminar: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void DgvModelos_SelectionChanged(object sender, EventArgs e)
+        {
+            var dgv = sender as DataGridView;
+            var btnEliminar = this.Controls.Find("btnEliminarModelo", true)[0] as Button;
+
+            if (dgv.CurrentRow != null)
+            {
+                btnEliminar.Enabled = true;
+                int idModelo = Convert.ToInt32(dgv.CurrentRow.Cells["colIdModelo"].Value);
+                CargarDatosModelo(idModelo);
+            }
+            else
+            {
+                btnEliminar.Enabled = false;
+            }
+        }
+
+        private void CargarDatosModelo(int id)
+        {
+            try
+            {
+                var modelo = ModeloVehiculoCln.obtenerUno(id);
+                if (modelo == null) return;
+
+                modoEdicionModelo = true;
+                modeloSeleccionadoId = id;
+
+                var cboMarca = this.Controls.Find("cboMarcaModelo", true)[0] as ComboBox;
+                // var cboTipo = this.Controls.Find("cboTipoModelo", true)[0] as ComboBox; // removed
+                var txtNombre = this.Controls.Find("txtNombreModelo", true)[0] as TextBox;
+                var txtDescripcion = this.Controls.Find("txtDescripcionModelo", true)[0] as TextBox;
+
+                cboMarca.SelectedValue = modelo.idMarca;
+                // cboTipo.SelectedValue = modelo.idTipoVehiculo; // removed
+                txtNombre.Text = modelo.nombre;
+                txtDescripcion.Text = modelo.descripcion ?? "";
+
+                var btnGuardar = this.Controls.Find("btnGuardarModelo", true)[0] as Button;
+                var btnCancelar = this.Controls.Find("btnCancelarModelo", true)[0] as Button;
+                btnGuardar.Text = "💾 Actualizar";
+                btnGuardar.Enabled = true;
+                btnCancelar.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar datos del modelo: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void TxtBuscarModelo_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                var txt = sender as TextBox;
+                var dgv = this.Controls.Find("dgvModelos", true)[0] as DataGridView;
+                var lblTotal = this.Controls.Find("lblTotalModelos", true)[0] as Label;
+
+                string filtro = txt.Text.Trim().ToLower();
+
+                var modelos = ModeloVehiculoCln.listar()
+                    .Where(m => m.nombre.ToLower().Contains(filtro) ||
+                               m.Marca.nombre.ToLower().Contains(filtro))
+                               //m.TipoVehiculo.descripcion.ToLower().Contains(filtro))
+                    .Select(m => new
+                    {
+                        m.id,
+                        marca = m.Marca.nombre,
+                        //tipoVehiculo = m.TipoVehiculo.descripcion,
+                        m.nombre,
+                        m.descripcion
+                    }).ToList();
+
+                dgv.DataSource = modelos;
+                lblTotal.Text = $"Total: {modelos.Count} modelos";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error en búsqueda: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LimpiarFormularioModelo()
+        {
+            var cboMarca = this.Controls.Find("cboMarcaModelo", true)[0] as ComboBox;
+            // var cboTipo = this.Controls.Find("cboTipoModelo", true)[0] as ComboBox; // removed
+            var txtNombre = this.Controls.Find("txtNombreModelo", true)[0] as TextBox;
+            var txtDescripcion = this.Controls.Find("txtDescripcionModelo", true)[0] as TextBox;
+
+            cboMarca.SelectedIndex = -1;
+            // cboTipo.SelectedIndex = -1; // removed
+            txtNombre.Clear();
+            txtDescripcion.Clear();
+        }
+    }
+}

@@ -314,6 +314,11 @@ namespace CpAuton
                 Font = new Font("Segoe UI", 9)
             };
 
+            dgvMarcas.SelectionChanged += DgvMarcas_SelectionChanged;
+            pnlGridMarca.Controls.Add(dgvMarcas);
+            // Activar scroll/ajustar altura si hay muchas filas
+            dgvMarcas.ScrollBars = ScrollBars.Vertical;
+
             dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colIdMarca", DataPropertyName = "id", HeaderText = "ID", Width = 60 });
             dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colProcedencia", DataPropertyName = "procedencia", HeaderText = "Procedencia", Width = 150 });
             dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colNombreMarca", DataPropertyName = "nombre", HeaderText = "Marca", Width = 200 });
@@ -321,7 +326,10 @@ namespace CpAuton
 
             dgvMarcas.SelectionChanged += DgvMarcas_SelectionChanged;
             pnlGridMarca.Controls.Add(dgvMarcas);
+            // Activar scroll/ajustar altura si hay muchas filas
+            dgvMarcas.ScrollBars = ScrollBars.Vertical;
 
+            // Botón Eliminar
             Button btnEliminarMarca = new Button
             {
                 Name = "btnEliminarMarca",
@@ -576,7 +584,10 @@ namespace CpAuton
 
             dgvModelos.SelectionChanged += DgvModelos_SelectionChanged;
             pnlGridModelo.Controls.Add(dgvModelos);
+            // Activar scroll vertical para evitar que botones oculten filas
+            dgvModelos.ScrollBars = ScrollBars.Vertical;
 
+            // Botón Eliminar
             Button btnEliminarModelo = new Button
             {
                 Name = "btnEliminarModelo",
@@ -717,6 +728,10 @@ namespace CpAuton
                     var lblTotal = BuscarControlEnTab("lblTotalMarcas", "MARCAS") as Label;
                     if (lblTotal != null)
                         lblTotal.Text = $"Total: {marcas.Count} marcas";
+
+                    // Mostrar max 10 filas para evitar que botones oculten contenido
+                    var panel = dgv.Parent as Panel;
+                    AjustarAlturaGridEnPanel(dgv, panel, 17);
                 }
             }
             catch (Exception ex)
@@ -753,6 +768,10 @@ namespace CpAuton
                     var lblTotal = BuscarControlEnTab("lblTotalModelos", "MODELOS") as Label;
                     if (lblTotal != null)
                         lblTotal.Text = $"Total: {modelos.Count} modelos";
+
+                    // Ajustar altura del grid de modelos
+                    var panel = dgv.Parent as Panel;
+                    AjustarAlturaGridEnPanel(dgv, panel, 17);
                 }
             }
             catch (Exception ex)
@@ -760,6 +779,26 @@ namespace CpAuton
                 MessageBox.Show($"Error al cargar modelos: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        // Ajusta la altura del DataGridView para mostrar hasta maxRows filas y activar scroll si hay más.
+        private void AjustarAlturaGridEnPanel(DataGridView dgv, Panel panel, int maxRowsVisible)
+        {
+            if (dgv == null || panel == null) return;
+            dgv.ScrollBars = ScrollBars.Vertical;
+            int rowHeight = dgv.RowTemplate != null && dgv.RowTemplate.Height > 0 ? dgv.RowTemplate.Height : 22;
+            int headerHeight = dgv.ColumnHeadersHeight > 0 ? dgv.ColumnHeadersHeight : 24;
+
+            int totalRows = dgv.Rows.Count;
+            int visibleRows = Math.Min(totalRows, maxRowsVisible);
+
+            if (totalRows == 0) return;
+
+            int newHeight = headerHeight + (visibleRows * rowHeight) + 4;
+            // Calcular espacio disponible en el panel evitando área de botones (estimado)
+            int maxAllowed = panel.ClientSize.Height - dgv.Location.Y - 80; // dejar 80px para botones/otros
+            if (newHeight > maxAllowed) newHeight = maxAllowed;
+            dgv.Height = newHeight;
         }
 
         // ===== EVENTOS MARCAS =====
@@ -1096,23 +1135,22 @@ namespace CpAuton
 
                 modelo.idMarca = (int)cboMarca.SelectedValue;
 
-                // Si estamos creando un nuevo modelo y no manejamos tipo en el formulario,
-                // asignamos un tipo por defecto (primero disponible) para cumplir la FK.
-                //if (!modoEdicionModelo)
-                //{
-                //    try
-                //    {
-                //        var tipos = TipoVehiculoCln.listar();
-                //        if (tipos != null && tipos.Any())
-                //            modelo.idTipoVehiculo = tipos.First().id;
-                //        else
-                //            modelo.idTipoVehiculo = 1; // fallback
-                //    }
-                //    catch
-                //    {
-                //        modelo.idTipoVehiculo = 1; // fallback seguro
-                //    }
-                //}
+                // Asignar tipo por defecto si no se proporcionó (evita FK null/0)
+                if (modelo.idTipoVehiculo == 0)
+                {
+                    try
+                    {
+                        var tipos = TipoVehiculoCln.listar();
+                        if (tipos != null && tipos.Any())
+                            modelo.idTipoVehiculo = tipos.First().id;
+                        else
+                            modelo.idTipoVehiculo = 1; // fallback seguro
+                    }
+                    catch
+                    {
+                        modelo.idTipoVehiculo = 1; // fallback seguro
+                    }
+                }
 
                 modelo.nombre = txtNombre.Text.Trim();
                 modelo.descripcion = string.IsNullOrWhiteSpace(txtDescripcion.Text) ?

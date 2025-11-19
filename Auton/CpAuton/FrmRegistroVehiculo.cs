@@ -1207,44 +1207,104 @@ namespace CpAuton
         //}
         private void ConfigurarVelocidades(string tipoTransmision)
         {
+            // Ensure there is a placeholder label to show a dash for CVT (so NumericUpDown doesn't display a numeric minimum)
+            Label lblPlaceholder = null;
+            try
+            {
+                var found = this.Controls.Find("lblVelocidadesPlaceholder", true);
+                if (found != null && found.Length > 0 && found[0] is Label)
+                    lblPlaceholder = (Label)found[0];
+            }
+            catch { }
+
+            if (lblPlaceholder == null)
+            {
+                lblPlaceholder = new Label
+                {
+                    Name = "lblVelocidadesPlaceholder",
+                    Location = nudVelocidades.Location,
+                    Size = nudVelocidades.Size,
+                    Font = new Font("Segoe UI", 10F),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    ForeColor = Color.Gray,
+                    BackColor = Color.Transparent,
+                    Visible = false
+                };
+                // Add to same parent so it scrolls/moves together
+                nudVelocidades.Parent.Controls.Add(lblPlaceholder);
+                lblPlaceholder.BringToFront();
+            }
+
             switch (tipoTransmision)
             {
                 case "Manual":
+                    nudVelocidades.Visible = true;
+                    lblPlaceholder.Visible = false;
                     nudVelocidades.Minimum = 4;
                     nudVelocidades.Maximum = 6;
-                    nudVelocidades.Value = 5;
                     nudVelocidades.Enabled = true;
+                    {
+                        decimal min = nudVelocidades.Minimum;
+                        decimal max = nudVelocidades.Maximum;
+                        decimal val = 5m;
+                        if (val < min) val = min;
+                        if (val > max) val = max;
+                        nudVelocidades.Value = val;
+                    }
                     lblInfoVelocidades.Text = "(4-6 velocidades)";
                     lblInfoVelocidades.ForeColor = Color.FromArgb(40, 167, 69);
                     break;
 
                 case "Automática":
+                    nudVelocidades.Visible = true;
+                    lblPlaceholder.Visible = false;
                     nudVelocidades.Minimum = 4;
                     nudVelocidades.Maximum = 10;
-                    nudVelocidades.Value = 6;
                     nudVelocidades.Enabled = true;
+                    {
+                        decimal min = nudVelocidades.Minimum;
+                        decimal max = nudVelocidades.Maximum;
+                        decimal val = 6m;
+                        if (val < min) val = min;
+                        if (val > max) val = max;
+                        nudVelocidades.Value = val;
+                    }
                     lblInfoVelocidades.Text = "(4-10 velocidades)";
                     lblInfoVelocidades.ForeColor = Color.FromArgb(0, 123, 255);
                     break;
 
                 case "CVT":
-                    nudVelocidades.Value = nudVelocidades.Minimum; // Valor dummy
+                    // For CVT we show a placeholder dash instead of a numeric value
+                    nudVelocidades.Visible = false;
                     nudVelocidades.Enabled = false;
+                    lblPlaceholder.Text = "-";
+                    lblPlaceholder.Visible = true;
                     lblInfoVelocidades.Text = "(Sin velocidades)";
                     lblInfoVelocidades.ForeColor = Color.FromArgb(108, 117, 125);
                     break;
 
                 case "Semiautomática":
                 case "Doble Embrague":
+                    nudVelocidades.Visible = true;
+                    lblPlaceholder.Visible = false;
                     nudVelocidades.Minimum = 6;
                     nudVelocidades.Maximum = 8;
-                    nudVelocidades.Value = 7;
                     nudVelocidades.Enabled = true;
+                    {
+                        decimal min = nudVelocidades.Minimum;
+                        decimal max = nudVelocidades.Maximum;
+                        decimal val = 7m;
+                        if (val < min) val = min;
+                        if (val > max) val = max;
+                        nudVelocidades.Value = val;
+                    }
                     lblInfoVelocidades.Text = "(6-8 velocidades)";
                     lblInfoVelocidades.ForeColor = Color.FromArgb(255, 193, 7);
                     break;
 
                 default:
+                    nudVelocidades.Visible = true;
+                    lblPlaceholder.Visible = false;
                     nudVelocidades.Enabled = false;
                     lblInfoVelocidades.Text = "Seleccione transmisión";
                     lblInfoVelocidades.ForeColor = Color.Gray;
