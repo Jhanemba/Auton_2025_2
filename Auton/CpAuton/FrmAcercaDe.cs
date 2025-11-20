@@ -212,7 +212,7 @@ namespace CpAuton
             AudioManager.Reproducir(ruta, true, 25 - 10);
         }
 
-        private void FrmVehiculosChinos_FormClosed(object sender, FormClosedEventArgs e)
+        private void FrmAcercaDe_FormClosed(object sender, FormClosedEventArgs e)
         {
             // reanudar menú
             string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";

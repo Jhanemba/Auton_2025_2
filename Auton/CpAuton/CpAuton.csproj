@@ -332,10 +332,16 @@
     <None Include="Resources\add_77928.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Audio\45. Farewell - See You Again %28Film Version%29  Furious 7 %28Complete Soundtrack%29.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Audio\Amerika.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Audio\Crystal Waters - Gypsy Woman %28She%27s Homeless%29 %28Official instrumental%29.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\Don Omar - Danza Kuduro %28Instrumental%29 %28Original HQ%29.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Audio\imaseNIGHT DANCERinstrumental.mp3">

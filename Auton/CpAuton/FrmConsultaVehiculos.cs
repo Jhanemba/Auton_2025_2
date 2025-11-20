@@ -28,6 +28,9 @@ namespace CpAuton
 
         private void FrmConsultaVehiculos_Load(object sender, EventArgs e)
         {
+            string ruta = Application.StartupPath + @"\Audio\Don Omar - Danza Kuduro (Instrumental) (Original HQ).mp3";
+            AudioManager.Reproducir(ruta, true, 40 - 15);
+
             AgregarBotonesSesion();
             ConfigurarDataGridView();
             CargarVehiculos("");
@@ -286,6 +289,9 @@ namespace CpAuton
 
         private void btnCerrar_Click(object sender, EventArgs e)
         {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
             this.Close();
         }
 
@@ -2088,5 +2094,11 @@ namespace CpAuton
                     break;
             }
          }
+        private void FrmConsultaVehiculos_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
+        }
     }
 }

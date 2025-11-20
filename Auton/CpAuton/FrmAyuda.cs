@@ -494,8 +494,8 @@ namespace CpAuton
 
         private void FrmAyuda_Load(object sender, EventArgs e)
         {
-            string ruta = Application.StartupPath + @"\Audio\JVKE - golden hour (instrumental).mp3";
-            AudioManager.Reproducir(ruta, true, 25 - 10);
+            string ruta = Application.StartupPath + @"\Audio\45. Farewell - See You Again (Film Version)  Furious 7 (Complete Soundtrack).mp3";
+            AudioManager.Reproducir(ruta, true, 100 - 10);
         }
 
         private void FrmVehiculosChinos_FormClosed(object sender, FormClosedEventArgs e)
