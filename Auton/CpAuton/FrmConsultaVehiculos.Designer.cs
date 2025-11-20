@@ -71,7 +71,7 @@
             this.gbxLista.Controls.Add(this.dgvVehiculos);
             this.gbxLista.Location = new System.Drawing.Point(12, 142);
             this.gbxLista.Name = "gbxLista";
-            this.gbxLista.Size = new System.Drawing.Size(1138, 305);
+            this.gbxLista.Size = new System.Drawing.Size(1221, 305);
             this.gbxLista.TabIndex = 11;
             this.gbxLista.TabStop = false;
             this.gbxLista.Text = "Lista de Vehículos";
@@ -92,7 +92,7 @@
             this.dgvVehiculos.ReadOnly = true;
             this.dgvVehiculos.RowHeadersWidth = 62;
             this.dgvVehiculos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvVehiculos.Size = new System.Drawing.Size(1132, 276);
+            this.dgvVehiculos.Size = new System.Drawing.Size(1215, 276);
             this.dgvVehiculos.TabIndex = 0;
             this.dgvVehiculos.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellDoubleClick);
             // 
@@ -190,7 +190,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
-            this.ClientSize = new System.Drawing.Size(1162, 554);
+            this.ClientSize = new System.Drawing.Size(1245, 554);
             this.Controls.Add(this.lblTotal);
             this.Controls.Add(this.btnBuscar);
             this.Controls.Add(this.gbxLista);

@@ -582,7 +582,7 @@ namespace CpAuton
 
 
                 // ==================== COLUMNA IZQUIERDA ====================
-                AgregarSeccion(pnlPrincipal, "📋 IDENTIFICACIÓN DEL MODELO", 590, yPos, 560);
+                AgregarSeccion(pnlPrincipal, "📋 IDENTIFICACIÓN DEL MODELO", 20, yPos, 540);
                 int yPosLeft = yPos + 38;
 
                 // Nro de Chasis que AHORA EDITABLE
