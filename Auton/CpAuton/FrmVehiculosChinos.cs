@@ -22,7 +22,7 @@ namespace CpAuton
         private void FrmVehiculosChinos_Load(object sender, EventArgs e)
         {
             string ruta = Application.StartupPath + @"\Audio\攬佬SKAI ISYOURGODAR劉夫陽大展鴻圖HD 高清官方歌词版MV.mp3";
-            AudioManager.Reproducir(ruta, true, 25-10);
+            AudioManager.Reproducir(ruta, true, 35-10);
 
             ConfigurarFormulario();
             ConfigurarDataGridView();

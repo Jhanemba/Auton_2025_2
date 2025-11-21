@@ -29,7 +29,7 @@ namespace CpAuton
         private void FrmConsultaVehiculos_Load(object sender, EventArgs e)
         {
             string ruta = Application.StartupPath + @"\Audio\Don Omar - Danza Kuduro (Instrumental) (Original HQ).mp3";
-            AudioManager.Reproducir(ruta, true, 40 - 15);
+            AudioManager.Reproducir(ruta, true, 55 - 10);
 
             AgregarBotonesSesion();
             ConfigurarDataGridView();

@@ -25,7 +25,7 @@ namespace CpAuton
             string c2 = Application.StartupPath + @"\Audio\imaseNIGHT DANCERinstrumental.mp3";
 
             AudioManager.SetPlaylist(new List<string> { c1, c2 });
-            AudioManager.PlayPlaylist(20, 50); // volumen
+            AudioManager.PlayPlaylist(50-10, 50); // volumen
 
             ConfigurarFormulario();
             ConfigurarDataGridView();

@@ -3,12 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|c:\\users\\kevin\\documents\\auton_2025_2\\auton\\cpauton\\frmgestionarvehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmgestionarvehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmvehiculosjaponeses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmvehiculosjaponeses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmvehiculoschinos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmvehiculoschinos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmvehiculosamericanos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmvehiculosamericanos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|c:\\users\\kevin\\documents\\auton_2025_2\\auton\\cpauton\\frmgestionarvehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmgestionarvehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmregistrovehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -32,14 +52,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmacercade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmacercade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmvehiculoschinos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmvehiculoschinos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmconsultavehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmgestionarmarcasmodelos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
@@ -66,10 +78,6 @@
       "RelativeMoniker": "D:0:0:{7E0B6B9F-0457-48F6-A10A-7620642E51F2}|ClnAuton\\ClnAuton.csproj|solutionrelative:clnauton\\consultavehiculoscln.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmvehiculosjaponeses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmvehiculosjaponeses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmayuda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmayuda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
@@ -78,20 +86,12 @@
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\fullscreenimageform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmvehiculosamericanos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmvehiculosamericanos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmvehiculosamericanos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmvehiculosamericanos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmvehiculosjaponeses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmvehiculosjaponeses.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|solutionrelative:cpauton\\frmprincipal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9C2E8F8B-EB32-475B-8728-40F9ECA40118}|CpAuton\\CpAuton.csproj|C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\cpauton\\audiomanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -113,7 +113,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -129,42 +129,97 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 5,
+              "Title": "FrmVehiculosAmericanos.cs",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosAmericanos.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosAmericanos.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosAmericanos.cs",
+              "RelativeToolTip": "CpAuton\\FrmVehiculosAmericanos.cs",
+              "ViewState": "AgIAAMwBAAAAAAAAAAAqwCQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T16:21:10.643Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "FrmGestionarVehiculos.cs",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarVehiculos.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmGestionarVehiculos.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarVehiculos.cs",
+              "RelativeToolTip": "CpAuton\\FrmGestionarVehiculos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T18:23:52.693Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FrmConsultaVehiculos.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmConsultaVehiculos.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs [Dise\u00F1o]",
+              "RelativeToolTip": "CpAuton\\FrmConsultaVehiculos.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T17:45:50.358Z",
+              "EditorCaption": " [Dise\u00F1o]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FrmVehiculosJaponeses.cs",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosJaponeses.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosJaponeses.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosJaponeses.cs",
+              "RelativeToolTip": "CpAuton\\FrmVehiculosJaponeses.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAxwBgAAABeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T13:39:05.151Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FrmConsultaVehiculos.cs",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmConsultaVehiculos.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
+              "RelativeToolTip": "CpAuton\\FrmConsultaVehiculos.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAAwB8AAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T17:45:58.032Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FrmPrincipal.cs",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmPrincipal.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmPrincipal.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmPrincipal.cs",
+              "RelativeToolTip": "CpAuton\\FrmPrincipal.cs",
+              "ViewState": "AgIAAHkAAAAAAAAAAAAkwI4BAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-08T23:54:56.223Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "FrmVehiculosChinos.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosChinos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosChinos.cs",
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosChinos.cs",
               "RelativeToolTip": "CpAuton\\FrmVehiculosChinos.cs",
-              "ViewState": "AgIAAMMBAAAAAAAAAAAqwMkBAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAABAAAAAAAAAAAAAzwBgAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-11T23:37:47.731Z"
+              "WhenOpened": "2025-11-11T23:37:47.731Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "FrmAyuda.cs",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAyuda.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmAyuda.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAyuda.cs",
-              "RelativeToolTip": "CpAuton\\FrmAyuda.cs",
-              "ViewState": "AgIAAOUBAAAAAAAAAAAqwPEBAAA4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T17:36:10.177Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ddl_dml_auton.sql",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\ddl_dml_auton.sql",
-              "RelativeDocumentMoniker": "..\\ddl_dml_auton.sql",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\ddl_dml_auton.sql",
-              "RelativeToolTip": "..\\ddl_dml_auton.sql",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-09-11T18:26:52.073Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 7,
               "Title": "FrmRegistroVehiculo.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmRegistroVehiculo.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmRegistroVehiculo.cs",
@@ -176,20 +231,30 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "FrmGestionarVehiculos.cs",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarVehiculos.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmGestionarVehiculos.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarVehiculos.cs",
-              "RelativeToolTip": "CpAuton\\FrmGestionarVehiculos.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-19T18:23:52.693Z",
-              "EditorCaption": ""
+              "DocumentIndex": 9,
+              "Title": "ddl_dml_auton.sql",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\ddl_dml_auton.sql",
+              "RelativeDocumentMoniker": "..\\ddl_dml_auton.sql",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\ddl_dml_auton.sql",
+              "RelativeToolTip": "..\\ddl_dml_auton.sql",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2025-09-11T18:26:52.073Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 11,
+              "Title": "FrmAyuda.cs",
+              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAyuda.cs",
+              "RelativeDocumentMoniker": "CpAuton\\FrmAyuda.cs",
+              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAyuda.cs",
+              "RelativeToolTip": "CpAuton\\FrmAyuda.cs",
+              "ViewState": "AgIAAOUBAAAAAAAAAAAqwPEBAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T17:36:10.177Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "FrmAcercaDe.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAcercaDe.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmAcercaDe.cs",
@@ -201,19 +266,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "FrmConsultaVehiculos.cs",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmConsultaVehiculos.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
-              "RelativeToolTip": "CpAuton\\FrmConsultaVehiculos.cs",
-              "ViewState": "AgIAAHoBAAAAAAAAAAAtwIQBAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T17:45:58.032Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 12,
               "Title": "FrmAcercaDe.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAcercaDe.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmAcercaDe.cs",
@@ -224,7 +277,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 8,
               "Title": "Modelo.edmx [Diagram1]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CadAuton\\Modelo.edmx",
               "RelativeDocumentMoniker": "CadAuton\\Modelo.edmx",
@@ -235,7 +288,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "ModeloVehiculoCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\ModeloVehiculoCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\ModeloVehiculoCln.cs",
@@ -247,18 +300,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "FrmConsultaVehiculos.cs [Dise\u00F1o]",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmConsultaVehiculos.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs [Dise\u00F1o]",
-              "RelativeToolTip": "CpAuton\\FrmConsultaVehiculos.cs [Dise\u00F1o]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T17:45:50.358Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "FrmGestionarMarcasModelos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarMarcasModelos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmGestionarMarcasModelos.cs",
@@ -269,7 +311,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "FrmGestionarMarcasModelos.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarMarcasModelos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmGestionarMarcasModelos.cs",
@@ -281,7 +323,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "FrmGestionarVehiculos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmGestionarVehiculos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmGestionarVehiculos.cs",
@@ -292,7 +334,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "FrmRegistroVehiculo.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmRegistroVehiculo.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmRegistroVehiculo.cs",
@@ -303,7 +345,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "ConsultaVehiculosCln.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\ClnAuton\\ConsultaVehiculosCln.cs",
               "RelativeDocumentMoniker": "ClnAuton\\ConsultaVehiculosCln.cs",
@@ -315,7 +357,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 20,
               "Title": "FullscreenImageForm.cs",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FullscreenImageForm.cs",
               "RelativeDocumentMoniker": "CpAuton\\FullscreenImageForm.cs",
@@ -327,26 +369,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "FrmVehiculosAmericanos.cs",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosAmericanos.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosAmericanos.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosAmericanos.cs",
-              "RelativeToolTip": "CpAuton\\FrmVehiculosAmericanos.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAewCAAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T16:21:10.643Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "FrmVehiculosJaponeses.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosJaponeses.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosJaponeses.cs",
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosJaponeses.cs [Dise\u00F1o]",
               "RelativeToolTip": "CpAuton\\FrmVehiculosJaponeses.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T13:39:01.357Z"
+              "WhenOpened": "2025-11-15T13:39:01.357Z",
+              "EditorCaption": " [Dise\u00F1o]"
             },
             {
               "$type": "Document",
@@ -362,26 +393,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "FrmVehiculosAmericanos.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosAmericanos.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosAmericanos.cs",
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosAmericanos.cs [Dise\u00F1o]",
               "RelativeToolTip": "CpAuton\\FrmVehiculosAmericanos.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T16:20:58.816Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "FrmPrincipal.cs",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmPrincipal.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmPrincipal.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmPrincipal.cs",
-              "RelativeToolTip": "CpAuton\\FrmPrincipal.cs",
-              "ViewState": "AgIAAIYBAAAAAAAAAAAuwI4BAAA0AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-08T23:54:56.223Z"
+              "WhenOpened": "2025-11-15T16:20:58.816Z",
+              "EditorCaption": " [Dise\u00F1o]"
             },
             {
               "$type": "Document",
@@ -392,7 +412,8 @@
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosChinos.cs [Dise\u00F1o]",
               "RelativeToolTip": "CpAuton\\FrmVehiculosChinos.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-11T23:37:44.83Z"
+              "WhenOpened": "2025-11-11T23:37:44.83Z",
+              "EditorCaption": " [Dise\u00F1o]"
             },
             {
               "$type": "Document",
@@ -403,11 +424,12 @@
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmPrincipal.cs [Dise\u00F1o]",
               "RelativeToolTip": "CpAuton\\FrmPrincipal.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-08T23:46:15.103Z"
+              "WhenOpened": "2025-11-08T23:46:15.103Z",
+              "EditorCaption": " [Dise\u00F1o]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 19,
               "Title": "FrmAyuda.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmAyuda.cs",
               "RelativeDocumentMoniker": "CpAuton\\FrmAyuda.cs",
@@ -415,18 +437,6 @@
               "RelativeToolTip": "CpAuton\\FrmAyuda.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-15T17:36:07.044Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "FrmVehiculosJaponeses.cs",
-              "DocumentMoniker": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosJaponeses.cs",
-              "RelativeDocumentMoniker": "CpAuton\\FrmVehiculosJaponeses.cs",
-              "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmVehiculosJaponeses.cs",
-              "RelativeToolTip": "CpAuton\\FrmVehiculosJaponeses.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAQwBsAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-15T13:39:05.151Z"
             }
           ]
         }

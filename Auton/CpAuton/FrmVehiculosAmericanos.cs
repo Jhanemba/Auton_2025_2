@@ -27,13 +27,12 @@ namespace CpAuton
         private void FrmVehiculosAmericanos_Load(object sender, EventArgs e)
         {
             string ruta = Application.StartupPath + @"\Audio\Amerika.mp3";
-            AudioManager.Reproducir(ruta, true, 25 - 10);
+            AudioManager.Reproducir(ruta, true, 75 - 10);
 
             ConfigurarFormulario();
             ConfigurarDataGridView();
             CargarVehiculosAmericanos();
             btnNuevo.Visible = Util.usuario != null;
-
         }
 
         private void ConfigurarFormulario()
