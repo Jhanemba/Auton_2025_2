@@ -125,6 +125,7 @@
     <Property Name="estado" Type="smallint" Nullable="false" />
     <Property Name="fotografia" Type="varbinary(max)" />
     <Property Name="nroVelocidades" Type="int" />
+    <Property Name="nroAsientos" Type="int" />
   </EntityType>
   <EntityType Name="VehiculoMantenimiento">
     <Key>
@@ -259,6 +260,7 @@
     <Parameter Name="paisFabricacion" Type="varchar" Mode="In" />
     <Parameter Name="transmision" Type="varchar" Mode="In" />
     <Parameter Name="nroVelocidades" Type="int" Mode="In" />
+    <Parameter Name="nroAsientos" Type="int" Mode="In" />
     <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
     <Parameter Name="motor" Type="varchar" Mode="In" />
     <Parameter Name="combustible" Type="varchar" Mode="In" />
@@ -282,6 +284,7 @@
     <Parameter Name="paisFabricacion" Type="varchar" Mode="In" />
     <Parameter Name="transmision" Type="varchar" Mode="In" />
     <Parameter Name="nroVelocidades" Type="int" Mode="In" />
+    <Parameter Name="nroAsientos" Type="int" Mode="In" />
     <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
     <Parameter Name="motor" Type="varchar" Mode="In" />
     <Parameter Name="combustible" Type="varchar" Mode="In" />

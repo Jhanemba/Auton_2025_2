@@ -351,6 +351,33 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(cboCombustible);
             yPosRight += lineHeight;
 
+            // Nro de Asientos
+            AgregarLabel(pnlPrincipal, "Nro. Asientos:", 580, yPosRight, labelWidth);
+            NumericUpDown nudAsientos = new NumericUpDown
+            {
+                Name = "nudAsientos",
+                Location = new Point(colRightX + 80, yPosRight),
+                Size = new Size(100, 28),
+                Font = new Font("Segoe UI", 10F),
+                Minimum = 3,
+                Maximum = 8,
+                Value = 5,
+                TextAlign = HorizontalAlignment.Center
+            };
+            pnlPrincipal.Controls.Add(nudAsientos);
+
+            Label lblInfoAsientos = new Label
+            {
+                Text = "(3-8 pasajeros)",
+                Location = new Point(colRightX + 190, yPosRight + 3),
+                Size = new Size(150, 25),
+                Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                ForeColor = Color.Gray,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            pnlPrincipal.Controls.Add(lblInfoAsientos);
+            yPosRight += lineHeight;
+
             // ==================== SEGURIDAD ====================
             yPos = Math.Max(yPosLeft, yPosRight) + 15;
             AgregarSeccion(pnlPrincipal, "🛡️ SEGURIDAD", 20, yPos, 540);
@@ -918,6 +945,7 @@ namespace CpAuton
             {
                 try
                 {
+                    var nudAsientos = this.Controls.Find("nudAsientos", true)[0] as NumericUpDown;
                     int idModelo = (int)cboModelo.SelectedValue;
                     int anio = (int)nudAnio.Value;
                     decimal puntuacion = nudPuntuacion.Value;
@@ -975,7 +1003,7 @@ namespace CpAuton
                         nroVelocidades = cboTransmision.Text == "CVT"
                          ? (int?)null
                         : (int)nudVelocidades.Value,
-
+                        nroAsientos = (int)nudAsientos.Value,
                         tieneTurbo = chkTieneTurbo.Checked,
                         motor = txtMotor.Text.Trim(),
                         combustible = cboCombustible.SelectedItem.ToString(),

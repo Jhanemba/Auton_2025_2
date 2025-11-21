@@ -202,6 +202,15 @@ namespace CpAuton
 
             dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
             {
+                Name = "colAsientos",
+                DataPropertyName = "nroAsientos",
+                HeaderText = "Asientos",
+                Width = 70,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
                 Name = "colConfiabilidad",
                 DataPropertyName = "confiabilidad",
                 HeaderText = "Confiabilidad",
@@ -378,7 +387,7 @@ namespace CpAuton
                 yPos += 35;
                 Panel pnlFotografia = new Panel
                 {
-                    Location = new Point(20+575, yPos+500),
+                    Location = new Point(20+575, yPos+500+100),
                     Size = new Size(540, 320),
                     BackColor = Color.White,
                     BorderStyle = BorderStyle.FixedSingle
@@ -1305,6 +1314,25 @@ namespace CpAuton
                 yPosRight += lineHeight;
                 cboCombustible.BringToFront();
 
+                // Nro de Asientos
+                AgregarLabel(pnlPrincipal, "Nro. Asientos:", 590, yPosRight, labelWidth);
+                NumericUpDown nudAsientos = new NumericUpDown
+                {
+                    Name = "nudAsientos",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(100, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 3,
+                    Maximum = 8,
+                    Value = vehiculoCompleto.nroAsientos ?? 5,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = false
+                };
+                pnlPrincipal.Controls.Add(nudAsientos);
+                yPosRight += lineHeight;
+                //enviar al frente
+                nudAsientos.BringToFront();
+
                 // ==================== SEGURIDAD ====================
                 yPos = Math.Max(yPosLeft, yPosRight) + 15;
                 AgregarSeccion(pnlPrincipal, "🛡️ SEGURIDAD", 20, yPos, 540);
@@ -1470,7 +1498,7 @@ namespace CpAuton
                             var nudVelocidadesEdit = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
                             // Reconfigurar velocidades para permitir edición ahora que estamos en modo edición
                             ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesEdit, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, true);
-
+                            nudAsientos.Enabled = true;
                             chkTieneTurbo.Enabled = true;
                             txtMotor.ReadOnly = false;
                             txtMotor.BackColor = Color.White;
@@ -1580,7 +1608,7 @@ namespace CpAuton
                                     var nudVel = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
                                     vehiculoCompleto.nroVelocidades = (int)nudVel.Value;
                                 }
-
+                                vehiculoCompleto.nroAsientos = (int)nudAsientos.Value;
                                 vehiculoCompleto.tieneTurbo = chkTieneTurbo.Checked;
                                 vehiculoCompleto.motor = txtMotor.Text.Trim();
                                 vehiculoCompleto.combustible = cboCombustible.Text;
@@ -1611,7 +1639,7 @@ namespace CpAuton
                                     var nudVelocidadesRead = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
                                     // Al salir de edición, reconfiguramos para modo lectura (deshabilitado o placeholder si CVT)
                                     ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesRead, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
-
+                                    nudAsientos.Enabled = false;
                                     chkTieneTurbo.Enabled = false;
                                     txtMotor.ReadOnly = true;
                                     txtMotor.BackColor = Color.WhiteSmoke;

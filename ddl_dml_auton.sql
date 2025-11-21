@@ -232,7 +232,12 @@ ADD nroVelocidades INT NULL
     CHECK (nroVelocidades >= 4 AND nroVelocidades <= 10);
 
 PRINT 'Campo nroVelocidades agregado a la tabla Vehiculo';
+
+
 GO
+ALTER TABLE Vehiculo
+ADD nroAsientos INT NULL 
+    CHECK (nroAsientos >= 3 AND nroAsientos <= 8);
 
 -- =====================================================
 -- PROCEDIMIENTOS ALMACENADOS
@@ -264,6 +269,7 @@ AS
            v.paisFabricacion, 
            v.transmision, 
            v.nroVelocidades,
+           v.nroAsientos,  -- AGREGAR CAMPO
            v.tieneTurbo,
            v.motor, 
            v.combustible, 
@@ -301,9 +307,6 @@ AS
             )
         ) LIKE '%' + REPLACE(@parametro, ' ', '%') + '%'
     ORDER BY v.estado DESC, p.descripcion ASC, m.nombre ASC, mv.nombre ASC;
-GO
-
-PRINT 'Procedimiento paVehiculoListar actualizado';
 
 
 --GO
@@ -338,7 +341,8 @@ ALTER PROC paVehiculoInsertar
     @generacion VARCHAR(50),
     @paisFabricacion VARCHAR(50),
     @transmision VARCHAR(20),
-    @nroVelocidades INT = NULL,  -- ⭐ NUEVO PARÁMETRO
+    @nroVelocidades INT = NULL,
+    @nroAsientos INT,  -- ⭐ NUEVO PARÁMETRO
     @tieneTurbo BIT,
     @motor VARCHAR(50),
     @combustible VARCHAR(20),
@@ -368,21 +372,18 @@ BEGIN
     END
 
     INSERT INTO Vehiculo (
-        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision, nroVelocidades,
+        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision, nroVelocidades, nroAsientos,
         tieneTurbo, motor, combustible, nroAirbags, seguridadChoques, organizacionSeguridad,
         anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones, fotografia
     )
     VALUES (
-        @nroChasis, @idModeloVehiculo, @generacion, @paisFabricacion, @transmision, @nroVelocidades,
+        @nroChasis, @idModeloVehiculo, @generacion, @paisFabricacion, @transmision, @nroVelocidades, @nroAsientos,
         @tieneTurbo, @motor, @combustible, @nroAirbags, @seguridadChoques, @organizacionSeguridad,
         @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones, @fotografia
     );
     
     SELECT SCOPE_IDENTITY() AS nuevoId;
 END
-GO
-
-PRINT 'Procedimiento paVehiculoInsertar actualizado';
 
 
 GO
@@ -391,7 +392,8 @@ ALTER PROC paVehiculoActualizar
     @generacion VARCHAR(50),
     @paisFabricacion VARCHAR(50),
     @transmision VARCHAR(20),
-    @nroVelocidades INT = NULL,  --NUEVO PARÁMETRO
+    @nroVelocidades INT = NULL,
+    @nroAsientos INT,  -- ⭐ NUEVO PARÁMETRO
     @tieneTurbo BIT,
     @motor VARCHAR(50),
     @combustible VARCHAR(20),
@@ -406,21 +408,18 @@ ALTER PROC paVehiculoActualizar
     @fotografia VARBINARY(MAX) = NULL
 AS
 BEGIN
-    -- Validación: CVT no debe tener velocidades
     IF @transmision = 'CVT' AND @nroVelocidades IS NOT NULL
     BEGIN
         RAISERROR('Las transmisiones CVT no tienen velocidades discretas', 16, 1);
         RETURN;
     END
 
-    -- Validación: Otras transmisiones deben tener velocidades
     IF @transmision != 'CVT' AND @nroVelocidades IS NULL
     BEGIN
         RAISERROR('Debe especificar el número de velocidades para este tipo de transmisión', 16, 1);
         RETURN;
     END
 
-    -- Guardar historial si cambia la confiabilidad
     IF EXISTS (SELECT 1 FROM Vehiculo WHERE id = @id AND confiabilidad != @confiabilidad)
         INSERT INTO HistorialConfiabilidad (idVehiculo, confiabilidadAnterior, confiabilidadNueva, 
                                            puntuacionAnterior, puntuacionNueva, motivo)
@@ -432,7 +431,8 @@ BEGIN
     SET generacion = @generacion,
         paisFabricacion = @paisFabricacion,
         transmision = @transmision,
-        nroVelocidades = @nroVelocidades,  -- ⭐ ACTUALIZAR CAMPO
+        nroVelocidades = @nroVelocidades,
+        nroAsientos = @nroAsientos,  --  ACTUALIZAR CAMPO
         tieneTurbo = @tieneTurbo,
         motor = @motor,
         combustible = @combustible,
@@ -449,9 +449,6 @@ BEGIN
     
     SELECT 'Actualizado correctamente' AS mensaje;
 END
-GO
-
-PRINT 'Procedimiento paVehiculoActualizar actualizado';
 
 
 
@@ -515,7 +512,7 @@ BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
-        v.transmision, v.nroVelocidades, v.tieneTurbo,  -- ⭐ CAMPO AGREGADO
+        v.transmision, v.nroVelocidades, v.nroAsientos, v.tieneTurbo,  -- ⭐ CAMPO AGREGADO
         v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
@@ -553,7 +550,7 @@ BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
-        v.transmision, v.nroVelocidades, v.tieneTurbo,
+        v.transmision, v.nroVelocidades, v.nroAsientos, v.tieneTurbo,
         v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
@@ -591,7 +588,7 @@ BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
-        v.transmision, v.nroVelocidades, v.tieneTurbo,
+        v.transmision, v.nroVelocidades, v.nroAsientos, v.tieneTurbo,
         v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
@@ -637,6 +634,7 @@ BEGIN
         v.paisFabricacion, 
         v.transmision, 
         v.nroVelocidades,
+        v.nroAsientos,
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
@@ -690,6 +688,7 @@ BEGIN
         v.paisFabricacion, 
         v.transmision, 
         v.nroVelocidades,
+        v.nroAsientos,
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
@@ -744,6 +743,7 @@ BEGIN
         v.paisFabricacion, 
         v.transmision, 
         v.nroVelocidades,
+        v.nroAsientos,
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
@@ -1037,6 +1037,15 @@ PRINT '  • Automática: 4-10 velocidades';
 PRINT '  • CVT: NULL (sin velocidades)';
 PRINT '  • Semiautomática/Doble Embrague: 6-8 vel.';
 PRINT '========================================';
+
+UPDATE Vehiculo
+SET nroAsientos = CASE 
+    WHEN idModeloVehiculo IN (SELECT id FROM ModeloVehiculo WHERE idTipoVehiculo = 3) THEN 5  -- Pickup: 5 asientos
+    WHEN idModeloVehiculo IN (SELECT id FROM ModeloVehiculo WHERE idTipoVehiculo = 2) THEN 7  -- SUV: 7 asientos
+    WHEN idModeloVehiculo IN (SELECT id FROM ModeloVehiculo WHERE idTipoVehiculo = 4) THEN 5  -- Hatchback: 5 asientos
+    ELSE 5  -- Sedán y otros: 5 asientos por defecto
+END
+WHERE nroAsientos IS NULL;
 
 
 -- =====================================================

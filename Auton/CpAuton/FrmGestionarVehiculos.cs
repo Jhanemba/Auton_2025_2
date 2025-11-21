@@ -329,6 +329,21 @@ namespace CpAuton
             panel.Controls.Add(cboCombustible);
             yPos += 35;
 
+            // NRO ASIENTOS
+            AgregarLabel(panel, "Nro. Asientos:", 15, yPos, labelWidth);
+            NumericUpDown nudAsientos = new NumericUpDown
+            {
+                Name = "nudAsientos",
+                Location = new Point(160, yPos),
+                Size = new Size(100, 25),
+                Font = new Font("Segoe UI", 10),
+                Minimum = 3,
+                Maximum = 8,
+                Value = 5
+            };
+            panel.Controls.Add(nudAsientos);
+            yPos += 35;
+
             // NRO AIRBAGS
             AgregarLabel(panel, "Nro. Airbags:", 15, yPos, labelWidth);
             NumericUpDown nudAirbags = new NumericUpDown
@@ -561,11 +576,212 @@ namespace CpAuton
             btnMarcasModelos.FlatAppearance.BorderSize = 0;
             btnMarcasModelos.Click += (s, e) =>
             {
+                // Snapshot form state
+                var state = new Dictionary<string, object>();
+
+                Control[] ctrls = this.Controls.Find("txtChasis", true);
+                var txtChasis = ctrls != null && ctrls.Length > 0 ? ctrls[0] as TextBox : null;
+
+                // TextBoxes
+                foreach (var t in new[] { "txtChasis", "txtGeneracion", "txtMotor", "txtObservaciones" })
+                {
+                    var c = this.Controls.Find(t, true).FirstOrDefault() as TextBox;
+                    state[t] = c != null ? (object)c.Text : null;
+                }
+
+                // ComboBoxes - store SelectedValue (if set) and Text as fallback
+                foreach (var name in new[] { "cboMarca", "cboModelo", "cboTipo", "cboPais", "cboTransmision", "cboCombustible", "cboOrganizacion", "cboConfiabilidad" })
+                {
+                    var c = this.Controls.Find(name, true).FirstOrDefault() as ComboBox;
+                    if (c != null)
+                    {
+                        state[name + "__SelectedValue"] = c.SelectedValue;
+                        state[name + "__Text"] = c.Text;
+                    }
+                    else
+                    {
+                        state[name + "__SelectedValue"] = null;
+                        state[name + "__Text"] = null;
+                    }
+                }
+
+                // NumericUpDowns
+                foreach (var n in new[] { "nudAnio", "nudVelocidades", "nudAsientos", "nudAirbags", "nudEstrellas", "nudPuntuacion" })
+                {
+                    var nud = this.Controls.Find(n, true).FirstOrDefault() as NumericUpDown;
+                    state[n] = nud != null ? (object)nud.Value : null;
+                }
+
+                // CheckBoxes
+                var chkTurbo = this.Controls.Find("chkTurbo", true).FirstOrDefault() as CheckBox;
+                state["chkTurbo"] = chkTurbo != null ? (object)chkTurbo.Checked : null;
+
+                // Buttons / flags
+                var btnGuardarCtrl = this.Controls.Find("btnGuardar", true).FirstOrDefault() as Button;
+                state["btnGuardar__Text"] = btnGuardarCtrl != null ? btnGuardarCtrl.Text : null;
+                state["btnGuardar__Enabled"] = btnGuardarCtrl != null ? (object)btnGuardarCtrl.Enabled : null;
+                state["modoEdicion"] = modoEdicion;
+                state["datosCopiados"] = datosCopiados;
+                state["vehiculoSeleccionadoId"] = vehiculoSeleccionadoId;
+
+                // Open dialog
                 using (var frmMarcasModelos = new FrmGestionarMarcasModelos())
                 {
                     frmMarcasModelos.ShowDialog(this);
-                    CargarCombos();
-                    CargarVehiculos("");
+                }
+
+                // After close: reload combos and list
+                CargarCombos();
+                CargarVehiculos("");
+
+                // Restore state
+                try
+                {
+                    permitirEventos = false;
+
+                    // Restore combos: cboMarca, cboTipo first
+                    var cboMarca = this.Controls.Find("cboMarca", true).FirstOrDefault() as ComboBox;
+                    var cboTipo = this.Controls.Find("cboTipo", true).FirstOrDefault() as ComboBox;
+                    var cboModelo = this.Controls.Find("cboModelo", true).FirstOrDefault() as ComboBox;
+
+                    object marcaVal = state.ContainsKey("cboMarca__SelectedValue") ? state["cboMarca__SelectedValue"] : null;
+                    object tipoVal = state.ContainsKey("cboTipo__SelectedValue") ? state["cboTipo__SelectedValue"] : null;
+                    object modeloVal = state.ContainsKey("cboModelo__SelectedValue") ? state["cboModelo__SelectedValue"] : null;
+
+                    if (cboMarca != null && marcaVal != null)
+                    {
+                        // Try to set SelectedValue only if present in list
+                        try { cboMarca.SelectedValue = marcaVal; } catch { cboMarca.Text = state["cboMarca__Text"] as string; }
+                    }
+                    else if (cboMarca != null)
+                    {
+                        cboMarca.Text = state["cboMarca__Text"] as string;
+                    }
+
+                    if (cboTipo != null && tipoVal != null)
+                    {
+                        try { cboTipo.SelectedValue = tipoVal; } catch { cboTipo.Text = state["cboTipo__Text"] as string; }
+                    }
+                    else if (cboTipo != null)
+                    {
+                        cboTipo.Text = state["cboTipo__Text"] as string;
+                    }
+
+                    // Repopulate models for the restored marca
+                    if (cboMarca != null && cboModelo != null)
+                    {
+                        try
+                        {
+                            int idMarcaForModels = 0;
+                            if (marcaVal is int) idMarcaForModels = (int)marcaVal;
+                            else if (marcaVal is short) idMarcaForModels = Convert.ToInt32(marcaVal);
+                            else if (!string.IsNullOrEmpty(cboMarca.Text))
+                            {
+                                // try match by name
+                                var match = MarcaCln.listar().FirstOrDefault(m => m.nombre == cboMarca.Text);
+                                if (match != null) idMarcaForModels = match.id;
+                            }
+
+                            if (idMarcaForModels > 0)
+                            {
+                                var modelos = ModeloVehiculoCln.listar()
+                                    .Where(m => m.idMarca == idMarcaForModels && m.estado != -1)
+                                    .OrderBy(m => m.nombre)
+                                    .ToList();
+
+                                cboModelo.DataSource = null;
+                                cboModelo.DisplayMember = "nombre";
+                                cboModelo.ValueMember = "id";
+                                cboModelo.DataSource = modelos;
+
+                                if (modeloVal != null)
+                                {
+                                    try { cboModelo.SelectedValue = modeloVal; } catch { cboModelo.Text = state["cboModelo__Text"] as string; }
+                                }
+                                else
+                                {
+                                    cboModelo.Text = state["cboModelo__Text"] as string;
+                                }
+                            }
+                            else
+                            {
+                                // no marca id, just restore text
+                                cboModelo.Text = state["cboModelo__Text"] as string;
+                            }
+                        }
+                        catch { }
+                    }
+
+                    // Restore other controls
+                    foreach (var t in new[] { "txtChasis", "txtGeneracion", "txtMotor", "txtObservaciones" })
+                    {
+                        var c = this.Controls.Find(t, true).FirstOrDefault() as TextBox;
+                        if (c != null && state.ContainsKey(t)) c.Text = state[t] as string ?? "";
+                    }
+
+                    foreach (var name in new[] { "cboPais", "cboTransmision", "cboCombustible", "cboOrganizacion", "cboConfiabilidad" })
+                    {
+                        var c = this.Controls.Find(name, true).FirstOrDefault() as ComboBox;
+                        if (c != null)
+                        {
+                            object val = state.ContainsKey(name + "__SelectedValue") ? state[name + "__SelectedValue"] : null;
+                            if (val != null)
+                            {
+                                try { c.SelectedValue = val; } catch { c.Text = state[name + "__Text"] as string; }
+                            }
+                            else
+                            {
+                                c.Text = state[name + "__Text"] as string;
+                            }
+                        }
+                    }
+
+                    // Numeric values
+                    foreach (var n in new[] { "nudAnio", "nudVelocidades", "nudAsientos", "nudAirbags", "nudEstrellas", "nudPuntuacion" })
+                    {
+                        var nud = this.Controls.Find(n, true).FirstOrDefault() as NumericUpDown;
+                        if (nud != null && state.ContainsKey(n) && state[n] != null)
+                        {
+                            try { nud.Value = Convert.ToDecimal(state[n]); } catch { }
+                        }
+                    }
+
+                    // CheckBox
+                    if (chkTurbo != null && state.ContainsKey("chkTurbo") && state["chkTurbo"] != null)
+                        chkTurbo.Checked = Convert.ToBoolean(state["chkTurbo"]);
+
+                    // Restore botones/flags
+                    var btnGuardarNow = this.Controls.Find("btnGuardar", true).FirstOrDefault() as Button;
+                    if (btnGuardarNow != null)
+                    {
+                        if (state.ContainsKey("btnGuardar__Text") && state["btnGuardar__Text"] != null)
+                            btnGuardarNow.Text = state["btnGuardar__Text"] as string;
+                        if (state.ContainsKey("btnGuardar__Enabled") && state["btnGuardar__Enabled"] != null)
+                            btnGuardarNow.Enabled = Convert.ToBoolean(state["btnGuardar__Enabled"]);
+                    }
+
+                    if (state.ContainsKey("modoEdicion")) modoEdicion = Convert.ToBoolean(state["modoEdicion"]);
+                    if (state.ContainsKey("datosCopiados")) datosCopiados = Convert.ToBoolean(state["datosCopiados"]);
+                    if (state.ContainsKey("vehiculoSeleccionadoId") && state["vehiculoSeleccionadoId"] != null)
+                        vehiculoSeleccionadoId = Convert.ToInt32(state["vehiculoSeleccionadoId"]);
+
+                    // Ensure velocidad control state matches current transmisión and is editable
+                    var nudVel = this.Controls.Find("nudVelocidades", true).FirstOrDefault() as NumericUpDown;
+                    var lblInfoVel = this.Controls.Find("lblInfoVelocidades", true).FirstOrDefault() as Label;
+                    var cboTransFinal = this.Controls.Find("cboTransmision", true).FirstOrDefault() as ComboBox;
+
+                    if (nudVel != null && lblInfoVel != null && cboTransFinal != null)
+                    {
+                        int? velVal = null;
+                        if (state.ContainsKey("nudVelocidades") && state["nudVelocidades"] != null)
+                            velVal = Convert.ToInt32(state["nudVelocidades"]);
+
+                        ConfigurarVelocidades(cboTransFinal.Text, nudVel, lblInfoVel, velVal, true);
+                    }
+                }
+                finally
+                {
+                    permitirEventos = true;
                 }
             };
             panel.Controls.Add(btnMarcasModelos);
@@ -777,6 +993,7 @@ namespace CpAuton
             var btnCancelar = this.Controls.Find("btnCancelar", true)[0] as Button;
             var btnNuevo = sender as Button;
 
+            // If already in 'copy' mode and user clicks Nuevo: clear the form for fresh entry
             if (datosCopiados)
             {
                 LimpiarFormulario();
@@ -796,35 +1013,54 @@ namespace CpAuton
                 return;
             }
 
-            if (dgv.CurrentRow != null)
+            // If there is a selected row, copy its data into the form to create a variant
+            DataGridViewRow selRow = null;
+            if (dgv != null)
             {
-                var vehiculo = (paVehiculoListar_Result)dgv.CurrentRow.DataBoundItem;
-                CargarDatosVehiculo(vehiculo.id);
+                if (dgv.CurrentRow != null) selRow = dgv.CurrentRow;
+                else if (dgv.SelectedRows != null && dgv.SelectedRows.Count > 0) selRow = dgv.SelectedRows[0];
+            }
 
-                modoEdicion = false;
+            if (selRow != null && selRow.DataBoundItem is paVehiculoListar_Result vehiculoData)
+            {
+                // Load data into form (this sets modoEdicion = true internally), then switch to copy mode
+                CargarDatosVehiculo(vehiculoData.id);
+
+                modoEdicion = false;            // we want to create a new record
                 vehiculoSeleccionadoId = 0;
                 datosCopiados = true;
 
+                // Clear only the chasis to force new unique key and focus it
                 var txtChasis = this.Controls.Find("txtChasis", true)[0] as TextBox;
-                txtChasis.Clear();
-                txtChasis.Focus();
+                if (txtChasis != null) txtChasis.Clear();
+                if (txtChasis != null) txtChasis.Focus();
 
                 btnGuardar.Text = "💾 Guardar Nuevo";
                 btnGuardar.Enabled = true;
                 btnCancelar.Enabled = true;
                 btnNuevo.BackColor = Color.FromArgb(255, 193, 7);
 
+                // Ensure velocidad control matches current transmisión and is editable for user
+                var nudVel = this.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                var lblInfoVel = this.Controls.Find("lblInfoVelocidades", true)[0] as Label;
+                var cboTrans = this.Controls.Find("cboTransmision", true)[0] as ComboBox;
+                if (nudVel != null && lblInfoVel != null && cboTrans != null)
+                {
+                    ConfigurarVelocidades(cboTrans.Text, nudVel, lblInfoVel, null, true);
+                }
+
                 MessageBox.Show("ℹ️ Datos copiados del vehículo seleccionado.\n\n" +
-                              "• Ingrese un nuevo número de chasis\n" +
-                              "• Modifique los campos necesarios\n" +
-                              "• Click en 'Guardar Nuevo' para registrar\n" +
-                              "• Click nuevamente en 'Nuevo' para limpiar todo",
-                              "Modo Copiar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                "• Ingrese un nuevo número de chasis\n" +
+                                "• Modifique los campos necesarios\n" +
+                                "• Click en 'Guardar Nuevo' para registrar\n" +
+                                "• Click nuevamente en 'Nuevo' para limpiar todo",
+                                "Modo Copiar", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
+                // No selection: prepare a blank form for new entry
                 LimpiarFormulario();
-                dgv.ClearSelection();
+                if (dgv != null) dgv.ClearSelection();
 
                 modoEdicion = false;
                 vehiculoSeleccionadoId = 0;
@@ -836,7 +1072,7 @@ namespace CpAuton
                 btnNuevo.BackColor = Color.FromArgb(40, 167, 69);
 
                 var txtChasis = this.Controls.Find("txtChasis", true)[0] as TextBox;
-                txtChasis.Focus();
+                if (txtChasis != null) txtChasis.Focus();
             }
         }
 
@@ -856,6 +1092,7 @@ namespace CpAuton
                 var nudAnio = this.Controls.Find("nudAnio", true)[0] as NumericUpDown;
                 var cboTransmision = this.Controls.Find("cboTransmision", true)[0] as ComboBox;
                 var nudVelocidades = this.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                var nudAsientos = this.Controls.Find("nudAsientos", true)[0] as NumericUpDown;
                 var chkTurbo = this.Controls.Find("chkTurbo", true)[0] as CheckBox;
                 var txtMotor = this.Controls.Find("txtMotor", true)[0] as TextBox;
                 var cboCombustible = this.Controls.Find("cboCombustible", true)[0] as ComboBox;
@@ -932,6 +1169,7 @@ namespace CpAuton
                 {
                     vehiculo.nroVelocidades = (int)nudVelocidades.Value;
                 }
+                vehiculo.nroAsientos = (int)nudAsientos.Value;
                 vehiculo.tieneTurbo = chkTurbo.Checked;
                 vehiculo.motor = txtMotor.Text.Trim();
                 vehiculo.combustible = cboCombustible.Text;
@@ -1221,6 +1459,8 @@ namespace CpAuton
                                 nud.Value = 5;
                                 nud.Enabled = false;
                             }
+                            else if (nud.Name == "nudAsientos")
+                                nud.Value = 5;
                             else
                                 nud.Value = nud.Minimum;
                         }
@@ -1275,6 +1515,7 @@ namespace CpAuton
                 var cboPais = this.Controls.Find("cboPais", true)[0] as ComboBox;
                 var nudAnio = this.Controls.Find("nudAnio", true)[0] as NumericUpDown;
                 var cboTransmision = this.Controls.Find("cboTransmision", true)[0] as ComboBox;
+                var nudAsientos = this.Controls.Find("nudAsientos", true)[0] as NumericUpDown;
                 var chkTurbo = this.Controls.Find("chkTurbo", true)[0] as CheckBox;
                 var txtMotor = this.Controls.Find("txtMotor", true)[0] as TextBox;
                 var cboCombustible = this.Controls.Find("cboCombustible", true)[0] as ComboBox;
@@ -1317,15 +1558,17 @@ namespace CpAuton
                 cboTransmision.Text = vehiculo.transmision;
                 var nudVelocidades = this.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
                 var lblInfoVel = this.Controls.Find("lblInfoVelocidades", true)[0] as Label;
+                nudAsientos.Value = vehiculo.nroAsientos ?? 5;
+
 
                 // Use centralized helper to configure control (will hide for CVT)
                 if (vehiculo.transmision == "CVT")
                 {
-                    ConfigurarVelocidades("CVT", nudVelocidades, lblInfoVel, null, false);
+                    ConfigurarVelocidades("CVT", nudVelocidades, lblInfoVel, null, true);
                 }
                 else
                 {
-                    ConfigurarVelocidades(vehiculo.transmision, nudVelocidades, lblInfoVel, vehiculo.nroVelocidades, false);
+                    ConfigurarVelocidades(vehiculo.transmision, nudVelocidades, lblInfoVel, vehiculo.nroVelocidades, true);
                 }
 
                 chkTurbo.Checked = vehiculo.tieneTurbo;

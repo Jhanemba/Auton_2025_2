@@ -133,6 +133,7 @@
           <ScalarProperty Name="estado" ColumnName="estado" />
           <ScalarProperty Name="fotografia" ColumnName="fotografia" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -238,6 +239,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -268,6 +270,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -297,6 +300,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -326,6 +330,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -355,6 +360,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -384,6 +390,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -413,6 +420,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
