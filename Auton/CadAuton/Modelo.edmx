@@ -131,6 +131,7 @@
           <Property Name="fotografia" Type="varbinary(max)" />
           <Property Name="nroVelocidades" Type="int" />
           <Property Name="nroAsientos" Type="int" />
+          <Property Name="nroPuertas" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="VehiculoMantenimiento">
           <Key>
@@ -265,6 +266,7 @@
           <Parameter Name="paisFabricacion" Type="varchar" Mode="In" />
           <Parameter Name="transmision" Type="varchar" Mode="In" />
           <Parameter Name="nroVelocidades" Type="int" Mode="In" />
+          <Parameter Name="nroPuertas" Type="int" Mode="In" />
           <Parameter Name="nroAsientos" Type="int" Mode="In" />
           <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
           <Parameter Name="motor" Type="varchar" Mode="In" />
@@ -289,6 +291,7 @@
           <Parameter Name="paisFabricacion" Type="varchar" Mode="In" />
           <Parameter Name="transmision" Type="varchar" Mode="In" />
           <Parameter Name="nroVelocidades" Type="int" Mode="In" />
+          <Parameter Name="nroPuertas" Type="int" Mode="In" />
           <Parameter Name="nroAsientos" Type="int" Mode="In" />
           <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
           <Parameter Name="motor" Type="varchar" Mode="In" />
@@ -514,6 +517,7 @@
           <Property Name="fotografia" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="nroVelocidades" Type="Int32" />
           <Property Name="nroAsientos" Type="Int32" />
+          <Property Name="nroPuertas" Type="Int32" Nullable="false" />
           <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="Vehiculo" ToRole="HistorialConfiabilidad" />
           <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="Vehiculo" ToRole="ModeloVehiculo" />
           <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="Vehiculo" ToRole="VehiculoMantenimiento" />
@@ -695,6 +699,7 @@
             <Parameter Name="paisFabricacion" Mode="In" Type="String" />
             <Parameter Name="transmision" Mode="In" Type="String" />
             <Parameter Name="nroVelocidades" Mode="In" Type="Int32" />
+            <Parameter Name="nroPuertas" Mode="In" Type="Int32" />
             <Parameter Name="nroAsientos" Mode="In" Type="Int32" />
             <Parameter Name="tieneTurbo" Mode="In" Type="Boolean" />
             <Parameter Name="motor" Mode="In" Type="String" />
@@ -719,6 +724,7 @@
             <Parameter Name="paisFabricacion" Mode="In" Type="String" />
             <Parameter Name="transmision" Mode="In" Type="String" />
             <Parameter Name="nroVelocidades" Mode="In" Type="Int32" />
+            <Parameter Name="nroPuertas" Mode="In" Type="Int32" />
             <Parameter Name="nroAsientos" Mode="In" Type="Int32" />
             <Parameter Name="tieneTurbo" Mode="In" Type="Boolean" />
             <Parameter Name="motor" Mode="In" Type="String" />
@@ -812,6 +818,7 @@
           <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+          <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -837,6 +844,7 @@
           <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
+          <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
@@ -863,6 +871,7 @@
           <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
+          <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
@@ -889,6 +898,7 @@
           <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
+          <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
@@ -915,6 +925,7 @@
           <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
+          <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
@@ -941,6 +952,7 @@
           <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
+          <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
@@ -967,6 +979,7 @@
           <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
+          <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
@@ -1122,6 +1135,7 @@
                 <ScalarProperty Name="fotografia" ColumnName="fotografia" />
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+                <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1228,6 +1242,7 @@
                 <ScalarProperty Name="transmision" ColumnName="transmision" />
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+                <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
                 <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -1258,6 +1273,7 @@
                 <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
                 <ScalarProperty Name="transmision" ColumnName="transmision" />
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+                <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
@@ -1288,6 +1304,7 @@
                 <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
                 <ScalarProperty Name="transmision" ColumnName="transmision" />
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+                <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
@@ -1318,6 +1335,7 @@
                 <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
                 <ScalarProperty Name="transmision" ColumnName="transmision" />
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+                <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
@@ -1348,6 +1366,7 @@
                 <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
                 <ScalarProperty Name="transmision" ColumnName="transmision" />
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+                <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
@@ -1378,6 +1397,7 @@
                 <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
                 <ScalarProperty Name="transmision" ColumnName="transmision" />
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+                <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
@@ -1408,6 +1428,7 @@
                 <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
                 <ScalarProperty Name="transmision" ColumnName="transmision" />
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+                <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />

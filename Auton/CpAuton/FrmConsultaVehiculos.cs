@@ -132,7 +132,7 @@ namespace CpAuton
                 Name = "colId",
                 DataPropertyName = "id",
                 HeaderText = "ID",
-                Width = 50,
+                Width = 50-40,
                 Visible = false
             });
 
@@ -184,6 +184,15 @@ namespace CpAuton
                 Width = 100
             });
 
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPuertas",
+                DataPropertyName = "nroPuertas",
+                HeaderText = "Puertas",
+                Width = 60-40,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            });
+
             dgvVehiculos.Columns.Add(new DataGridViewCheckBoxColumn
             {
                 Name = "colTurbo",
@@ -205,8 +214,9 @@ namespace CpAuton
                 Name = "colAsientos",
                 DataPropertyName = "nroAsientos",
                 HeaderText = "Asientos",
-                Width = 70,
-                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+                Width = 70 - 40,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter },
+                Visible = false
             });
 
             dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
@@ -387,7 +397,7 @@ namespace CpAuton
                 yPos += 35;
                 Panel pnlFotografia = new Panel
                 {
-                    Location = new Point(20+575, yPos+500+100),
+                    Location = new Point(20+575, yPos+500+100+45),
                     Size = new Size(540, 320),
                     BackColor = Color.White,
                     BorderStyle = BorderStyle.FixedSingle
@@ -1333,6 +1343,33 @@ namespace CpAuton
                 //enviar al frente
                 nudAsientos.BringToFront();
 
+                // Nro de Puertas
+                AgregarLabel(pnlPrincipal, "Nro. Puertas:", 580, yPosRight, labelWidth);
+                ComboBox cboPuertas = new ComboBox
+                {
+                    Name = "cboPuertas",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(150, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+                cboPuertas.Items.AddRange(new object[] { 3, 4, 5 });
+                cboPuertas.SelectedItem = vehiculoCompleto.nroPuertas;
+                pnlPrincipal.Controls.Add(cboPuertas);
+
+                Label lblInfoPuertas = new Label
+                {
+                    Text = vehiculoCompleto.nroPuertas == 5 ? "(Común)" : "(Menos frecuente)",
+                    Location = new Point(colRightX + 240, yPosRight + 3),
+                    Size = new Size(150, 25),
+                    Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                    ForeColor = vehiculoCompleto.nroPuertas == 5 ? Color.Green : Color.Gray,
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                pnlPrincipal.Controls.Add(lblInfoPuertas);
+                yPosRight += lineHeight;
+
                 // ==================== SEGURIDAD ====================
                 yPos = Math.Max(yPosLeft, yPosRight) + 15;
                 AgregarSeccion(pnlPrincipal, "🛡️ SEGURIDAD", 20, yPos, 540);
@@ -1499,6 +1536,7 @@ namespace CpAuton
                             // Reconfigurar velocidades para permitir edición ahora que estamos en modo edición
                             ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesEdit, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, true);
                             nudAsientos.Enabled = true;
+                            cboPuertas.Enabled = true;
                             chkTieneTurbo.Enabled = true;
                             txtMotor.ReadOnly = false;
                             txtMotor.BackColor = Color.White;
@@ -1609,6 +1647,7 @@ namespace CpAuton
                                     vehiculoCompleto.nroVelocidades = (int)nudVel.Value;
                                 }
                                 vehiculoCompleto.nroAsientos = (int)nudAsientos.Value;
+                                vehiculoCompleto.nroPuertas = (int)cboPuertas.SelectedItem;
                                 vehiculoCompleto.tieneTurbo = chkTieneTurbo.Checked;
                                 vehiculoCompleto.motor = txtMotor.Text.Trim();
                                 vehiculoCompleto.combustible = cboCombustible.Text;
@@ -1640,6 +1679,7 @@ namespace CpAuton
                                     // Al salir de edición, reconfiguramos para modo lectura (deshabilitado o placeholder si CVT)
                                     ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesRead, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
                                     nudAsientos.Enabled = false;
+                                    cboPuertas.Enabled = false;
                                     chkTieneTurbo.Enabled = false;
                                     txtMotor.ReadOnly = true;
                                     txtMotor.BackColor = Color.WhiteSmoke;

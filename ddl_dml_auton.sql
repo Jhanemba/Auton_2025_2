@@ -239,6 +239,11 @@ ALTER TABLE Vehiculo
 ADD nroAsientos INT NULL 
     CHECK (nroAsientos >= 3 AND nroAsientos <= 8);
 
+GO
+ALTER TABLE Vehiculo
+ADD nroPuertas INT NOT NULL DEFAULT 5
+    CHECK (nroPuertas IN (3, 4, 5));
+
 -- =====================================================
 -- PROCEDIMIENTOS ALMACENADOS
 -- =====================================================
@@ -269,7 +274,8 @@ AS
            v.paisFabricacion, 
            v.transmision, 
            v.nroVelocidades,
-           v.nroAsientos,  -- AGREGAR CAMPO
+           v.nroAsientos,
+           v.nroPuertas,
            v.tieneTurbo,
            v.motor, 
            v.combustible, 
@@ -342,7 +348,8 @@ ALTER PROC paVehiculoInsertar
     @paisFabricacion VARCHAR(50),
     @transmision VARCHAR(20),
     @nroVelocidades INT = NULL,
-    @nroAsientos INT,  -- ⭐ NUEVO PARÁMETRO
+    @nroPuertas INT = 5,         -- ⭐ NUEVO PARÁMETRO
+    @nroAsientos INT,
     @tieneTurbo BIT,
     @motor VARCHAR(50),
     @combustible VARCHAR(20),
@@ -357,14 +364,12 @@ ALTER PROC paVehiculoInsertar
     @fotografia VARBINARY(MAX) = NULL
 AS
 BEGIN
-    -- Validación: CVT no debe tener velocidades
     IF @transmision = 'CVT' AND @nroVelocidades IS NOT NULL
     BEGIN
         RAISERROR('Las transmisiones CVT no tienen velocidades discretas', 16, 1);
         RETURN;
     END
 
-    -- Validación: Otras transmisiones deben tener velocidades
     IF @transmision != 'CVT' AND @nroVelocidades IS NULL
     BEGIN
         RAISERROR('Debe especificar el número de velocidades para este tipo de transmisión', 16, 1);
@@ -372,12 +377,14 @@ BEGIN
     END
 
     INSERT INTO Vehiculo (
-        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision, nroVelocidades, nroAsientos,
+        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision, 
+        nroVelocidades, nroPuertas, nroAsientos,
         tieneTurbo, motor, combustible, nroAirbags, seguridadChoques, organizacionSeguridad,
         anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones, fotografia
     )
     VALUES (
-        @nroChasis, @idModeloVehiculo, @generacion, @paisFabricacion, @transmision, @nroVelocidades, @nroAsientos,
+        @nroChasis, @idModeloVehiculo, @generacion, @paisFabricacion, @transmision, 
+        @nroVelocidades, @nroPuertas, @nroAsientos,
         @tieneTurbo, @motor, @combustible, @nroAirbags, @seguridadChoques, @organizacionSeguridad,
         @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones, @fotografia
     );
@@ -393,7 +400,8 @@ ALTER PROC paVehiculoActualizar
     @paisFabricacion VARCHAR(50),
     @transmision VARCHAR(20),
     @nroVelocidades INT = NULL,
-    @nroAsientos INT,  -- ⭐ NUEVO PARÁMETRO
+    @nroPuertas INT,             -- ⭐ NUEVO PARÁMETRO
+    @nroAsientos INT,
     @tieneTurbo BIT,
     @motor VARCHAR(50),
     @combustible VARCHAR(20),
@@ -432,7 +440,8 @@ BEGIN
         paisFabricacion = @paisFabricacion,
         transmision = @transmision,
         nroVelocidades = @nroVelocidades,
-        nroAsientos = @nroAsientos,  --  ACTUALIZAR CAMPO
+        nroPuertas = @nroPuertas,      -- ⭐ ACTUALIZAR CAMPO
+        nroAsientos = @nroAsientos,
         tieneTurbo = @tieneTurbo,
         motor = @motor,
         combustible = @combustible,
@@ -512,7 +521,7 @@ BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
-        v.transmision, v.nroVelocidades, v.nroAsientos, v.tieneTurbo,  -- ⭐ CAMPO AGREGADO
+        v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.tieneTurbo,  -- ⭐ CAMPO AGREGADO
         v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
@@ -550,7 +559,7 @@ BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
-        v.transmision, v.nroVelocidades, v.nroAsientos, v.tieneTurbo,
+        v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.tieneTurbo,
         v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
@@ -588,7 +597,7 @@ BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
-        v.transmision, v.nroVelocidades, v.nroAsientos, v.tieneTurbo,
+        v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.tieneTurbo,
         v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
@@ -634,6 +643,7 @@ BEGIN
         v.paisFabricacion, 
         v.transmision, 
         v.nroVelocidades,
+        v.nroPuertas,
         v.nroAsientos,
         v.tieneTurbo,
         v.motor, 
@@ -688,6 +698,7 @@ BEGIN
         v.paisFabricacion, 
         v.transmision, 
         v.nroVelocidades,
+        v.nroPuertas,
         v.nroAsientos,
         v.tieneTurbo,
         v.motor, 
@@ -743,6 +754,7 @@ BEGIN
         v.paisFabricacion, 
         v.transmision, 
         v.nroVelocidades,
+        v.nroPuertas,
         v.nroAsientos,
         v.tieneTurbo,
         v.motor, 
@@ -1047,6 +1059,18 @@ SET nroAsientos = CASE
 END
 WHERE nroAsientos IS NULL;
 
+UPDATE v
+SET nroPuertas = CASE 
+    WHEN tv.descripcion = 'Pickup' THEN 4       -- Pickups generalmente tienen 4 puertas
+    WHEN tv.descripcion = 'Coupé' THEN 3        -- Coupés tienen 3 puertas
+    WHEN tv.descripcion = 'Hatchback' THEN 5    -- Hatchbacks incluyen portón
+    WHEN tv.descripcion = 'SUV' THEN 5          -- SUVs incluyen portón
+    ELSE 5                                       -- Sedán y otros: 5 puertas por defecto
+END
+FROM Vehiculo v
+INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id;
+
 
 -- =====================================================
 -- ÍNDICES PARA OPTIMIZACIÓN
@@ -1107,6 +1131,15 @@ WHERE p.descripcion = 'Japonés'
 select * FROM Marca
 SELECT * FROM Procedencia WHERE estado != -1;
 SELECT * FROM Cargo
+
+
+
+PRINT '========================================';
+PRINT 'CAMPO NRO PUERTAS IMPLEMENTADO';
+PRINT '========================================';
+PRINT 'Valores permitidos: 3, 4, 5';
+PRINT 'Valor por defecto: 5';
+PRINT '========================================';
 
 PRINT '';
 PRINT 'USUARIOS:';

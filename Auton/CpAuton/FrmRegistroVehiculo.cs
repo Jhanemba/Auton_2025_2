@@ -35,6 +35,7 @@ namespace CpAuton
         private TextBox txtGeneracion;
         private ComboBox cboPaisFabricacion;
         private ComboBox cboTransmision;
+        private ComboBox cboPuertas;
         private CheckBox chkTieneTurbo;
         private NumericUpDown nudVelocidades;
         private Label lblInfoVelocidades;
@@ -88,7 +89,7 @@ namespace CpAuton
             Panel pnlPrincipal = new Panel
             {
                 Location = new Point(0, 0),
-                Size = new Size(1184, 750+270),
+                Size = new Size(1184, 750+270+100),
                 Padding = new Padding(20),
                 BackColor = Color.PapayaWhip,
                 //AutoScroll = true
@@ -378,6 +379,58 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(lblInfoAsientos);
             yPosRight += lineHeight;
 
+            // Nro de Puertas
+            AgregarLabel(pnlPrincipal, "Nro. Puertas:", 580, yPosRight, labelWidth);
+            cboPuertas = new ComboBox
+            {
+                Location = new Point(colRightX + 80, yPosRight),
+                Size = new Size(150, 28),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10F)
+            };
+            cboPuertas.Items.AddRange(new object[] { 3, 4, 5 });
+            cboPuertas.SelectedItem = 5; // DEFAULT: 5 puertas (más común)
+            pnlPrincipal.Controls.Add(cboPuertas);
+
+            Label lblInfoPuertas = new Label
+            {
+                Name = "lblInfoPuertas",
+                Text = "(5 es más común)",
+                Location = new Point(colRightX + 240, yPosRight + 3),
+                Size = new Size(150, 25),
+                Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                ForeColor = Color.Green,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            pnlPrincipal.Controls.Add(lblInfoPuertas);
+
+            // EVENTO: Cambiar label según selección
+            cboPuertas.SelectedIndexChanged += (s, e) =>
+            {
+                var lbl = pnlPrincipal.Controls.Find("lblInfoPuertas", false).FirstOrDefault() as Label;
+                if (lbl != null)
+                {
+                    int puertas = (int)cboPuertas.SelectedItem;
+                    switch (puertas)
+                    {
+                        case 3:
+                            lbl.Text = "(3 puertas - Hatchback/Coupé)";
+                            lbl.ForeColor = Color.FromArgb(255, 193, 7); // Amarillo
+                            break;
+                        case 4:
+                            lbl.Text = "(4 puertas - Van/Pickup)";
+                            lbl.ForeColor = Color.FromArgb(23, 162, 184); // Azul
+                            break;
+                        case 5:
+                            lbl.Text = "(5 puertas - Común)";
+                            lbl.ForeColor = Color.FromArgb(40, 167, 69); // Verde
+                            break;
+                    }
+                }
+            };
+
+            yPosRight += lineHeight;
+
             // ==================== SEGURIDAD ====================
             yPos = Math.Max(yPosLeft, yPosRight) + 15;
             AgregarSeccion(pnlPrincipal, "🛡️ SEGURIDAD", 20, yPos, 540);
@@ -610,7 +663,7 @@ namespace CpAuton
             // Panel de botones
             Panel pnlBotones = new Panel
             {
-                Location = new Point(0, 750+250),
+                Location = new Point(0, 750+250+100),
                 Size = new Size(1184, 70+30),
                 BackColor = Color.FromArgb(52, 58, 64),
                 BorderStyle = BorderStyle.FixedSingle
@@ -651,7 +704,7 @@ namespace CpAuton
             pnlContenedor.Controls.Add(pnlBotones);
             this.Load += (s, e) =>
             {
-                pnlBotones.Top = pnlPrincipal.Bottom + 20;
+                pnlBotones.Top = pnlPrincipal.Bottom + 20-20;
             };
 
             this.Shown += (s, e) =>
@@ -1003,6 +1056,7 @@ namespace CpAuton
                         nroVelocidades = cboTransmision.Text == "CVT"
                          ? (int?)null
                         : (int)nudVelocidades.Value,
+                        nroPuertas = (int)cboPuertas.SelectedItem,
                         nroAsientos = (int)nudAsientos.Value,
                         tieneTurbo = chkTieneTurbo.Checked,
                         motor = txtMotor.Text.Trim(),
@@ -1032,12 +1086,13 @@ namespace CpAuton
                         string modeloNombre = cboModelo.Text;
 
                         MessageBox.Show($"✅ Vehículo registrado exitosamente\n\n" +
-                                      $"Chasis: {txtNroChasis.Text}\n" +
-                                      $"Modelo: {modeloNombre}\n" +
-                                      $"Generación: {txtGeneracion.Text}\n" +
-                                      $"País: {cboPaisFabricacion.Text}\n" +
-                                      $"Transmisión: {cboTransmision.Text}{velocidadesInfo}{turboInfo}",
-                                      "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        $"Chasis: {txtNroChasis.Text}\n" +
+                                        $"Modelo: {modeloNombre}\n" +
+                                        $"Generación: {txtGeneracion.Text}\n" +
+                                        $"País: {cboPaisFabricacion.Text}\n" +
+                                        $"Carrocería: {cboPuertas.SelectedItem} puertas, {nudAsientos.Value} asientos\n" +
+                                        $"Transmisión: {cboTransmision.Text}{velocidadesInfo}{turboInfo}",
+                                        "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
                         this.Close();
                     }

@@ -44,6 +44,7 @@ namespace CadAuton
         public byte[] fotografia { get; set; }
         public Nullable<int> nroVelocidades { get; set; }
         public Nullable<int> nroAsientos { get; set; }
+        public int nroPuertas { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HistorialConfiabilidad> HistorialConfiabilidad { get; set; }

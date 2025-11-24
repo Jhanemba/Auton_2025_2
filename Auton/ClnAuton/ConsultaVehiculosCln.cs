@@ -42,7 +42,9 @@ namespace ClnAuton
                     existente.generacion = vehiculo.generacion;
                     existente.paisFabricacion = vehiculo.paisFabricacion;
                     existente.transmision = vehiculo.transmision;
-                    existente.nroVelocidades = vehiculo.nroVelocidades;  // ⭐ NUEVO CAMPO
+                    existente.nroVelocidades = vehiculo.nroVelocidades;
+                    existente.nroPuertas = vehiculo.nroPuertas;      // ⭐ ASEGURAR QUE SE ACTUALIZA
+                    existente.nroAsientos = vehiculo.nroAsientos;
                     existente.tieneTurbo = vehiculo.tieneTurbo;
                     existente.motor = vehiculo.motor;
                     existente.combustible = vehiculo.combustible;

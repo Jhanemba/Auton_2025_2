@@ -344,6 +344,49 @@ namespace CpAuton
             panel.Controls.Add(nudAsientos);
             yPos += 35;
 
+            // NUEVO: NRO PUERTAS
+            AgregarLabel(panel, "Nro. Puertas:", 15, yPos, labelWidth);
+            ComboBox cboPuertas = new ComboBox
+            {
+                Name = "cboPuertas",
+                Location = new Point(160, yPos),
+                Size = new Size(150, 25),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10)
+            };
+            cboPuertas.Items.AddRange(new object[] { 3, 4, 5 });
+            cboPuertas.SelectedItem = 5; // Default
+            panel.Controls.Add(cboPuertas);
+
+            // Label informativo
+            Label lblInfoPuertas = new Label
+            {
+                Name = "lblInfoPuertas",
+                Text = "(5 más común)",
+                Location = new Point(320, yPos + 3),
+                Size = new Size(100, 25),
+                Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                ForeColor = Color.Green,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            panel.Controls.Add(lblInfoPuertas);
+
+            // Evento para cambiar label
+            cboPuertas.SelectedIndexChanged += (s, e) =>
+            {
+                var lbl = this.Controls.Find("lblInfoPuertas", true).FirstOrDefault() as Label;
+                if (lbl != null && cboPuertas.SelectedItem != null)
+                {
+                    int puertas = (int)cboPuertas.SelectedItem;
+                    lbl.Text = puertas == 5 ? "(5 más común)" :
+                               puertas == 4 ? "(4 Van/Pickup)" :
+                               "(3 Coupé/Hatch)";
+                    lbl.ForeColor = puertas == 5 ? Color.Green : Color.Gray;
+                }
+            };
+
+            yPos += 35;
+
             // NRO AIRBAGS
             AgregarLabel(panel, "Nro. Airbags:", 15, yPos, labelWidth);
             NumericUpDown nudAirbags = new NumericUpDown
@@ -822,6 +865,9 @@ namespace CpAuton
             dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "colGeneracion", DataPropertyName = "generacion", HeaderText = "Generación", Width = 100 });
             dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "colAnio", DataPropertyName = "anioFabricacion", HeaderText = "Año", Width = 60 });
             dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "colTransmision", DataPropertyName = "transmision", HeaderText = "Transmisión", Width = 100 });
+            //dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "colPuertas", DataPropertyName = "nroPuertas", HeaderText = "Puertas", Width = 70 });
+            //dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "colVelocidades", DataPropertyName = "nroVelocidades", HeaderText = "Velocidades", Width = 80 });
+            //dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "colAsientos", DataPropertyName = "nroAsientos", HeaderText = "Asientos", Width = 70 });
             dgv.Columns.Add(new DataGridViewCheckBoxColumn { Name = "colTurbo", DataPropertyName = "tieneTurbo", HeaderText = "Turbo", Width = 60 });
             dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "colConfiabilidad", DataPropertyName = "confiabilidad", HeaderText = "Confiabilidad", Width = 100 });
             dgv.Columns.Add(new DataGridViewTextBoxColumn { Name = "colPuntuacion", DataPropertyName = "puntuacion", HeaderText = "Puntuación", Width = 80, DefaultCellStyle = { Format = "N1" } });
@@ -1093,6 +1139,7 @@ namespace CpAuton
                 var cboTransmision = this.Controls.Find("cboTransmision", true)[0] as ComboBox;
                 var nudVelocidades = this.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
                 var nudAsientos = this.Controls.Find("nudAsientos", true)[0] as NumericUpDown;
+                var cboPuertas = this.Controls.Find("cboPuertas", true)[0] as ComboBox;
                 var chkTurbo = this.Controls.Find("chkTurbo", true)[0] as CheckBox;
                 var txtMotor = this.Controls.Find("txtMotor", true)[0] as TextBox;
                 var cboCombustible = this.Controls.Find("cboCombustible", true)[0] as ComboBox;
@@ -1169,6 +1216,7 @@ namespace CpAuton
                 {
                     vehiculo.nroVelocidades = (int)nudVelocidades.Value;
                 }
+                vehiculo.nroPuertas = (int)cboPuertas.SelectedItem; 
                 vehiculo.nroAsientos = (int)nudAsientos.Value;
                 vehiculo.tieneTurbo = chkTurbo.Checked;
                 vehiculo.motor = txtMotor.Text.Trim();
@@ -1444,8 +1492,15 @@ namespace CpAuton
                     {
                         if (subCtrl is TextBox txt)
                             txt.Clear();
+
                         else if (subCtrl is ComboBox cbo)
-                            cbo.SelectedIndex = -1;
+                        {
+                            //cboPuertas debe volver a 5 por defecto
+                            if (cbo.Name == "cboPuertas")
+                                cbo.SelectedItem = 5;
+                            else
+                                cbo.SelectedIndex = -1;
+                        }
                         else if (subCtrl is NumericUpDown nud)
                         {
                             if (nud.Name == "nudAnio")
@@ -1516,6 +1571,7 @@ namespace CpAuton
                 var nudAnio = this.Controls.Find("nudAnio", true)[0] as NumericUpDown;
                 var cboTransmision = this.Controls.Find("cboTransmision", true)[0] as ComboBox;
                 var nudAsientos = this.Controls.Find("nudAsientos", true)[0] as NumericUpDown;
+                var cboPuertas = this.Controls.Find("cboPuertas", true)[0] as ComboBox;
                 var chkTurbo = this.Controls.Find("chkTurbo", true)[0] as CheckBox;
                 var txtMotor = this.Controls.Find("txtMotor", true)[0] as TextBox;
                 var cboCombustible = this.Controls.Find("cboCombustible", true)[0] as ComboBox;
@@ -1559,6 +1615,7 @@ namespace CpAuton
                 var nudVelocidades = this.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
                 var lblInfoVel = this.Controls.Find("lblInfoVelocidades", true)[0] as Label;
                 nudAsientos.Value = vehiculo.nroAsientos ?? 5;
+                cboPuertas.SelectedItem = vehiculo.nroPuertas;
 
 
                 // Use centralized helper to configure control (will hide for CVT)

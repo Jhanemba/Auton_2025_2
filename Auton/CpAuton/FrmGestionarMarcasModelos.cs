@@ -22,29 +22,31 @@ namespace CpAuton
         public FrmGestionarMarcasModelos()
         {
             InitializeComponent();
-        }
-
-        private void FrmGestionarMarcasModelos_Load(object sender, EventArgs e)
-        {
-            // Validar autenticación
-            if (Util.usuario == null)
-            {
-                MessageBox.Show("⚠️ Debe iniciar sesión para gestionar marcas y modelos.",
-                    "Acceso Restringido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.Close();
-                return;
-            }
-
+            // Build UI immediately so external callers can manipulate controls before ShowDialog
             ConfigurarFormulario();
 
-            // IMPORTANTE: Cargar datos DESPUÉS de crear el formulario para que los controles ya existan
+            // Load data and validate authentication when the form is shown
             this.Shown += (s, ev) =>
             {
+                // Validar autenticación
+                if (Util.usuario == null)
+                {
+                    MessageBox.Show("⚠️ Debe iniciar sesión para gestionar marcas y modelos.",
+                        "Acceso Restringido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    this.Close();
+                    return;
+                }
+
                 CargarProcedencias();
                 CargarMarcasCombo();
                 CargarMarcas();
                 CargarModelos();
             };
+        }
+
+        private void FrmGestionarMarcasModelos_Load(object sender, EventArgs e)
+        {
+            // Intentionally left blank - initialization moved to constructor/shown
         }
 
         private void ConfigurarFormulario()
@@ -65,7 +67,7 @@ namespace CpAuton
 
             Label lblUsuario = new Label
             {
-                Text = $"👤 Usuario: {Util.usuario.nombreCompleto} | {Util.usuario.cargo}",
+                Text = $"👤 Usuario: {Util.usuario?.nombreCompleto ?? "(No autenticado)"} | {Util.usuario?.cargo ?? ""}",
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 ForeColor = Color.White,
                 Location = new Point(20, 12),
@@ -1356,6 +1358,74 @@ namespace CpAuton
             // cboTipo.SelectedIndex = -1; // removed
             txtNombre.Clear();
             txtDescripcion.Clear();
+        }
+
+        // Add public helpers so external forms can open this management UI focused on a specific item
+        public void AbrirEnMarca(int idMarca)
+        {
+            try
+            {
+                // Ensure tabs and controls are present
+                var tabControl = this.Controls.Find("tabControl", true).FirstOrDefault() as TabControl;
+                if (tabControl != null)
+                    tabControl.SelectedIndex = 0; // MARCAS tab
+
+                // Load data into controls (if not already)
+                CargarProcedencias();
+                CargarMarcasCombo();
+                CargarMarcas();
+
+                // Try to select the marca in the grid
+                var dgv = BuscarControlEnTab("dgvMarcas", "MARCAS") as DataGridView;
+                if (dgv != null)
+                {
+                    for (int i = 0; i < dgv.Rows.Count; i++)
+                    {
+                        var row = dgv.Rows[i];
+                        if (row.Cells["colIdMarca"].Value != null && Convert.ToInt32(row.Cells["colIdMarca"].Value) == idMarca)
+                        {
+                            dgv.ClearSelection();
+                            dgv.Rows[i].Selected = true;
+                            dgv.CurrentCell = dgv.Rows[i].Cells[0];
+                            // Load details into form fields
+                            CargarDatosMarca(idMarca);
+                            break;
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
+        public void AbrirEnModelo(int idModelo)
+        {
+            try
+            {
+                var tabControl = this.Controls.Find("tabControl", true).FirstOrDefault() as TabControl;
+                if (tabControl != null)
+                    tabControl.SelectedIndex = 1; // MODELOS tab
+
+                CargarMarcasCombo();
+                CargarModelos();
+
+                var dgv = BuscarControlEnTab("dgvModelos", "MODELOS") as DataGridView;
+                if (dgv != null)
+                {
+                    for (int i = 0; i < dgv.Rows.Count; i++)
+                    {
+                        var row = dgv.Rows[i];
+                        if (row.Cells["colIdModelo"].Value != null && Convert.ToInt32(row.Cells["colIdModelo"].Value) == idModelo)
+                        {
+                            dgv.ClearSelection();
+                            dgv.Rows[i].Selected = true;
+                            dgv.CurrentCell = dgv.Rows[i].Cells[0];
+                            CargarDatosModelo(idModelo);
+                            break;
+                        }
+                    }
+                }
+            }
+            catch { }
         }
     }
 }

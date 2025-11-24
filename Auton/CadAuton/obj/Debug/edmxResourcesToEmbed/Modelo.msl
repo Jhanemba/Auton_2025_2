@@ -134,6 +134,7 @@
           <ScalarProperty Name="fotografia" ColumnName="fotografia" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+          <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -240,6 +241,7 @@
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+          <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -270,6 +272,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
@@ -300,6 +303,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
@@ -330,6 +334,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
@@ -360,6 +365,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
@@ -390,6 +396,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
@@ -420,6 +427,7 @@
           <ScalarProperty Name="paisFabricacion" ColumnName="paisFabricacion" />
           <ScalarProperty Name="transmision" ColumnName="transmision" />
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
+          <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />

@@ -69,9 +69,9 @@
             // gbxLista
             // 
             this.gbxLista.Controls.Add(this.dgvVehiculos);
-            this.gbxLista.Location = new System.Drawing.Point(0, 142);
+            this.gbxLista.Location = new System.Drawing.Point(1, 142);
             this.gbxLista.Name = "gbxLista";
-            this.gbxLista.Size = new System.Drawing.Size(1316, 305);
+            this.gbxLista.Size = new System.Drawing.Size(1248, 305);
             this.gbxLista.TabIndex = 11;
             this.gbxLista.TabStop = false;
             this.gbxLista.Text = "Lista de Vehículos";
@@ -92,7 +92,7 @@
             this.dgvVehiculos.ReadOnly = true;
             this.dgvVehiculos.RowHeadersWidth = 62;
             this.dgvVehiculos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvVehiculos.Size = new System.Drawing.Size(1310, 276);
+            this.dgvVehiculos.Size = new System.Drawing.Size(1242, 276);
             this.dgvVehiculos.TabIndex = 0;
             this.dgvVehiculos.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellDoubleClick);
             // 
@@ -190,7 +190,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
-            this.ClientSize = new System.Drawing.Size(1322, 554);
+            this.ClientSize = new System.Drawing.Size(1250, 554);
             this.Controls.Add(this.lblTotal);
             this.Controls.Add(this.btnBuscar);
             this.Controls.Add(this.gbxLista);
@@ -205,7 +205,6 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "...::: Auton - Consulta de Vehiculos :::...";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmConsultaVehiculos_FormClosed);
             this.Load += new System.EventHandler(this.FrmConsultaVehiculos_Load);
             ((System.ComponentModel.ISupportInitialize)(this.erpPrecioVenta)).EndInit();
