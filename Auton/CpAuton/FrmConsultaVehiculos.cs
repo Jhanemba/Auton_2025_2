@@ -708,6 +708,68 @@ namespace CpAuton
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 };
+
+                // Botón lápiz para editar la marca seleccionada (visible solo en modo edición)
+                Button btnEditMarca = new Button
+                {
+                    Name = "btnEditMarca",
+                    Text = "✏️",
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(255, 193, 7),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false,
+                    Enabled = false
+                };
+                btnEditMarca.FlatAppearance.BorderSize = 0;
+                btnEditMarca.Click += (s, e) =>
+                {
+                    try
+                    {
+                        if (cboMarca.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione primero una marca para editar", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        int idMarcaSel = Convert.ToInt32(cboMarca.SelectedValue);
+                        using (var frm = new FrmGestionarMarcasModelos())
+                        {
+                            frm.AbrirEnMarca(idMarcaSel);
+                            frm.ShowDialog(this);
+                        }
+
+                        // Refrescar lista de marcas y mantener selección si existe
+                        var marcas = MarcaCln.listar()
+                            .Where(m => m.estado != -1)
+                            .OrderBy(m => m.nombre)
+                            .ToList();
+
+                        cboMarca.DataSource = null;
+                        cboMarca.DisplayMember = "nombre";
+                        cboMarca.ValueMember = "id";
+                        cboMarca.DataSource = marcas;
+                        cboMarca.BindingContext = new BindingContext();
+
+                        if (marcas.Any(m => m.id == idMarcaSel))
+                            cboMarca.SelectedValue = idMarcaSel;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al editar marca: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                // Ajustar enabled según selección
+                cboMarca.SelectedIndexChanged += (s, e) =>
+                {
+                    try { btnEditMarca.Enabled = cboMarca.SelectedValue != null; } catch { btnEditMarca.Enabled = false; }
+                };
+
                 // Agregamos ComboBox y botón '+' dentro de un FlowLayoutPanel para que se desplacen juntos con AutoScroll
                 FlowLayoutPanel flpMarcaRow = new FlowLayoutPanel
                 {
@@ -716,13 +778,14 @@ namespace CpAuton
                     Size = new Size(ctrlWidth + 50, 28),
                     FlowDirection = FlowDirection.LeftToRight,
                     WrapContents = false,
-                    AutoSize = false
+                    AutoSize = false,
                 };
                 cboMarca.Location = new Point(0, 0);
                 cboMarca.Size = new Size(ctrlWidth, 28);
                 btnAddMarca.Margin = new Padding(8, 0, 0, 0);
                 flpMarcaRow.Controls.Add(cboMarca);
                 flpMarcaRow.Controls.Add(btnAddMarca);
+                flpMarcaRow.Controls.Add(btnEditMarca);
 
                 // Botón ojo para ver descripción de la MARCA (siempre visible)
                 Button btnVerMarcaDesc_small = new Button
@@ -854,6 +917,14 @@ namespace CpAuton
 
                                 if (nuevoIdModelo > 0 && modelos.Any(m => m.id == nuevoIdModelo))
                                     cboModelo.SelectedValue = nuevoIdModelo;
+
+                                // Habilitar lápiz de modelo si existe
+                                try
+                                {
+                                    var btnTemp = pnlPrincipal.Controls.Find("btnEditModelo", true).FirstOrDefault() as Button;
+                                    if (btnTemp != null) btnTemp.Enabled = cboModelo.SelectedValue != null;
+                                }
+                                catch { }
                             }
                         }
                     }
@@ -862,6 +933,71 @@ namespace CpAuton
                         MessageBox.Show($"Error al agregar modelo: {ex.Message}", "Error",
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                };
+
+                // Botón lápiz para editar el modelo seleccionado (visible solo en modo edición)
+                Button btnEditModelo = new Button
+                {
+                    Name = "btnEditModelo",
+                    Text = "✏️",
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(255, 193, 7),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false,
+                    Enabled = false
+                };
+                btnEditModelo.FlatAppearance.BorderSize = 0;
+                btnEditModelo.Click += (s, e) =>
+                {
+                    try
+                    {
+                        if (cboModelo.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione primero un modelo para editar", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        int idModeloSel = Convert.ToInt32(cboModelo.SelectedValue);
+                        using (var frm = new FrmGestionarMarcasModelos())
+                        {
+                            frm.AbrirEnModelo(idModeloSel);
+                            frm.ShowDialog(this);
+                        }
+
+                        // Refrescar lista de modelos para la marca actual
+                        if (cboMarca.SelectedValue != null)
+                        {
+                            int idMarcaSel = Convert.ToInt32(cboMarca.SelectedValue);
+                            var modelos = ModeloVehiculoCln.listar()
+                                .Where(m => m.idMarca == idMarcaSel && m.estado != -1)
+                                .OrderBy(m => m.nombre)
+                                .ToList();
+
+                            cboModelo.DataSource = null;
+                            cboModelo.DisplayMember = "nombre";
+                            cboModelo.ValueMember = "id";
+                            cboModelo.DataSource = modelos;
+                            cboModelo.BindingContext = new BindingContext();
+
+                            if (modelos.Any(m => m.id == idModeloSel))
+                                cboModelo.SelectedValue = idModeloSel;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al editar modelo: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                // Ajustar enabled según selección
+                cboModelo.SelectedIndexChanged += (s, e) =>
+                {
+                    try { btnEditModelo.Enabled = cboModelo.SelectedValue != null; } catch { btnEditModelo.Enabled = false; }
                 };
 
                 // Agregar ComboBox y botón '+' dentro de un FlowLayoutPanel para modelo
@@ -879,6 +1015,7 @@ namespace CpAuton
                 btnAddModelo.Margin = new Padding(8, 0, 0, 0);
                 flpModeloRow.Controls.Add(cboModelo);
                 flpModeloRow.Controls.Add(btnAddModelo);
+                flpModeloRow.Controls.Add(btnEditModelo);
 
                 // Botón ojo para ver descripción del MODELO (siempre visible)
                 Button btnVerModeloDesc_small = new Button
@@ -1552,6 +1689,8 @@ namespace CpAuton
                             // Mostrar botones + para agregar marca/modelo
                             btnAddMarca.Visible = true;
                             btnAddModelo.Visible = true;
+                            btnEditMarca.Visible = true;
+                            btnEditModelo.Visible = true;
 
                             lblEstado.Text = "✏️ MODO EDICIÓN - Modifique los campos necesarios";
                             lblEstado.ForeColor = Color.Green;
@@ -1695,6 +1834,8 @@ namespace CpAuton
                                     // Ocultar botones +
                                     btnAddMarca.Visible = false;
                                     btnAddModelo.Visible = false;
+                                    btnEditMarca.Visible = false;
+                                    btnEditModelo.Visible = false;
 
                                     lblEstado.Text = "🔒 MODO LECTURA";
                                     lblEstado.ForeColor = Color.Red;
