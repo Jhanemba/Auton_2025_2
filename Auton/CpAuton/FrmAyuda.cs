@@ -200,6 +200,10 @@ namespace CpAuton
                         "La edición de vehículos permite modificar todas las características técnicas, " +
                         "evaluación y observaciones de un vehículo ya registrado.", ref yPos);
 
+                    AgregarTexto(pnlContenido,
+                        "Si deseamos modificar procedencia debemos hacerlo en el apartado: Gestionar Marcas/Modelos » Marcas" 
+                        , ref yPos);
+
                     AgregarSubtitulo(pnlContenido, "Campos editables:", ref yPos);
                     AgregarLista(pnlContenido, new[] {
         "✓ Generación del modelo",

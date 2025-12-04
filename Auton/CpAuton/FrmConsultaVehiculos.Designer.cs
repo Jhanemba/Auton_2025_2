@@ -71,7 +71,7 @@
             this.gbxLista.Controls.Add(this.dgvVehiculos);
             this.gbxLista.Location = new System.Drawing.Point(1, 142);
             this.gbxLista.Name = "gbxLista";
-            this.gbxLista.Size = new System.Drawing.Size(1248, 305);
+            this.gbxLista.Size = new System.Drawing.Size(1248, 366);
             this.gbxLista.TabIndex = 11;
             this.gbxLista.TabStop = false;
             this.gbxLista.Text = "Lista de Vehículos";
@@ -92,7 +92,7 @@
             this.dgvVehiculos.ReadOnly = true;
             this.dgvVehiculos.RowHeadersWidth = 62;
             this.dgvVehiculos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvVehiculos.Size = new System.Drawing.Size(1242, 276);
+            this.dgvVehiculos.Size = new System.Drawing.Size(1242, 337);
             this.dgvVehiculos.TabIndex = 0;
             this.dgvVehiculos.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVehiculos_CellDoubleClick);
             // 
@@ -129,7 +129,7 @@
             this.pnlAcciones.Controls.Add(this.btnNuevo);
             this.pnlAcciones.Controls.Add(this.btnExportar);
             this.pnlAcciones.Controls.Add(this.btnCerrar);
-            this.pnlAcciones.Location = new System.Drawing.Point(138, 494);
+            this.pnlAcciones.Location = new System.Drawing.Point(138, 541);
             this.pnlAcciones.Name = "pnlAcciones";
             this.pnlAcciones.Size = new System.Drawing.Size(795, 47);
             this.pnlAcciones.TabIndex = 12;
@@ -179,7 +179,7 @@
             // lblTotal
             // 
             this.lblTotal.AutoSize = true;
-            this.lblTotal.Location = new System.Drawing.Point(753, 450);
+            this.lblTotal.Location = new System.Drawing.Point(753, 516);
             this.lblTotal.Name = "lblTotal";
             this.lblTotal.Size = new System.Drawing.Size(180, 25);
             this.lblTotal.TabIndex = 14;
@@ -190,7 +190,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PapayaWhip;
-            this.ClientSize = new System.Drawing.Size(1250, 554);
+            this.ClientSize = new System.Drawing.Size(1250, 598);
             this.Controls.Add(this.lblTotal);
             this.Controls.Add(this.btnBuscar);
             this.Controls.Add(this.gbxLista);
