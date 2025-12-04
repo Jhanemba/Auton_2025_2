@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using System.Diagnostics;
 
 namespace CpAuton
 {
@@ -1401,6 +1402,53 @@ namespace CpAuton
                     BackColor = Color.WhiteSmoke
                 };
                 pnlPrincipal.Controls.Add(txtGeneracion);
+                // Agregar botón lupa junto al TextBox (misma funcionalidad que FrmRegistroVehiculo)
+                Button btnBuscarGeneracion = new Button
+                {
+                    Name = "btnBuscarGeneracion",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarGeneracion.FlatAppearance.BorderSize = 0;
+                btnBuscarGeneracion.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (nudAnio != null) ? (int)nudAnio.Value : DateTime.Now.Year; } catch { anioVal = DateTime.Now.Year; }
+
+                        if (string.IsNullOrWhiteSpace(marca) && string.IsNullOrWhiteSpace(modelo))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar al menos la Marca o el Modelo para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿Qué generación es el {marca} {modelo} {anioVal}?".Trim();
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+
+                        var psi = new ProcessStartInfo
+                        {
+                            FileName = url,
+                            UseShellExecute = true
+                        };
+                        Process.Start(psi);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                try { var ttG = new ToolTip(); ttG.SetToolTip(btnBuscarGeneracion, "Buscar generación en la web"); } catch { }
+                pnlPrincipal.Controls.Add(btnBuscarGeneracion);
+
                 yPosRight += lineHeight;
                 //poner al frente
                 txtGeneracion.BringToFront();
@@ -2048,7 +2096,7 @@ namespace CpAuton
                     using (var frmAuth = new FrmAutenticacion())
                     {
                         frmAuth.StartPosition = FormStartPosition.CenterParent;
-                        if (frmAuth.ShowDialog(frmDetalles) == DialogResult.OK)
+                        if (frmAuth.ShowDialog(this) == DialogResult.OK)
                         {
                             // Actualizar interfaz del formulario principal en tiempo real
                             ActualizarInterfazSesion();

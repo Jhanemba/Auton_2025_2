@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace CpAuton
 {
@@ -33,6 +34,7 @@ namespace CpAuton
 
         // COLUMNA DERECHA - Características Específicas
         private TextBox txtGeneracion;
+        private Button btnBuscarGeneracion;
         private ComboBox cboPaisFabricacion;
         private ComboBox cboTransmision;
         private ComboBox cboPuertas;
@@ -250,6 +252,28 @@ namespace CpAuton
                 MaxLength = 50
             };
             pnlPrincipal.Controls.Add(txtGeneracion);
+            // Botón de búsqueda/ayuda junto a Generación
+            btnBuscarGeneracion = new Button
+            {
+                Text = "🔍",
+                Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                Size = new Size(36, 28),
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnBuscarGeneracion.FlatAppearance.BorderSize = 0;
+            btnBuscarGeneracion.Click += BtnBuscarGeneracion_Click;
+            // Agregar tooltip simple
+            try
+            {
+                var tt = new ToolTip();
+                tt.SetToolTip(btnBuscarGeneracion, "Buscar generación en la web");
+            }
+            catch { }
+            pnlPrincipal.Controls.Add(btnBuscarGeneracion);
             SetCueBanner(txtGeneracion, "Ej: Gen 12, 11va Gen");
             yPosRight += lineHeight;
 
@@ -1399,6 +1423,37 @@ namespace CpAuton
                     lblInfoVelocidades.Text = "Seleccione transmisión";
                     lblInfoVelocidades.ForeColor = Color.Gray;
                     break;
+            }
+        }
+
+        // Abre el navegador con la búsqueda: ¿Qué generación es el [Marca] [Modelo] [Año]?
+        private void BtnBuscarGeneracion_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+
+                if (string.IsNullOrWhiteSpace(marca) && string.IsNullOrWhiteSpace(modelo))
+                {
+                    MessageBox.Show("⚠️ Debe especificar al menos la Marca o el Modelo para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"¿Qué generación es el {marca} {modelo} {anio}?".Trim();
+                string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
