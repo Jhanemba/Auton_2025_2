@@ -648,7 +648,9 @@ namespace CpAuton
                     Name = "cboMarca",
                     //Location = new Point(colLeftX, yPosLeft),
                     Size = new Size(ctrlWidth, 28),
-                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    DropDownStyle = ComboBoxStyle.DropDown,
+                    AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
+                    AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
                     Font = new Font("Segoe UI", 10F),
                     Enabled = false
                 };
@@ -716,12 +718,13 @@ namespace CpAuton
                     Text = "✏️",
                     Size = new Size(36, 28),
                     BackColor = Color.FromArgb(255, 193, 7),
+                    Margin = new Padding(8, 0, 0, 0),
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
                     Font = new Font("Segoe UI", 9, FontStyle.Bold),
                     Cursor = Cursors.Hand,
                     Visible = false,
-                    Enabled = false
+                    Enabled = true
                 };
                 btnEditMarca.FlatAppearance.BorderSize = 0;
                 btnEditMarca.Click += (s, e) =>
@@ -764,18 +767,13 @@ namespace CpAuton
                     }
                 };
 
-                // Ajustar enabled según selección
-                cboMarca.SelectedIndexChanged += (s, e) =>
-                {
-                    try { btnEditMarca.Enabled = cboMarca.SelectedValue != null; } catch { btnEditMarca.Enabled = false; }
-                };
 
                 // Agregamos ComboBox y botón '+' dentro de un FlowLayoutPanel para que se desplacen juntos con AutoScroll
                 FlowLayoutPanel flpMarcaRow = new FlowLayoutPanel
                 {
                     Name = "flpMarcaRow",
                     Location = new Point(colLeftX, yPosLeft),
-                    Size = new Size(ctrlWidth + 50, 28),
+                    Size = new Size(ctrlWidth + 50+35, 28),
                     FlowDirection = FlowDirection.LeftToRight,
                     WrapContents = false,
                     AutoSize = false,
@@ -857,7 +855,9 @@ namespace CpAuton
                     Name = "cboModelo",
                     //Location = new Point(colLeftX, yPosLeft),
                     Size = new Size(ctrlWidth, 28),
-                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    DropDownStyle = ComboBoxStyle.DropDown,
+                    AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
+                    AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
                     Font = new Font("Segoe UI", 10F),
                     Enabled = false
                 };
@@ -942,12 +942,13 @@ namespace CpAuton
                     Text = "✏️",
                     Size = new Size(36, 28),
                     BackColor = Color.FromArgb(255, 193, 7),
+                    Margin = new Padding(8, 0, 0, 0),
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
                     Font = new Font("Segoe UI", 9, FontStyle.Bold),
                     Cursor = Cursors.Hand,
                     Visible = false,
-                    Enabled = false
+                    Enabled = true
                 };
                 btnEditModelo.FlatAppearance.BorderSize = 0;
                 btnEditModelo.Click += (s, e) =>
@@ -994,18 +995,12 @@ namespace CpAuton
                     }
                 };
 
-                // Ajustar enabled según selección
-                cboModelo.SelectedIndexChanged += (s, e) =>
-                {
-                    try { btnEditModelo.Enabled = cboModelo.SelectedValue != null; } catch { btnEditModelo.Enabled = false; }
-                };
-
                 // Agregar ComboBox y botón '+' dentro de un FlowLayoutPanel para modelo
                 FlowLayoutPanel flpModeloRow = new FlowLayoutPanel
                 {
                     Name = "flpModeloRow",
                     Location = new Point(colLeftX, yPosLeft),
-                    Size = new Size(ctrlWidth + 50, 28),
+                    Size = new Size(ctrlWidth + 50+35, 28),
                     FlowDirection = FlowDirection.LeftToRight,
                     WrapContents = false,
                     AutoSize = false
@@ -1328,7 +1323,9 @@ namespace CpAuton
                     Name = "cboPaisFabricacion",
                     Location = new Point(colRightX + 80, yPosRight),
                     Size = new Size(ctrlWidth, 28),
-                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    DropDownStyle = ComboBoxStyle.DropDown,
+                    AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
+                    AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
                     Font = new Font("Segoe UI", 10F),
                     Enabled = false
                 };
@@ -1697,6 +1694,23 @@ namespace CpAuton
                             lblEstado.BackColor = Color.FromArgb(230, 255, 230);
                             btnEditar.Text = "💾 Guardar";
                             btnEditar.BackColor = Color.FromArgb(40, 167, 69);
+
+                            // EVENTO: Limpiar selección visual DESPUÉS de que el formulario se muestre
+                            //frmDetalles.Shown += (s, ev) =>
+                            //{
+                            //    if (cboMarca.SelectedIndex >= 0)
+                            //    {
+                            //        cboMarca.SelectionStart = 0;
+                            //        cboMarca.SelectionLength = 0;
+                            //    }
+
+                            //    if (cboModelo.SelectedIndex >= 0)
+                            //    {
+                            //        cboModelo.SelectionStart = 0;
+                            //        cboModelo.SelectionLength = 0;
+                            //    }
+                            //};
+
                         }
                         else // GUARDAR
                         {
@@ -1910,6 +1924,23 @@ namespace CpAuton
                         imagenCargada = null;
                     }
                 };
+
+                //EVENTO: Limpiar selección visual DESPUÉS de que el formulario se muestre
+                frmDetalles.Shown += (s, ev) =>
+                {
+                    if (cboMarca.SelectedIndex >= 0)
+                    {
+                        cboMarca.SelectionStart = 0;
+                        cboMarca.SelectionLength = 0;
+                    }
+
+                    if (cboModelo.SelectedIndex >= 0)
+                    {
+                        cboModelo.SelectionStart = 0;
+                        cboModelo.SelectionLength = 0;
+                    }
+                };
+
 
                 frmDetalles.ShowDialog(this);
             }

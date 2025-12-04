@@ -139,6 +139,8 @@ namespace CpAuton
                 Location = new Point(colLeftX, yPosLeft),
                 Size = new Size(210, 28),
                 DropDownStyle = ComboBoxStyle.DropDown,
+                AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
+                AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
                 Font = new Font("Segoe UI", 10F),
                 Enabled = false
             };
@@ -181,6 +183,8 @@ namespace CpAuton
                 Location = new Point(colLeftX, yPosLeft),
                 Size = new Size(210, 28),
                 DropDownStyle = ComboBoxStyle.DropDown,
+                AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
+                AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
                 Font = new Font("Segoe UI", 10F),
                 Enabled = false
             };
@@ -255,7 +259,10 @@ namespace CpAuton
             {
                 Location = new Point(colRightX + 80, yPosRight),
                 Size = new Size(ctrlWidth, 28),
-                DropDownStyle = ComboBoxStyle.DropDownList,
+                DropDownStyle = ComboBoxStyle.DropDown,
+                AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
+                AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
+                //DropDownStyle = ComboBoxStyle.DropDownList,
                 Font = new Font("Segoe UI", 10F)
             };
             cboPaisFabricacion.Items.AddRange(new[] {

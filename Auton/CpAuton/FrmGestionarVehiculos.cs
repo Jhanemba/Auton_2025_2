@@ -526,10 +526,11 @@ namespace CpAuton
             {
                 Name = "dgvVehiculos",
                 Location = new Point(15, 90),
-                Size = new Size(880, 490),
+                Size = new Size(880-83, 490-400),
                 BackgroundColor = Color.White,
                 BorderStyle = BorderStyle.None,
                 Font = new Font("Segoe UI", 9)
+
             };
             dgvVehiculos.SelectionChanged += DgvVehiculos_SelectionChanged;
             panel.Controls.Add(dgvVehiculos);
