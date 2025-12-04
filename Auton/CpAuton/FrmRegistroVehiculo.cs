@@ -46,13 +46,15 @@ namespace CpAuton
 
         // SEGURIDAD
         private NumericUpDown nudAirbags;
+        private Button btnBuscarAirbags;  // ⭐ NUEVO
         private ComboBox cboOrganizacionSeguridad;
+        private Button btnBuscarOrganizacion;  // ⭐ NUEVO
         private ComboBox cboSeguridadChoques;
+        private Button btnBuscarEstrellas;  // ⭐ NUEVO
 
         // EVALUACIÓN
         private ComboBox cboConfiabilidad;
         private NumericUpDown nudPuntuacion;
-        //private NumericUpDown nudKilometraje;
         private CheckBox chkKilometrajeDesconocido;
         private TextBox txtObservaciones;
 
@@ -76,8 +78,6 @@ namespace CpAuton
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Font = new Font("Segoe UI", 10F);
-            //this.AutoScroll = true;
-            //this.AutoScrollMinSize = new Size(0, 1150);  // Fuerza scroll
 
             Panel pnlContenedor = new Panel
             {
@@ -91,10 +91,9 @@ namespace CpAuton
             Panel pnlPrincipal = new Panel
             {
                 Location = new Point(0, 0),
-                Size = new Size(1184, 750+270+100),
+                Size = new Size(1184, 750 + 270 + 100),
                 Padding = new Padding(20),
                 BackColor = Color.PapayaWhip,
-                //AutoScroll = true
             };
 
             int yPos = 15;
@@ -141,12 +140,13 @@ namespace CpAuton
                 Location = new Point(colLeftX, yPosLeft),
                 Size = new Size(210, 28),
                 DropDownStyle = ComboBoxStyle.DropDown,
-                AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
-                AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
+                AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                AutoCompleteSource = AutoCompleteSource.ListItems,
                 Font = new Font("Segoe UI", 10F),
                 Enabled = false
             };
             cboMarca.SelectedIndexChanged += CboMarca_SelectedIndexChanged;
+            cboMarca.TextChanged += (s, e) => ActualizarBotonesBusqueda(); // ⭐ NUEVO
             pnlPrincipal.Controls.Add(cboMarca);
 
             btnAgregarMarca = new Button
@@ -178,18 +178,20 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(cboTipo);
             yPosLeft += lineHeight;
 
-            // Modelo (SIMPLE - Solo nombre)
+            // Modelo
             AgregarLabel(pnlPrincipal, "Modelo:", 20, yPosLeft, labelWidth);
             cboModelo = new ComboBox
             {
                 Location = new Point(colLeftX, yPosLeft),
                 Size = new Size(210, 28),
                 DropDownStyle = ComboBoxStyle.DropDown,
-                AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
-                AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
+                AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                AutoCompleteSource = AutoCompleteSource.ListItems,
                 Font = new Font("Segoe UI", 10F),
                 Enabled = false
             };
+            cboModelo.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda(); // ⭐ NUEVO
+            cboModelo.TextChanged += (s, e) => ActualizarBotonesBusqueda(); // ⭐ NUEVO
             pnlPrincipal.Controls.Add(cboModelo);
 
             btnAgregarModelo = new Button
@@ -235,6 +237,7 @@ namespace CpAuton
                 Value = DateTime.Now.Year,
                 TextAlign = HorizontalAlignment.Center
             };
+            nudAnio.ValueChanged += (s, e) => ActualizarBotonesBusqueda(); // ⭐ NUEVO
             pnlPrincipal.Controls.Add(nudAnio);
             yPosLeft += lineHeight;
 
@@ -252,7 +255,7 @@ namespace CpAuton
                 MaxLength = 50
             };
             pnlPrincipal.Controls.Add(txtGeneracion);
-            // Botón de búsqueda/ayuda junto a Generación
+
             btnBuscarGeneracion = new Button
             {
                 Text = "🔍",
@@ -266,7 +269,6 @@ namespace CpAuton
             };
             btnBuscarGeneracion.FlatAppearance.BorderSize = 0;
             btnBuscarGeneracion.Click += BtnBuscarGeneracion_Click;
-            // Agregar tooltip simple
             try
             {
                 var tt = new ToolTip();
@@ -284,9 +286,8 @@ namespace CpAuton
                 Location = new Point(colRightX + 80, yPosRight),
                 Size = new Size(ctrlWidth, 28),
                 DropDownStyle = ComboBoxStyle.DropDown,
-                AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
-                AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
-                //DropDownStyle = ComboBoxStyle.DropDownList,
+                AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                AutoCompleteSource = AutoCompleteSource.ListItems,
                 Font = new Font("Segoe UI", 10F)
             };
             cboPaisFabricacion.Items.AddRange(new[] {
@@ -296,6 +297,8 @@ namespace CpAuton
                 "Turquía", "Argentina", "Sudáfrica", "Australia", "Canadá"
             });
             cboPaisFabricacion.Sorted = true;
+            cboPaisFabricacion.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda(); // ⭐ NUEVO
+            cboPaisFabricacion.TextChanged += (s, e) => ActualizarBotonesBusqueda(); // ⭐ NUEVO
             pnlPrincipal.Controls.Add(cboPaisFabricacion);
             yPosRight += lineHeight;
 
@@ -312,7 +315,6 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(cboTransmision);
             yPosRight += lineHeight;
 
-
             AgregarLabel(pnlPrincipal, "Velocidades:", 580, yPosRight, labelWidth);
             nudVelocidades = new NumericUpDown
             {
@@ -323,11 +325,10 @@ namespace CpAuton
                 Maximum = 10,
                 Value = 5,
                 TextAlign = HorizontalAlignment.Center,
-                Enabled = false // Deshabilitado hasta seleccionar transmisión
+                Enabled = false
             };
             pnlPrincipal.Controls.Add(nudVelocidades);
 
-            // Label informativo dinámico
             lblInfoVelocidades = new Label
             {
                 Location = new Point(colRightX + 190, yPosRight + 3),
@@ -340,7 +341,6 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(lblInfoVelocidades);
             yPosRight += lineHeight;
 
-            // EVENTO: Configurar velocidades según transmisión
             cboTransmision.SelectedIndexChanged += (s, e) =>
             {
                 ConfigurarVelocidades(cboTransmision.Text);
@@ -420,7 +420,7 @@ namespace CpAuton
                 Font = new Font("Segoe UI", 10F)
             };
             cboPuertas.Items.AddRange(new object[] { 3, 4, 5 });
-            cboPuertas.SelectedItem = 5; // DEFAULT: 5 puertas (más común)
+            cboPuertas.SelectedItem = 5;
             pnlPrincipal.Controls.Add(cboPuertas);
 
             Label lblInfoPuertas = new Label
@@ -435,7 +435,6 @@ namespace CpAuton
             };
             pnlPrincipal.Controls.Add(lblInfoPuertas);
 
-            // EVENTO: Cambiar label según selección
             cboPuertas.SelectedIndexChanged += (s, e) =>
             {
                 var lbl = pnlPrincipal.Controls.Find("lblInfoPuertas", false).FirstOrDefault() as Label;
@@ -446,15 +445,15 @@ namespace CpAuton
                     {
                         case 3:
                             lbl.Text = "(3 puertas - Hatchback/Coupé)";
-                            lbl.ForeColor = Color.FromArgb(255, 193, 7); // Amarillo
+                            lbl.ForeColor = Color.FromArgb(255, 193, 7);
                             break;
                         case 4:
                             lbl.Text = "(4 puertas - Van/Pickup)";
-                            lbl.ForeColor = Color.FromArgb(23, 162, 184); // Azul
+                            lbl.ForeColor = Color.FromArgb(23, 162, 184);
                             break;
                         case 5:
                             lbl.Text = "(5 puertas - Común)";
-                            lbl.ForeColor = Color.FromArgb(40, 167, 69); // Verde
+                            lbl.ForeColor = Color.FromArgb(40, 167, 69);
                             break;
                     }
                 }
@@ -467,7 +466,7 @@ namespace CpAuton
             AgregarSeccion(pnlPrincipal, "🛡️ SEGURIDAD", 20, yPos, 540);
             yPosLeft = yPos + 38;
 
-            // Airbags
+            // ⭐ AIRBAGS CON BOTÓN DE BÚSQUEDA
             AgregarLabel(pnlPrincipal, "Airbags:", 20, yPosLeft, labelWidth);
             nudAirbags = new NumericUpDown
             {
@@ -480,29 +479,76 @@ namespace CpAuton
                 TextAlign = HorizontalAlignment.Center
             };
             pnlPrincipal.Controls.Add(nudAirbags);
+
+            // ⭐ BOTÓN BUSCAR AIRBAGS
+            btnBuscarAirbags = new Button
+            {
+                Text = "🔍",
+                Location = new Point(colLeftX + 110, yPosLeft),
+                Size = new Size(36, 28),
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnBuscarAirbags.FlatAppearance.BorderSize = 0;
+            btnBuscarAirbags.Click += BtnBuscarAirbags_Click;
+            try
+            {
+                var tt = new ToolTip();
+                tt.SetToolTip(btnBuscarAirbags, "Buscar cantidad de airbags en la web");
+            }
+            catch { }
+            pnlPrincipal.Controls.Add(btnBuscarAirbags);
             yPosLeft += lineHeight;
 
-            // Organización
+            // ⭐ ORGANIZACIÓN CON BOTÓN DE BÚSQUEDA
             AgregarLabel(pnlPrincipal, "Organización:", 20, yPosLeft, labelWidth);
             cboOrganizacionSeguridad = new ComboBox
             {
                 Location = new Point(colLeftX, yPosLeft),
-                Size = new Size(ctrlWidth, 28),
+                Size = new Size(210, 28),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Font = new Font("Segoe UI", 10F)
             };
             cboOrganizacionSeguridad.Items.AddRange(new[] {
                 "Latin NCAP", "Euro NCAP", "IIHS", "NHTSA", "ANCAP", "Sin calificación"
             });
+            cboOrganizacionSeguridad.SelectedIndexChanged += CboOrganizacionSeguridad_SelectedIndexChanged; // ⭐ NUEVO
             pnlPrincipal.Controls.Add(cboOrganizacionSeguridad);
+
+            // ⭐ BOTÓN BUSCAR ORGANIZACIÓN
+            btnBuscarOrganizacion = new Button
+            {
+                Text = "🔍",
+                Location = new Point(colLeftX + 220, yPosLeft),
+                Size = new Size(36, 28),
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnBuscarOrganizacion.FlatAppearance.BorderSize = 0;
+            btnBuscarOrganizacion.Click += BtnBuscarOrganizacion_Click;
+            try
+            {
+                var tt = new ToolTip();
+                tt.SetToolTip(btnBuscarOrganizacion, "Buscar prueba de choque en la web");
+            }
+            catch { }
+            pnlPrincipal.Controls.Add(btnBuscarOrganizacion);
             yPosLeft += lineHeight;
 
-            // Estrellas
+            // ⭐ ESTRELLAS CON BOTÓN DE BÚSQUEDA
             AgregarLabel(pnlPrincipal, "Estrellas:", 20, yPosLeft, labelWidth);
             cboSeguridadChoques = new ComboBox
             {
                 Location = new Point(colLeftX, yPosLeft),
-                Size = new Size(ctrlWidth, 28),
+                Size = new Size(210, 28),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Font = new Font("Segoe UI", 10F)
             };
@@ -515,7 +561,32 @@ namespace CpAuton
                 "☆ (0 estrellas)",
                 "Sin calificación"
             });
+            // Hook to update suggested puntuación when seguridad changes
+            cboSeguridadChoques.SelectedIndexChanged += (s, e) => ActualizarPuntuacionSugerida();
             pnlPrincipal.Controls.Add(cboSeguridadChoques);
+
+            // ⭐ BOTÓN BUSCAR ESTRELLAS
+            btnBuscarEstrellas = new Button
+            {
+                Text = "🔍",
+                Location = new Point(colLeftX + 220, yPosLeft),
+                Size = new Size(36, 28),
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnBuscarEstrellas.FlatAppearance.BorderSize = 0;
+            btnBuscarEstrellas.Click += BtnBuscarEstrellas_Click;
+            try
+            {
+                var tt = new ToolTip();
+                tt.SetToolTip(btnBuscarEstrellas, "Buscar calificación de estrellas en la web");
+            }
+            catch { }
+            pnlPrincipal.Controls.Add(btnBuscarEstrellas);
             yPosLeft += lineHeight;
 
             // ==================== EVALUACIÓN ====================
@@ -532,6 +603,8 @@ namespace CpAuton
                 Font = new Font("Segoe UI", 10F)
             };
             cboConfiabilidad.Items.AddRange(new[] { "Excelente", "Bueno", "Regular", "Malo" });
+            // Hook to update suggested puntuación when confiabilidad changes
+            cboConfiabilidad.SelectedIndexChanged += (s, e) => ActualizarPuntuacionSugerida();
             pnlPrincipal.Controls.Add(cboConfiabilidad);
             yPosRight += lineHeight;
 
@@ -552,36 +625,6 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(nudPuntuacion);
             yPosRight += lineHeight;
 
-            // Kilometraje
-            //AgregarLabel(pnlPrincipal, "Kilometraje:", 580, yPosRight, labelWidth);
-            //nudKilometraje = new NumericUpDown
-            //{
-            //    Location = new Point(colRightX + 80, yPosRight),
-            //    Size = new Size(150, 28),
-            //    Font = new Font("Segoe UI", 10F),
-            //    Minimum = 0,
-            //    Maximum = 999999,
-            //    ThousandsSeparator = true,
-            //    Value = 0,
-            //    TextAlign = HorizontalAlignment.Right
-            //};
-            //pnlPrincipal.Controls.Add(nudKilometraje);
-
-            //chkKilometrajeDesconocido = new CheckBox
-            //{
-            //    Text = "Desconocido",
-            //    Location = new Point(colRightX + 240, yPosRight + 5),
-            //    Font = new Font("Segoe UI", 9F),
-            //    AutoSize = true
-            //};
-            //chkKilometrajeDesconocido.CheckedChanged += (s, e) =>
-            //{
-            //    nudKilometraje.Enabled = !chkKilometrajeDesconocido.Checked;
-            //    if (chkKilometrajeDesconocido.Checked) nudKilometraje.Value = 0;
-            //};
-            //pnlPrincipal.Controls.Add(chkKilometrajeDesconocido);
-            //yPosRight += lineHeight;
-
             // ==================== OBSERVACIONES ====================
             yPos = Math.Max(yPosLeft, yPosRight) + 15;
             AgregarLabel(pnlPrincipal, "Observaciones:", 20, yPos, labelWidth);
@@ -601,7 +644,6 @@ namespace CpAuton
             AgregarSeccion(pnlPrincipal, "📷 FOTOGRAFÍA DEL VEHÍCULO", 20, yPos, 1140);
             yPos += 40;
 
-            // PictureBox para mostrar la foto
             pbFotografia = new PictureBox
             {
                 Location = new Point(40, yPos),
@@ -609,17 +651,15 @@ namespace CpAuton
                 BorderStyle = BorderStyle.FixedSingle,
                 BackColor = Color.FromArgb(250, 250, 250),
                 SizeMode = PictureBoxSizeMode.Zoom,
-                AllowDrop = true  // ⭐ HABILITAR DRAG & DROP
+                AllowDrop = true
             };
 
-            // ⭐ EVENTOS DE DRAG & DROP
             pbFotografia.DragEnter += PbFotografia_DragEnter;
             pbFotografia.DragDrop += PbFotografia_DragDrop;
-            pbFotografia.Paint += PbFotografia_Paint;  // Para dibujar instrucciones
+            pbFotografia.Paint += PbFotografia_Paint;
 
             pnlPrincipal.Controls.Add(pbFotografia);
 
-            // Panel de controles de foto
             Panel pnlControlesFoto = new Panel
             {
                 Location = new Point(460, yPos),
@@ -643,12 +683,11 @@ namespace CpAuton
             };
             pnlControlesFoto.Controls.Add(lblInstrucciones);
 
-            // Botones de control
             btnSeleccionarFoto = new Button
             {
                 Text = "📂 Seleccionar Archivo",
                 Size = new Size(200, 40),
-                Location = new Point(10, 170), // Fixed: was 170-300 which placed the button outside the panel
+                Location = new Point(10, 170),
                 BackColor = Color.FromArgb(51, 122, 183),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -676,7 +715,6 @@ namespace CpAuton
             btnEliminarFoto.Click += (s, e) => EliminarFoto();
             pnlControlesFoto.Controls.Add(btnEliminarFoto);
 
-            // Label de información
             lblFotoInfo = new Label
             {
                 Text = "📷 Sin fotografía seleccionada",
@@ -690,12 +728,11 @@ namespace CpAuton
 
             pnlPrincipal.Controls.Add(pnlControlesFoto);
 
-
             // Panel de botones
             Panel pnlBotones = new Panel
             {
-                Location = new Point(0, 750+250+100),
-                Size = new Size(1184, 70+30),
+                Location = new Point(0, 750 + 250 + 100),
+                Size = new Size(1184, 70 + 30),
                 BackColor = Color.FromArgb(52, 58, 64),
                 BorderStyle = BorderStyle.FixedSingle
             };
@@ -704,7 +741,7 @@ namespace CpAuton
             {
                 Text = "💾 Guardar Vehículo",
                 Size = new Size(200, 45),
-                Location = new Point(450-90, 12),
+                Location = new Point(450 - 90, 12),
                 BackColor = Color.FromArgb(51, 122, 183),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -718,7 +755,7 @@ namespace CpAuton
             {
                 Text = "❌ Cancelar",
                 Size = new Size(200, 45),
-                Location = new Point(670-50, 12),
+                Location = new Point(670 - 50, 12),
                 BackColor = Color.FromArgb(217, 83, 79),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
@@ -733,9 +770,10 @@ namespace CpAuton
 
             pnlContenedor.Controls.Add(pnlPrincipal);
             pnlContenedor.Controls.Add(pnlBotones);
+
             this.Load += (s, e) =>
             {
-                pnlBotones.Top = pnlPrincipal.Bottom + 20-20;
+                pnlBotones.Top = pnlPrincipal.Bottom + 20 - 20;
             };
 
             this.Shown += (s, e) =>
@@ -745,8 +783,150 @@ namespace CpAuton
                     pnlContenedor.VerticalScroll.Value = 0;
                 }));
             };
+        }
 
+        // ⭐ NUEVO MÉTODO: Actualiza el estado de los botones de búsqueda
+        private void ActualizarBotonesBusqueda()
+        {
+            bool tieneMarca = cboMarca != null && !string.IsNullOrWhiteSpace(cboMarca.Text);
+            bool tieneModelo = cboModelo != null && !string.IsNullOrWhiteSpace(cboModelo.Text);
+            bool tienePais = cboPaisFabricacion != null && !string.IsNullOrWhiteSpace(cboPaisFabricacion.Text);
+            bool tieneOrganizacion = cboOrganizacionSeguridad != null &&
+                                    cboOrganizacionSeguridad.SelectedIndex >= 0 &&
+                                    cboOrganizacionSeguridad.Text != "Sin calificación";
 
+            // Botón Airbags: se habilita si hay marca, modelo y país
+            if (btnBuscarAirbags != null)
+                btnBuscarAirbags.Enabled = tieneMarca && tieneModelo && tienePais;
+
+            // Botón Organización: se habilita si hay marca, modelo y organización seleccionada
+            if (btnBuscarOrganizacion != null)
+                btnBuscarOrganizacion.Enabled = tieneMarca && tieneModelo && tieneOrganizacion;
+
+            // Botón Estrellas: se habilita si hay marca, modelo y organización válida (no "Sin calificación")
+            if (btnBuscarEstrellas != null)
+                btnBuscarEstrellas.Enabled = tieneMarca && tieneModelo && tieneOrganizacion;
+        }
+
+        // ⭐ NUEVO EVENTO: Cuando cambia la organización de seguridad
+        private void CboOrganizacionSeguridad_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboOrganizacionSeguridad.SelectedIndex >= 0)
+            {
+                string organizacion = cboOrganizacionSeguridad.Text;
+
+                // Si se selecciona "Sin calificación", automáticamente seleccionar "Sin calificación" en estrellas
+                if (organizacion == "Sin calificación")
+                {
+                    cboSeguridadChoques.SelectedIndex = 6; // "Sin calificación" está en el índice 6
+                }
+            }
+
+            // Actualizar estado de botones
+            ActualizarBotonesBusqueda();
+        }
+
+        // ⭐ NUEVO: Botón buscar airbags
+        private void BtnBuscarAirbags_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca?.Text.Trim() ?? "";
+                string modelo = cboModelo?.Text.Trim() ?? "";
+                int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string pais = cboPaisFabricacion?.Text.Trim() ?? "";
+
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(pais))
+                {
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo y País de Fabricación para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"¿Cuántos airbags tiene el {marca} {modelo} {anio} fabricado en {pais}?";
+                string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ⭐ NUEVO: Botón buscar organización (prueba de choque)
+        private void BtnBuscarOrganizacion_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca?.Text.Trim() ?? "";
+                string modelo = cboModelo?.Text.Trim() ?? "";
+                int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string organizacion = cboOrganizacionSeguridad?.Text ?? "";
+
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(organizacion))
+                {
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Organización para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"Prueba de choque {marca} {modelo} {anio} según {organizacion}";
+                string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ⭐ NUEVO: Botón buscar estrellas de seguridad
+        private void BtnBuscarEstrellas_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca?.Text.Trim() ?? "";
+                string modelo = cboModelo?.Text.Trim() ?? "";
+                int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string organizacion = cboOrganizacionSeguridad?.Text ?? "";
+
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) ||
+                    string.IsNullOrWhiteSpace(organizacion) || organizacion == "Sin calificación")
+                {
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Año y una Organización válida para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"¿Cuántas estrellas de seguridad tiene el {marca} {modelo} {anio} según {organizacion}?";
+                string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void AgregarSeccion(Panel panel, string titulo, int x, int yPos, int width)
@@ -852,11 +1032,10 @@ namespace CpAuton
             {
                 try
                 {
-                    // SIMPLIFICADO: Solo cargamos modelos (solo nombre)
                     modelos = ModeloVehiculoCln.listar().Where(m => m.idMarca == idMarca && m.estado != -1).ToList();
 
                     cboModelo.DataSource = modelos;
-                    cboModelo.DisplayMember = "nombre"; // Solo nombre
+                    cboModelo.DisplayMember = "nombre";
                     cboModelo.ValueMember = "id";
                     cboModelo.Enabled = true;
                     btnAgregarModelo.Enabled = true;
@@ -889,7 +1068,6 @@ namespace CpAuton
         {
             if (cboMarca.SelectedValue is int idMarca && cboTipo.SelectedValue is int idTipo)
             {
-                // SIMPLIFICADO: Solo pasamos marca y tipo
                 using (var frmNuevoModelo = new FrmNuevoModelo(idMarca, idTipo))
                 {
                     if (frmNuevoModelo.ShowDialog(this) == DialogResult.OK)
@@ -996,14 +1174,6 @@ namespace CpAuton
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(txtMotor.Text))
-            {
-                MessageBox.Show("⚠️ Debe ingresar el tipo de motor", "Validación",
-                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtMotor.Focus();
-                return false;
-            }
-
             if (cboCombustible.SelectedIndex == -1)
             {
                 MessageBox.Show("⚠️ Debe seleccionar el tipo de combustible", "Validación",
@@ -1033,16 +1203,13 @@ namespace CpAuton
                     int idModelo = (int)cboModelo.SelectedValue;
                     int anio = (int)nudAnio.Value;
                     decimal puntuacion = nudPuntuacion.Value;
-                    //int? kilometraje = chkKilometrajeDesconocido.Checked ? (int?)null : (int)nudKilometraje.Value;
 
-                    // Extraer estrellas
                     int estrellas = 0;
                     if (cboSeguridadChoques.SelectedIndex < 6)
                     {
                         estrellas = 5 - cboSeguridadChoques.SelectedIndex;
                     }
 
-                    // Convertir imagen a bytes si existe
                     byte[] fotografiaBytes = null;
                     if (imagenActual != null)
                     {
@@ -1051,8 +1218,7 @@ namespace CpAuton
                             fotografiaBytes = ImagenHelper.ConvertirImagenABytes(imagenActual);
                             double tamanoKB = ImagenHelper.ObtenerTamanoKB(fotografiaBytes);
 
-                            // Advertir si la imagen es muy grande
-                            if (tamanoKB > 2048) // Más de 2MB
+                            if (tamanoKB > 2048)
                             {
                                 DialogResult result = MessageBox.Show(
                                     $"⚠️ La imagen optimizada pesa {Math.Round(tamanoKB / 1024, 2)} MB.\n\n" +
@@ -1075,7 +1241,6 @@ namespace CpAuton
                         }
                     }
 
-                    // NUEVO: Vehículo con TODAS las características
                     var nuevoVehiculo = new Vehiculo
                     {
                         nroChasis = txtNroChasis.Text.Trim().ToUpper(),
@@ -1098,12 +1263,11 @@ namespace CpAuton
                         confiabilidad = cboConfiabilidad.SelectedItem.ToString(),
                         puntuacion = puntuacion,
                         observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ? null : txtObservaciones.Text.Trim(),
-                        fotografia = fotografiaBytes,  // ⭐ AGREGAMOS ESTA LÍNEA
+                        fotografia = fotografiaBytes,
                         estado = 1,
                         usuarioRegistro = Util.usuario != null ? Util.usuario.usuario : Environment.UserName,
                         fechaRegistro = DateTime.Now
                     };
-
 
                     int resultado = VehiculoCln.insertar(nuevoVehiculo);
 
@@ -1151,8 +1315,6 @@ namespace CpAuton
             catch { }
         }
 
-
-        // Evento cuando se arrastra algo sobre el PictureBox
         private void PbFotografia_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -1161,20 +1323,19 @@ namespace CpAuton
                 if (archivos.Length > 0 && ImagenHelper.EsImagenValida(archivos[0]))
                 {
                     e.Effect = DragDropEffects.Copy;
-                    pbFotografia.BackColor = Color.FromArgb(220, 255, 220); // Verde claro
+                    pbFotografia.BackColor = Color.FromArgb(220, 255, 220);
                 }
                 else
                 {
                     e.Effect = DragDropEffects.None;
-                    pbFotografia.BackColor = Color.FromArgb(255, 220, 220); // Rojo claro
+                    pbFotografia.BackColor = Color.FromArgb(255, 220, 220);
                 }
             }
         }
 
-        // Evento cuando se suelta el archivo en el PictureBox
         private void PbFotografia_DragDrop(object sender, DragEventArgs e)
         {
-            pbFotografia.BackColor = Color.FromArgb(250, 250, 250); // Restaurar color
+            pbFotografia.BackColor = Color.FromArgb(250, 250, 250);
 
             try
             {
@@ -1191,7 +1352,6 @@ namespace CpAuton
             }
         }
 
-        // Dibuja instrucciones cuando no hay imagen
         private void PbFotografia_Paint(object sender, PaintEventArgs e)
         {
             if (pbFotografia.Image == null)
@@ -1206,7 +1366,6 @@ namespace CpAuton
                         new RectangleF(0, 0, pbFotografia.Width, pbFotografia.Height), sf);
                 }
 
-                // Dibujar borde punteado
                 using (Pen pen = new Pen(Color.Gray, 2))
                 {
                     pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
@@ -1215,7 +1374,6 @@ namespace CpAuton
             }
         }
 
-        // Botón para seleccionar archivo manualmente
         private void BtnSeleccionarFoto_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
@@ -1239,7 +1397,6 @@ namespace CpAuton
             }
         }
 
-        // Carga una imagen desde un archivo
         private void CargarImagen(string rutaArchivo)
         {
             if (!ImagenHelper.EsImagenValida(rutaArchivo))
@@ -1249,18 +1406,15 @@ namespace CpAuton
                 return;
             }
 
-            // Liberar imagen anterior si existe
             if (imagenActual != null)
             {
                 imagenActual.Dispose();
                 imagenActual = null;
             }
 
-            // Cargar nueva imagen
             imagenActual = ImagenHelper.CargarImagenDesdeArchivo(rutaArchivo);
             ImagenHelper.AjustarImagenPictureBox(pbFotografia, imagenActual);
 
-            // Actualizar información
             FileInfo fi = new FileInfo(rutaArchivo);
             double tamanoMB = Math.Round(fi.Length / (1024.0 * 1024.0), 2);
 
@@ -1271,11 +1425,9 @@ namespace CpAuton
 
             btnEliminarFoto.Enabled = true;
 
-            // Forzar repintado
             pbFotografia.Invalidate();
         }
 
-        // Elimina la foto cargada
         private void EliminarFoto()
         {
             if (imagenActual != null)
@@ -1289,39 +1441,92 @@ namespace CpAuton
             lblFotoInfo.ForeColor = Color.Gray;
             btnEliminarFoto.Enabled = false;
 
-            // Forzar repintado para mostrar instrucciones
             pbFotografia.Invalidate();
+        }
+
+        // Calcula una puntuación sugerida a partir de la seguridad (estrellas) y la confiabilidad
+        private decimal CalcularPuntuacionSugerida()
+        {
+            try
+            {
+                int estrellas = 0;
+                if (cboSeguridadChoques != null && cboSeguridadChoques.SelectedIndex < 6 && cboSeguridadChoques.SelectedIndex >= 0)
+                {
+                    estrellas = 5 - cboSeguridadChoques.SelectedIndex; // mismo cálculo usado al guardar
+                }
+
+                decimal seguridadScore = 2.0m + (estrellas * 1.2m); // base aproximadamente entre 2 y 8
+
+                decimal confiabilidadBonus = 0.8m; // valor por defecto cuando no hay selección
+                if (cboConfiabilidad != null)
+                {
+                    switch (cboConfiabilidad.Text)
+                    {
+                        case "Excelente":
+                            confiabilidadBonus = 1.5m;
+                            break;
+                        case "Bueno":
+                            confiabilidadBonus = 1.0m;
+                            break;
+                        case "Regular":
+                            confiabilidadBonus = 0.5m;
+                            break;
+                        case "Malo":
+                            confiabilidadBonus = 0.0m;
+                            break;
+                        default:
+                            confiabilidadBonus = 0.8m;
+                            break;
+                    }
+                }
+
+                decimal sugerida = seguridadScore + confiabilidadBonus;
+
+                // Limitar entre min y max del control
+                if (nudPuntuacion != null)
+                {
+                    if (sugerida < nudPuntuacion.Minimum) sugerida = nudPuntuacion.Minimum;
+                    if (sugerida > nudPuntuacion.Maximum) sugerida = nudPuntuacion.Maximum;
+                }
+
+                // Redondear al .5 más cercano porque el control tiene Increment = 0.5
+                sugerida = Math.Round(sugerida * 2m, MidpointRounding.AwayFromZero) / 2m;
+
+                return sugerida;
+            }
+            catch
+            {
+                return nudPuntuacion != null ? nudPuntuacion.Value : 7.5m;
+            }
+        }
+
+        // Actualiza el NumericUpDown con la puntuación sugerida
+        private void ActualizarPuntuacionSugerida()
+        {
+            if (nudPuntuacion == null) return;
+
+            decimal sugerida = CalcularPuntuacionSugerida();
+
+            try
+            {
+                nudPuntuacion.Value = sugerida;
+            }
+            catch { }
         }
 
         private void InitializeComponent()
         {
             this.SuspendLayout();
-            // 
-            // FrmRegistroVehiculo
-            // 
             this.BackColor = System.Drawing.Color.PapayaWhip;
             this.ClientSize = new System.Drawing.Size(1162, 994);
             this.Name = "FrmRegistroVehiculo";
             this.ShowInTaskbar = false;
             this.Load += new System.EventHandler(this.FrmRegistroVehiculo_Load);
             this.ResumeLayout(false);
-
         }
-        //protected override void Dispose(bool disposing)
-        //{
-        //    if (disposing)
-        //    {
-        //        if (imagenActual != null)
-        //        {
-        //            imagenActual.Dispose();
-        //            imagenActual = null;
-        //        }
-        //    }
-        //    base.Dispose(disposing);
-        //}
+
         private void ConfigurarVelocidades(string tipoTransmision)
         {
-            // Ensure there is a placeholder label to show a dash for CVT (so NumericUpDown doesn't display a numeric minimum)
             Label lblPlaceholder = null;
             try
             {
@@ -1344,7 +1549,6 @@ namespace CpAuton
                     BackColor = Color.Transparent,
                     Visible = false
                 };
-                // Add to same parent so it scrolls/moves together
                 nudVelocidades.Parent.Controls.Add(lblPlaceholder);
                 lblPlaceholder.BringToFront();
             }
@@ -1388,7 +1592,6 @@ namespace CpAuton
                     break;
 
                 case "CVT":
-                    // For CVT we show a placeholder dash instead of a numeric value
                     nudVelocidades.Visible = false;
                     nudVelocidades.Enabled = false;
                     lblPlaceholder.Text = "-";
@@ -1426,7 +1629,6 @@ namespace CpAuton
             }
         }
 
-        // Abre el navegador con la búsqueda: ¿Qué generación es el [Marca] [Modelo] [Año]?
         private void BtnBuscarGeneracion_Click(object sender, EventArgs e)
         {
             try
@@ -1437,7 +1639,8 @@ namespace CpAuton
 
                 if (string.IsNullOrWhiteSpace(marca) && string.IsNullOrWhiteSpace(modelo))
                 {
-                    MessageBox.Show("⚠️ Debe especificar al menos la Marca o el Modelo para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("⚠️ Debe especificar al menos la Marca o el Modelo para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -1453,7 +1656,8 @@ namespace CpAuton
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
