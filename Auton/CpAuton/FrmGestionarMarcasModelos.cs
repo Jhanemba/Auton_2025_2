@@ -321,7 +321,7 @@ namespace CpAuton
             // Activar scroll/ajustar altura si hay muchas filas
             dgvMarcas.ScrollBars = ScrollBars.Vertical;
 
-            dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colIdMarca", DataPropertyName = "id", HeaderText = "ID", Width = 60 });
+            dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colIdMarca", DataPropertyName = "id", HeaderText = "ID", Width = 60, Visible = false });
             dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colProcedencia", DataPropertyName = "procedencia", HeaderText = "Procedencia", Width = 150 });
             dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colNombreMarca", DataPropertyName = "nombre", HeaderText = "Marca", Width = 200 });
             dgvMarcas.Columns.Add(new DataGridViewTextBoxColumn { Name = "colDescripcionMarca", DataPropertyName = "descripcion", HeaderText = "Descripción", Width = 350 });
@@ -578,7 +578,7 @@ namespace CpAuton
                 Font = new Font("Segoe UI", 9)
             };
 
-            dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colIdModelo", DataPropertyName = "id", HeaderText = "ID", Width = 60 });
+            dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colIdModelo", DataPropertyName = "id", HeaderText = "ID", Width = 60 , Visible = false });
             dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colMarcaModelo", DataPropertyName = "marca", HeaderText = "Marca", Width = 150 });
             //dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colTipoModelo", DataPropertyName = "tipoVehiculo", HeaderText = "Tipo", Width = 120 });
             dgvModelos.Columns.Add(new DataGridViewTextBoxColumn { Name = "colNombreModelo", DataPropertyName = "nombre", HeaderText = "Modelo", Width = 200 });

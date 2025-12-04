@@ -627,6 +627,33 @@ namespace CpAuton
                 pnlPrincipal.Controls.Add(txtChasis);
                 yPosLeft += lineHeight;
 
+                // Procedencia (EDITABLE) - permite corregir la procedencia del vehículo
+                // Crear label explícito para poder ocultarlo en modo edición
+                Label lblProcedencia = new Label
+                {
+                    Name = "lblProcedencia",
+                    Text = "Procedencia:",
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    Location = new Point(20, yPosLeft + 3),
+                    Size = new Size(labelWidth, 25),
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    ForeColor = Color.FromArgb(33, 37, 41)
+                };
+                pnlPrincipal.Controls.Add(lblProcedencia);
+
+                ComboBox cboProcedencia = new ComboBox
+                {
+                    Name = "cboProcedencia",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false,
+                    Visible = true
+                };
+                pnlPrincipal.Controls.Add(cboProcedencia);
+                yPosLeft += lineHeight;
+
                 // Obtener modelo actual PRIMERO
                 ModeloVehiculo modeloActual = null;
                 try
@@ -1126,6 +1153,41 @@ namespace CpAuton
 
                 cboMarca.SelectedIndexChanged += marcaCambiadaHandler;
 
+                // Evento para cargar marcas cuando cambie la procedencia (SOLO EN MODO EDICIÓN)
+                cboProcedencia.SelectedIndexChanged += (s, e) =>
+                {
+                    try
+                    {
+                        if (!permitirEventos) return;
+                        if (!cboProcedencia.Enabled) return;
+
+                        var sel = cboProcedencia.SelectedValue;
+                        if (sel == null) return;
+
+                        int idProc = Convert.ToInt32(sel);
+                        var marcasFiltradas = MarcaCln.listar()
+                            .Where(m => m.idProcedencia == idProc && m.estado != -1)
+                            .OrderBy(m => m.nombre)
+                            .ToList();
+
+                        permitirEventos = false;
+                        cboMarca.DataSource = null;
+                        cboMarca.DisplayMember = "nombre";
+                        cboMarca.ValueMember = "id";
+                        cboMarca.DataSource = marcasFiltradas;
+                        cboMarca.BindingContext = new BindingContext();
+
+                        if (marcasFiltradas.Any())
+                            cboMarca.SelectedIndex = 0;
+                        else
+                            cboMarca.SelectedIndex = -1;
+
+                        permitirEventos = true;
+                    }
+                    catch { }
+                };
+
+
                 // 1. Cargamos Marcas, Tipos y Modelos (DisplayMember/ValueMember ANTES del DataSource)
                 try
                 {
@@ -1152,6 +1214,33 @@ namespace CpAuton
                     cboTipo.DataSource = null;
                     cboTipo.DataSource = tipos;
                     cboTipo.BindingContext = new BindingContext();
+
+                    // Load procedencias and set selection based on current marca
+                    try
+                    {
+                        var procedencias = ProcedenciaCln.listar()
+                            .Where(p => p.estado != -1)
+                            .OrderBy(p => p.descripcion)
+                            .ToList();
+
+                        cboProcedencia.DisplayMember = "descripcion";
+                        cboProcedencia.ValueMember = "id";
+                        cboProcedencia.DataSource = null;
+                        cboProcedencia.DataSource = procedencias;
+                        cboProcedencia.BindingContext = new BindingContext();
+
+                        // Select the procedencia that corresponds to the current modelo's marca
+                        try
+                        {
+                            var marcaDelModelo = marcas.FirstOrDefault(m => m.id == modeloActual?.idMarca);
+                            if (marcaDelModelo != null)
+                                cboProcedencia.SelectedValue = marcaDelModelo.idProcedencia;
+                            else
+                                cboProcedencia.SelectedIndex = -1;
+                        }
+                        catch { cboProcedencia.SelectedIndex = -1; }
+                    }
+                    catch { /* ignore procedencias loading errors */ }
 
                     // 3. Cargando Modelos de la marca actual
                     var modelos = ModeloVehiculoCln.listar()
@@ -1386,7 +1475,7 @@ namespace CpAuton
                 pnlPrincipal.Controls.Add(lblInfoVelocidades);
 
                 // Configurar según tipo de transmisión actual
-                // NOTA: no habilitamos la edición aún; la edición se habilita cuando el usuario pulsa 'Editar'
+                // NOTA: no habilitamos la edición aún; la edición se habilita cuando el usuario pulses 'Editar'
                 ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
 
                 yPosRight += lineHeight;
@@ -1627,275 +1716,353 @@ namespace CpAuton
                     BorderStyle = BorderStyle.FixedSingle
                 };
 
-                // Botón Editar/Guardar (solo si hay usuario autenticado)
-                if (Util.usuario != null)
+                // Botón Iniciar Sesión (overlay en la esquina superior izquierda del formulario de detalles)
+                Button btnIniciarSesionDetalle = new Button
                 {
-                    Button btnEditar = new Button
-                    {
-                        Name = "btnEditar",
-                        Text = "✏️ Editar",
-                        Size = new Size(180, 45),
-                        Location = new Point(350, 12),
-                        BackColor = Color.FromArgb(51, 122, 183),
-                        ForeColor = Color.White,
-                        FlatStyle = FlatStyle.Flat,
-                        Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                        Cursor = Cursors.Hand
-                    };
-                    btnEditar.FlatAppearance.BorderSize = 0;
+                    Name = "btnIniciarSesionDetalle",
+                    Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión",
+                    Size = new Size(120, 35),
+                    Location = new Point(8, 8),
+                    BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Arial", 9, FontStyle.Bold),
+                    Visible = Util.usuario == null // solo mostrar si no hay usuario autenticado
+                };
+                btnIniciarSesionDetalle.FlatAppearance.BorderSize = 0;
+                // Hacer que el botón no afecte el layout: lo añadimos directamente al formulario (no al panel principal)
+                frmDetalles.Controls.Add(btnIniciarSesionDetalle);
+                btnIniciarSesionDetalle.BringToFront();
 
-                    btnEditar.Click += (s, e) =>
+                // Crear botones Editar y Eliminar siempre, pero ocultarlos si el usuario no está autenticado.
+                Button btnEditar = new Button
+                {
+                    Name = "btnEditar",
+                    Text = "✏️ Editar",
+                    Size = new Size(180, 45),
+                    Location = new Point(350, 12),
+                    BackColor = Color.FromArgb(51, 122, 183),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = Util.usuario != null
+                };
+                btnEditar.FlatAppearance.BorderSize = 0;
+
+                Button btnEliminar = new Button
+                {
+                    Name = "btnEliminar",
+                    Text = "🗑️ Eliminar",
+                    Size = new Size(180, 45),
+                    Location = new Point(550, 12),
+                    BackColor = Color.FromArgb(217, 83, 79),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = Util.usuario != null
+                };
+                btnEliminar.FlatAppearance.BorderSize = 0;
+
+                // Asociar eventos a los botones Editar y Eliminar (la lógica existente se mantiene)
+                btnEliminar.Click += (s, e) => EliminarVehiculo(vehiculo, frmDetalles);
+
+                // Nota: el evento Click de btnEditar es extenso y depende de variables locales. Se reutiliza el código original
+                // agregando la misma lógica aquí.
+                btnEditar.Click += (s, e) =>
+                {
+                    if (btnEditar.Text == "✏️ Editar")
                     {
-                        if (btnEditar.Text == "✏️ Editar")
+                        // Habilitar controles de foto
+                        pbFotoDetalle.AllowDrop = true;
+                        btnCambiarFoto.Visible = true;
+                        btnEliminarFotoDetalle.Visible = true;
+                        if (pbFotoDetalle.Image != null)
+                            btnEliminarFotoDetalle.Enabled = true;
+
+                        // ACTIVAR MODO EDICIÓN - HABILITAR TODO
+                        txtChasis.ReadOnly = false;
+                        txtChasis.BackColor = Color.White;
+                        cboMarca.Enabled = true;
+                        cboModelo.Enabled = true;
+                        cboTipo.Enabled = true;
+                        // Ocultar procedencia en modo edición (no editable aquí)
+                        cboProcedencia.Visible = false;
+                        try
                         {
-                            // Habilitar controles de foto
-                            pbFotoDetalle.AllowDrop = true;
-                            btnCambiarFoto.Visible = true;
-                            btnEliminarFotoDetalle.Visible = true;
-                            if (pbFotoDetalle.Image != null)
-                                btnEliminarFotoDetalle.Enabled = true;
-
-                            // ACTIVAR MODO EDICIÓN - HABILITAR TODO
-                            txtChasis.ReadOnly = false;
-                            txtChasis.BackColor = Color.White;
-                            cboMarca.Enabled = true;
-                            cboModelo.Enabled = true;
-                            cboTipo.Enabled = true;
-                            nudAnio.Enabled = true;
-                            txtGeneracion.ReadOnly = false;
-                            txtGeneracion.BackColor = Color.White;
-                            cboPaisFabricacion.Enabled = true;
-                            cboTransmision.Enabled = true;
-                            var nudVelocidadesEdit = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
-                            // Reconfigurar velocidades para permitir edición ahora que estamos en modo edición
-                            ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesEdit, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, true);
-                            nudAsientos.Enabled = true;
-                            cboPuertas.Enabled = true;
-                            chkTieneTurbo.Enabled = true;
-                            txtMotor.ReadOnly = false;
-                            txtMotor.BackColor = Color.White;
-                            cboCombustible.Enabled = true;
-                            nudAirbags.Enabled = true;
-                            cboOrganizacion.Enabled = true;
-                            nudEstrellas.Enabled = true;
-                            cboConfiabilidad.Enabled = true;
-                            nudPuntuacion.Enabled = true;
-                            txtObservaciones.ReadOnly = false;
-                            txtObservaciones.BackColor = Color.White;
-
-                            // Mostrar botones + para agregar marca/modelo
-                            btnAddMarca.Visible = true;
-                            btnAddModelo.Visible = true;
-                            btnEditMarca.Visible = true;
-                            btnEditModelo.Visible = true;
-
-                            lblEstado.Text = "✏️ MODO EDICIÓN - Modifique los campos necesarios";
-                            lblEstado.ForeColor = Color.Green;
-                            lblEstado.BackColor = Color.FromArgb(230, 255, 230);
-                            btnEditar.Text = "💾 Guardar";
-                            btnEditar.BackColor = Color.FromArgb(40, 167, 69);
-
-                            // EVENTO: Limpiar selección visual DESPUÉS de que el formulario se muestre
-                            //frmDetalles.Shown += (s, ev) =>
-                            //{
-                            //    if (cboMarca.SelectedIndex >= 0)
-                            //    {
-                            //        cboMarca.SelectionStart = 0;
-                            //        cboMarca.SelectionLength = 0;
-                            //    }
-
-                            //    if (cboModelo.SelectedIndex >= 0)
-                            //    {
-                            //        cboModelo.SelectionStart = 0;
-                            //        cboModelo.SelectionLength = 0;
-                            //    }
-                            //};
-
+                            // Ocultar cualquier etiqueta que muestre "Procedencia" por si existe más de una instancia
+                            foreach (Control ctrl in pnlPrincipal.Controls)
+                            {
+                                if (ctrl is Label l && !string.IsNullOrEmpty(l.Text) && l.Text.Trim().StartsWith("Procedencia"))
+                                    l.Visible = false;
+                            }
                         }
-                        else // GUARDAR
+                        catch { }
+                        nudAnio.Enabled = true;
+                        txtGeneracion.ReadOnly = false;
+                        txtGeneracion.BackColor = Color.White;
+                        cboPaisFabricacion.Enabled = true;
+                        cboTransmision.Enabled = true;
+                        var nudVelocidadesEdit = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                        // Reconfigurar velocidades para permitir edición ahora que estamos en modo edición
+                        ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesEdit, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, true);
+                        nudAsientos.Enabled = true;
+                        cboPuertas.Enabled = true;
+                        chkTieneTurbo.Enabled = true;
+                        txtMotor.ReadOnly = false;
+                        txtMotor.BackColor = Color.White;
+                        cboCombustible.Enabled = true;
+                        nudAirbags.Enabled = true;
+                        cboOrganizacion.Enabled = true;
+                        nudEstrellas.Enabled = true;
+                        cboConfiabilidad.Enabled = true;
+                        nudPuntuacion.Enabled = true;
+                        txtObservaciones.ReadOnly = false;
+                        txtObservaciones.BackColor = Color.White;
+
+                        // Mostrar botones + para agregar marca/modelo
+                        btnAddMarca.Visible = true;
+                        btnAddModelo.Visible = true;
+                        btnEditMarca.Visible = true;
+                        btnEditModelo.Visible = true;
+
+                        lblEstado.Text = "✏️ MODO EDICIÓN - Modifique los campos necesarios";
+                        lblEstado.ForeColor = Color.Green;
+                        lblEstado.BackColor = Color.FromArgb(230, 255, 230);
+                        btnEditar.Text = "💾 Guardar";
+                        btnEditar.BackColor = Color.FromArgb(40, 167, 69);
+
+                        // EVENTO: Limpiar selección visual DESPUÉS de que el formulario se muestre
+
+                        if (cboMarca.SelectedIndex >= 0)
                         {
-                            // Deshabilitar controles de foto
-                            pbFotoDetalle.AllowDrop = false;
-                            btnCambiarFoto.Visible = false;
-                            btnEliminarFotoDetalle.Visible = false;
-                            // VALIDAR ANTES DE GUARDAR
-                            if (!ValidarEdicionCompleta(txtChasis.Text, cboModelo.SelectedIndex,
-                                txtGeneracion.Text, cboPaisFabricacion.SelectedIndex,
-                                cboConfiabilidad.SelectedIndex))
+                            cboMarca.SelectionStart = 0;
+                            cboMarca.SelectionLength = 0;
+                        }
+
+                        if (cboModelo.SelectedIndex >= 0)
+                        {
+                            cboModelo.SelectionStart = 0;
+                            cboModelo.SelectionLength = 0;
+                        }
+
+
+                    }
+                    else // GUARDAR
+                    {
+                        // Deshabilitar controles de foto
+                        pbFotoDetalle.AllowDrop = false;
+                        btnCambiarFoto.Visible = false;
+                        btnEliminarFotoDetalle.Visible = false;
+                        // VALIDAR ANTES DE GUARDAR
+                        if (!ValidarEdicionCompleta(txtChasis.Text, cboModelo.SelectedIndex,
+                            txtGeneracion.Text, cboPaisFabricacion.SelectedIndex,
+                            cboConfiabilidad.SelectedIndex))
+                            return;
+
+                        try
+                        {
+                            // VALIDACIONES PREVIAS
+                            if (cboModelo.SelectedValue == null || cboTipo.SelectedValue == null)
+                            {
+                                MessageBox.Show("⚠️ Debe seleccionar un modelo y un tipo válidos",
+                                              "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 return;
+                            }
 
-                            try
+                            int nuevoIdModelo = Convert.ToInt32(cboModelo.SelectedValue);
+                            int nuevoIdTipo = Convert.ToInt32(cboTipo.SelectedValue);
+
+                            // ACTUALIZAR EL TIPO DEL MODELO (SI CAMBIÓ)
+                            var modeloSeleccionado = ModeloVehiculoCln.obtenerUno(nuevoIdModelo);
+
+                            if (modeloSeleccionado == null)
                             {
-                                // VALIDACIONES PREVIAS
-                                if (cboModelo.SelectedValue == null || cboTipo.SelectedValue == null)
+                                MessageBox.Show("❌ Error: No se pudo cargar el modelo seleccionado",
+                                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+
+                            // Si el tipo cambió, actualizar el modelo
+                            if (modeloSeleccionado.idTipoVehiculo != nuevoIdTipo)
+                            {
+                                modeloSeleccionado.idTipoVehiculo = nuevoIdTipo;
+                                modeloSeleccionado.usuarioRegistro = Util.usuario.usuario;
+
+                                int resultadoModelo = ModeloVehiculoCln.actualizar(modeloSeleccionado);
+
+                                if (resultadoModelo == 0)
                                 {
-                                    MessageBox.Show("⚠️ Debe seleccionar un modelo y un tipo válidos",
-                                                  "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                    return;
-                                }
-
-                                int nuevoIdModelo = Convert.ToInt32(cboModelo.SelectedValue);
-                                int nuevoIdTipo = Convert.ToInt32(cboTipo.SelectedValue);
-
-                                // ACTUALIZAR EL TIPO DEL MODELO (SI CAMBIÓ)
-                                var modeloSeleccionado = ModeloVehiculoCln.obtenerUno(nuevoIdModelo);
-
-                                if (modeloSeleccionado == null)
-                                {
-                                    MessageBox.Show("❌ Error: No se pudo cargar el modelo seleccionado",
+                                    MessageBox.Show("❌ Error al actualizar el tipo del modelo",
                                                   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     return;
-                                }
-
-                                // Si el tipo cambió, actualizar el modelo
-                                if (modeloSeleccionado.idTipoVehiculo != nuevoIdTipo)
-                                {
-                                    modeloSeleccionado.idTipoVehiculo = nuevoIdTipo;
-                                    modeloSeleccionado.usuarioRegistro = Util.usuario.usuario;
-
-                                    int resultadoModelo = ModeloVehiculoCln.actualizar(modeloSeleccionado);
-
-                                    if (resultadoModelo == 0)
-                                    {
-                                        MessageBox.Show("❌ Error al actualizar el tipo del modelo",
-                                                      "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        return;
-                                    }
-                                }
-
-                                // Procesar fotografía si cambió
-                                if (imagenCargada != null)
-                                {
-                                    byte[] fotoBytes = ImagenHelper.ConvertirImagenABytes(imagenCargada);
-                                    vehiculoCompleto.fotografia = fotoBytes;
-
-                                    double tamanoKB = ImagenHelper.ObtenerTamanoKB(fotoBytes);
-                                    if (tamanoKB > 2048)
-                                    {
-                                        MessageBox.Show($"⚠️ Fotografía optimizada: {Math.Round(tamanoKB / 1024, 2)} MB\n" +
-                                                      "Se recomienda usar imágenes más pequeñas.",
-                                                      "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    }
-                                }
-                                else if (fotoEliminada)
-                                {
-                                    // Si el usuario eliminó la foto explícitamente
-                                    vehiculoCompleto.fotografia = null;
-                                }
-
-                                // ACTUALIZAR VEHÍCULO
-                                vehiculoCompleto.nroChasis = txtChasis.Text.Trim().ToUpper();
-                                vehiculoCompleto.idModeloVehiculo = nuevoIdModelo;
-                                vehiculoCompleto.anioFabricacion = (int)nudAnio.Value;
-                                vehiculoCompleto.generacion = txtGeneracion.Text.Trim();
-                                vehiculoCompleto.paisFabricacion = cboPaisFabricacion.Text.Trim();
-                                vehiculoCompleto.transmision = cboTransmision.Text;
-                                if (cboTransmision.Text == "CVT")
-                                {
-                                    vehiculoCompleto.nroVelocidades = null;
-                                }
-                                else
-                                {
-                                    var nudVel = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
-                                    vehiculoCompleto.nroVelocidades = (int)nudVel.Value;
-                                }
-                                vehiculoCompleto.nroAsientos = (int)nudAsientos.Value;
-                                vehiculoCompleto.nroPuertas = (int)cboPuertas.SelectedItem;
-                                vehiculoCompleto.tieneTurbo = chkTieneTurbo.Checked;
-                                vehiculoCompleto.motor = txtMotor.Text.Trim();
-                                vehiculoCompleto.combustible = cboCombustible.Text;
-                                vehiculoCompleto.nroAirbags = (int)nudAirbags.Value;
-                                vehiculoCompleto.organizacionSeguridad = cboOrganizacion.Text;
-                                vehiculoCompleto.seguridadChoques = (int)nudEstrellas.Value;
-                                vehiculoCompleto.confiabilidad = cboConfiabilidad.Text;
-                                vehiculoCompleto.puntuacion = nudPuntuacion.Value;
-                                vehiculoCompleto.observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ?
-                                    null : txtObservaciones.Text.Trim();
-                                vehiculoCompleto.usuarioRegistro = Util.usuario.usuario;
-
-                                int resultado = ConsultaVehiculosCln.actualizar(vehiculoCompleto);
-
-                                if (resultado > 0)
-                                {
-                                    // DESACTIVAR MODO EDICIÓN
-                                    txtChasis.ReadOnly = true;
-                                    txtChasis.BackColor = Color.WhiteSmoke;
-                                    cboMarca.Enabled = false;
-                                    cboModelo.Enabled = false;
-                                    cboTipo.Enabled = false;
-                                    nudAnio.Enabled = false;
-                                    txtGeneracion.ReadOnly = true;
-                                    txtGeneracion.BackColor = Color.WhiteSmoke;
-                                    cboPaisFabricacion.Enabled = false;
-                                    cboTransmision.Enabled = false;
-                                    var nudVelocidadesRead = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
-                                    // Al salir de edición, reconfiguramos para modo lectura (deshabilitado o placeholder si CVT)
-                                    ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesRead, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
-                                    nudAsientos.Enabled = false;
-                                    cboPuertas.Enabled = false;
-                                    chkTieneTurbo.Enabled = false;
-                                    txtMotor.ReadOnly = true;
-                                    txtMotor.BackColor = Color.WhiteSmoke;
-                                    cboCombustible.Enabled = false;
-                                    nudAirbags.Enabled = false;
-                                    cboOrganizacion.Enabled = false;
-                                    nudEstrellas.Enabled = false;
-                                    cboConfiabilidad.Enabled = false;
-                                    nudPuntuacion.Enabled = false;
-                                    txtObservaciones.ReadOnly = true;
-                                    txtObservaciones.BackColor = Color.WhiteSmoke;
-
-                                    // Ocultar botones +
-                                    btnAddMarca.Visible = false;
-                                    btnAddModelo.Visible = false;
-                                    btnEditMarca.Visible = false;
-                                    btnEditModelo.Visible = false;
-
-                                    lblEstado.Text = "🔒 MODO LECTURA";
-                                    lblEstado.ForeColor = Color.Red;
-                                    lblEstado.BackColor = Color.FromArgb(255, 230, 230);
-                                    btnEditar.Text = "✏️ Editar";
-                                    btnEditar.BackColor = Color.FromArgb(51, 122, 183);
-
-                                    MessageBox.Show("✅ Vehículo actualizado exitosamente\n" +
-                                                  $"Modelo: {modeloSeleccionado.nombre}\n" +
-                                                  $"Tipo actualizado: {cboTipo.Text}",
-                                                  "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                                    frmDetalles.Close();
-                                    CargarVehiculos("");
-                                }
-                                else
-                                {
-                                    MessageBox.Show("❌ No se pudo actualizar el vehículo",
-                                                  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
                             }
-                            catch (Exception ex)
+
+                            // Procesar fotografía si cambió
+                            if (imagenCargada != null)
                             {
-                                MessageBox.Show($"❌ Error al guardar:\n{ex.Message}\n\nStackTrace:\n{ex.StackTrace}",
-                                              "Error Detallado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                byte[] fotoBytes = ImagenHelper.ConvertirImagenABytes(imagenCargada);
+                                vehiculoCompleto.fotografia = fotoBytes;
+
+                                double tamanoKB = ImagenHelper.ObtenerTamanoKB(fotoBytes);
+                                if (tamanoKB > 2048)
+                                {
+                                    MessageBox.Show($"⚠️ Fotografía optimizada: {Math.Round(tamanoKB / 1024, 2)} MB\n" +
+                                                  "Se recomienda usar imágenes más pequeñas.",
+                                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                }
+                            }
+                            else if (fotoEliminada)
+                            {
+                                // Si el usuario eliminó la foto explícitamente
+                                vehiculoCompleto.fotografia = null;
+                            }
+
+                            // ACTUALIZAR VEHÍCULO
+                            vehiculoCompleto.nroChasis = txtChasis.Text.Trim().ToUpper();
+                            vehiculoCompleto.idModeloVehiculo = nuevoIdModelo;
+                            vehiculoCompleto.anioFabricacion = (int)nudAnio.Value;
+                            vehiculoCompleto.generacion = txtGeneracion.Text.Trim();
+                            vehiculoCompleto.paisFabricacion = cboPaisFabricacion.Text.Trim();
+                            vehiculoCompleto.transmision = cboTransmision.Text;
+                            if (cboTransmision.Text == "CVT")
+                            {
+                                vehiculoCompleto.nroVelocidades = null;
+                            }
+                            else
+                            {
+                                var nudVel = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                                vehiculoCompleto.nroVelocidades = (int)nudVel.Value;
+                            }
+                            vehiculoCompleto.nroAsientos = (int)nudAsientos.Value;
+                            vehiculoCompleto.nroPuertas = (int)cboPuertas.SelectedItem;
+                            vehiculoCompleto.tieneTurbo = chkTieneTurbo.Checked;
+                            vehiculoCompleto.motor = txtMotor.Text.Trim();
+                            vehiculoCompleto.combustible = cboCombustible.Text;
+                            vehiculoCompleto.nroAirbags = (int)nudAirbags.Value;
+                            vehiculoCompleto.organizacionSeguridad = cboOrganizacion.Text;
+                            vehiculoCompleto.seguridadChoques = (int)nudEstrellas.Value;
+                            vehiculoCompleto.confiabilidad = cboConfiabilidad.Text;
+                            vehiculoCompleto.puntuacion = nudPuntuacion.Value;
+                            vehiculoCompleto.observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ?
+                                null : txtObservaciones.Text.Trim();
+                            vehiculoCompleto.usuarioRegistro = Util.usuario.usuario;
+
+                            int resultado = ConsultaVehiculosCln.actualizar(vehiculoCompleto);
+
+                            if (resultado > 0)
+                            {
+                                // DESACTIVAR MODO EDICIÓN
+                                txtChasis.ReadOnly = true;
+                                txtChasis.BackColor = Color.WhiteSmoke;
+                                cboMarca.Enabled = false;
+                                cboModelo.Enabled = false;
+                                cboTipo.Enabled = false;
+                                // Mostrar procedencia al salir del modo edición
+                                cboProcedencia.Visible = true;
+                                try
+                                {
+                                    foreach (Control ctrl in pnlPrincipal.Controls)
+                                    {
+                                        if (ctrl is Label l && !string.IsNullOrEmpty(l.Text) && l.Text.Trim().StartsWith("Procedencia"))
+                                            l.Visible = true;
+                                    }
+                                }
+                                catch { }
+                                nudAnio.Enabled = false;
+                                txtGeneracion.ReadOnly = true;
+                                txtGeneracion.BackColor = Color.WhiteSmoke;
+                                cboPaisFabricacion.Enabled = false;
+                                cboTransmision.Enabled = false;
+                                var nudVelocidadesRead = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                                // Al salir de edición, reconfiguramos para modo lectura (deshabilitado o placeholder si CVT)
+                                ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesRead, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
+                                nudAsientos.Enabled = false;
+                                cboPuertas.Enabled = false;
+                                chkTieneTurbo.Enabled = false;
+                                txtMotor.ReadOnly = true;
+                                txtMotor.BackColor = Color.WhiteSmoke;
+                                cboCombustible.Enabled = false;
+                                nudAirbags.Enabled = false;
+                                cboOrganizacion.Enabled = false;
+                                nudEstrellas.Enabled = false;
+                                cboConfiabilidad.Enabled = false;
+                                nudPuntuacion.Enabled = false;
+                                txtObservaciones.ReadOnly = true;
+                                txtObservaciones.BackColor = Color.WhiteSmoke;
+
+                                // Ocultar botones +
+                                btnAddMarca.Visible = false;
+                                btnAddModelo.Visible = false;
+                                btnEditMarca.Visible = false;
+                                btnEditModelo.Visible = false;
+
+                                lblEstado.Text = "🔒 MODO LECTURA";
+                                lblEstado.ForeColor = Color.Red;
+                                lblEstado.BackColor = Color.FromArgb(255, 230, 230);
+                                btnEditar.Text = "✏️ Editar";
+                                btnEditar.BackColor = Color.FromArgb(51, 122, 183);
+
+                                MessageBox.Show("✅ Vehículo actualizado exitosamente\n" +
+                                              $"Modelo: {modeloSeleccionado.nombre}\n" +
+                                              $"Tipo actualizado: {cboTipo.Text}",
+                                              "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                                frmDetalles.Close();
+                                CargarVehiculos("");
+                            }
+                            else
+                            {
+                                MessageBox.Show("❌ No se pudo actualizar el vehículo",
+                                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
-                    };
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"❌ Error al guardar:\n{ex.Message}\n\nStackTrace:\n{ex.StackTrace}",
+                                          "Error Detallado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                };
 
-                    Button btnEliminar = new Button
+                // Añadir los botones al panel de botones
+                pnlBotones.Controls.Add(btnEditar);
+                pnlBotones.Controls.Add(btnEliminar);
+
+                // Asociar evento de iniciar sesión del botón de detalles
+                btnIniciarSesionDetalle.Click += (s, e) =>
+                {
+                    if (Util.usuario != null)
                     {
-                        Text = "🗑️ Eliminar",
-                        Size = new Size(180, 45),
-                        Location = new Point(550, 12),
-                        BackColor = Color.FromArgb(217, 83, 79),
-                        ForeColor = Color.White,
-                        FlatStyle = FlatStyle.Flat,
-                        Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                        Cursor = Cursors.Hand
-                    };
-                    btnEliminar.FlatAppearance.BorderSize = 0;
-                    btnEliminar.Click += (s, e) => EliminarVehiculo(vehiculo, frmDetalles);
+                        // Si por alguna razón ya hay usuario, ocultamos el botón y actualizamos UI
+                        btnIniciarSesionDetalle.Visible = false;
+                        btnEditar.Visible = true;
+                        btnEliminar.Visible = true;
+                        ActualizarInterfaz();
+                        btnNuevo.Visible = Util.usuario != null;
+                        return;
+                    }
 
-                    pnlBotones.Controls.Add(btnEditar);
-                    pnlBotones.Controls.Add(btnEliminar);
-                }
+                    using (var frmAuth = new FrmAutenticacion())
+                    {
+                        frmAuth.StartPosition = FormStartPosition.CenterParent;
+                        if (frmAuth.ShowDialog(frmDetalles) == DialogResult.OK)
+                        {
+                            // Actualizar interfaz del formulario principal en tiempo real
+                            ActualizarInterfazSesion();
+                            btnNuevo.Visible = Util.usuario != null;
+
+                            // Mostrar los botones de edición ahora que el usuario está autenticado
+                            btnIniciarSesionDetalle.Visible = false;
+                            btnEditar.Visible = true;
+                            btnEliminar.Visible = true;
+
+                            MessageBox.Show("✅ Autenticación exitosa.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                };
 
                 Button btnCerrar = new Button
                 {
