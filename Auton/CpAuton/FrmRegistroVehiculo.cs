@@ -43,6 +43,7 @@ namespace CpAuton
         private Label lblInfoVelocidades;
         private TextBox txtMotor;
         private ComboBox cboCombustible;
+        private Button btnBuscarMotor; // botón para buscar sobre el motor
 
         // SEGURIDAD
         private NumericUpDown nudAirbags;
@@ -57,6 +58,7 @@ namespace CpAuton
         private NumericUpDown nudPuntuacion;
         private CheckBox chkKilometrajeDesconocido;
         private TextBox txtObservaciones;
+        private Label lblPuntuacionSugerida; // etiqueta que mostrará la recomendación
 
         private PictureBox pbFotografia;
         private Label lblFotoInfo;
@@ -366,8 +368,29 @@ namespace CpAuton
                 Size = new Size(ctrlWidth, 28),
                 Font = new Font("Segoe UI", 10F)
             };
+            // Cuando cambia el texto del motor, actualizar habilitación de botón de búsqueda
+            txtMotor.TextChanged += (s, e) => ActualizarBotonesBusqueda();
             pnlPrincipal.Controls.Add(txtMotor);
             SetCueBanner(txtMotor, "Ej: 2.0L, 1.8L Turbo");
+
+            // Botón buscar motor
+            btnBuscarMotor = new Button
+            {
+                Text = "🔍",
+                Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                Size = new Size(36, 28),
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnBuscarMotor.FlatAppearance.BorderSize = 0;
+            btnBuscarMotor.Click += BtnBuscarMotor_Click;
+            try { var tt = new ToolTip(); tt.SetToolTip(btnBuscarMotor, "Buscar si el vehículo trae ese motor"); } catch { }
+            pnlPrincipal.Controls.Add(btnBuscarMotor);
+
             yPosRight += lineHeight;
 
             // Combustible
@@ -623,6 +646,19 @@ namespace CpAuton
                 TextAlign = HorizontalAlignment.Center
             };
             pnlPrincipal.Controls.Add(nudPuntuacion);
+
+            // Etiqueta que muestra la sugerencia (recomendación) de puntuación
+            lblPuntuacionSugerida = new Label
+            {
+                Location = new Point(colRightX + 210, yPosRight + 3),
+                Size = new Size(300, 25),
+                Font = new Font("Segoe UI", 9F, FontStyle.Italic),
+                ForeColor = Color.DarkGreen,
+                Text = "Sugerencia: --",
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            pnlPrincipal.Controls.Add(lblPuntuacionSugerida);
+
             yPosRight += lineHeight;
 
             // ==================== OBSERVACIONES ====================
@@ -794,6 +830,8 @@ namespace CpAuton
             bool tieneOrganizacion = cboOrganizacionSeguridad != null &&
                                     cboOrganizacionSeguridad.SelectedIndex >= 0 &&
                                     cboOrganizacionSeguridad.Text != "Sin calificación";
+            bool tieneMotor = txtMotor != null && !string.IsNullOrWhiteSpace(txtMotor.Text);
+            bool tieneAnio = nudAnio != null && nudAnio.Value > 0;
 
             // Botón Airbags: se habilita si hay marca, modelo y país
             if (btnBuscarAirbags != null)
@@ -806,6 +844,10 @@ namespace CpAuton
             // Botón Estrellas: se habilita si hay marca, modelo y organización válida (no "Sin calificación")
             if (btnBuscarEstrellas != null)
                 btnBuscarEstrellas.Enabled = tieneMarca && tieneModelo && tieneOrganizacion;
+
+            // Botón Motor: se habilita si hay marca, modelo, año y motor escrito
+            if (btnBuscarMotor != null)
+                btnBuscarMotor.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneMotor;
         }
 
         // ⭐ NUEVO EVENTO: Cuando cambia la organización de seguridad
@@ -929,6 +971,40 @@ namespace CpAuton
             }
         }
 
+        // ⭐ NUEVO: Botón buscar motor
+        private void BtnBuscarMotor_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca?.Text.Trim() ?? "";
+                string modelo = cboModelo?.Text.Trim() ?? "";
+                int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string motor = txtMotor?.Text.Trim() ?? "";
+
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(motor))
+                {
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Motor para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"¿El {marca} {modelo} {anio} trae motor {motor}?";
+                string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void AgregarSeccion(Panel panel, string titulo, int x, int yPos, int width)
         {
             Panel pnlSeccion = new Panel
@@ -968,6 +1044,13 @@ namespace CpAuton
         {
             CargarProcedencias();
             CargarTipos();
+            // Inicializar estado de sugerencia y botones
+            try
+            {
+                ActualizarPuntuacionSugerida();
+                ActualizarBotonesBusqueda();
+            }
+            catch { }
         }
 
         private void CargarProcedencias()
@@ -1024,6 +1107,8 @@ namespace CpAuton
                                   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+
+            ActualizarBotonesBusqueda();
         }
 
         private void CboMarca_SelectedIndexChanged(object sender, EventArgs e)
@@ -1047,6 +1132,8 @@ namespace CpAuton
                                   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+
+            ActualizarBotonesBusqueda();
         }
 
         private void BtnAgregarMarca_Click(object sender, EventArgs e)
@@ -1500,16 +1587,16 @@ namespace CpAuton
             }
         }
 
-        // Actualiza el NumericUpDown con la puntuación sugerida
+        // Actualiza la etiqueta con la puntuación sugerida (solo recomendación)
         private void ActualizarPuntuacionSugerida()
         {
-            if (nudPuntuacion == null) return;
+            if (lblPuntuacionSugerida == null) return;
 
             decimal sugerida = CalcularPuntuacionSugerida();
 
             try
             {
-                nudPuntuacion.Value = sugerida;
+                lblPuntuacionSugerida.Text = $"Sugerencia: {sugerida}";
             }
             catch { }
         }
