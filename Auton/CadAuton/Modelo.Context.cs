@@ -93,11 +93,15 @@ namespace CadAuton
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<paUsuarioValidar_Result>("paUsuarioValidar", usuarioParameter, claveParameter);
         }
     
-        public virtual ObjectResult<string> paVehiculoActualizar(Nullable<int> id, string generacion, string paisFabricacion, string transmision, Nullable<int> nroVelocidades, Nullable<int> nroPuertas, Nullable<int> nroAsientos, Nullable<bool> tieneTurbo, string motor, string combustible, Nullable<int> nroAirbags, Nullable<int> seguridadChoques, string organizacionSeguridad, Nullable<int> anioFabricacion, string confiabilidad, Nullable<decimal> puntuacion, Nullable<int> kilometraje, string observaciones, byte[] fotografia)
+        public virtual ObjectResult<string> paVehiculoActualizar(Nullable<int> id, string version, string generacion, string paisFabricacion, string transmision, Nullable<int> nroVelocidades, Nullable<int> nroPuertas, Nullable<int> nroAsientos, Nullable<bool> tieneTurbo, string motor, string combustible, string frenos, Nullable<int> nroAirbags, Nullable<int> seguridadChoques, string organizacionSeguridad, Nullable<int> anioFabricacion, string confiabilidad, Nullable<decimal> puntuacion, Nullable<int> kilometraje, string observaciones, byte[] fotografia)
         {
             var idParameter = id.HasValue ?
                 new ObjectParameter("id", id) :
                 new ObjectParameter("id", typeof(int));
+    
+            var versionParameter = version != null ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(string));
     
             var generacionParameter = generacion != null ?
                 new ObjectParameter("generacion", generacion) :
@@ -135,6 +139,10 @@ namespace CadAuton
                 new ObjectParameter("combustible", combustible) :
                 new ObjectParameter("combustible", typeof(string));
     
+            var frenosParameter = frenos != null ?
+                new ObjectParameter("frenos", frenos) :
+                new ObjectParameter("frenos", typeof(string));
+    
             var nroAirbagsParameter = nroAirbags.HasValue ?
                 new ObjectParameter("nroAirbags", nroAirbags) :
                 new ObjectParameter("nroAirbags", typeof(int));
@@ -171,7 +179,7 @@ namespace CadAuton
                 new ObjectParameter("fotografia", fotografia) :
                 new ObjectParameter("fotografia", typeof(byte[]));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("paVehiculoActualizar", idParameter, generacionParameter, paisFabricacionParameter, transmisionParameter, nroVelocidadesParameter, nroPuertasParameter, nroAsientosParameter, tieneTurboParameter, motorParameter, combustibleParameter, nroAirbagsParameter, seguridadChoquesParameter, organizacionSeguridadParameter, anioFabricacionParameter, confiabilidadParameter, puntuacionParameter, kilometrajeParameter, observacionesParameter, fotografiaParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("paVehiculoActualizar", idParameter, versionParameter, generacionParameter, paisFabricacionParameter, transmisionParameter, nroVelocidadesParameter, nroPuertasParameter, nroAsientosParameter, tieneTurboParameter, motorParameter, combustibleParameter, frenosParameter, nroAirbagsParameter, seguridadChoquesParameter, organizacionSeguridadParameter, anioFabricacionParameter, confiabilidadParameter, puntuacionParameter, kilometrajeParameter, observacionesParameter, fotografiaParameter);
         }
     
         public virtual ObjectResult<string> paVehiculoEliminar(Nullable<int> id)
@@ -183,7 +191,7 @@ namespace CadAuton
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("paVehiculoEliminar", idParameter);
         }
     
-        public virtual ObjectResult<Nullable<decimal>> paVehiculoInsertar(string nroChasis, Nullable<int> idModeloVehiculo, string generacion, string paisFabricacion, string transmision, Nullable<int> nroVelocidades, Nullable<int> nroPuertas, Nullable<int> nroAsientos, Nullable<bool> tieneTurbo, string motor, string combustible, Nullable<int> nroAirbags, Nullable<int> seguridadChoques, string organizacionSeguridad, Nullable<int> anioFabricacion, string confiabilidad, Nullable<decimal> puntuacion, Nullable<int> kilometraje, string observaciones, byte[] fotografia)
+        public virtual ObjectResult<Nullable<decimal>> paVehiculoInsertar(string nroChasis, Nullable<int> idModeloVehiculo, string version, string generacion, string paisFabricacion, string transmision, Nullable<int> nroVelocidades, Nullable<int> nroPuertas, Nullable<int> nroAsientos, Nullable<bool> tieneTurbo, string motor, string combustible, string frenos, Nullable<int> nroAirbags, Nullable<int> seguridadChoques, string organizacionSeguridad, Nullable<int> anioFabricacion, string confiabilidad, Nullable<decimal> puntuacion, Nullable<int> kilometraje, string observaciones, byte[] fotografia)
         {
             var nroChasisParameter = nroChasis != null ?
                 new ObjectParameter("nroChasis", nroChasis) :
@@ -192,6 +200,10 @@ namespace CadAuton
             var idModeloVehiculoParameter = idModeloVehiculo.HasValue ?
                 new ObjectParameter("idModeloVehiculo", idModeloVehiculo) :
                 new ObjectParameter("idModeloVehiculo", typeof(int));
+    
+            var versionParameter = version != null ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(string));
     
             var generacionParameter = generacion != null ?
                 new ObjectParameter("generacion", generacion) :
@@ -229,6 +241,10 @@ namespace CadAuton
                 new ObjectParameter("combustible", combustible) :
                 new ObjectParameter("combustible", typeof(string));
     
+            var frenosParameter = frenos != null ?
+                new ObjectParameter("frenos", frenos) :
+                new ObjectParameter("frenos", typeof(string));
+    
             var nroAirbagsParameter = nroAirbags.HasValue ?
                 new ObjectParameter("nroAirbags", nroAirbags) :
                 new ObjectParameter("nroAirbags", typeof(int));
@@ -265,7 +281,7 @@ namespace CadAuton
                 new ObjectParameter("fotografia", fotografia) :
                 new ObjectParameter("fotografia", typeof(byte[]));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<decimal>>("paVehiculoInsertar", nroChasisParameter, idModeloVehiculoParameter, generacionParameter, paisFabricacionParameter, transmisionParameter, nroVelocidadesParameter, nroPuertasParameter, nroAsientosParameter, tieneTurboParameter, motorParameter, combustibleParameter, nroAirbagsParameter, seguridadChoquesParameter, organizacionSeguridadParameter, anioFabricacionParameter, confiabilidadParameter, puntuacionParameter, kilometrajeParameter, observacionesParameter, fotografiaParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<decimal>>("paVehiculoInsertar", nroChasisParameter, idModeloVehiculoParameter, versionParameter, generacionParameter, paisFabricacionParameter, transmisionParameter, nroVelocidadesParameter, nroPuertasParameter, nroAsientosParameter, tieneTurboParameter, motorParameter, combustibleParameter, frenosParameter, nroAirbagsParameter, seguridadChoquesParameter, organizacionSeguridadParameter, anioFabricacionParameter, confiabilidadParameter, puntuacionParameter, kilometrajeParameter, observacionesParameter, fotografiaParameter);
         }
     
         public virtual ObjectResult<paVehiculoListar_Result> paVehiculoListar(string parametro)

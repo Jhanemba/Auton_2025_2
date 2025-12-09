@@ -45,6 +45,8 @@ namespace CadAuton
         public Nullable<int> nroVelocidades { get; set; }
         public Nullable<int> nroAsientos { get; set; }
         public int nroPuertas { get; set; }
+        public string version { get; set; }
+        public string frenos { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HistorialConfiabilidad> HistorialConfiabilidad { get; set; }

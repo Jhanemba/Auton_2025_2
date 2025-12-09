@@ -139,6 +139,8 @@
     <Property Name="nroVelocidades" Type="Int32" />
     <Property Name="nroAsientos" Type="Int32" />
     <Property Name="nroPuertas" Type="Int32" Nullable="false" />
+    <Property Name="version" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="frenos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="Vehiculo" ToRole="HistorialConfiabilidad" />
     <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="Vehiculo" ToRole="ModeloVehiculo" />
     <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="Vehiculo" ToRole="VehiculoMantenimiento" />
@@ -316,6 +318,7 @@
     </FunctionImport>
     <FunctionImport Name="paVehiculoActualizar" ReturnType="Collection(String)">
       <Parameter Name="id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="String" />
       <Parameter Name="generacion" Mode="In" Type="String" />
       <Parameter Name="paisFabricacion" Mode="In" Type="String" />
       <Parameter Name="transmision" Mode="In" Type="String" />
@@ -325,6 +328,7 @@
       <Parameter Name="tieneTurbo" Mode="In" Type="Boolean" />
       <Parameter Name="motor" Mode="In" Type="String" />
       <Parameter Name="combustible" Mode="In" Type="String" />
+      <Parameter Name="frenos" Mode="In" Type="String" />
       <Parameter Name="nroAirbags" Mode="In" Type="Int32" />
       <Parameter Name="seguridadChoques" Mode="In" Type="Int32" />
       <Parameter Name="organizacionSeguridad" Mode="In" Type="String" />
@@ -341,6 +345,7 @@
     <FunctionImport Name="paVehiculoInsertar" ReturnType="Collection(Decimal)">
       <Parameter Name="nroChasis" Mode="In" Type="String" />
       <Parameter Name="idModeloVehiculo" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="String" />
       <Parameter Name="generacion" Mode="In" Type="String" />
       <Parameter Name="paisFabricacion" Mode="In" Type="String" />
       <Parameter Name="transmision" Mode="In" Type="String" />
@@ -350,6 +355,7 @@
       <Parameter Name="tieneTurbo" Mode="In" Type="Boolean" />
       <Parameter Name="motor" Mode="In" Type="String" />
       <Parameter Name="combustible" Mode="In" Type="String" />
+      <Parameter Name="frenos" Mode="In" Type="String" />
       <Parameter Name="nroAirbags" Mode="In" Type="Int32" />
       <Parameter Name="seguridadChoques" Mode="In" Type="Int32" />
       <Parameter Name="organizacionSeguridad" Mode="In" Type="String" />
@@ -434,6 +440,7 @@
     <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="version" Nullable="true" MaxLength="20" />
     <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
@@ -443,6 +450,7 @@
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="frenos" Nullable="true" MaxLength="50" />
     <Property Type="Int32" Name="nroAirbags" Nullable="false" />
     <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
     <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
@@ -461,6 +469,7 @@
     <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="version" Nullable="true" MaxLength="20" />
     <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
@@ -470,6 +479,7 @@
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="frenos" Nullable="true" MaxLength="50" />
     <Property Type="Int32" Name="nroAirbags" Nullable="false" />
     <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
     <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
@@ -488,6 +498,7 @@
     <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="version" Nullable="true" MaxLength="20" />
     <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
@@ -497,6 +508,7 @@
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="frenos" Nullable="true" MaxLength="50" />
     <Property Type="Int32" Name="nroAirbags" Nullable="false" />
     <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
     <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
@@ -515,6 +527,7 @@
     <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="version" Nullable="true" MaxLength="20" />
     <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
@@ -524,6 +537,7 @@
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="frenos" Nullable="true" MaxLength="50" />
     <Property Type="Int32" Name="nroAirbags" Nullable="false" />
     <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
     <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
@@ -542,6 +556,7 @@
     <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="version" Nullable="true" MaxLength="20" />
     <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
@@ -551,6 +566,7 @@
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="frenos" Nullable="true" MaxLength="50" />
     <Property Type="Int32" Name="nroAirbags" Nullable="false" />
     <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
     <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
@@ -569,6 +585,7 @@
     <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="version" Nullable="true" MaxLength="20" />
     <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
@@ -578,6 +595,7 @@
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="frenos" Nullable="true" MaxLength="50" />
     <Property Type="Int32" Name="nroAirbags" Nullable="false" />
     <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
     <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />
@@ -596,6 +614,7 @@
     <Property Type="String" Name="marca" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="procedencia" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="tipoVehiculo" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="version" Nullable="true" MaxLength="20" />
     <Property Type="String" Name="generacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="paisFabricacion" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="transmision" Nullable="false" MaxLength="20" />
@@ -605,6 +624,7 @@
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
+    <Property Type="String" Name="frenos" Nullable="true" MaxLength="50" />
     <Property Type="Int32" Name="nroAirbags" Nullable="false" />
     <Property Type="Int32" Name="seguridadChoques" Nullable="false" />
     <Property Type="String" Name="organizacionSeguridad" Nullable="false" MaxLength="50" />

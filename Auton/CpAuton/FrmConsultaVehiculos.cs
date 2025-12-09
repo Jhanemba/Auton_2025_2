@@ -1106,6 +1106,22 @@ namespace CpAuton
 
                 yPosLeft += lineHeight;
 
+                // VERSIÓN
+                AgregarLabel(pnlPrincipal, "Versión:", 20, yPosLeft, labelWidth);
+                ComboBox cboVersion = new ComboBox
+                {
+                    Name = "cboVersion",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+                cboVersion.Items.AddRange(new[] { "Básica", "Intermedia", "Full" });
+                cboVersion.Text = vehiculoCompleto.version;
+                pnlPrincipal.Controls.Add(cboVersion);
+                yPosLeft += lineHeight;
+
                 // Tipo que AHORA EDITABLE
                 AgregarLabel(pnlPrincipal, "Tipo:", 20, yPosLeft, labelWidth);
                 ComboBox cboTipo = new ComboBox
@@ -1595,6 +1611,26 @@ namespace CpAuton
                 yPosRight += lineHeight;
                 cboCombustible.BringToFront();
 
+                // FRENOS
+                AgregarLabel(pnlPrincipal, "Frenos:", 580, yPosRight, labelWidth);
+                ComboBox cboFrenos = new ComboBox
+                {
+                    Name = "cboFrenos",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+                cboFrenos.Items.AddRange(new[] {
+                    "Disco en las 4 ruedas",
+                    "Disco delanteros y tambor atrás",
+                    "Tambor delantero y disco atrás"
+                });
+                cboFrenos.Text = vehiculoCompleto.frenos;
+                pnlPrincipal.Controls.Add(cboFrenos);
+                yPosRight += lineHeight;
+
                 // Nro de Asientos
                 AgregarLabel(pnlPrincipal, "Nro. Asientos:", 590, yPosRight, labelWidth);
                 NumericUpDown nudAsientos = new NumericUpDown
@@ -1835,6 +1871,8 @@ namespace CpAuton
                         cboMarca.Enabled = true;
                         cboModelo.Enabled = true;
                         cboTipo.Enabled = true;
+                        cboVersion.Enabled = true;
+                        cboFrenos.Enabled = true;
                         // Ocultar procedencia en modo edición (no editable aquí)
                         cboProcedencia.Visible = false;
                         try
@@ -1906,7 +1944,7 @@ namespace CpAuton
                         // VALIDAR ANTES DE GUARDAR
                         if (!ValidarEdicionCompleta(txtChasis.Text, cboModelo.SelectedIndex,
                             txtGeneracion.Text, cboPaisFabricacion.SelectedIndex,
-                            cboConfiabilidad.SelectedIndex))
+                            cboConfiabilidad.SelectedIndex, cboVersion.SelectedIndex, cboFrenos.SelectedIndex))
                             return;
 
                         try
@@ -1971,6 +2009,7 @@ namespace CpAuton
                             // ACTUALIZAR VEHÍCULO
                             vehiculoCompleto.nroChasis = txtChasis.Text.Trim().ToUpper();
                             vehiculoCompleto.idModeloVehiculo = nuevoIdModelo;
+                            vehiculoCompleto.version = cboVersion.Text;
                             vehiculoCompleto.anioFabricacion = (int)nudAnio.Value;
                             vehiculoCompleto.generacion = txtGeneracion.Text.Trim();
                             vehiculoCompleto.paisFabricacion = cboPaisFabricacion.Text.Trim();
@@ -1989,6 +2028,7 @@ namespace CpAuton
                             vehiculoCompleto.tieneTurbo = chkTieneTurbo.Checked;
                             vehiculoCompleto.motor = txtMotor.Text.Trim();
                             vehiculoCompleto.combustible = cboCombustible.Text;
+                            vehiculoCompleto.frenos = cboFrenos.Text;
                             vehiculoCompleto.nroAirbags = (int)nudAirbags.Value;
                             vehiculoCompleto.organizacionSeguridad = cboOrganizacion.Text;
                             vehiculoCompleto.seguridadChoques = (int)nudEstrellas.Value;
@@ -2007,6 +2047,7 @@ namespace CpAuton
                                 txtChasis.BackColor = Color.WhiteSmoke;
                                 cboMarca.Enabled = false;
                                 cboModelo.Enabled = false;
+                                cboVersion.Enabled = false;
                                 cboTipo.Enabled = false;
                                 // Mostrar procedencia al salir del modo edición
                                 cboProcedencia.Visible = true;
@@ -2033,6 +2074,7 @@ namespace CpAuton
                                 txtMotor.ReadOnly = true;
                                 txtMotor.BackColor = Color.WhiteSmoke;
                                 cboCombustible.Enabled = false;
+                                cboFrenos.Enabled = false;
                                 nudAirbags.Enabled = false;
                                 cboOrganizacion.Enabled = false;
                                 nudEstrellas.Enabled = false;
@@ -2055,7 +2097,9 @@ namespace CpAuton
 
                                 MessageBox.Show("✅ Vehículo actualizado exitosamente\n" +
                                               $"Modelo: {modeloSeleccionado.nombre}\n" +
-                                              $"Tipo actualizado: {cboTipo.Text}",
+                                              $"Versión: {cboVersion.Text}\n" +
+                                              $"Tipo actualizado: {cboTipo.Text}" +
+                                                $"Frenos: {cboFrenos.Text}",
                                               "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                                 frmDetalles.Close();
@@ -2163,7 +2207,7 @@ namespace CpAuton
 
         // Método de validación actualizado
         private bool ValidarEdicionCompleta(string chasis, int modeloIndex, string generacion,
-            int paisIndex, int confiabilidadIndex)
+            int paisIndex, int confiabilidadIndex, int versionIndex, int frenosIndex)
         {
             if (string.IsNullOrWhiteSpace(chasis))
             {
@@ -2203,6 +2247,20 @@ namespace CpAuton
             if (confiabilidadIndex == -1)
             {
                 MessageBox.Show("⚠️ Debe seleccionar el nivel de confiabilidad", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (versionIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar la versión del vehículo", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (frenosIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar el tipo de frenos", "Validación",
                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }

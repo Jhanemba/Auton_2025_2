@@ -38,6 +38,7 @@ namespace ClnAuton
                     // Actualizar todos los campos
                     existente.nroChasis = vehiculo.nroChasis;
                     existente.idModeloVehiculo = vehiculo.idModeloVehiculo;
+                    existente.version = vehiculo.version;
                     existente.anioFabricacion = vehiculo.anioFabricacion;
                     existente.generacion = vehiculo.generacion;
                     existente.paisFabricacion = vehiculo.paisFabricacion;
@@ -45,6 +46,7 @@ namespace ClnAuton
                     existente.tieneTurbo = vehiculo.tieneTurbo;
                     existente.motor = vehiculo.motor;
                     existente.combustible = vehiculo.combustible;
+                    existente.frenos = vehiculo.frenos;
                     existente.nroAirbags = vehiculo.nroAirbags;
                     existente.seguridadChoques = vehiculo.seguridadChoques;
                     existente.organizacionSeguridad = vehiculo.organizacionSeguridad;

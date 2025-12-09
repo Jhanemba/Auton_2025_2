@@ -127,6 +127,8 @@
     <Property Name="nroVelocidades" Type="int" />
     <Property Name="nroAsientos" Type="int" />
     <Property Name="nroPuertas" Type="int" Nullable="false" />
+    <Property Name="version" Type="varchar" MaxLength="20" />
+    <Property Name="frenos" Type="varchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="VehiculoMantenimiento">
     <Key>
@@ -257,6 +259,7 @@
   </Function>
   <Function Name="paVehiculoActualizar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="id" Type="int" Mode="In" />
+    <Parameter Name="version" Type="varchar" Mode="In" />
     <Parameter Name="generacion" Type="varchar" Mode="In" />
     <Parameter Name="paisFabricacion" Type="varchar" Mode="In" />
     <Parameter Name="transmision" Type="varchar" Mode="In" />
@@ -266,6 +269,7 @@
     <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
     <Parameter Name="motor" Type="varchar" Mode="In" />
     <Parameter Name="combustible" Type="varchar" Mode="In" />
+    <Parameter Name="frenos" Type="varchar" Mode="In" />
     <Parameter Name="nroAirbags" Type="int" Mode="In" />
     <Parameter Name="seguridadChoques" Type="int" Mode="In" />
     <Parameter Name="organizacionSeguridad" Type="varchar" Mode="In" />
@@ -282,6 +286,7 @@
   <Function Name="paVehiculoInsertar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="nroChasis" Type="varchar" Mode="In" />
     <Parameter Name="idModeloVehiculo" Type="int" Mode="In" />
+    <Parameter Name="version" Type="varchar" Mode="In" />
     <Parameter Name="generacion" Type="varchar" Mode="In" />
     <Parameter Name="paisFabricacion" Type="varchar" Mode="In" />
     <Parameter Name="transmision" Type="varchar" Mode="In" />
@@ -291,6 +296,7 @@
     <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
     <Parameter Name="motor" Type="varchar" Mode="In" />
     <Parameter Name="combustible" Type="varchar" Mode="In" />
+    <Parameter Name="frenos" Type="varchar" Mode="In" />
     <Parameter Name="nroAirbags" Type="int" Mode="In" />
     <Parameter Name="seguridadChoques" Type="int" Mode="In" />
     <Parameter Name="organizacionSeguridad" Type="varchar" Mode="In" />

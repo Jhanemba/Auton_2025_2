@@ -270,6 +270,7 @@ AS
            m.nombre AS marca, 
            p.descripcion AS procedencia,
            tv.descripcion AS tipoVehiculo, 
+           v.version,
            v.generacion, 
            v.paisFabricacion, 
            v.transmision, 
@@ -279,6 +280,7 @@ AS
            v.tieneTurbo,
            v.motor, 
            v.combustible, 
+           v.frenos,
            v.nroAirbags, 
            v.seguridadChoques, 
            v.organizacionSeguridad,
@@ -302,9 +304,11 @@ AS
                 ISNULL(m.nombre,''), ' ',
                 ISNULL(p.descripcion,''), ' ',
                 ISNULL(tv.descripcion,''), ' ',
+                ISNULL(v.version,''), ' ', 
                 ISNULL(v.confiabilidad,''), ' ',
                 ISNULL(v.generacion,''), ' ',
                 ISNULL(v.paisFabricacion,''), ' ',
+                ISNULL(v.frenos,''), ' ',
                 CAST(ISNULL(v.anioFabricacion, 0) AS VARCHAR(10)), ' ',
                 ISNULL(v.transmision,''), ' ',
                 ISNULL(v.motor,''), ' ',
@@ -344,6 +348,7 @@ GO
 ALTER PROC paVehiculoInsertar
     @nroChasis VARCHAR(17),
     @idModeloVehiculo INT,
+    @version VARCHAR(20),
     @generacion VARCHAR(50),
     @paisFabricacion VARCHAR(50),
     @transmision VARCHAR(20),
@@ -353,6 +358,7 @@ ALTER PROC paVehiculoInsertar
     @tieneTurbo BIT,
     @motor VARCHAR(50),
     @combustible VARCHAR(20),
+    @frenos VARCHAR(50),
     @nroAirbags INT,
     @seguridadChoques INT,
     @organizacionSeguridad VARCHAR(50),
@@ -377,15 +383,15 @@ BEGIN
     END
 
     INSERT INTO Vehiculo (
-        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision, 
+        nroChasis, idModeloVehiculo, version, generacion, paisFabricacion, transmision, 
         nroVelocidades, nroPuertas, nroAsientos,
-        tieneTurbo, motor, combustible, nroAirbags, seguridadChoques, organizacionSeguridad,
+        tieneTurbo, motor, combustible, frenos, nroAirbags, seguridadChoques, organizacionSeguridad,
         anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones, fotografia
     )
     VALUES (
-        @nroChasis, @idModeloVehiculo, @generacion, @paisFabricacion, @transmision, 
+        @nroChasis, @idModeloVehiculo, @version, @generacion, @paisFabricacion, @transmision, 
         @nroVelocidades, @nroPuertas, @nroAsientos,
-        @tieneTurbo, @motor, @combustible, @nroAirbags, @seguridadChoques, @organizacionSeguridad,
+        @tieneTurbo, @motor, @combustible, @frenos, @nroAirbags, @seguridadChoques, @organizacionSeguridad,
         @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones, @fotografia
     );
     
@@ -396,6 +402,7 @@ END
 GO
 ALTER PROC paVehiculoActualizar
     @id INT,
+    @version VARCHAR(20),
     @generacion VARCHAR(50),
     @paisFabricacion VARCHAR(50),
     @transmision VARCHAR(20),
@@ -405,6 +412,7 @@ ALTER PROC paVehiculoActualizar
     @tieneTurbo BIT,
     @motor VARCHAR(50),
     @combustible VARCHAR(20),
+    @frenos VARCHAR(50),
     @nroAirbags INT,
     @seguridadChoques INT,
     @organizacionSeguridad VARCHAR(50),
@@ -436,7 +444,9 @@ BEGIN
         FROM Vehiculo WHERE id = @id;
     
     UPDATE Vehiculo 
-    SET generacion = @generacion,
+    SET 
+        @version = version,
+        generacion = @generacion,
         paisFabricacion = @paisFabricacion,
         transmision = @transmision,
         nroVelocidades = @nroVelocidades,
@@ -445,6 +455,7 @@ BEGIN
         tieneTurbo = @tieneTurbo,
         motor = @motor,
         combustible = @combustible,
+        frenos = @frenos,
         nroAirbags = @nroAirbags,
         seguridadChoques = @seguridadChoques,
         organizacionSeguridad = @organizacionSeguridad,
@@ -509,6 +520,40 @@ AS
     WHERE mv.estado = 1 AND mv.idMarca = @idMarca
     ORDER BY mv.nombre ASC;
 
+    IF NOT EXISTS (SELECT * FROM sys.columns 
+               WHERE object_id = OBJECT_ID('Vehiculo') 
+               AND name = 'version')
+BEGIN
+    ALTER TABLE Vehiculo
+    ADD version VARCHAR(20) NULL 
+        CHECK (version IN ('Básica', 'Intermedia', 'Full'));
+    
+    PRINT 'Campo version agregado a la tabla Vehiculo';
+END
+ELSE
+BEGIN
+    PRINT 'El campo version ya existe en la tabla Vehiculo';
+END
+
+
+GO
+IF NOT EXISTS (SELECT * FROM sys.columns 
+               WHERE object_id = OBJECT_ID('Vehiculo') 
+               AND name = 'frenos')
+BEGIN
+    ALTER TABLE Vehiculo
+    ADD frenos VARCHAR(50) NULL 
+        CHECK (frenos IN ('Disco en las 4 ruedas', 
+                         'Disco delanteros y tambor atrás', 
+                         'Tambor delantero y disco atrás'));
+    
+    PRINT 'Campo frenos agregado a la tabla Vehiculo';
+END
+ELSE
+BEGIN
+    PRINT 'El campo frenos ya existe en la tabla Vehiculo';
+END
+
 
 
 -- =====================================================
@@ -520,9 +565,9 @@ AS
 BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
-        tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
+        tv.descripcion AS tipoVehiculo, v.version, v.generacion, v.paisFabricacion, 
         v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.tieneTurbo,  -- ⭐ CAMPO AGREGADO
-        v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
+        v.motor, v.combustible, v.frenos, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
         v.usuarioRegistro, v.fechaRegistro, v.estado
@@ -535,6 +580,7 @@ BEGIN
           AND (
             @parametro = '' 
             OR mv.nombre LIKE '%' + @parametro + '%'
+            OR v.version LIKE '%' + @parametro + '%'
             OR m.nombre LIKE '%' + @parametro + '%'
             OR v.generacion LIKE '%' + @parametro + '%'
             OR v.motor LIKE '%' + @parametro + '%'
@@ -558,9 +604,9 @@ AS
 BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
-        tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
+        tv.descripcion AS tipoVehiculo, v.version, v.generacion, v.paisFabricacion, 
         v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.tieneTurbo,
-        v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
+        v.motor, v.combustible, v.frenos, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
         v.usuarioRegistro, v.fechaRegistro, v.estado
@@ -574,6 +620,7 @@ BEGIN
             @parametro = '' 
             OR mv.nombre LIKE '%' + @parametro + '%'
             OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.version LIKE '%' + @parametro + '%'
             OR v.generacion LIKE '%' + @parametro + '%'
             OR v.motor LIKE '%' + @parametro + '%'
             OR v.paisFabricacion LIKE '%' + @parametro + '%'
@@ -596,9 +643,9 @@ AS
 BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
-        tv.descripcion AS tipoVehiculo, v.generacion, v.paisFabricacion, 
+        tv.descripcion AS tipoVehiculo, v.version, v.generacion, v.paisFabricacion, 
         v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.tieneTurbo,
-        v.motor, v.combustible, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
+        v.motor, v.combustible, v.frenos, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
         v.usuarioRegistro, v.fechaRegistro, v.estado
@@ -613,6 +660,7 @@ BEGIN
             @parametro = '' 
             OR mv.nombre LIKE '%' + @parametro + '%'
             OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.version LIKE '%' + @parametro + '%'
             OR v.generacion LIKE '%' + @parametro + '%'
             OR v.motor LIKE '%' + @parametro + '%'
             OR v.paisFabricacion LIKE '%' + @parametro + '%'
@@ -639,6 +687,7 @@ BEGIN
         m.nombre AS marca, 
         p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, 
+        v.version,
         v.generacion, 
         v.paisFabricacion, 
         v.transmision, 
@@ -648,6 +697,7 @@ BEGIN
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
+        v.frenos,
         v.nroAirbags,
         v.seguridadChoques,
         v.organizacionSeguridad,
@@ -668,6 +718,7 @@ BEGIN
             @parametro = '' 
             OR mv.nombre LIKE '%' + @parametro + '%'
             OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.version LIKE '%' + @parametro + '%'
             OR v.generacion LIKE '%' + @parametro + '%'
             OR v.motor LIKE '%' + @parametro + '%'
             OR v.paisFabricacion LIKE '%' + @parametro + '%'
@@ -694,6 +745,7 @@ BEGIN
         m.nombre AS marca, 
         p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, 
+        v.version,
         v.generacion, 
         v.paisFabricacion, 
         v.transmision, 
@@ -703,6 +755,7 @@ BEGIN
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
+        v.frenos,
         v.nroAirbags,
         v.seguridadChoques,
         v.organizacionSeguridad,
@@ -723,6 +776,7 @@ BEGIN
             @parametro = '' 
             OR mv.nombre LIKE '%' + @parametro + '%'
             OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.version LIKE '%' + @parametro + '%'
             OR v.generacion LIKE '%' + @parametro + '%'
             OR v.motor LIKE '%' + @parametro + '%'
             OR v.paisFabricacion LIKE '%' + @parametro + '%'
@@ -750,6 +804,7 @@ BEGIN
         m.nombre AS marca, 
         p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, 
+        v.version,
         v.generacion, 
         v.paisFabricacion, 
         v.transmision, 
@@ -759,6 +814,7 @@ BEGIN
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
+        v.frenos,
         v.nroAirbags,
         v.seguridadChoques,
         v.organizacionSeguridad,
@@ -779,6 +835,7 @@ BEGIN
             @parametro = '' 
             OR mv.nombre LIKE '%' + @parametro + '%'
             OR m.nombre LIKE '%' + @parametro + '%'
+            OR v.version LIKE '%' + @parametro + '%'
             OR v.generacion LIKE '%' + @parametro + '%'
             OR v.motor LIKE '%' + @parametro + '%'
             OR v.paisFabricacion LIKE '%' + @parametro + '%'
@@ -806,91 +863,91 @@ BEGIN
 END
 
 
--- =====================================================
--- ACTUALIZAR: PROCEDIMIENTO DE INSERCIÓN
--- =====================================================
-GO
-ALTER PROC paVehiculoInsertar
-    @nroChasis VARCHAR(17),
-    @idModeloVehiculo INT,
-    @generacion VARCHAR(50),
-    @paisFabricacion VARCHAR(50),
-    @transmision VARCHAR(20),
-    @tieneTurbo BIT,
-    @motor VARCHAR(50),
-    @combustible VARCHAR(20),
-    @nroAirbags INT,
-    @seguridadChoques INT,
-    @organizacionSeguridad VARCHAR(50),
-    @anioFabricacion INT,
-    @confiabilidad VARCHAR(10),
-    @puntuacion DECIMAL(3,1),
-    @kilometraje INT = NULL,
-    @observaciones VARCHAR(500) = NULL,
-    @fotografia VARBINARY(MAX) = NULL  -- ⭐ NUEVO PARÁMETRO
-AS
-    INSERT INTO Vehiculo (
-        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision,
-        tieneTurbo, motor, combustible, nroAirbags, seguridadChoques, organizacionSeguridad,
-        anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones, fotografia
-    )
-    VALUES (
-        @nroChasis, @idModeloVehiculo, @generacion, @paisFabricacion, @transmision,
-        @tieneTurbo, @motor, @combustible, @nroAirbags, @seguridadChoques, @organizacionSeguridad,
-        @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones, @fotografia
-    );
+---- =====================================================
+---- ACTUALIZAR: PROCEDIMIENTO DE INSERCIÓN
+---- =====================================================
+--GO
+--ALTER PROC paVehiculoInsertar
+--    @nroChasis VARCHAR(17),
+--    @idModeloVehiculo INT,
+--    @generacion VARCHAR(50),
+--    @paisFabricacion VARCHAR(50),
+--    @transmision VARCHAR(20),
+--    @tieneTurbo BIT,
+--    @motor VARCHAR(50),
+--    @combustible VARCHAR(20),
+--    @nroAirbags INT,
+--    @seguridadChoques INT,
+--    @organizacionSeguridad VARCHAR(50),
+--    @anioFabricacion INT,
+--    @confiabilidad VARCHAR(10),
+--    @puntuacion DECIMAL(3,1),
+--    @kilometraje INT = NULL,
+--    @observaciones VARCHAR(500) = NULL,
+--    @fotografia VARBINARY(MAX) = NULL  -- ⭐ NUEVO PARÁMETRO
+--AS
+--    INSERT INTO Vehiculo (
+--        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision,
+--        tieneTurbo, motor, combustible, nroAirbags, seguridadChoques, organizacionSeguridad,
+--        anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones, fotografia
+--    )
+--    VALUES (
+--        @nroChasis, @idModeloVehiculo, @generacion, @paisFabricacion, @transmision,
+--        @tieneTurbo, @motor, @combustible, @nroAirbags, @seguridadChoques, @organizacionSeguridad,
+--        @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones, @fotografia
+--    );
     
-    SELECT SCOPE_IDENTITY() AS nuevoId;
+--    SELECT SCOPE_IDENTITY() AS nuevoId;
 
     -- =====================================================
 -- ACTUALIZAR: PROCEDIMIENTO DE ACTUALIZACIÓN
 -- =====================================================
-GO
-ALTER PROC paVehiculoActualizar
-    @id INT,
-    @generacion VARCHAR(50),
-    @paisFabricacion VARCHAR(50),
-    @transmision VARCHAR(20),
-    @tieneTurbo BIT,
-    @motor VARCHAR(50),
-    @combustible VARCHAR(20),
-    @nroAirbags INT,
-    @seguridadChoques INT,
-    @organizacionSeguridad VARCHAR(50),
-    @anioFabricacion INT,
-    @confiabilidad VARCHAR(10),
-    @puntuacion DECIMAL(3,1),
-    @kilometraje INT = NULL,
-    @observaciones VARCHAR(500) = NULL,
-    @fotografia VARBINARY(MAX) = NULL  -- ⭐ NUEVO PARÁMETRO
-AS
-    -- Guardar historial si cambia la confiabilidad
-    IF EXISTS (SELECT 1 FROM Vehiculo WHERE id = @id AND confiabilidad != @confiabilidad)
-        INSERT INTO HistorialConfiabilidad (idVehiculo, confiabilidadAnterior, confiabilidadNueva, 
-                                           puntuacionAnterior, puntuacionNueva, motivo)
-        SELECT @id, confiabilidad, @confiabilidad, puntuacion, @puntuacion, 
-               'Actualización manual de confiabilidad'
-        FROM Vehiculo WHERE id = @id;
+--GO
+--ALTER PROC paVehiculoActualizar
+--    @id INT,
+--    @generacion VARCHAR(50),
+--    @paisFabricacion VARCHAR(50),
+--    @transmision VARCHAR(20),
+--    @tieneTurbo BIT,
+--    @motor VARCHAR(50),
+--    @combustible VARCHAR(20),
+--    @nroAirbags INT,
+--    @seguridadChoques INT,
+--    @organizacionSeguridad VARCHAR(50),
+--    @anioFabricacion INT,
+--    @confiabilidad VARCHAR(10),
+--    @puntuacion DECIMAL(3,1),
+--    @kilometraje INT = NULL,
+--    @observaciones VARCHAR(500) = NULL,
+--    @fotografia VARBINARY(MAX) = NULL  -- ⭐ NUEVO PARÁMETRO
+--AS
+--    -- Guardar historial si cambia la confiabilidad
+--    IF EXISTS (SELECT 1 FROM Vehiculo WHERE id = @id AND confiabilidad != @confiabilidad)
+--        INSERT INTO HistorialConfiabilidad (idVehiculo, confiabilidadAnterior, confiabilidadNueva, 
+--                                           puntuacionAnterior, puntuacionNueva, motivo)
+--        SELECT @id, confiabilidad, @confiabilidad, puntuacion, @puntuacion, 
+--               'Actualización manual de confiabilidad'
+--        FROM Vehiculo WHERE id = @id;
     
-    UPDATE Vehiculo 
-    SET generacion = @generacion,
-        paisFabricacion = @paisFabricacion,
-        transmision = @transmision,
-        tieneTurbo = @tieneTurbo,
-        motor = @motor,
-        combustible = @combustible,
-        nroAirbags = @nroAirbags,
-        seguridadChoques = @seguridadChoques,
-        organizacionSeguridad = @organizacionSeguridad,
-        anioFabricacion = @anioFabricacion,
-        confiabilidad = @confiabilidad,
-        puntuacion = @puntuacion,
-        kilometraje = @kilometraje,
-        observaciones = @observaciones,
-        fotografia = ISNULL(@fotografia, fotografia)  -- ⭐ Solo actualiza si se proporciona
-    WHERE id = @id;
+--    UPDATE Vehiculo 
+--    SET generacion = @generacion,
+--        paisFabricacion = @paisFabricacion,
+--        transmision = @transmision,
+--        tieneTurbo = @tieneTurbo,
+--        motor = @motor,
+--        combustible = @combustible,
+--        nroAirbags = @nroAirbags,
+--        seguridadChoques = @seguridadChoques,
+--        organizacionSeguridad = @organizacionSeguridad,
+--        anioFabricacion = @anioFabricacion,
+--        confiabilidad = @confiabilidad,
+--        puntuacion = @puntuacion,
+--        kilometraje = @kilometraje,
+--        observaciones = @observaciones,
+--        fotografia = ISNULL(@fotografia, fotografia)  -- ⭐ Solo actualiza si se proporciona
+--    WHERE id = @id;
     
-    SELECT 'Actualizado correctamente' AS mensaje;
+--    SELECT 'Actualizado correctamente' AS mensaje;
 
 
 
@@ -1070,6 +1127,25 @@ END
 FROM Vehiculo v
 INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
 INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id;
+
+
+UPDATE Vehiculo
+SET version = CASE 
+    WHEN nroAirbags >= 6 AND seguridadChoques >= 4 THEN 'Full'
+    WHEN nroAirbags >= 4 THEN 'Intermedia'
+    ELSE 'Básica'
+END
+WHERE version IS NULL;
+
+UPDATE Vehiculo
+SET frenos = CASE 
+    WHEN puntuacion >= 8.5 THEN 'Disco en las 4 ruedas'
+    WHEN puntuacion >= 7.0 THEN 'Disco delanteros y tambor atrás'
+    ELSE 'Tambor delantero y disco atrás'
+END
+WHERE frenos IS NULL;
+
+PRINT 'Valores por defecto establecidos para version y frenos';
 
 
 -- =====================================================

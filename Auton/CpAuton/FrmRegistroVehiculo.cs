@@ -27,10 +27,12 @@ namespace CpAuton
         private ComboBox cboMarca;
         private ComboBox cboTipo;
         private ComboBox cboModelo;
+        private ComboBox cboVersion;
         private Button btnAgregarMarca;
         private Button btnAgregarModelo;
         private TextBox txtNroChasis;
         private NumericUpDown nudAnio;
+
 
         // COLUMNA DERECHA - Características Específicas
         private TextBox txtGeneracion;
@@ -43,6 +45,8 @@ namespace CpAuton
         private Label lblInfoVelocidades;
         private TextBox txtMotor;
         private ComboBox cboCombustible;
+        private ComboBox cboFreno;
+        private Button btnBuscarFrenos;
         private Button btnBuscarMotor; // botón para buscar sobre el motor
 
         // SEGURIDAD
@@ -65,6 +69,8 @@ namespace CpAuton
         private Button btnSeleccionarFoto;
         private Button btnEliminarFoto;
         private Image imagenActual = null;
+
+
 
         public FrmRegistroVehiculo()
         {
@@ -212,6 +218,36 @@ namespace CpAuton
             btnAgregarModelo.Click += BtnAgregarModelo_Click;
             pnlPrincipal.Controls.Add(btnAgregarModelo);
             yPosLeft += lineHeight;
+
+            // VERSIÓN (NUEVO CAMPO)
+            AgregarLabel(pnlPrincipal, "Versión:", 20, yPosLeft, labelWidth);
+            cboVersion = new ComboBox
+            {
+                Location = new Point(colLeftX, yPosLeft),
+                Size = new Size(ctrlWidth, 28),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10F)
+            };
+            cboVersion.Items.AddRange(new[] { "Básica", "Intermedia", "Full" });
+            cboVersion.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda();
+            pnlPrincipal.Controls.Add(cboVersion);
+
+            Label lblInfoVersion = new Label
+            {
+                Text = "💡 Básica: equipamiento mínimo\n" +
+                       "   Intermedia: equipamiento \n" +
+                       "                    estándar\n" +
+                       "   Full: máximo equipamiento",
+                Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft),
+                Size = new Size(200, 60-5),
+                Font = new Font("Segoe UI", 7.5F, FontStyle.Italic),
+                ForeColor = Color.Gray,
+                TextAlign = ContentAlignment.TopLeft
+            };
+            pnlPrincipal.Controls.Add(lblInfoVersion);
+            yPosLeft += lineHeight + 20; // Espacio extra por el label informativo
+            //enviar lblInfoVersion al fondo
+
 
             // Nro. de Chasis
             AgregarLabel(pnlPrincipal, "Nro. de Chasis:", 20, yPosLeft, labelWidth);
@@ -372,6 +408,7 @@ namespace CpAuton
             txtMotor.TextChanged += (s, e) => ActualizarBotonesBusqueda();
             pnlPrincipal.Controls.Add(txtMotor);
             SetCueBanner(txtMotor, "Ej: 2.0L, 1.8L Turbo");
+         
 
             // Botón buscar motor
             btnBuscarMotor = new Button
@@ -405,6 +442,48 @@ namespace CpAuton
             cboCombustible.Items.AddRange(new[] { "Gasolina", "Diesel", "Híbrido", "Eléctrico", "GLP", "GNC" });
             pnlPrincipal.Controls.Add(cboCombustible);
             yPosRight += lineHeight;
+
+            // FRENOS (NUEVO CAMPO)
+            AgregarLabel(pnlPrincipal, "Frenos:", 580, yPosRight, labelWidth);
+            cboFreno = new ComboBox
+            {
+                Location = new Point(colRightX + 80, yPosRight),
+                Size = new Size(ctrlWidth, 28),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10F)
+            };
+            cboFreno.Items.AddRange(new[] {
+                "Disco en las 4 ruedas",
+                "Disco delanteros y tambor atrás",
+                "Tambor delantero y disco atrás"
+            });
+            cboFreno.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda();
+            pnlPrincipal.Controls.Add(cboFreno);
+
+            // Botón buscar frenos
+            btnBuscarFrenos = new Button
+            {
+                Text = "🔍",
+                Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                Size = new Size(36, 28),
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnBuscarFrenos.FlatAppearance.BorderSize = 0;
+            btnBuscarFrenos.Click += BtnBuscarFrenos_Click;
+            try
+            {
+                var tt = new ToolTip();
+                tt.SetToolTip(btnBuscarFrenos, "Buscar tipo de frenos en la web");
+            }
+            catch { }
+            pnlPrincipal.Controls.Add(btnBuscarFrenos);
+            yPosRight += lineHeight;
+
 
             // Nro de Asientos
             AgregarLabel(pnlPrincipal, "Nro. Asientos:", 580, yPosRight, labelWidth);
@@ -827,27 +906,33 @@ namespace CpAuton
             bool tieneMarca = cboMarca != null && !string.IsNullOrWhiteSpace(cboMarca.Text);
             bool tieneModelo = cboModelo != null && !string.IsNullOrWhiteSpace(cboModelo.Text);
             bool tienePais = cboPaisFabricacion != null && !string.IsNullOrWhiteSpace(cboPaisFabricacion.Text);
+            bool tieneVersion = cboVersion != null && cboVersion.SelectedIndex >= 0; // ⭐ NUEVO
             bool tieneOrganizacion = cboOrganizacionSeguridad != null &&
                                     cboOrganizacionSeguridad.SelectedIndex >= 0 &&
                                     cboOrganizacionSeguridad.Text != "Sin calificación";
             bool tieneMotor = txtMotor != null && !string.IsNullOrWhiteSpace(txtMotor.Text);
             bool tieneAnio = nudAnio != null && nudAnio.Value > 0;
+            bool tieneFrenos = cboFreno != null && cboFreno.SelectedIndex >= 0; // ⭐ NUEVO
 
-            // Botón Airbags: se habilita si hay marca, modelo y país
+            // Botón Airbags: ahora requiere versión también
             if (btnBuscarAirbags != null)
-                btnBuscarAirbags.Enabled = tieneMarca && tieneModelo && tienePais;
+                btnBuscarAirbags.Enabled = tieneMarca && tieneModelo && tienePais && tieneVersion;
 
-            // Botón Organización: se habilita si hay marca, modelo y organización seleccionada
+            // Botón Organización: ahora requiere versión
             if (btnBuscarOrganizacion != null)
-                btnBuscarOrganizacion.Enabled = tieneMarca && tieneModelo && tieneOrganizacion;
+                btnBuscarOrganizacion.Enabled = tieneMarca && tieneModelo && tieneOrganizacion && tieneVersion;
 
-            // Botón Estrellas: se habilita si hay marca, modelo y organización válida (no "Sin calificación")
+            // Botón Estrellas: ahora requiere versión
             if (btnBuscarEstrellas != null)
-                btnBuscarEstrellas.Enabled = tieneMarca && tieneModelo && tieneOrganizacion;
+                btnBuscarEstrellas.Enabled = tieneMarca && tieneModelo && tieneOrganizacion && tieneVersion;
 
-            // Botón Motor: se habilita si hay marca, modelo, año y motor escrito
+            // Botón Motor: sin cambios
             if (btnBuscarMotor != null)
                 btnBuscarMotor.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneMotor;
+
+            // NUEVO: Botón Frenos
+            if (btnBuscarFrenos != null)
+                btnBuscarFrenos.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion && tieneFrenos;
         }
 
         // ⭐ NUEVO EVENTO: Cuando cambia la organización de seguridad
@@ -877,15 +962,18 @@ namespace CpAuton
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
                 string pais = cboPaisFabricacion?.Text.Trim() ?? "";
+                string version = cboVersion?.Text ?? ""; // ⭐ NUEVO
 
-                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(pais))
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) ||
+                    string.IsNullOrWhiteSpace(pais) || string.IsNullOrWhiteSpace(version))
                 {
-                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo y País de Fabricación para realizar la búsqueda.",
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, País de Fabricación y Versión para realizar la búsqueda.",
                                   "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                string query = $"¿Cuántos airbags tiene el {marca} {modelo} {anio} fabricado en {pais}?";
+                // ⭐ MODIFICADO: Incluir versión en la búsqueda
+                string query = $"¿Cuántos airbags tiene el {marca} {modelo} {anio} versión {version} fabricado en {pais}?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo
@@ -911,15 +999,18 @@ namespace CpAuton
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
                 string organizacion = cboOrganizacionSeguridad?.Text ?? "";
+                string version = cboVersion?.Text ?? ""; // ⭐ NUEVO
 
-                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(organizacion))
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) ||
+                    string.IsNullOrWhiteSpace(organizacion) || string.IsNullOrWhiteSpace(version))
                 {
-                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Organización para realizar la búsqueda.",
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Organización y Versión para realizar la búsqueda.",
                                   "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                string query = $"Prueba de choque {marca} {modelo} {anio} según {organizacion}";
+                // ⭐ MODIFICADO: Incluir versión
+                string query = $"Prueba de choque {marca} {modelo} {anio} versión {version} según {organizacion}";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo
@@ -945,16 +1036,19 @@ namespace CpAuton
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
                 string organizacion = cboOrganizacionSeguridad?.Text ?? "";
+                string version = cboVersion?.Text ?? ""; // ⭐ NUEVO
 
                 if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) ||
-                    string.IsNullOrWhiteSpace(organizacion) || organizacion == "Sin calificación")
+                    string.IsNullOrWhiteSpace(organizacion) || organizacion == "Sin calificación" ||
+                    string.IsNullOrWhiteSpace(version))
                 {
-                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Año y una Organización válida para realizar la búsqueda.",
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Año, Versión y una Organización válida para realizar la búsqueda.",
                                   "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                string query = $"¿Cuántas estrellas de seguridad tiene el {marca} {modelo} {anio} según {organizacion}?";
+                // ⭐ MODIFICADO: Incluir versión
+                string query = $"¿Cuántas estrellas de seguridad tiene el {marca} {modelo} {anio} versión {version} según {organizacion}?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo
@@ -971,7 +1065,8 @@ namespace CpAuton
             }
         }
 
-        // ⭐ NUEVO: Botón buscar motor
+
+        // NUEVO: Botón buscar motor
         private void BtnBuscarMotor_Click(object sender, EventArgs e)
         {
             try
@@ -989,6 +1084,41 @@ namespace CpAuton
                 }
 
                 string query = $"¿El {marca} {modelo} {anio} trae motor {motor}?";
+                string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnBuscarFrenos_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca?.Text.Trim() ?? "";
+                string modelo = cboModelo?.Text.Trim() ?? "";
+                int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string version = cboVersion?.Text ?? "";
+                string frenos = cboFreno?.Text ?? "";
+
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) ||
+                    string.IsNullOrWhiteSpace(version) || string.IsNullOrWhiteSpace(frenos))
+                {
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Año, Versión y Tipo de Frenos para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"¿El {marca} {modelo} {anio} versión {version} trae frenos de {frenos}?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo
@@ -1269,6 +1399,22 @@ namespace CpAuton
                 return false;
             }
 
+            if (cboVersion.SelectedIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar la versión del vehículo", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboVersion.Focus();
+                return false;
+            }
+
+            if (cboFreno.SelectedIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar el tipo de frenos", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboFreno.Focus();
+                return false;
+            }
+
             if (cboConfiabilidad.SelectedIndex == -1)
             {
                 MessageBox.Show("⚠️ Debe seleccionar el nivel de confiabilidad", "Validación",
@@ -1332,6 +1478,7 @@ namespace CpAuton
                     {
                         nroChasis = txtNroChasis.Text.Trim().ToUpper(),
                         idModeloVehiculo = idModelo,
+                        version = cboVersion.SelectedItem.ToString(),
                         anioFabricacion = anio,
                         generacion = txtGeneracion.Text.Trim(),
                         paisFabricacion = cboPaisFabricacion.SelectedItem.ToString(),
@@ -1344,6 +1491,7 @@ namespace CpAuton
                         tieneTurbo = chkTieneTurbo.Checked,
                         motor = txtMotor.Text.Trim(),
                         combustible = cboCombustible.SelectedItem.ToString(),
+                        frenos = cboFreno.SelectedItem.ToString(),
                         nroAirbags = (int)nudAirbags.Value,
                         seguridadChoques = estrellas,
                         organizacionSeguridad = cboOrganizacionSeguridad.SelectedItem?.ToString() ?? "Sin calificación",
@@ -1370,10 +1518,12 @@ namespace CpAuton
                         MessageBox.Show($"✅ Vehículo registrado exitosamente\n\n" +
                                         $"Chasis: {txtNroChasis.Text}\n" +
                                         $"Modelo: {modeloNombre}\n" +
+                                        $"Versión: {cboVersion.Text}\n" +
                                         $"Generación: {txtGeneracion.Text}\n" +
                                         $"País: {cboPaisFabricacion.Text}\n" +
                                         $"Carrocería: {cboPuertas.SelectedItem} puertas, {nudAsientos.Value} asientos\n" +
                                         $"Transmisión: {cboTransmision.Text}{velocidadesInfo}{turboInfo}",
+                                         $"Frenos: {cboFreno.Text}" +
                                         "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
                         this.Close();

@@ -19,6 +19,7 @@ namespace CadAuton
         public string marca { get; set; }
         public string procedencia { get; set; }
         public string tipoVehiculo { get; set; }
+        public string version { get; set; }
         public string generacion { get; set; }
         public string paisFabricacion { get; set; }
         public string transmision { get; set; }
@@ -28,6 +29,7 @@ namespace CadAuton
         public bool tieneTurbo { get; set; }
         public string motor { get; set; }
         public string combustible { get; set; }
+        public string frenos { get; set; }
         public int nroAirbags { get; set; }
         public int seguridadChoques { get; set; }
         public string organizacionSeguridad { get; set; }
