@@ -40,6 +40,7 @@ namespace CpAuton
         private ComboBox cboPaisFabricacion;
         private ComboBox cboTransmision;
         private ComboBox cboPuertas;
+        private ComboBox cboTraccion;
         private CheckBox chkTieneTurbo;
         private NumericUpDown nudVelocidades;
         private Label lblInfoVelocidades;
@@ -48,6 +49,10 @@ namespace CpAuton
         private ComboBox cboFreno;
         private Button btnBuscarFrenos;
         private Button btnBuscarMotor; // botón para buscar sobre el motor
+        private Button btnBuscarVelocidades;
+        private Button btnBuscarTraccion;
+        private Button btnBuscarPaisFabricacion;
+        private Button btnBuscarVersion;
 
         // SEGURIDAD
         private NumericUpDown nudAirbags;
@@ -99,7 +104,7 @@ namespace CpAuton
             Panel pnlPrincipal = new Panel
             {
                 Location = new Point(0, 0),
-                Size = new Size(1184, 750 + 270 + 100),
+                Size = new Size(1184+38, 750 + 270 + 100 + 100),
                 Padding = new Padding(20),
                 BackColor = Color.PapayaWhip,
             };
@@ -232,22 +237,48 @@ namespace CpAuton
             cboVersion.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda();
             pnlPrincipal.Controls.Add(cboVersion);
 
-            Label lblInfoVersion = new Label
+            // Botón buscar versión: al lado derecho de la versión
+            if (btnBuscarVersion == null)
             {
+                btnBuscarVersion = new Button
+                {
+                    Text = "🔍",
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Enabled = false,
+                    Visible = true
+                };
+                btnBuscarVersion.FlatAppearance.BorderSize = 0;
+                btnBuscarVersion.Click += BtnBuscarVersion_Click;
+                try { var ttvv = new ToolTip(); ttvv.SetToolTip(btnBuscarVersion, "Buscar información de la versión"); } catch { }
+            }
+            btnBuscarVersion.Location = new Point(colLeftX + ctrlWidth + 8, yPosLeft);
+            pnlPrincipal.Controls.Add(btnBuscarVersion);
+            btnBuscarVersion.BringToFront();
+             // Información de versión (oculta por ahora)
+             Label lblInfoVersion = new Label
+             {
                 Text = "💡 Básica: equipamiento mínimo\n" +
                        "   Intermedia: equipamiento \n" +
                        "                    estándar\n" +
                        "   Full: máximo equipamiento",
                 Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft),
-                Size = new Size(200, 60-5),
+                Size = new Size(200, 60 - 5),
                 Font = new Font("Segoe UI", 7.5F, FontStyle.Italic),
                 ForeColor = Color.Gray,
-                TextAlign = ContentAlignment.TopLeft
+                TextAlign = ContentAlignment.TopLeft,
+                Visible = false
             };
             pnlPrincipal.Controls.Add(lblInfoVersion);
-            yPosLeft += lineHeight + 20; // Espacio extra por el label informativo
-            //enviar lblInfoVersion al fondo
-
+            // El label informativo se oculta para dejar más espacio a los botones
+            lblInfoVersion.Visible = false;
+            pnlPrincipal.Controls.Add(lblInfoVersion);
+             yPosLeft += lineHeight + 20; // Espacio extra por el label informativo
+             //enviar lblInfoVersion al fondo
 
             // Nro. de Chasis
             AgregarLabel(pnlPrincipal, "Nro. de Chasis:", 20, yPosLeft, labelWidth);
@@ -338,6 +369,25 @@ namespace CpAuton
             cboPaisFabricacion.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda(); // ⭐ NUEVO
             cboPaisFabricacion.TextChanged += (s, e) => ActualizarBotonesBusqueda(); // ⭐ NUEVO
             pnlPrincipal.Controls.Add(cboPaisFabricacion);
+            // Botón buscar país (visible siempre)
+            btnBuscarPaisFabricacion = new Button
+            {
+                Text = "🔍",
+                Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                Size = new Size(36, 28),
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false,
+                Visible = true
+            };
+            btnBuscarPaisFabricacion.FlatAppearance.BorderSize = 0;
+            btnBuscarPaisFabricacion.Click += BtnBuscarPaisFabricacion_Click;
+            try { var ttp = new ToolTip(); ttp.SetToolTip(btnBuscarPaisFabricacion, "Verificar país de fabricación"); } catch { }
+            pnlPrincipal.Controls.Add(btnBuscarPaisFabricacion);
+            btnBuscarPaisFabricacion.BringToFront();
             yPosRight += lineHeight;
 
             // Transmisión
@@ -369,7 +419,7 @@ namespace CpAuton
 
             lblInfoVelocidades = new Label
             {
-                Location = new Point(colRightX + 190, yPosRight + 3),
+                Location = new Point(colRightX + 190+40, yPosRight + 3),
                 Size = new Size(180, 25),
                 Font = new Font("Segoe UI", 8F, FontStyle.Italic),
                 ForeColor = Color.Gray,
@@ -377,12 +427,37 @@ namespace CpAuton
                 TextAlign = ContentAlignment.MiddleLeft
             };
             pnlPrincipal.Controls.Add(lblInfoVelocidades);
+            // Agregar botón de búsqueda al lado de Velocidades (a la derecha)
+            if (btnBuscarVelocidades == null)
+            {
+                btnBuscarVelocidades = new Button
+                {
+                    Text = "🔍",
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Enabled = false,
+                    Visible = true
+                };
+                btnBuscarVelocidades.FlatAppearance.BorderSize = 0;
+                btnBuscarVelocidades.Click += BtnBuscarVelocidades_Click;
+                try { var ttv = new ToolTip(); ttv.SetToolTip(btnBuscarVelocidades, "Verificar número de velocidades"); } catch { }
+            }
+            btnBuscarVelocidades.Location = new Point(colRightX + 80 + nudVelocidades.Width + 8, yPosRight);
+            pnlPrincipal.Controls.Add(btnBuscarVelocidades);
+            btnBuscarVelocidades.BringToFront();
             yPosRight += lineHeight;
 
             cboTransmision.SelectedIndexChanged += (s, e) =>
             {
                 ConfigurarVelocidades(cboTransmision.Text);
+                ActualizarBotonesBusqueda();
             };
+
+            nudVelocidades.ValueChanged += (s, e) => ActualizarBotonesBusqueda();
 
             // Turbo
             chkTieneTurbo = new CheckBox
@@ -408,7 +483,7 @@ namespace CpAuton
             txtMotor.TextChanged += (s, e) => ActualizarBotonesBusqueda();
             pnlPrincipal.Controls.Add(txtMotor);
             SetCueBanner(txtMotor, "Ej: 2.0L, 1.8L Turbo");
-         
+ 
 
             // Botón buscar motor
             btnBuscarMotor = new Button
@@ -427,6 +502,7 @@ namespace CpAuton
             btnBuscarMotor.Click += BtnBuscarMotor_Click;
             try { var tt = new ToolTip(); tt.SetToolTip(btnBuscarMotor, "Buscar si el vehículo trae ese motor"); } catch { }
             pnlPrincipal.Controls.Add(btnBuscarMotor);
+            btnBuscarMotor.BringToFront();
 
             yPosRight += lineHeight;
 
@@ -482,6 +558,7 @@ namespace CpAuton
             }
             catch { }
             pnlPrincipal.Controls.Add(btnBuscarFrenos);
+            btnBuscarFrenos.BringToFront();
             yPosRight += lineHeight;
 
 
@@ -512,7 +589,7 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(lblInfoAsientos);
             yPosRight += lineHeight;
 
-            // Nro de Puertas
+            // Nro. Puertas
             AgregarLabel(pnlPrincipal, "Nro. Puertas:", 580, yPosRight, labelWidth);
             cboPuertas = new ComboBox
             {
@@ -560,6 +637,93 @@ namespace CpAuton
                     }
                 }
             };
+
+            yPosRight += lineHeight;
+
+            // traccion
+            AgregarLabel(pnlPrincipal, "Tracción:", 580, yPosRight, labelWidth);
+            cboTraccion = new ComboBox
+             {
+                 Name = "cboTraccion",
+                 Location = new Point(colRightX + 80, yPosRight),
+                 Size = new Size(ctrlWidth + 50, 28),
+                 DropDownStyle = ComboBoxStyle.DropDownList,
+                 Font = new Font("Segoe UI", 10F)
+             };
+            cboTraccion.Items.AddRange(new[] {
+                "Delantera (4x2 FWD)",
+                "Trasera (4x2 RWD)",
+                "Integral permanente (AWD 4x4)",
+                "Doble tracción seleccionable (4WD 4x4)"
+            });
+            cboTraccion.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda();
+            pnlPrincipal.Controls.Add(cboTraccion);
+
+             // Label informativo
+             Label lblInfoTraccion = new Label
+             {
+                 Name = "lblInfoTraccion",
+                 Text = "💡 Seleccione según tipo",
+                 Location = new Point(colRightX + 80 + ctrlWidth + 60-13, yPosRight + 3),
+                 Size = new Size(150, 25),
+                 Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                 ForeColor = Color.Gray,
+                 TextAlign = ContentAlignment.MiddleLeft
+             };
+             pnlPrincipal.Controls.Add(lblInfoTraccion);
+
+             // Evento para actualizar el label informativo según la selección
+             cboTraccion.SelectedIndexChanged += (s, e) =>
+             {
+                 if (cboTraccion != null && cboTraccion.SelectedIndex >= 0)
+                 {
+                     var lbl = pnlPrincipal.Controls.Find("lblInfoTraccion", false).FirstOrDefault() as Label;
+                     if (lbl != null)
+                     {
+                         switch (cboTraccion.SelectedIndex)
+                         {
+                             case 0: // Delantera (4x2 FWD)
+                                 lbl.Text = "   Sedán/Hatchback";
+                                 lbl.ForeColor = Color.FromArgb(0, 123, 255);
+                                 break;
+                             case 1: // Trasera (4x2 RWD)
+                                 lbl.Text = "   Deportivos/Coupé";
+                                 lbl.ForeColor = Color.FromArgb(220, 53, 69);
+                                 break;
+                             case 2: // Integral permanente (AWD 4x4)
+                                 lbl.Text = "  4x4 - SUV moderna";
+                                 lbl.ForeColor = Color.FromArgb(40, 167, 69);
+                                 break;
+                             case 3: // Doble tracción (4WD 4x4)
+                                 lbl.Text = "   4x4 - Pickup/Off-road";
+                                 lbl.ForeColor = Color.FromArgb(255, 193, 7);
+                                 break;
+                         }
+                     }
+                 }
+                // Actualizar botón de búsqueda de tracción
+                ActualizarBotonesBusqueda();
+            };
+
+            // Botón buscar tracción (visible siempre, habilitado cuando haya selección)
+            btnBuscarTraccion = new Button
+            {
+                Text = "🔍",
+                Location = new Point(colRightX + 80 + ctrlWidth + 200-35, yPosRight),
+                Size = new Size(36, 28),
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false,
+                Visible = true
+            };
+            btnBuscarTraccion.FlatAppearance.BorderSize = 0;
+            btnBuscarTraccion.Click += BtnBuscarTraccion_Click;
+            try { var tttr = new ToolTip(); tttr.SetToolTip(btnBuscarTraccion, "Verificar si la versión trae esa tracción"); } catch { }
+            pnlPrincipal.Controls.Add(btnBuscarTraccion);
+            btnBuscarTraccion.BringToFront();
 
             yPosRight += lineHeight;
 
@@ -689,6 +853,7 @@ namespace CpAuton
             }
             catch { }
             pnlPrincipal.Controls.Add(btnBuscarEstrellas);
+            btnBuscarEstrellas.BringToFront();
             yPosLeft += lineHeight;
 
             // ==================== EVALUACIÓN ====================
@@ -913,6 +1078,8 @@ namespace CpAuton
             bool tieneMotor = txtMotor != null && !string.IsNullOrWhiteSpace(txtMotor.Text);
             bool tieneAnio = nudAnio != null && nudAnio.Value > 0;
             bool tieneFrenos = cboFreno != null && cboFreno.SelectedIndex >= 0; // ⭐ NUEVO
+            bool tieneTransmision = cboTransmision != null && cboTransmision.SelectedIndex >= 0;
+            bool tieneVelocidades = nudVelocidades != null && nudVelocidades.Enabled;
 
             // Botón Airbags: ahora requiere versión también
             if (btnBuscarAirbags != null)
@@ -929,6 +1096,22 @@ namespace CpAuton
             // Botón Motor: sin cambios
             if (btnBuscarMotor != null)
                 btnBuscarMotor.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneMotor;
+
+            // Botón Velocidades: requiere marca, modelo, año, transmisión seleccionada y que el control de velocidades esté habilitado
+            if (btnBuscarVelocidades != null)
+                btnBuscarVelocidades.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneTransmision && tieneVelocidades;
+
+            // Botón Tracción: habilitado si hay selección en tracción
+            if (btnBuscarTraccion != null)
+                btnBuscarTraccion.Enabled = cboTraccion != null && cboTraccion.SelectedIndex >= 0;
+
+            // Botón País de Fabricación: habilitado si hay país seleccionado
+            if (btnBuscarPaisFabricacion != null)
+                btnBuscarPaisFabricacion.Enabled = tieneMarca && tieneModelo && tieneVersion && tienePais;
+
+            // Botón Versión: habilitado si hay versión seleccionada y marca/modelo/año
+            if (btnBuscarVersion != null)
+                btnBuscarVersion.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion;
 
             // NUEVO: Botón Frenos
             if (btnBuscarFrenos != null)
@@ -1415,6 +1598,14 @@ namespace CpAuton
                 return false;
             }
 
+            if (cboTraccion.SelectedIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar el tipo de tracción", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboTraccion.Focus();
+                return false;
+            }
+
             if (cboConfiabilidad.SelectedIndex == -1)
             {
                 MessageBox.Show("⚠️ Debe seleccionar el nivel de confiabilidad", "Validación",
@@ -1488,6 +1679,7 @@ namespace CpAuton
                         : (int)nudVelocidades.Value,
                         nroPuertas = (int)cboPuertas.SelectedItem,
                         nroAsientos = (int)nudAsientos.Value,
+                        traccion = cboTraccion.SelectedItem.ToString(),
                         tieneTurbo = chkTieneTurbo.Checked,
                         motor = txtMotor.Text.Trim(),
                         combustible = cboCombustible.SelectedItem.ToString(),
@@ -1755,7 +1947,7 @@ namespace CpAuton
         {
             this.SuspendLayout();
             this.BackColor = System.Drawing.Color.PapayaWhip;
-            this.ClientSize = new System.Drawing.Size(1162, 994);
+            this.ClientSize = new System.Drawing.Size(1162+38, 994);
             this.Name = "FrmRegistroVehiculo";
             this.ShowInTaskbar = false;
             this.Load += new System.EventHandler(this.FrmRegistroVehiculo_Load);
@@ -1898,5 +2090,115 @@ namespace CpAuton
             }
         }
 
+        private void CboVersion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ActualizarBotonesBusqueda();
+        }
+
+        private void BtnBuscarVelocidades_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca?.Text.Trim() ?? "";
+                string modelo = cboModelo?.Text.Trim() ?? "";
+                int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string transmision = cboTransmision?.Text ?? "";
+                string nroVel = nudVelocidades != null && nudVelocidades.Enabled ? nudVelocidades.Value.ToString() : "";
+
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(transmision) || string.IsNullOrWhiteSpace(nroVel))
+                {
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Año, Transmisión y Nº de velocidades para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"¿El {marca} {modelo} {anio} caja {transmision} viene con {nroVel} velocidades?";
+                string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+
+                Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnBuscarTraccion_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca?.Text.Trim() ?? "";
+                string modelo = cboModelo?.Text.Trim() ?? "";
+                string version = cboVersion?.Text ?? "";
+                string traccion = cboTraccion?.Text ?? "";
+
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version) || string.IsNullOrWhiteSpace(traccion))
+                {
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Versión y Tracción para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"¿El {marca} {modelo} versión {version} viene con tracción {traccion}?";
+                string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnBuscarPaisFabricacion_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca?.Text.Trim() ?? "";
+                string modelo = cboModelo?.Text.Trim() ?? "";
+                string version = cboVersion?.Text ?? "";
+                string pais = cboPaisFabricacion?.Text ?? "";
+
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version) || string.IsNullOrWhiteSpace(pais))
+                {
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Versión y País para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"¿El {marca} {modelo} versión {version} es fabricado en {pais}?";
+                string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnBuscarVersion_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca?.Text.Trim() ?? "";
+                string modelo = cboModelo?.Text.Trim() ?? "";
+                int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string version = cboVersion?.Text ?? "";
+
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version))
+                {
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Versión para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"{marca} {modelo} {anio} versión {version}";
+                string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

@@ -134,6 +134,7 @@
           <Property Name="nroPuertas" Type="int" Nullable="false" />
           <Property Name="version" Type="varchar" MaxLength="20" />
           <Property Name="frenos" Type="varchar" MaxLength="50" />
+          <Property Name="traccion" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="VehiculoMantenimiento">
           <Key>
@@ -271,6 +272,7 @@
           <Parameter Name="nroVelocidades" Type="int" Mode="In" />
           <Parameter Name="nroPuertas" Type="int" Mode="In" />
           <Parameter Name="nroAsientos" Type="int" Mode="In" />
+          <Parameter Name="traccion" Type="varchar" Mode="In" />
           <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
           <Parameter Name="motor" Type="varchar" Mode="In" />
           <Parameter Name="combustible" Type="varchar" Mode="In" />
@@ -298,6 +300,7 @@
           <Parameter Name="nroVelocidades" Type="int" Mode="In" />
           <Parameter Name="nroPuertas" Type="int" Mode="In" />
           <Parameter Name="nroAsientos" Type="int" Mode="In" />
+          <Parameter Name="traccion" Type="varchar" Mode="In" />
           <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
           <Parameter Name="motor" Type="varchar" Mode="In" />
           <Parameter Name="combustible" Type="varchar" Mode="In" />
@@ -526,6 +529,7 @@
           <Property Name="nroPuertas" Type="Int32" Nullable="false" />
           <Property Name="version" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="frenos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="traccion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="Vehiculo" ToRole="HistorialConfiabilidad" />
           <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="Vehiculo" ToRole="ModeloVehiculo" />
           <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="Vehiculo" ToRole="VehiculoMantenimiento" />
@@ -710,6 +714,7 @@
             <Parameter Name="nroVelocidades" Mode="In" Type="Int32" />
             <Parameter Name="nroPuertas" Mode="In" Type="Int32" />
             <Parameter Name="nroAsientos" Mode="In" Type="Int32" />
+            <Parameter Name="traccion" Mode="In" Type="String" />
             <Parameter Name="tieneTurbo" Mode="In" Type="Boolean" />
             <Parameter Name="motor" Mode="In" Type="String" />
             <Parameter Name="combustible" Mode="In" Type="String" />
@@ -737,6 +742,7 @@
             <Parameter Name="nroVelocidades" Mode="In" Type="Int32" />
             <Parameter Name="nroPuertas" Mode="In" Type="Int32" />
             <Parameter Name="nroAsientos" Mode="In" Type="Int32" />
+            <Parameter Name="traccion" Mode="In" Type="String" />
             <Parameter Name="tieneTurbo" Mode="In" Type="Boolean" />
             <Parameter Name="motor" Mode="In" Type="String" />
             <Parameter Name="combustible" Mode="In" Type="String" />
@@ -832,6 +838,7 @@
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
           <Property Type="Int32" Name="nroPuertas" Nullable="false" />
+          <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -861,6 +868,7 @@
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
           <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+          <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -890,6 +898,7 @@
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
           <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+          <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -919,6 +928,7 @@
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
           <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+          <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -948,6 +958,7 @@
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
           <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+          <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -977,6 +988,7 @@
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
           <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+          <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -1006,6 +1018,7 @@
           <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
           <Property Type="Int32" Name="nroPuertas" Nullable="false" />
           <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+          <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
           <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
           <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
           <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -1164,6 +1177,7 @@
                 <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="frenos" ColumnName="frenos" />
+                <ScalarProperty Name="traccion" ColumnName="traccion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1272,6 +1286,7 @@
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
                 <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
+                <ScalarProperty Name="traccion" ColumnName="traccion" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
                 <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -1306,6 +1321,7 @@
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
                 <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+                <ScalarProperty Name="traccion" ColumnName="traccion" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
                 <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -1339,6 +1355,7 @@
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
                 <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+                <ScalarProperty Name="traccion" ColumnName="traccion" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
                 <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -1372,6 +1389,7 @@
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
                 <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+                <ScalarProperty Name="traccion" ColumnName="traccion" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
                 <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -1405,6 +1423,7 @@
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
                 <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+                <ScalarProperty Name="traccion" ColumnName="traccion" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
                 <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -1438,6 +1457,7 @@
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
                 <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+                <ScalarProperty Name="traccion" ColumnName="traccion" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
                 <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -1471,6 +1491,7 @@
                 <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
                 <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
                 <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+                <ScalarProperty Name="traccion" ColumnName="traccion" />
                 <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
                 <ScalarProperty Name="motor" ColumnName="motor" />
                 <ScalarProperty Name="combustible" ColumnName="combustible" />

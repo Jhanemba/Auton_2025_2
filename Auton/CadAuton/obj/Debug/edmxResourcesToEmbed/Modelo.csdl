@@ -141,6 +141,7 @@
     <Property Name="nroPuertas" Type="Int32" Nullable="false" />
     <Property Name="version" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="frenos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="traccion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="Vehiculo" ToRole="HistorialConfiabilidad" />
     <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="Vehiculo" ToRole="ModeloVehiculo" />
     <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="Vehiculo" ToRole="VehiculoMantenimiento" />
@@ -325,6 +326,7 @@
       <Parameter Name="nroVelocidades" Mode="In" Type="Int32" />
       <Parameter Name="nroPuertas" Mode="In" Type="Int32" />
       <Parameter Name="nroAsientos" Mode="In" Type="Int32" />
+      <Parameter Name="traccion" Mode="In" Type="String" />
       <Parameter Name="tieneTurbo" Mode="In" Type="Boolean" />
       <Parameter Name="motor" Mode="In" Type="String" />
       <Parameter Name="combustible" Mode="In" Type="String" />
@@ -352,6 +354,7 @@
       <Parameter Name="nroVelocidades" Mode="In" Type="Int32" />
       <Parameter Name="nroPuertas" Mode="In" Type="Int32" />
       <Parameter Name="nroAsientos" Mode="In" Type="Int32" />
+      <Parameter Name="traccion" Mode="In" Type="String" />
       <Parameter Name="tieneTurbo" Mode="In" Type="Boolean" />
       <Parameter Name="motor" Mode="In" Type="String" />
       <Parameter Name="combustible" Mode="In" Type="String" />
@@ -447,6 +450,7 @@
     <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
     <Property Type="Int32" Name="nroAsientos" Nullable="true" />
     <Property Type="Int32" Name="nroPuertas" Nullable="false" />
+    <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -476,6 +480,7 @@
     <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
     <Property Type="Int32" Name="nroPuertas" Nullable="false" />
     <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+    <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -505,6 +510,7 @@
     <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
     <Property Type="Int32" Name="nroPuertas" Nullable="false" />
     <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+    <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -534,6 +540,7 @@
     <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
     <Property Type="Int32" Name="nroPuertas" Nullable="false" />
     <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+    <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -563,6 +570,7 @@
     <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
     <Property Type="Int32" Name="nroPuertas" Nullable="false" />
     <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+    <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -592,6 +600,7 @@
     <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
     <Property Type="Int32" Name="nroPuertas" Nullable="false" />
     <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+    <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />
@@ -621,6 +630,7 @@
     <Property Type="Int32" Name="nroVelocidades" Nullable="true" />
     <Property Type="Int32" Name="nroPuertas" Nullable="false" />
     <Property Type="Int32" Name="nroAsientos" Nullable="true" />
+    <Property Type="String" Name="traccion" Nullable="true" MaxLength="50" />
     <Property Type="Boolean" Name="tieneTurbo" Nullable="false" />
     <Property Type="String" Name="motor" Nullable="false" MaxLength="50" />
     <Property Type="String" Name="combustible" Nullable="false" MaxLength="20" />

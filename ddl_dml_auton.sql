@@ -277,6 +277,7 @@ AS
            v.nroVelocidades,
            v.nroAsientos,
            v.nroPuertas,
+           v.traccion,
            v.tieneTurbo,
            v.motor, 
            v.combustible, 
@@ -309,6 +310,7 @@ AS
                 ISNULL(v.generacion,''), ' ',
                 ISNULL(v.paisFabricacion,''), ' ',
                 ISNULL(v.frenos,''), ' ',
+                ISNULL(v.traccion,''), ' ',
                 CAST(ISNULL(v.anioFabricacion, 0) AS VARCHAR(10)), ' ',
                 ISNULL(v.transmision,''), ' ',
                 ISNULL(v.motor,''), ' ',
@@ -355,6 +357,7 @@ ALTER PROC paVehiculoInsertar
     @nroVelocidades INT = NULL,
     @nroPuertas INT = 5,         -- ⭐ NUEVO PARÁMETRO
     @nroAsientos INT,
+    @traccion VARCHAR(50),
     @tieneTurbo BIT,
     @motor VARCHAR(50),
     @combustible VARCHAR(20),
@@ -384,13 +387,13 @@ BEGIN
 
     INSERT INTO Vehiculo (
         nroChasis, idModeloVehiculo, version, generacion, paisFabricacion, transmision, 
-        nroVelocidades, nroPuertas, nroAsientos,
+        nroVelocidades, nroPuertas, nroAsientos, traccion,
         tieneTurbo, motor, combustible, frenos, nroAirbags, seguridadChoques, organizacionSeguridad,
         anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones, fotografia
     )
     VALUES (
         @nroChasis, @idModeloVehiculo, @version, @generacion, @paisFabricacion, @transmision, 
-        @nroVelocidades, @nroPuertas, @nroAsientos,
+        @nroVelocidades, @nroPuertas, @nroAsientos, @traccion,
         @tieneTurbo, @motor, @combustible, @frenos, @nroAirbags, @seguridadChoques, @organizacionSeguridad,
         @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones, @fotografia
     );
@@ -409,6 +412,7 @@ ALTER PROC paVehiculoActualizar
     @nroVelocidades INT = NULL,
     @nroPuertas INT,             -- ⭐ NUEVO PARÁMETRO
     @nroAsientos INT,
+    @traccion VARCHAR(50),
     @tieneTurbo BIT,
     @motor VARCHAR(50),
     @combustible VARCHAR(20),
@@ -452,6 +456,7 @@ BEGIN
         nroVelocidades = @nroVelocidades,
         nroPuertas = @nroPuertas,      -- ⭐ ACTUALIZAR CAMPO
         nroAsientos = @nroAsientos,
+        traccion = @traccion,
         tieneTurbo = @tieneTurbo,
         motor = @motor,
         combustible = @combustible,
@@ -553,6 +558,26 @@ ELSE
 BEGIN
     PRINT 'El campo frenos ya existe en la tabla Vehiculo';
 END
+-- =====================================================
+IF NOT EXISTS (SELECT * FROM sys.columns 
+               WHERE object_id = OBJECT_ID('Vehiculo') 
+               AND name = 'traccion')
+BEGIN
+    ALTER TABLE Vehiculo
+    ADD traccion VARCHAR(50) NULL 
+        CHECK (traccion IN (
+            'Delantera (4x2 FWD)', 
+            'Trasera (4x2 RWD)', 
+            'Integral permanente (AWD 4x4)', 
+            'Doble tracción seleccionable (4WD 4x4)'
+        ));
+    
+    PRINT 'Campo traccion agregado a la tabla Vehiculo';
+END
+ELSE
+BEGIN
+    PRINT 'El campo traccion ya existe en la tabla Vehiculo';
+END
 
 
 
@@ -566,7 +591,7 @@ BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, v.version, v.generacion, v.paisFabricacion, 
-        v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.tieneTurbo,  -- ⭐ CAMPO AGREGADO
+        v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.traccion, v.tieneTurbo,  -- ⭐ CAMPO AGREGADO
         v.motor, v.combustible, v.frenos, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
@@ -605,7 +630,7 @@ BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, v.version, v.generacion, v.paisFabricacion, 
-        v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.tieneTurbo,
+        v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.traccion, v.tieneTurbo,
         v.motor, v.combustible, v.frenos, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
@@ -644,7 +669,7 @@ BEGIN
     SELECT 
         v.id, mv.nombre AS modelo, m.nombre AS marca, p.descripcion AS procedencia,
         tv.descripcion AS tipoVehiculo, v.version, v.generacion, v.paisFabricacion, 
-        v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.tieneTurbo,
+        v.transmision, v.nroVelocidades, v.nroPuertas, v.nroAsientos, v.traccion, v.tieneTurbo,
         v.motor, v.combustible, v.frenos, v.nroAirbags, v.seguridadChoques, v.organizacionSeguridad,
         v.anioFabricacion, v.confiabilidad, v.puntuacion, v.observaciones,
         CASE WHEN v.fotografia IS NOT NULL THEN 1 ELSE 0 END AS tieneFotografia,
@@ -694,6 +719,7 @@ BEGIN
         v.nroVelocidades,
         v.nroPuertas,
         v.nroAsientos,
+        v.traccion,
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
@@ -752,6 +778,7 @@ BEGIN
         v.nroVelocidades,
         v.nroPuertas,
         v.nroAsientos,
+        v.traccion,
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
@@ -811,6 +838,7 @@ BEGIN
         v.nroVelocidades,
         v.nroPuertas,
         v.nroAsientos,
+        v.traccion,
         v.tieneTurbo,
         v.motor, 
         v.combustible, 
@@ -1146,6 +1174,25 @@ END
 WHERE frenos IS NULL;
 
 PRINT 'Valores por defecto establecidos para version y frenos';
+
+--
+-- Establecer valores por defecto según el tipo de vehículo
+UPDATE v
+SET traccion = CASE 
+    WHEN tv.descripcion = 'Pickup' THEN 'Doble tracción seleccionable (4WD 4x4)'
+    WHEN tv.descripcion = 'SUV' THEN 'Integral permanente (AWD 4x4)'
+    WHEN tv.descripcion = 'Sedán' THEN 'Delantera (4x2 FWD)'
+    WHEN tv.descripcion = 'Hatchback' THEN 'Delantera (4x2 FWD)'
+    WHEN tv.descripcion = 'Coupé' THEN 'Trasera (4x2 RWD)'
+    ELSE 'Delantera (4x2 FWD)'
+END
+FROM Vehiculo v
+INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
+INNER JOIN TipoVehiculo tv ON mv.idTipoVehiculo = tv.id
+WHERE v.traccion IS NULL;
+
+PRINT 'Valores por defecto de tracción establecidos según tipo de vehículo';
+
 
 
 -- =====================================================

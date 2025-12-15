@@ -25,6 +25,7 @@ namespace CadAuton
         public Nullable<int> nroVelocidades { get; set; }
         public int nroPuertas { get; set; }
         public Nullable<int> nroAsientos { get; set; }
+        public string traccion { get; set; }
         public bool tieneTurbo { get; set; }
         public string motor { get; set; }
         public string combustible { get; set; }

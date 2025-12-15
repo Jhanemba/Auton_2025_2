@@ -43,9 +43,14 @@ namespace ClnAuton
                     existente.generacion = vehiculo.generacion;
                     existente.paisFabricacion = vehiculo.paisFabricacion;
                     existente.transmision = vehiculo.transmision;
+                    existente.nroVelocidades = vehiculo.nroVelocidades;  
+                    existente.nroAsientos = vehiculo.nroAsientos;  
+                    existente.nroPuertas = vehiculo.nroPuertas;  
+                    existente.traccion = vehiculo.traccion;  
                     existente.tieneTurbo = vehiculo.tieneTurbo;
                     existente.motor = vehiculo.motor;
                     existente.combustible = vehiculo.combustible;
+                    existente.frenos = vehiculo.frenos;
                     existente.frenos = vehiculo.frenos;
                     existente.nroAirbags = vehiculo.nroAirbags;
                     existente.seguridadChoques = vehiculo.seguridadChoques;

@@ -183,6 +183,20 @@ namespace CpAuton
             panel.Controls.Add(cboTipo);
             yPos += 35;
 
+            // VERSIÓN
+            AgregarLabel(panel, "Versión:", 15, yPos, labelWidth);
+            ComboBox cboVersion = new ComboBox
+            {
+                Name = "cboVersion",
+                Location = new Point(160, yPos),
+                Size = new Size(controlWidth, 25),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10)
+            };
+            cboVersion.Items.AddRange(new[] { "Básica", "Intermedia", "Full" });
+            panel.Controls.Add(cboVersion);
+            yPos += 35;
+
             // GENERACIÓN
             AgregarLabel(panel, "Generación:", 15, yPos, labelWidth);
             TextBox txtGeneracion = new TextBox
@@ -289,6 +303,25 @@ namespace CpAuton
                 }
             };
 
+            // TRACCIÓN
+            AgregarLabel(panel, "Tracción:", 15, yPos, labelWidth);
+            ComboBox cboTraccion = new ComboBox
+            {
+                Name = "cboTraccion",
+                Location = new Point(160, yPos),
+                Size = new Size(controlWidth, 25),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10)
+            };
+            cboTraccion.Items.AddRange(new[] {
+                "Delantera (4x2 FWD)",
+                "Trasera (4x2 RWD)",
+                "Integral permanente (AWD 4x4)",
+                "Doble tracción seleccionable (4WD 4x4)"
+            });
+            panel.Controls.Add(cboTraccion);
+            yPos += 35;
+
             // TIENE TURBO
             CheckBox chkTurbo = new CheckBox
             {
@@ -327,6 +360,24 @@ namespace CpAuton
             };
             cboCombustible.Items.AddRange(new[] { "Gasolina", "Diesel", "Híbrido", "Eléctrico", "GLP", "GNC" });
             panel.Controls.Add(cboCombustible);
+            yPos += 35;
+
+            // FRENOS
+            AgregarLabel(panel, "Frenos:", 15, yPos, labelWidth);
+            ComboBox cboFreno = new ComboBox
+            {
+                Name = "cboFreno",
+                Location = new Point(160, yPos),
+                Size = new Size(controlWidth, 25),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10)
+            };
+            cboFreno.Items.AddRange(new[] {
+                "Disco en las 4 ruedas",
+                "Disco delanteros y tambor atrás",
+                "Tambor delantero y disco atrás"
+            });
+            panel.Controls.Add(cboFreno);
             yPos += 35;
 
             // NRO ASIENTOS
@@ -1134,6 +1185,7 @@ namespace CpAuton
                 var txtChasis = this.Controls.Find("txtChasis", true)[0] as TextBox;
                 var cboModelo = this.Controls.Find("cboModelo", true)[0] as ComboBox;
                 var cboTipo = this.Controls.Find("cboTipo", true)[0] as ComboBox;
+                var cboVersion = this.Controls.Find("cboVersion", true)[0] as ComboBox;
                 var txtGeneracion = this.Controls.Find("txtGeneracion", true)[0] as TextBox;
                 var cboPais = this.Controls.Find("cboPais", true)[0] as ComboBox;
                 var nudAnio = this.Controls.Find("nudAnio", true)[0] as NumericUpDown;
@@ -1141,9 +1193,11 @@ namespace CpAuton
                 var nudVelocidades = this.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
                 var nudAsientos = this.Controls.Find("nudAsientos", true)[0] as NumericUpDown;
                 var cboPuertas = this.Controls.Find("cboPuertas", true)[0] as ComboBox;
+                var cboTraccion = this.Controls.Find("cboTraccion", true)[0] as ComboBox;
                 var chkTurbo = this.Controls.Find("chkTurbo", true)[0] as CheckBox;
                 var txtMotor = this.Controls.Find("txtMotor", true)[0] as TextBox;
                 var cboCombustible = this.Controls.Find("cboCombustible", true)[0] as ComboBox;
+                var cboFreno = this.Controls.Find("cboFreno", true)[0] as ComboBox;  
                 var nudAirbags = this.Controls.Find("nudAirbags", true)[0] as NumericUpDown;
                 var nudEstrellas = this.Controls.Find("nudEstrellas", true)[0] as NumericUpDown;
                 var cboOrganizacion = this.Controls.Find("cboOrganizacion", true)[0] as ComboBox;
@@ -1205,6 +1259,7 @@ namespace CpAuton
                 // Asignar TODOS los valores
                 vehiculo.nroChasis = txtChasis.Text.Trim().ToUpper();
                 vehiculo.idModeloVehiculo = nuevoIdModelo;
+                vehiculo.version = cboVersion.Text;
                 vehiculo.generacion = txtGeneracion.Text.Trim();
                 vehiculo.paisFabricacion = cboPais.Text.Trim();
                 vehiculo.anioFabricacion = (int)nudAnio.Value;
@@ -1219,9 +1274,11 @@ namespace CpAuton
                 }
                 vehiculo.nroPuertas = (int)cboPuertas.SelectedItem; 
                 vehiculo.nroAsientos = (int)nudAsientos.Value;
+                vehiculo.traccion = cboTraccion.Text;
                 vehiculo.tieneTurbo = chkTurbo.Checked;
                 vehiculo.motor = txtMotor.Text.Trim();
                 vehiculo.combustible = cboCombustible.Text;
+                vehiculo.frenos = cboFreno.Text;
                 vehiculo.nroAirbags = (int)nudAirbags.Value;
                 vehiculo.seguridadChoques = (int)nudEstrellas.Value;
                 vehiculo.organizacionSeguridad = cboOrganizacion.Text;
@@ -1282,11 +1339,14 @@ namespace CpAuton
             var cboMarca = this.Controls.Find("cboMarca", true)[0] as ComboBox;
             var cboModelo = this.Controls.Find("cboModelo", true)[0] as ComboBox;
             var cboTipo = this.Controls.Find("cboTipo", true)[0] as ComboBox;
+            var cboVersion = this.Controls.Find("cboVersion", true)[0] as ComboBox;  
             var txtGeneracion = this.Controls.Find("txtGeneracion", true)[0] as TextBox;
             var cboPais = this.Controls.Find("cboPais", true)[0] as ComboBox;
             var cboTransmision = this.Controls.Find("cboTransmision", true)[0] as ComboBox;
+            var cboTraccion = this.Controls.Find("cboTraccion", true)[0] as ComboBox;  
             var txtMotor = this.Controls.Find("txtMotor", true)[0] as TextBox;
             var cboCombustible = this.Controls.Find("cboCombustible", true)[0] as ComboBox;
+            var cboFreno = this.Controls.Find("cboFreno", true)[0] as ComboBox;  
             var cboOrganizacion = this.Controls.Find("cboOrganizacion", true)[0] as ComboBox;
             var cboConfiabilidad = this.Controls.Find("cboConfiabilidad", true)[0] as ComboBox;
 
@@ -1331,6 +1391,14 @@ namespace CpAuton
                 return false;
             }
 
+            if (cboVersion.SelectedIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar la versión del vehículo", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboVersion.Focus();
+                return false;
+            }
+
             if (string.IsNullOrWhiteSpace(txtGeneracion.Text))
             {
                 MessageBox.Show("⚠️ La generación es obligatoria", "Validación",
@@ -1363,6 +1431,14 @@ namespace CpAuton
                 return false;
             }
 
+            if (cboTraccion.SelectedIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar el tipo de tracción", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboTraccion.Focus();
+                return false;
+            }
+
             if (string.IsNullOrWhiteSpace(txtMotor.Text))
             {
                 MessageBox.Show("⚠️ El motor es obligatorio", "Validación",
@@ -1384,6 +1460,14 @@ namespace CpAuton
                 MessageBox.Show("⚠️ Debe seleccionar el tipo de combustible", "Validación",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboCombustible.Focus();
+                return false;
+            }
+
+            if (cboFreno.SelectedIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar el tipo de frenos", "Validación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboFreno.Focus();
                 return false;
             }
 
@@ -1499,6 +1583,12 @@ namespace CpAuton
                             //cboPuertas debe volver a 5 por defecto
                             if (cbo.Name == "cboPuertas")
                                 cbo.SelectedItem = 5;
+                            else if (cbo.Name == "cboVersion")
+                                cbo.SelectedIndex = -1;  // Sin valor por defecto
+                            else if (cbo.Name == "cboTraccion")
+                                cbo.SelectedIndex = -1;  // Sin valor por defecto
+                            else if (cbo.Name == "cboFreno")
+                                cbo.SelectedIndex = -1; // Sin valor por defecto
                             else
                                 cbo.SelectedIndex = -1;
                         }
@@ -1567,15 +1657,20 @@ namespace CpAuton
                 var cboMarca = this.Controls.Find("cboMarca", true)[0] as ComboBox;
                 var cboModelo = this.Controls.Find("cboModelo", true)[0] as ComboBox;
                 var cboTipo = this.Controls.Find("cboTipo", true)[0] as ComboBox;
+                var cboVersion = this.Controls.Find("cboVersion", true)[0] as ComboBox;  
                 var txtGeneracion = this.Controls.Find("txtGeneracion", true)[0] as TextBox;
                 var cboPais = this.Controls.Find("cboPais", true)[0] as ComboBox;
                 var nudAnio = this.Controls.Find("nudAnio", true)[0] as NumericUpDown;
                 var cboTransmision = this.Controls.Find("cboTransmision", true)[0] as ComboBox;
                 var nudAsientos = this.Controls.Find("nudAsientos", true)[0] as NumericUpDown;
                 var cboPuertas = this.Controls.Find("cboPuertas", true)[0] as ComboBox;
+                var nudVelocidades = this.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                var lblInfoVel = this.Controls.Find("lblInfoVelocidades", true)[0] as Label;
+                var cboTraccion = this.Controls.Find("cboTraccion", true)[0] as ComboBox; 
                 var chkTurbo = this.Controls.Find("chkTurbo", true)[0] as CheckBox;
                 var txtMotor = this.Controls.Find("txtMotor", true)[0] as TextBox;
                 var cboCombustible = this.Controls.Find("cboCombustible", true)[0] as ComboBox;
+                var cboFreno = this.Controls.Find("cboFreno", true)[0] as ComboBox;  
                 var nudAirbags = this.Controls.Find("nudAirbags", true)[0] as NumericUpDown;
                 var nudEstrellas = this.Controls.Find("nudEstrellas", true)[0] as NumericUpDown;
                 var cboOrganizacion = this.Controls.Find("cboOrganizacion", true)[0] as ComboBox;
@@ -1609,12 +1704,11 @@ namespace CpAuton
                     cboTipo.SelectedValue = modelo.idTipoVehiculo;
                 }
 
+                cboVersion.Text = vehiculo.version;
                 txtGeneracion.Text = vehiculo.generacion;
                 cboPais.Text = vehiculo.paisFabricacion;
                 nudAnio.Value = vehiculo.anioFabricacion;
                 cboTransmision.Text = vehiculo.transmision;
-                var nudVelocidades = this.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
-                var lblInfoVel = this.Controls.Find("lblInfoVelocidades", true)[0] as Label;
                 nudAsientos.Value = vehiculo.nroAsientos ?? 5;
                 cboPuertas.SelectedItem = vehiculo.nroPuertas;
 
@@ -1629,9 +1723,13 @@ namespace CpAuton
                     ConfigurarVelocidades(vehiculo.transmision, nudVelocidades, lblInfoVel, vehiculo.nroVelocidades, true);
                 }
 
+                nudAsientos.Value = vehiculo.nroAsientos ?? 5;
+                cboPuertas.SelectedItem = vehiculo.nroPuertas;
+                cboTraccion.Text = vehiculo.traccion;
                 chkTurbo.Checked = vehiculo.tieneTurbo;
                 txtMotor.Text = vehiculo.motor;
                 cboCombustible.Text = vehiculo.combustible;
+                cboFreno.Text = vehiculo.frenos;
                 nudAirbags.Value = vehiculo.nroAirbags;
                 nudEstrellas.Value = vehiculo.seguridadChoques;
                 cboOrganizacion.Text = vehiculo.organizacionSeguridad;

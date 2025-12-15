@@ -137,6 +137,7 @@
           <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="version" ColumnName="version" />
           <ScalarProperty Name="frenos" ColumnName="frenos" />
+          <ScalarProperty Name="traccion" ColumnName="traccion" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -245,6 +246,7 @@
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
           <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
+          <ScalarProperty Name="traccion" ColumnName="traccion" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -279,6 +281,7 @@
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
           <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+          <ScalarProperty Name="traccion" ColumnName="traccion" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -312,6 +315,7 @@
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
           <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+          <ScalarProperty Name="traccion" ColumnName="traccion" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -345,6 +349,7 @@
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
           <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+          <ScalarProperty Name="traccion" ColumnName="traccion" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -378,6 +383,7 @@
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
           <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+          <ScalarProperty Name="traccion" ColumnName="traccion" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -411,6 +417,7 @@
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
           <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+          <ScalarProperty Name="traccion" ColumnName="traccion" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />
@@ -444,6 +451,7 @@
           <ScalarProperty Name="nroVelocidades" ColumnName="nroVelocidades" />
           <ScalarProperty Name="nroPuertas" ColumnName="nroPuertas" />
           <ScalarProperty Name="nroAsientos" ColumnName="nroAsientos" />
+          <ScalarProperty Name="traccion" ColumnName="traccion" />
           <ScalarProperty Name="tieneTurbo" ColumnName="tieneTurbo" />
           <ScalarProperty Name="motor" ColumnName="motor" />
           <ScalarProperty Name="combustible" ColumnName="combustible" />

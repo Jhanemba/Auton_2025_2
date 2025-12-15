@@ -129,6 +129,7 @@
     <Property Name="nroPuertas" Type="int" Nullable="false" />
     <Property Name="version" Type="varchar" MaxLength="20" />
     <Property Name="frenos" Type="varchar" MaxLength="50" />
+    <Property Name="traccion" Type="varchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="VehiculoMantenimiento">
     <Key>
@@ -266,6 +267,7 @@
     <Parameter Name="nroVelocidades" Type="int" Mode="In" />
     <Parameter Name="nroPuertas" Type="int" Mode="In" />
     <Parameter Name="nroAsientos" Type="int" Mode="In" />
+    <Parameter Name="traccion" Type="varchar" Mode="In" />
     <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
     <Parameter Name="motor" Type="varchar" Mode="In" />
     <Parameter Name="combustible" Type="varchar" Mode="In" />
@@ -293,6 +295,7 @@
     <Parameter Name="nroVelocidades" Type="int" Mode="In" />
     <Parameter Name="nroPuertas" Type="int" Mode="In" />
     <Parameter Name="nroAsientos" Type="int" Mode="In" />
+    <Parameter Name="traccion" Type="varchar" Mode="In" />
     <Parameter Name="tieneTurbo" Type="bit" Mode="In" />
     <Parameter Name="motor" Type="varchar" Mode="In" />
     <Parameter Name="combustible" Type="varchar" Mode="In" />

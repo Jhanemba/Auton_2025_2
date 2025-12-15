@@ -187,6 +187,16 @@ namespace CpAuton
 
             dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
             {
+                Name = "colTraccion",
+                DataPropertyName = "traccion",
+                HeaderText = "🔧 Tracción",
+                Width = 120,
+                Visible = false
+            });
+
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
                 Name = "colPuertas",
                 DataPropertyName = "nroPuertas",
                 HeaderText = "Puertas",
@@ -398,7 +408,7 @@ namespace CpAuton
                 yPos += 35;
                 Panel pnlFotografia = new Panel
                 {
-                    Location = new Point(20+575, yPos+500+100+45),
+                    Location = new Point(20+575, yPos+500+100+45+90),
                     Size = new Size(540, 320),
                     BackColor = Color.White,
                     BorderStyle = BorderStyle.FixedSingle
@@ -1612,7 +1622,7 @@ namespace CpAuton
                 cboCombustible.BringToFront();
 
                 // FRENOS
-                AgregarLabel(pnlPrincipal, "Frenos:", 580, yPosRight, labelWidth);
+                AgregarLabel(pnlPrincipal, "Frenos:", 590, yPosRight, labelWidth);
                 ComboBox cboFrenos = new ComboBox
                 {
                     Name = "cboFrenos",
@@ -1630,6 +1640,8 @@ namespace CpAuton
                 cboFrenos.Text = vehiculoCompleto.frenos;
                 pnlPrincipal.Controls.Add(cboFrenos);
                 yPosRight += lineHeight;
+                //frenos al frente
+                cboFrenos.BringToFront();
 
                 // Nro de Asientos
                 AgregarLabel(pnlPrincipal, "Nro. Asientos:", 590, yPosRight, labelWidth);
@@ -1651,7 +1663,7 @@ namespace CpAuton
                 nudAsientos.BringToFront();
 
                 // Nro de Puertas
-                AgregarLabel(pnlPrincipal, "Nro. Puertas:", 580, yPosRight, labelWidth);
+                AgregarLabel(pnlPrincipal, "Nro. Puertas:", 590, yPosRight, labelWidth);
                 ComboBox cboPuertas = new ComboBox
                 {
                     Name = "cboPuertas",
@@ -1676,6 +1688,42 @@ namespace CpAuton
                 };
                 pnlPrincipal.Controls.Add(lblInfoPuertas);
                 yPosRight += lineHeight;
+                cboPuertas.BringToFront();
+
+                // Tracción
+                AgregarLabel(pnlPrincipal, "Tracción:", 590, yPosRight, labelWidth);
+                ComboBox cboTraccion = new ComboBox
+                {
+                    Name = "cboTraccion",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(ctrlWidth + 50, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+                cboTraccion.Items.AddRange(new[] {
+                    "Delantera (4x2 FWD)",
+                    "Trasera (4x2 RWD)",
+                    "Integral permanente (AWD 4x4)",
+                    "Doble tracción seleccionable (4WD 4x4)"
+                });
+                cboTraccion.Text = vehiculoCompleto.traccion;
+                pnlPrincipal.Controls.Add(cboTraccion);
+
+                Label lblInfoTraccion = new Label
+                {
+                    Name = "lblInfoTraccion",
+                    Text = ObtenerInfoTraccion(vehiculoCompleto.traccion),
+                    Location = new Point(colRightX + 80 + ctrlWidth + 60, yPosRight + 3),
+                    Size = new Size(120, 25),
+                    Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                    ForeColor = ObtenerColorTraccion(vehiculoCompleto.traccion),
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                pnlPrincipal.Controls.Add(lblInfoTraccion);
+
+                yPosRight += lineHeight;
+                cboTraccion.BringToFront();
 
                 // ==================== SEGURIDAD ====================
                 yPos = Math.Max(yPosLeft, yPosRight) + 15;
@@ -1894,6 +1942,7 @@ namespace CpAuton
                         // Reconfigurar velocidades para permitir edición ahora que estamos en modo edición
                         ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesEdit, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, true);
                         nudAsientos.Enabled = true;
+                        cboTraccion.Enabled = true;
                         cboPuertas.Enabled = true;
                         chkTieneTurbo.Enabled = true;
                         txtMotor.ReadOnly = false;
@@ -1944,7 +1993,7 @@ namespace CpAuton
                         // VALIDAR ANTES DE GUARDAR
                         if (!ValidarEdicionCompleta(txtChasis.Text, cboModelo.SelectedIndex,
                             txtGeneracion.Text, cboPaisFabricacion.SelectedIndex,
-                            cboConfiabilidad.SelectedIndex, cboVersion.SelectedIndex, cboFrenos.SelectedIndex))
+                            cboConfiabilidad.SelectedIndex, cboVersion.SelectedIndex, cboFrenos.SelectedIndex, cboTraccion.SelectedIndex))
                             return;
 
                         try
@@ -2014,6 +2063,7 @@ namespace CpAuton
                             vehiculoCompleto.generacion = txtGeneracion.Text.Trim();
                             vehiculoCompleto.paisFabricacion = cboPaisFabricacion.Text.Trim();
                             vehiculoCompleto.transmision = cboTransmision.Text;
+                            vehiculoCompleto.traccion = cboTraccion.Text;
                             if (cboTransmision.Text == "CVT")
                             {
                                 vehiculoCompleto.nroVelocidades = null;
@@ -2069,6 +2119,7 @@ namespace CpAuton
                                 // Al salir de edición, reconfiguramos para modo lectura (deshabilitado o placeholder si CVT)
                                 ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesRead, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
                                 nudAsientos.Enabled = false;
+                                cboTraccion.Enabled = false;
                                 cboPuertas.Enabled = false;
                                 chkTieneTurbo.Enabled = false;
                                 txtMotor.ReadOnly = true;
@@ -2207,7 +2258,7 @@ namespace CpAuton
 
         // Método de validación actualizado
         private bool ValidarEdicionCompleta(string chasis, int modeloIndex, string generacion,
-            int paisIndex, int confiabilidadIndex, int versionIndex, int frenosIndex)
+            int paisIndex, int confiabilidadIndex, int versionIndex, int frenosIndex, int traccionIndex)
         {
             if (string.IsNullOrWhiteSpace(chasis))
             {
@@ -2261,6 +2312,13 @@ namespace CpAuton
             if (frenosIndex == -1)
             {
                 MessageBox.Show("⚠️ Debe seleccionar el tipo de frenos", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (traccionIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar el tipo de tracción", "Validación",
                               MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
@@ -2612,6 +2670,30 @@ namespace CpAuton
             // reanudar menú
             string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
             AudioManager.Reproducir(rutaMenu, true, 60);
+        }
+
+        private string ObtenerInfoTraccion(string traccion)
+        {
+            if (string.IsNullOrEmpty(traccion)) return "";
+
+            if (traccion.Contains("Delantera")) return "Común en sedán";
+            if (traccion.Contains("Trasera")) return "Deportivo";
+            if (traccion.Contains("Integral")) return "4x4 SUV";
+            if (traccion.Contains("Doble")) return "4x4 Off-road";
+
+            return "";
+        }
+
+        private Color ObtenerColorTraccion(string traccion)
+        {
+            if (string.IsNullOrEmpty(traccion)) return Color.Gray;
+
+            if (traccion.Contains("Delantera")) return Color.FromArgb(0, 123, 255);
+            if (traccion.Contains("Trasera")) return Color.FromArgb(220, 53, 69);
+            if (traccion.Contains("Integral")) return Color.FromArgb(40, 167, 69);
+            if (traccion.Contains("Doble")) return Color.FromArgb(255, 193, 7);
+
+            return Color.Gray;
         }
     }
 }

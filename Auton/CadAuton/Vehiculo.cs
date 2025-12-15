@@ -47,6 +47,7 @@ namespace CadAuton
         public int nroPuertas { get; set; }
         public string version { get; set; }
         public string frenos { get; set; }
+        public string traccion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HistorialConfiabilidad> HistorialConfiabilidad { get; set; }
