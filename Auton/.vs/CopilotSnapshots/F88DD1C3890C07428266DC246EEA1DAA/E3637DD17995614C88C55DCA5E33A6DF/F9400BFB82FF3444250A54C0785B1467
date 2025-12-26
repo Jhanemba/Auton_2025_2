@@ -1,0 +1,1536 @@
+﻿using CadAuton;
+using ClnAuton;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using System.Diagnostics;
+
+namespace CpAuton
+{
+    public partial class FrmConsultaVehiculos : Form
+    {
+        private Label lblEstadoUsuario;
+        private Button btnSesion;
+
+        public FrmConsultaVehiculos()
+        {
+            InitializeComponent();
+        }
+
+        private void FrmConsultaVehiculos_Load(object sender, EventArgs e)
+        {
+            string ruta = Application.StartupPath + @"\Audio\Don Omar - Danza Kuduro (Instrumental) (Original HQ).mp3";
+            AudioManager.Reproducir(ruta, true, 55 - 10);
+
+            AgregarBotonesSesion();
+            ConfigurarDataGridView();
+            CargarVehiculos("");
+            btnNuevo.Visible = Util.usuario != null;
+        }
+
+        private void AgregarBotonesSesion()
+        {
+            Panel pnlSesion = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 50,
+                BackColor = Color.FromArgb(240, 240, 240),
+                BorderStyle = BorderStyle.FixedSingle,
+            };
+
+            btnSesion = new Button
+            {
+                Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión",
+                Size = new Size(120, 35),
+                Location = new Point(10, 7),
+                BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Arial", 9, FontStyle.Bold)
+            };
+            btnSesion.Click += BtnSesion_Click;
+
+            lblEstadoUsuario = new Label
+            {
+                Text = Util.usuario != null ? $"Usuario: {Util.usuario.nombreCompleto}" : "Usuario: No autenticado",
+                Size = new Size(400, 35),
+                Location = new Point(140, 7),
+                Font = new Font("Arial", 9),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+
+            pnlSesion.Controls.Add(btnSesion);
+            pnlSesion.Controls.Add(lblEstadoUsuario);
+
+            this.Controls.Add(pnlSesion);
+            //poner al frente
+            pnlSesion.BringToFront();
+        }
+
+        private void BtnSesion_Click(object sender, EventArgs e)
+        {
+            if (Util.usuario != null)
+            {
+                DialogResult resultado = MessageBox.Show("¿Desea cerrar la sesión?",
+                                                        "Cerrar Sesión",
+                                                        MessageBoxButtons.YesNo,
+                                                        MessageBoxIcon.Question);
+                if (resultado == DialogResult.Yes)
+                {
+                    Util.CerrarSesion();
+                    ActualizarInterfazSesion();
+                }
+            }
+            else
+            {
+                FrmAutenticacion frmAuth = new FrmAutenticacion();
+                if (frmAuth.ShowDialog(this) == DialogResult.OK)
+                {
+                    ActualizarInterfazSesion();
+                }
+            }
+            btnNuevo.Visible = Util.usuario != null;
+        }
+
+        private void ActualizarInterfazSesion()
+        {
+            if (btnSesion != null)
+            {
+                btnSesion.Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión";
+                btnSesion.BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183);
+            }
+
+            if (lblEstadoUsuario != null)
+            {
+                lblEstadoUsuario.Text = Util.usuario != null ? $"Usuario: {Util.usuario.nombreCompleto}" : "Usuario: No autenticado";
+            }
+        }
+
+        private void ConfigurarDataGridView()
+        {
+            dgvVehiculos.AutoGenerateColumns = false;
+            dgvVehiculos.AllowUserToAddRows = false;
+            dgvVehiculos.AllowUserToDeleteRows = false;
+            dgvVehiculos.ReadOnly = true;
+            dgvVehiculos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvVehiculos.MultiSelect = false;
+            dgvVehiculos.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
+
+            dgvVehiculos.Columns.Clear();
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colId",
+                DataPropertyName = "id",
+                HeaderText = "ID",
+                Width = 50-40,
+                Visible = false
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colMarca",
+                DataPropertyName = "marca",
+                HeaderText = "Marca",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colModelo",
+                DataPropertyName = "modelo",
+                HeaderText = "Modelo",
+                Width = 120
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colGeneracion",
+                DataPropertyName = "generacion",
+                HeaderText = "Generación",
+                Width = 120
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPais",
+                DataPropertyName = "paisFabricacion",
+                HeaderText = "País",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colAnio",
+                DataPropertyName = "anioFabricacion",
+                HeaderText = "Año",
+                Width = 60
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colTransmision",
+                DataPropertyName = "transmision",
+                HeaderText = "Transmisión",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colTraccion",
+                DataPropertyName = "traccion",
+                HeaderText = "🔧 Tracción",
+                Width = 120,
+                Visible = false
+            });
+
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPuertas",
+                DataPropertyName = "nroPuertas",
+                HeaderText = "Puertas",
+                Width = 60-40,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewCheckBoxColumn
+            {
+                Name = "colTurbo",
+                DataPropertyName = "tieneTurbo",
+                HeaderText = "Turbo",
+                Width = 60
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colMotor",
+                DataPropertyName = "motor",
+                HeaderText = "Motor",
+                Width = 80
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colAsientos",
+                DataPropertyName = "nroAsientos",
+                HeaderText = "Asientos",
+                Width = 70 - 40,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter },
+                Visible = false
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colConfiabilidad",
+                DataPropertyName = "confiabilidad",
+                HeaderText = "Confiabilidad",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPuntuacion",
+                DataPropertyName = "puntuacion",
+                HeaderText = "Puntuación",
+                Width = 80,
+                DefaultCellStyle = { Format = "N1" }
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colCombustible",
+                DataPropertyName = "combustible",
+                HeaderText = "Combustible",
+                Width = 80
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewImageColumn
+            {
+                Name = "colFoto",
+                HeaderText = "Foto",
+                Width = 50,
+                ImageLayout = DataGridViewImageCellLayout.Zoom
+            });
+        }
+
+        private void CargarVehiculos(string parametro)
+        {
+            try
+            {
+                var vehiculos = ConsultaVehiculosCln.listarPa(parametro ?? "");
+                dgvVehiculos.DataSource = vehiculos;
+
+                if (lblTotal != null)
+                {
+                    lblTotal.Text = $"Total de vehículos: {vehiculos.Count}";
+                }
+
+                ColorearFilasPorConfiabilidad();
+                ActualizarIconosFoto();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar los vehículos: {ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ColorearFilasPorConfiabilidad()
+        {
+            foreach (DataGridViewRow row in dgvVehiculos.Rows)
+            {
+                if (row.Cells["colConfiabilidad"].Value != null)
+                {
+                    string confiabilidad = row.Cells["colConfiabilidad"].Value.ToString();
+                    switch (confiabilidad)
+                    {
+                        case "Excelente":
+                            row.DefaultCellStyle.BackColor = Color.LightGreen;
+                            break;
+                        case "Bueno":
+                            row.DefaultCellStyle.BackColor = Color.LightBlue;
+                            break;
+                        case "Regular":
+                            row.DefaultCellStyle.BackColor = Color.LightYellow;
+                            break;
+                        case "Malo":
+                            row.DefaultCellStyle.BackColor = Color.LightCoral;
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void txtBuscar_TextChanged(object sender, EventArgs e)
+        {
+            CargarVehiculos(txtBuscar.Text.Trim());
+        }
+
+        private void btnCerrar_Click(object sender, EventArgs e)
+        {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
+            this.Close();
+        }
+
+        private void dgvVehiculos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                MostrarDetallesVehiculo();
+            }
+        }
+
+        private void MostrarDetallesVehiculo()
+        {
+            if (dgvVehiculos.CurrentRow != null)
+            {
+                var vehiculo = (paVehiculoListar_Result)dgvVehiculos.CurrentRow.DataBoundItem;
+                var vehiculoCompleto = ConsultaVehiculosCln.obtenerUno(vehiculo.id);
+                PictureBox pbFotoDetalle = null;
+                Button btnCambiarFoto = null;
+                Button btnEliminarFotoDetalle = null;
+                Image imagenCargada = null;
+                bool fotoEliminada = false;
+
+                // ===== FORMULARIO PRINCIPAL =====
+                Form frmDetalles = new Form
+                {
+                    Text = $"Detalles del Vehículo - {vehiculo.marca} {vehiculo.modelo}",
+                    Size = new Size(1200, 850),
+                    StartPosition = FormStartPosition.CenterParent,
+                    FormBorderStyle = FormBorderStyle.FixedDialog,
+                    MaximizeBox = false,
+                    MinimizeBox = false,
+                    Font = new Font("Segoe UI", 10F),
+                    AutoScroll = true,
+                    ShowInTaskbar = false,
+
+                };
+
+                Panel pnlPrincipal = new Panel
+                {
+                    Location = new Point(0, 0),
+                    Size = new Size(1184, 700-120),
+                    Padding = new Padding(20),
+                    BackColor = Color.PapayaWhip,
+                    AutoScroll = true
+                };
+
+                int yPos = 15;
+                int lineHeight = 45;
+                int labelWidth = 150;
+                int ctrlWidth = 250;
+                int colLeftX = 170;
+                int colRightX = 650;
+
+                // ===== TÍTULO Y ESTADO =====
+                Label lblTitulo = new Label
+                {
+                    Text = "📋 CONSULTA/EDICIÓN DE VEHÍCULO",
+                    Font = new Font("Segoe UI", 15, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(51, 122, 183),
+                    Location = new Point(20, yPos),
+                    Size = new Size(1140, 32),
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                pnlPrincipal.Controls.Add(lblTitulo);
+                yPos += 40;
+
+                Label lblEstado = new Label
+                {
+                    Name = "lblEstado",
+                    Text = "🔒 MODO LECTURA",
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    ForeColor = Color.Red,
+                    Location = new Point(20, yPos),
+                    Size = new Size(1140, 25),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    BackColor = Color.FromArgb(255, 230, 230),
+                    Padding = new Padding(5)
+                };
+                pnlPrincipal.Controls.Add(lblEstado);
+                yPos += 35;
+
+                // ==================== FOTOGRAFÍA ====================
+                yPos += 35;
+                Panel pnlFotografia = new Panel
+                {
+                    Location = new Point(20+575, yPos+500+100+45+90),
+                    Size = new Size(540, 320),
+                    BackColor = Color.White,
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+
+                Label lblTituloFoto = new Label
+                {
+                    Text = "📷 FOTOGRAFÍA DEL VEHÍCULO",
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(51, 122, 183),
+                    Location = new Point(10, 10),
+                    Size = new Size(520, 25),
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                pnlFotografia.Controls.Add(lblTituloFoto);
+
+                pbFotoDetalle = new PictureBox
+                {
+                    Location = new Point(10, 45),
+                    Size = new Size(520, 220),
+                    BorderStyle = BorderStyle.FixedSingle,
+                    BackColor = Color.FromArgb(250, 250, 250),
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    // Start with AllowDrop = false; it will be enabled when user enters edit mode
+                    AllowDrop = false
+                };
+
+                // Use AllowDrop as the single source of truth for permitting drag&drop
+                pbFotoDetalle.DragEnter += (s, ev) =>
+                {
+                    if (pbFotoDetalle.AllowDrop && ev.Data.GetDataPresent(DataFormats.FileDrop))
+                    {
+                        string[] archivos = (string[])ev.Data.GetData(DataFormats.FileDrop);
+                        if (archivos.Length > 0 && ImagenHelper.EsImagenValida(archivos[0]))
+                        {
+                            ev.Effect = DragDropEffects.Copy;
+                            pbFotoDetalle.BackColor = Color.FromArgb(220, 255, 220);
+                        }
+                    }
+                };
+
+                pbFotoDetalle.DragDrop += (s, ev) =>
+                {
+                    pbFotoDetalle.BackColor = Color.FromArgb(250, 250, 250);
+                    if (pbFotoDetalle.AllowDrop && ev.Data.GetDataPresent(DataFormats.FileDrop))
+                    {
+                        try
+                        {
+                            string[] archivos = (string[])ev.Data.GetData(DataFormats.FileDrop);
+                            if (archivos.Length > 0)
+                            {
+                                if (imagenCargada != null) imagenCargada.Dispose();
+                                imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(archivos[0]);
+                                ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                                btnEliminarFotoDetalle.Enabled = true;
+                                fotoEliminada = false; // usuario cargó nueva imagen -> no eliminar
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error al cargar imagen: {ex.Message}", "Error",
+                                          MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                };
+
+                pnlFotografia.Controls.Add(pbFotoDetalle);
+
+                // Botones de control de foto (solo visibles en modo edición)
+                Panel pnlBotonesFoto = new Panel
+                {
+                    Location = new Point(10, 275),
+                    Size = new Size(520, 35)
+                };
+
+                btnCambiarFoto = new Button
+                {
+                    Text = "📂 Cambiar Foto",
+                    Size = new Size(150, 30),
+                    Location = new Point(0, 0),
+                    BackColor = Color.FromArgb(51, 122, 183),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false
+                };
+                btnCambiarFoto.FlatAppearance.BorderSize = 0;
+                btnCambiarFoto.Click += (s, ev) =>
+                {
+                    using (OpenFileDialog ofd = new OpenFileDialog())
+                    {
+                        ofd.Filter = "Imágenes|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
+                        if (ofd.ShowDialog() == DialogResult.OK)
+                        {
+                            try
+                            {
+                                if (imagenCargada != null) imagenCargada.Dispose();
+                                imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(ofd.FileName);
+                                ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                                btnEliminarFotoDetalle.Enabled = true;
+                                fotoEliminada = false; // nueva imagen cargada
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Error: {ex.Message}", "Error",
+                                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                };
+                pnlBotonesFoto.Controls.Add(btnCambiarFoto);
+
+                // NEW: Button to view photo fullscreen (eye)
+                Button btnVerFotoGrande = new Button
+                {
+                    Name = "btnVerFotoGrande",
+                    Text = "👁️ Ver Foto",
+                    Size = new Size(120, 30),
+                    Location = new Point(320, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false // will enable when image is present
+                };
+                btnVerFotoGrande.FlatAppearance.BorderSize = 0;
+                btnVerFotoGrande.Click += (s, ev) =>
+                {
+                    try
+                    {
+                        if (imagenCargada != null)
+                        {
+                            using (var frmFull = new FullscreenImageForm((Image)imagenCargada.Clone()))
+                            {
+                                frmFull.ShowDialog(frmDetalles);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No hay fotografía disponible para mostrar.", "Información",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al mostrar fotografía: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlBotonesFoto.Controls.Add(btnVerFotoGrande);
+
+                btnEliminarFotoDetalle = new Button
+                {
+                    Text = "🗑️ Quitar Foto",
+                    Size = new Size(150, 30),
+                    Location = new Point(160, 0),
+                    BackColor = Color.FromArgb(217, 83, 79),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false,
+                    Enabled = false
+                };
+                btnEliminarFotoDetalle.FlatAppearance.BorderSize = 0;
+                btnEliminarFotoDetalle.Click += (s, ev) =>
+                {
+                    if (imagenCargada != null) imagenCargada.Dispose();
+                    imagenCargada = null;
+                    pbFotoDetalle.Image = null;
+                    ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
+                    btnEliminarFotoDetalle.Enabled = false;
+                    btnVerFotoGrande.Visible = false;
+                    fotoEliminada = true; // marcar para que al guardar se elimine la foto en BD
+                };
+                pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
+                
+                pnlFotografia.Controls.Add(pnlBotonesFoto);
+                pnlPrincipal.Controls.Add(pnlFotografia);
+
+
+                try
+                {
+                    byte[] fotoBytes = ConsultaVehiculosCln.obtenerFotografia(vehiculo.id);
+                    if (fotoBytes != null && fotoBytes.Length > 0)
+                    {
+                        imagenCargada = ImagenHelper.ConvertirBytesAImagen(fotoBytes);
+                        ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                        // Show fullscreen button when there is an image
+                        btnVerFotoGrande.Visible = true;
+                        fotoEliminada = false;
+                    }
+                    else
+                    {
+                        ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
+                        btnVerFotoGrande.Visible = false;
+                        fotoEliminada = false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cargar fotografía: {ex.Message}", "Advertencia",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
+                    btnVerFotoGrande.Visible = false;
+                    fotoEliminada = false;
+                }
+
+
+                // ==================== COLUMNA IZQUIERDA ====================
+                AgregarSeccion(pnlPrincipal, "📋 IDENTIFICACIÓN DEL MODELO", 20, yPos, 540);
+                int yPosLeft = yPos + 38;
+
+                // Nro de Chasis que AHORA EDITABLE
+                AgregarLabel(pnlPrincipal, "Nro. Chasis:", 20, yPosLeft, labelWidth);
+                TextBox txtChasis = new TextBox
+                {
+                    Name = "txtChasis",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Text = vehiculoCompleto.nroChasis,
+                    CharacterCasing = CharacterCasing.Upper,
+                    MaxLength = 17,
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke
+                };
+                pnlPrincipal.Controls.Add(txtChasis);
+                yPosLeft += lineHeight;
+
+                // Procedencia (EDITABLE) - permite corregir la procedencia del vehículo
+                // Crear label explícito para poder ocultarlo en modo edición
+                Label lblProcedencia = new Label
+                {
+                    Name = "lblProcedencia",
+                    Text = "Procedencia:",
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    Location = new Point(20, yPosLeft + 3),
+                    Size = new Size(labelWidth, 25),
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    ForeColor = Color.FromArgb(33, 37, 41)
+                };
+                pnlPrincipal.Controls.Add(lblProcedencia);
+
+                ComboBox cboProcedencia = new ComboBox
+                {
+                    Name = "cboProcedencia",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false,
+                    Visible = true
+                };
+                pnlPrincipal.Controls.Add(cboProcedencia);
+                yPosLeft += lineHeight;
+
+                // Obtener modelo actual PRIMERO
+                ModeloVehiculo modeloActual = null;
+                try
+                {
+                    modeloActual = ModeloVehiculoCln.obtenerUno(vehiculoCompleto.idModeloVehiculo);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cargar modelo: {ex.Message}", "Error",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    frmDetalles.Close();
+                    return;
+                }
+
+                // Marca que AHORA EDITABLE
+                AgregarLabel(pnlPrincipal, "Marca:", 20, yPosLeft, labelWidth);
+                ComboBox cboMarca = new ComboBox
+                {
+                    Name = "cboMarca",
+                    //Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDown,
+                    AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
+                    AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+
+                // Botón + para agregar nueva marca (visible solo en modo edición)
+                Button btnAddMarca = new Button
+                {
+                    Name = "btnAddMarca",
+                    Text = "+",
+                    Size = new Size(30, 28),
+                    //Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft-1),
+                    BackColor = Color.FromArgb(40, 167, 69),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false
+                };
+                btnAddMarca.FlatAppearance.BorderSize = 0;
+                btnAddMarca.Click += (s, e) =>
+                {
+                    // Solo usuarios autenticados pueden agregar
+                    if (Util.usuario == null)
+                    {
+                        MessageBox.Show("Debe autenticarse para agregar una nueva marca", "Autenticación",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    try
+                    {
+                        using (var frm = new FrmNuevaMarca(0))
+                        {
+                            if (frm.ShowDialog(this) == DialogResult.OK)
+                            {
+                                int nuevoIdMarca = frm.NuevoIdMarca;
+                                var marcas = MarcaCln.listar()
+                                    .Where(m => m.estado != -1)
+                                    .OrderBy(m => m.nombre)
+                                    .ToList();
+
+                                // Actualizamos el ComboBox dentro del FlowLayoutPanel
+                                cboMarca.DataSource = null;
+                                cboMarca.DisplayMember = "nombre";
+                                cboMarca.ValueMember = "id";
+                                cboMarca.DataSource = marcas;
+                                cboMarca.BindingContext = new BindingContext();
+
+                                if (nuevoIdMarca > 0 && marcas.Any(m => m.id == nuevoIdMarca))
+                                    cboMarca.SelectedValue = nuevoIdMarca;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al agregar marca: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                // Botón lápiz para editar la marca seleccionada (visible solo en modo edición)
+                Button btnEditMarca = new Button
+                {
+                    Name = "btnEditMarca",
+                    Text = "✏️",
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(255, 193, 7),
+                    Margin = new Padding(8, 0, 0, 0),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false,
+                    Enabled = true
+                };
+                btnEditMarca.FlatAppearance.BorderSize = 0;
+                btnEditMarca.Click += (s, e) =>
+                {
+                    try
+                    {
+                        if (cboMarca.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione primero una marca para editar", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        int idMarcaSel = Convert.ToInt32(cboMarca.SelectedValue);
+                        using (var frm = new FrmGestionarMarcasModelos())
+                        {
+                            frm.AbrirEnMarca(idMarcaSel);
+                            frm.ShowDialog(this);
+                        }
+
+                        // Refrescar lista de marcas y mantener selección si existe
+                        var marcas = MarcaCln.listar()
+                            .Where(m => m.estado != -1)
+                            .OrderBy(m => m.nombre)
+                            .ToList();
+
+                        cboMarca.DataSource = null;
+                        cboMarca.DisplayMember = "nombre";
+                        cboMarca.ValueMember = "id";
+                        cboMarca.DataSource = marcas;
+                        cboMarca.BindingContext = new BindingContext();
+
+                        if (marcas.Any(m => m.id == idMarcaSel))
+                            cboMarca.SelectedValue = idMarcaSel;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al editar marca: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+
+                // Agregamos ComboBox y botón '+' dentro de un FlowLayoutPanel para que se desplacen juntos con AutoScroll
+                FlowLayoutPanel flpMarcaRow = new FlowLayoutPanel
+                {
+                    Name = "flpMarcaRow",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth + 50+35, 28),
+                    FlowDirection = FlowDirection.LeftToRight,
+                    WrapContents = false,
+                    AutoSize = false,
+                };
+                cboMarca.Location = new Point(0, 0);
+                cboMarca.Size = new Size(ctrlWidth, 28);
+                btnAddMarca.Margin = new Padding(8, 0, 0, 0);
+                flpMarcaRow.Controls.Add(cboMarca);
+                flpMarcaRow.Controls.Add(btnAddMarca);
+                flpMarcaRow.Controls.Add(btnEditMarca);
+
+                // Botón ojo para ver descripción de la MARCA (siempre visible)
+                Button btnVerMarcaDesc_small = new Button
+                {
+                    Name = "btnVerMarcaDesc",
+                    Text = "👁️",
+                    Size = new Size(36, 28),
+                    Margin = new Padding(8, 0, 0, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = true
+                };
+                btnVerMarcaDesc_small.FlatAppearance.BorderSize = 0;
+                btnVerMarcaDesc_small.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string descripcion = null;
+                        if (cboMarca.SelectedValue != null)
+                        {
+                            int idSel = Convert.ToInt32(cboMarca.SelectedValue);
+                            if (cboMarca.DataSource is System.Collections.IEnumerable ds)
+                            {
+                                foreach (var item in ds)
+                                {
+                                    var propId = item.GetType().GetProperty("id");
+                                    if (propId != null && Convert.ToInt32(propId.GetValue(item)) == idSel)
+                                    {
+                                        var propDesc = item.GetType().GetProperty("descripcion");
+                                        if (propDesc != null)
+                                            descripcion = propDesc.GetValue(item) as string;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Intentar obtener desde la colección completa
+                            if (string.IsNullOrWhiteSpace(descripcion))
+                            {
+                                var marcaObj = MarcaCln.listar().FirstOrDefault(m => m.id == idSel);
+                                if (marcaObj != null)
+                                    descripcion = marcaObj.descripcion;
+                            }
+                        }
+
+                        if (string.IsNullOrWhiteSpace(descripcion))
+                            descripcion = "(Sin descripción disponible)";
+
+                        MessageBox.Show(descripcion, "Descripción de la Marca", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al obtener descripción de la marca: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                flpMarcaRow.Controls.Add(btnVerMarcaDesc_small);
+                pnlPrincipal.Controls.Add(flpMarcaRow);
+
+                yPosLeft += lineHeight;
+
+                // Modelo que AHORA EDITABLE - depende de marca
+                AgregarLabel(pnlPrincipal, "Modelo:", 20, yPosLeft, labelWidth);
+                ComboBox cboModelo = new ComboBox
+                {
+                    Name = "cboModelo",
+                    //Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDown,
+                    AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
+                    AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+
+                // Botón + para agregar nuevo modelo (visible solo en modo edición)
+                Button btnAddModelo = new Button
+                {
+                    Name = "btnAddModelo",
+                    Text = "+",
+                    Size = new Size(30, 28),
+                    //Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft),
+                    BackColor = Color.FromArgb(40, 167, 69),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false
+                };
+                btnAddModelo.FlatAppearance.BorderSize = 0;
+                btnAddModelo.Click += (s, e) =>
+                {
+                    if (Util.usuario == null)
+                    {
+                        MessageBox.Show("Debe autenticarse para agregar un nuevo modelo", "Autenticación",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    try
+                    {
+                        if (cboMarca.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione primero una marca para asociar el nuevo modelo", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        int idMarcaSeleccionada = Convert.ToInt32(cboMarca.SelectedValue);
+                        int idTipoSeleccionado = (modeloActual != null) ? modeloActual.idTipoVehiculo : 0;
+
+                        using (var frm = new FrmNuevoModelo(idMarcaSeleccionada, idTipoSeleccionado))
+                        {
+                            if (frm.ShowDialog(this) == DialogResult.OK)
+                            {
+                                int nuevoIdModelo = frm.NuevoIdModelo;
+
+                                var modelos = ModeloVehiculoCln.listar()
+                                    .Where(m => m.idMarca == idMarcaSeleccionada && m.estado != -1)
+                                    .OrderBy(m => m.nombre)
+                                    .ToList();
+
+                                cboModelo.DataSource = null;
+                                cboModelo.DisplayMember = "nombre";
+                                cboModelo.ValueMember = "id";
+                                cboModelo.DataSource = modelos;
+                                cboModelo.BindingContext = new BindingContext();
+
+                                if (nuevoIdModelo > 0 && modelos.Any(m => m.id == nuevoIdModelo))
+                                    cboModelo.SelectedValue = nuevoIdModelo;
+
+                                // Habilitar lápiz de modelo si existe
+                                try
+                                {
+                                    var btnTemp = pnlPrincipal.Controls.Find("btnEditModelo", true).FirstOrDefault() as Button;
+                                    if (btnTemp != null) btnTemp.Enabled = cboModelo.SelectedValue != null;
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al agregar modelo: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                // Botón lápiz para editar el modelo seleccionado (visible solo en modo edición)
+                Button btnEditModelo = new Button
+                {
+                    Name = "btnEditModelo",
+                    Text = "✏️",
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(255, 193, 7),
+                    Margin = new Padding(8, 0, 0, 0),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false,
+                    Enabled = true
+                };
+                btnEditModelo.FlatAppearance.BorderSize = 0;
+                btnEditModelo.Click += (s, e) =>
+                {
+                    try
+                    {
+                        if (cboModelo.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione primero un modelo para editar", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        int idModeloSel = Convert.ToInt32(cboModelo.SelectedValue);
+                        using (var frm = new FrmGestionarMarcasModelos())
+                        {
+                            frm.AbrirEnModelo(idModeloSel);
+                            frm.ShowDialog(this);
+                        }
+
+                        // Refrescar lista de modelos para la marca actual
+                        if (cboMarca.SelectedValue != null)
+                        {
+                            int idMarcaSel = Convert.ToInt32(cboMarca.SelectedValue);
+                            var modelos = ModeloVehiculoCln.listar()
+                                .Where(m => m.idMarca == idMarcaSel && m.estado != -1)
+                                .OrderBy(m => m.nombre)
+                                .ToList();
+
+                            cboModelo.DataSource = null;
+                            cboModelo.DisplayMember = "nombre";
+                            cboModelo.ValueMember = "id";
+                            cboModelo.DataSource = modelos;
+                            cboModelo.BindingContext = new BindingContext();
+
+                            if (modelos.Any(m => m.id == idModeloSel))
+                                cboModelo.SelectedValue = idModeloSel;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al editar modelo: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                // Agregar ComboBox y botón '+' dentro de un FlowLayoutPanel para modelo
+                FlowLayoutPanel flpModeloRow = new FlowLayoutPanel
+                {
+                    Name = "flpModeloRow",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth + 50+35, 28),
+                    FlowDirection = FlowDirection.LeftToRight,
+                    WrapContents = false,
+                    AutoSize = false
+                };
+                cboModelo.Location = new Point(0, 0);
+                cboModelo.Size = new Size(ctrlWidth, 28);
+                btnAddModelo.Margin = new Padding(8, 0, 0, 0);
+                flpModeloRow.Controls.Add(cboModelo);
+                flpModeloRow.Controls.Add(btnAddModelo);
+                flpModeloRow.Controls.Add(btnEditModelo);
+
+                // Botón ojo para ver descripción del MODELO (siempre visible)
+                Button btnVerModeloDesc_small = new Button
+                {
+                    Name = "btnVerModeloDesc",
+                    Text = "👁️",
+                    Size = new Size(36, 28),
+                    Margin = new Padding(8, 0, 0, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = true
+                };
+                btnVerModeloDesc_small.FlatAppearance.BorderSize = 0;
+                btnVerModeloDesc_small.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string descripcion = null;
+                        // Intentar obtener desde la lista de modelos cargada (si existe)
+                        if (cboModelo.SelectedValue != null)
+                        {
+                            int idSel = Convert.ToInt32(cboModelo.SelectedValue);
+                            // Intentar buscar en la fuente enlazada
+                            if (cboModelo.DataSource is System.Collections.IEnumerable ds)
+                            {
+                                // Buscar propiedad 'id' y 'descripcion' mediante reflection-safe approach
+                                foreach (var item in ds)
+                                {
+                                    var propId = item.GetType().GetProperty("id");
+                                    if (propId != null && Convert.ToInt32(propId.GetValue(item)) == idSel)
+                                    {
+                                        var propDesc = item.GetType().GetProperty("descripcion");
+                                        if (propDesc != null)
+                                            descripcion = propDesc.GetValue(item) as string;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Si no se obtuvo, pedir al servidor la entidad completa
+                            if (string.IsNullOrWhiteSpace(descripcion))
+                            {
+                                var modeloObj = ModeloVehiculoCln.obtenerUno(idSel);
+                                if (modeloObj != null)
+                                    descripcion = modeloObj.descripcion;
+                            }
+                        }
+
+                        if (string.IsNullOrWhiteSpace(descripcion))
+                            descripcion = "(Sin descripción disponible)";
+
+                        MessageBox.Show(descripcion, "Descripción del Modelo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al obtener descripción del modelo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                flpModeloRow.Controls.Add(btnVerModeloDesc_small);
+                pnlPrincipal.Controls.Add(flpModeloRow);
+
+                yPosLeft += lineHeight;
+
+                // VERSIÓN
+                AgregarLabel(pnlPrincipal, "Versión:", 20, yPosLeft, labelWidth);
+                ComboBox cboVersion = new ComboBox
+                {
+                    Name = "cboVersion",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+                cboVersion.Items.AddRange(new[] { "Básica", "Intermedia", "Full" });
+                cboVersion.Text = vehiculoCompleto.version;
+                pnlPrincipal.Controls.Add(cboVersion);
+                yPosLeft += lineHeight;
+
+                // Tipo que AHORA EDITABLE
+                AgregarLabel(pnlPrincipal, "Tipo:", 20, yPosLeft, labelWidth);
+                ComboBox cboTipo = new ComboBox
+                {
+                    Name = "cboTipo",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = false
+                };
+                pnlPrincipal.Controls.Add(cboTipo);
+                yPosLeft += lineHeight;
+
+                // Variable para controlar eventos
+                bool permitirEventos = false;
+
+                // ==================== ESPECIFICACIONES TÉCNICAS ====================
+                // Sección colapsable: incluir en un Panel con fondo especial
+                Panel pnlEspecificaciones = new Panel
+                {
+                    Location = new Point(20, yPosLeft),
+                    Size = new Size(540, 350),
+                    BackColor = Color.FromArgb(248, 249, 250),
+                    BorderStyle = BorderStyle.FixedSingle,
+                    Padding = new Padding(10),
+                };
+
+                // --- Fila 1: Motor y Transmisión ---
+                yPos = 12;
+                int lblWidth1 = 110;
+                int ctrlWidth1 = 160;
+
+                // Tipo de Combustible (editable)
+                AgregarLabel(pnlEspecificaciones, "Tipo de Combustible:", 15, yPos, lblWidth1);
+                ComboBox cboCombustible = new ComboBox
+                {
+                    Name = "cboCombustible",
+                    Location = new Point(15 + lblWidth1, yPos),
+                    Size = new Size(ctrlWidth1, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = true
+                };
+                // Llenar con tipos comunes más opción "Otro"
+                cboCombustible.Items.AddRange(new object[] {
+                "Gasolina",
+                "Diésel",
+                "Eléctrico",
+                "Híbrido",
+                "Otro"
+            });
+                pnlEspecificaciones.Controls.Add(cboCombustible);
+
+                // Motor - Cilindrada (editable)
+                AgregarLabel(pnlEspecificaciones, "Motor - Cilindrada:", 185, yPos, lblWidth1);
+                TextBox txtCilindrada = new TextBox
+                {
+                    Name = "txtCilindrada",
+                    Location = new Point(185 + lblWidth1, yPos),
+                    Size = new Size(ctrlWidth1 - 40, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    ReadOnly = false,
+                    BackColor = Color.White
+                };
+                pnlEspecificaciones.Controls.Add(txtCilindrada);
+
+                // Motor - Potencia (editable)
+                AgregarLabel(pnlEspecificaciones, "Motor - Potencia:", 15, yPos + lineHeight, lblWidth1);
+                TextBox txtPotencia = new TextBox
+                {
+                    Name = "txtPotencia",
+                    Location = new Point(15 + lblWidth1, yPos + lineHeight),
+                    Size = new Size(ctrlWidth1 - 40, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    ReadOnly = false,
+                    BackColor = Color.White
+                };
+                pnlEspecificaciones.Controls.Add(txtPotencia);
+
+                // Motor - Torque (editable)
+                AgregarLabel(pnlEspecificaciones, "Motor - Torque:", 185, yPos + lineHeight, lblWidth1);
+                TextBox txtTorque = new TextBox
+                {
+                    Name = "txtTorque",
+                    Location = new Point(185 + lblWidth1, yPos + lineHeight),
+                    Size = new Size(ctrlWidth1 - 40, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    ReadOnly = false,
+                    BackColor = Color.White
+                };
+                pnlEspecificaciones.Controls.Add(txtTorque);
+
+                // Transmisión - Tipo (editable)
+                AgregarLabel(pnlEspecificaciones, "Transmisión - Tipo:", 15, yPos + 2 * lineHeight, lblWidth1);
+                ComboBox cboTransmisionTipo = new ComboBox
+                {
+                    Name = "cboTransmisionTipo",
+                    Location = new Point(15 + lblWidth1, yPos + 2 * lineHeight),
+                    Size = new Size(ctrlWidth1, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = true
+                };
+                cboTransmisionTipo.Items.AddRange(new object[] {
+                "Manual",
+                "Automática",
+                "Semiautomática",
+                "Variable Continua (CVT)",
+                "Otro"
+            });
+                pnlEspecificaciones.Controls.Add(cboTransmisionTipo);
+
+                // Transmisión - Nº de Velocidades (editable)
+                AgregarLabel(pnlEspecificaciones, "Transmisión - Nº Velocidades:", 185, yPos + 2 * lineHeight, lblWidth1);
+                NumericUpDown nudVelocidades = new NumericUpDown
+                {
+                    Name = "nudVelocidades",
+                    Location = new Point(185 + lblWidth1, yPos + 2 * lineHeight),
+                    Size = new Size(ctrlWidth1 - 40, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 1,
+                    Maximum = 10,
+                    Value = 5,
+                    TextAlign = HorizontalAlignment.Center,
+                    BackColor = Color.White
+                };
+                pnlEspecificaciones.Controls.Add(nudVelocidades);
+
+                // --- Fila 2: Dimensiones y Peso ---
+                yPos += lineHeight + 10;
+
+                // Longitud (editable)
+                AgregarLabel(pnlEspecificaciones, "Longitud (mm):", 15, yPos, lblWidth1);
+                NumericUpDown nudLongitud = new NumericUpDown
+                {
+                    Name = "nudLongitud",
+                    Location = new Point(15 + lblWidth1, yPos),
+                    Size = new Size(ctrlWidth1 - 40, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 2000,
+                    Maximum = 6000,
+                    Value = 3500,
+                    ThousandsSeparator = true,
+                    TextAlign = HorizontalAlignment.Center,
+                    BackColor = Color.White
+                };
+                pnlEspecificaciones.Controls.Add(nudLongitud);
+
+                // Anchura (editable)
+                AgregarLabel(pnlEspecificaciones, "Anchura (mm):", 185, yPos, lblWidth1);
+                NumericUpDown nudAnchura = new NumericUpDown
+                {
+                    Name = "nudAnchura",
+                    Location = new Point(185 + lblWidth1, yPos),
+                    Size = new Size(ctrlWidth1 - 40, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 800,
+                    Maximum = 3000,
+                    Value = 1800,
+                    ThousandsSeparator = true,
+                    TextAlign = HorizontalAlignment.Center,
+                    BackColor = Color.White
+                };
+                pnlEspecificaciones.Controls.Add(nudAnchura);
+
+                // Altura (editable)
+                AgregarLabel(pnlEspecificaciones, "Altura (mm):", 15, yPos + lineHeight, lblWidth1);
+                NumericUpDown nudAltura = new NumericUpDown
+                {
+                    Name = "nudAltura",
+                    Location = new Point(15 + lblWidth1, yPos + lineHeight),
+                    Size = new Size(ctrlWidth1 - 40, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 300,
+                    Maximum = 2000,
+                    Value = 1400,
+                    ThousandsSeparator = true,
+                    TextAlign = HorizontalAlignment.Center,
+                    BackColor = Color.White
+                };
+                pnlEspecificaciones.Controls.Add(nudAltura);
+
+                // Peso (editable)
+                AgregarLabel(pnlEspecificaciones, "Peso (kg):", 185, yPos + lineHeight, lblWidth1);
+                NumericUpDown nudPeso = new NumericUpDown
+                {
+                    Name = "nudPeso",
+                    Location = new Point(185 + lblWidth1, yPos + lineHeight),
+                    Size = new Size(ctrlWidth1 - 40, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 500,
+                    Maximum = 4000,
+                    Value = 1200,
+                    ThousandsSeparator = true,
+                    TextAlign = HorizontalAlignment.Center,
+                    BackColor = Color.White
+                };
+                pnlEspecificaciones.Controls.Add(nudPeso);
+
+
+                // ==================== DATOS ADICIONALES ====================
+                // Sección colapsable para datos no editables
+                Panel pnlDatosAdicionales = new Panel
+                {
+                    Location = new Point(580, 0),
+                    Size = new Size(590, 700),
+                    BackColor = Color.FromArgb(248, 249, 250),
+                    BorderStyle = BorderStyle.FixedSingle,
+                    Padding = new Padding(10),
+                };
+                // Siempre visible, actúa como título
+                Label lblDatosAdicionales = new Label
+                {
+                    Text = "📑 DATOS ADICIONALES",
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(33, 37, 41),
+                    Location = new Point(10, 10),
+                    Size = new Size(570, 25),
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    BackColor = Color.Transparent
+                };
+                pnlDatosAdicionales.Controls.Add(lblDatosAdicionales);
+
+                // Área de observaciones (no editable)
+                AgregarLabel(pnlDatosAdicionales, "Descripción:", 10, 50, 100);
+                TextBox txtDescripcion = new TextBox
+                {
+                    Name = "txtDescripcion",
+                    Location = new Point(120, 45),
+                    Size = new Size(450, 100),
+                    Multiline = true,
+                    ScrollBars = ScrollBars.Vertical,
+                    Font = new Font("Segoe UI", 10F),
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke
+                };
+                pnlDatosAdicionales.Controls.Add(txtDescripcion);
+
+                // --- Grilla de Equipamiento ---
+                yPos = 160;
+
+                Label lblEquipamiento = new Label
+                {
+                    Text = "🔧 EQUIPAMIENTO",
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(33, 37, 41),
+                    Location = new Point(10, yPos),
+                    Size = new Size(570, 25),
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    BackColor = Color.Transparent
+                };
+                pnlDatosAdicionales.Controls.Add(lblEquipamiento);
+
+                DataGridView dgvEquipamiento = new DataGridView
+                {
+                    Name = "dgvEquipamiento",
+                    Location = new Point(10, yPos + 30),
+                    Size = new Size(570, 200),
+                    AutoGenerateColumns = false,
+                    ReadOnly = true,
+                    AllowUserToAddRows = false,
+                    AllowUserToDeleteRows = false,
+                    RowHeadersVisible = false,
+                    ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
+                    BackgroundColor = Color.White,
+                    BorderStyle = BorderStyle.Fixed3D,
+                };
+
+                dgvEquipamiento.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colEquipo",
+                    HeaderText = "Equipo",
+                    DataPropertyName = "descripcion",
+                    Width = 300
+                });
+
+                dgvEquipamiento.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colEstado",
+                    HeaderText = "Estado",
+                    DataPropertyName = "estado",
+                    Width = 100
+                });
+
+                dgvEquipamiento.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colComentarios",
+                    HeaderText = "Comentarios",
+                    DataPropertyName = "comentarios",
+                    Width = 160
+                });
+
+                pnlDatosAdicionales.Controls.Add(dgvEquipamiento);
+
+
+                // --- Grilla de Documentos ---
+                yPos += 210;
+
+                Label lblDocumentos = new Label
+                {
+                    Text = "📎 DOCUMENTOS",
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(33, 37, 41),
+                    Location = new Point(10, yPos),
+                    Size = new Size(570, 25),
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    BackColor = Color.Transparent
+                };
+                pnlDatosAdicionales.Controls.Add(lblDocumentos);
+
+                DataGridView dgvDocumentos = new DataGridView
+                {
+                    Name = "dgvDocumentos",
+                    Location = new Point(10, yPos + 30),
+                    Size = new Size(570, 150),
+                    AutoGenerateColumns = false,
+                    ReadOnly = true,
+                    AllowUserToAddRows = false,
+                    AllowUserToDeleteRows = false,
+                    RowHeadersVisible = false,
+                    ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
+                    BackgroundColor = Color.White,
+                    BorderStyle = BorderStyle.Fixed3D,
+                };
+
+                dgvDocumentos.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colDocNombre",
+                    HeaderText = "Documento",
+                    DataPropertyName = "nombre",
+                    Width = 350
+                });
+
+                dgvDocumentos.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colDocTipo",
+                    HeaderText = "Tipo",
+                    DataPropertyName = "tipo",
+                    Width = 100
+                });
+
+                dgvDocumentos.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colDocFecha",
+                    HeaderText = "Fecha",
+                    DataPropertyName = "fecha",
+                    Width = 120,
+                    DefaultCellStyle = { Format = "d" }
+                });
+
+                pnlDatosAdicionales.Controls.Add(dgvDocumentos);
+
+
+                // ==================== PANEL DERECHO ====================
+                Panel pnlDerecho = new Panel
+                {
+                    Location = new Point(1240, 0),
+                    Size = new Size(460, 700),
+                    BackColor = Color.FromArgb(248, 249, 250),
+                    BorderStyle = BorderStyle.FixedSingle,
+                    Padding = new Padding(10),
+                };
+
+                Label lblInfoExtra = new Label
+                {
+                    Text = "ℹ️ INFORMACIÓN ADICIONAL",
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(33, 37, 41),
+                    Location = new Point(10, 10),
+                    Size = new Size(440, 25),
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    BackColor = Color.Transparent
+                };
+                pnlDerecho.Controls.Add(lblInfoExtra);
+
+                // --- Web Links ---
+                yPos = 50;
+                string[][] linksInfo = new string[][]
+                {
+                    new string[] { "🔗 Ver en Wikipedia", "https://es.wikipedia.org/wiki/" },
+                    new string[] { "🔗 Ver en Google", "https://www.google.com/search?q=" },
+                    new string[] { "🔗 Ver en Youtube", "https://www.youtube.com/results?search_query=" },
+                    new string[] { "🔗 Ver en Forocoches", "https://www.forocoches.com/foros/search.php?search_keywords=" },
+                    new string[] { "🔗 Ver en Autopista", "https://www.autopista.es/buscar/?q=" },
+                };
+
+                foreach (var link in linksInfo)
+                {
+                    string texto = link[0];
+                    string url = link[1];
+
+                    Button btnLink = new Button
+                    {
+                        Text = texto,
+                        Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                        ForeColor = Color.White,
+                        BackColor = Color.FromArgb(10, 117, 210),
+                        FlatStyle = FlatStyle.Flat,
+                        Cursor = Cursors.Hand,
+                        Size = new Size(440, 35),
+                        Margin = new Margin

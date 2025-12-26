@@ -74,7 +74,7 @@ namespace CpAuton
         private Button btnSeleccionarFoto;
         private Button btnEliminarFoto;
         private Image imagenActual = null;
-
+        private Button btnBuscarFotoWeb;
 
 
         public FrmRegistroVehiculo()
@@ -995,6 +995,25 @@ namespace CpAuton
             btnEliminarFoto.Click += (s, e) => EliminarFoto();
             pnlControlesFoto.Controls.Add(btnEliminarFoto);
 
+            // Botón para buscar fotografías en la web
+            btnBuscarFotoWeb = new Button
+            {
+                Text = "🌐 Buscar Foto Web",
+                Size = new Size(200, 40),
+                Location = new Point(430, 170),
+                BackColor = Color.FromArgb(40, 167, 69),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Enabled = false
+            };
+            btnBuscarFotoWeb.FlatAppearance.BorderSize = 0;
+            btnBuscarFotoWeb.Click += BtnBuscarFotoWeb_Click;
+            try { var ttbf = new ToolTip(); ttbf.SetToolTip(btnBuscarFotoWeb, "Buscar fotografías del vehículo en la web"); } catch { }
+            pnlControlesFoto.Controls.Add(btnBuscarFotoWeb);
+            btnBuscarFotoWeb.BringToFront();
+
             lblFotoInfo = new Label
             {
                 Text = "📷 Sin fotografía seleccionada",
@@ -1116,6 +1135,10 @@ namespace CpAuton
             // NUEVO: Botón Frenos
             if (btnBuscarFrenos != null)
                 btnBuscarFrenos.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion && tieneFrenos;
+
+            // NUEVO: Botón Buscar Foto Web
+            if (btnBuscarFotoWeb != null)
+                btnBuscarFotoWeb.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion;
         }
 
         // ⭐ NUEVO EVENTO: Cuando cambia la organización de seguridad
@@ -2193,6 +2216,36 @@ namespace CpAuton
 
                 string query = $"{marca} {modelo} {anio} versión {version}";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Botón: Buscar fotografías del vehículo en la web (Google Imágenes)
+        private void BtnBuscarFotoWeb_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca?.Text.Trim() ?? "";
+                string modelo = cboModelo?.Text.Trim() ?? "";
+                int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string version = cboVersion?.Text ?? "";
+                string tipoVehiculo = cboTipo?.Text ?? "";
+                int nroPuertas = cboPuertas != null && cboPuertas.SelectedItem != null ? (int)cboPuertas.SelectedItem : 0;
+
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version))
+                {
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Versión para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"{marca} {modelo} año {anio} versión {version} tipo {tipoVehiculo} de {nroPuertas} puertas fotos";
+                string url = "https://www.google.com/search?tbm=isch&q=" + Uri.EscapeDataString(query);
+
                 Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
             }
             catch (Exception ex)

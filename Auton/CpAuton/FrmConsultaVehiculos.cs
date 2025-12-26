@@ -344,6 +344,8 @@ namespace CpAuton
                 Button btnEliminarFotoDetalle = null;
                 Image imagenCargada = null;
                 bool fotoEliminada = false;
+                // NEW: flag to indicate edit mode for preventing interaction when not editing
+                bool editarActivo = false;
 
                 // ===== FORMULARIO PRINCIPAL =====
                 Form frmDetalles = new Form
@@ -659,9 +661,11 @@ namespace CpAuton
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false,
-                    Visible = true
+                    Enabled = Util.usuario != null,
+                    Visible = true,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboProcedencia.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 pnlPrincipal.Controls.Add(cboProcedencia);
                 yPosLeft += lineHeight;
 
@@ -687,11 +691,13 @@ namespace CpAuton
                     //Location = new Point(colLeftX, yPosLeft),
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDown,
-                    AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
-                    AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
+                    AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                    AutoCompleteSource = AutoCompleteSource.ListItems,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboMarca.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
 
                 // Botón + para agregar nueva marca (visible solo en modo edición)
                 Button btnAddMarca = new Button
@@ -894,11 +900,13 @@ namespace CpAuton
                     //Location = new Point(colLeftX, yPosLeft),
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDown,
-                    AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
-                    AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
+                    AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                    AutoCompleteSource = AutoCompleteSource.ListItems,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboModelo.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
 
                 // Botón + para agregar nuevo modelo (visible solo en modo edición)
                 Button btnAddModelo = new Button
@@ -973,7 +981,7 @@ namespace CpAuton
                     }
                 };
 
-                // Botón lápiz para editar el modelo seleccionado (visible solo en modo edición)
+                // Botón lápiz para editar el modelo seleccionada (visible solo en modo edición)
                 Button btnEditModelo = new Button
                 {
                     Name = "btnEditModelo",
@@ -1077,7 +1085,7 @@ namespace CpAuton
                             // Intentar buscar en la fuente enlazada
                             if (cboModelo.DataSource is System.Collections.IEnumerable ds)
                             {
-                                // Buscar propiedad 'id' y 'descripcion' mediante reflection-safe approach
+                                // Buscar propiedad 'id' and 'descripcion' mediante reflection-safe approach
                                 foreach (var item in ds)
                                 {
                                     var propId = item.GetType().GetProperty("id");
@@ -1125,10 +1133,14 @@ namespace CpAuton
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    // keep enabled so it looks normal, prevent selection when not editing via handler
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
                 cboVersion.Items.AddRange(new[] { "Básica", "Intermedia", "Full" });
                 cboVersion.Text = vehiculoCompleto.version;
+                // prevent dropdown when not in edit mode
+                cboVersion.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 pnlPrincipal.Controls.Add(cboVersion);
                 yPosLeft += lineHeight;
 
@@ -1141,8 +1153,10 @@ namespace CpAuton
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboTipo.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 pnlPrincipal.Controls.Add(cboTipo);
                 yPosLeft += lineHeight;
 
@@ -1152,7 +1166,7 @@ namespace CpAuton
                 // Evento para cargar modelos cuando cambie la marca (SOLO EN MODO EDICIÓN)
                 EventHandler marcaCambiadaHandler = (s, e) =>
                 {
-                    if (permitirEventos && cboMarca.Enabled && cboMarca.SelectedValue != null)
+                    if (permitirEventos && cboMarca.Enabled && cboMarca.SelectedValue != null && editarActivo)
                     {
                         try
                         {
@@ -1190,6 +1204,9 @@ namespace CpAuton
 
                         var sel = cboProcedencia.SelectedValue;
                         if (sel == null) return;
+
+                        // Only allow when in edit mode
+                        if (!editarActivo) return;
 
                         int idProc = Convert.ToInt32(sel);
                         var marcasFiltradas = MarcaCln.listar()
@@ -1406,8 +1423,26 @@ namespace CpAuton
                     Maximum = DateTime.Now.Year,
                     Value = vehiculoCompleto.anioFabricacion,
                     TextAlign = HorizontalAlignment.Center,
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                // make inner textbox readonly so it looks like normal textbox but not editable
+                try
+                {
+                    var tb = nudAnio.Controls.OfType<TextBox>().FirstOrDefault();
+                    if (tb != null)
+                    {
+                        tb.ReadOnly = true;
+                        tb.BackColor = Color.WhiteSmoke;
+                    }
+                }
+                catch { }
+
+                // prevent value changes when not editing by reverting to initial value
+                decimal nudAnioInicial = nudAnio.Value;
+                nudAnio.ValueChanged += (s, e) => { if (!editarActivo) { nudAnio.Value = nudAnioInicial; } };
+                nudAnio.GotFocus += (s, e) => { nudAnioInicial = nudAnio.Value; };
+
                 pnlPrincipal.Controls.Add(nudAnio);
                 yPosLeft += lineHeight;
 
@@ -1442,6 +1477,7 @@ namespace CpAuton
                     Cursor = Cursors.Hand
                 };
                 btnBuscarGeneracion.FlatAppearance.BorderSize = 0;
+                try { var ttG = new ToolTip(); ttG.SetToolTip(btnBuscarGeneracion, "Buscar generación en la web"); } catch { }
                 btnBuscarGeneracion.Click += (s, e) =>
                 {
                     try
@@ -1472,7 +1508,6 @@ namespace CpAuton
                         MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 };
-                try { var ttG = new ToolTip(); ttG.SetToolTip(btnBuscarGeneracion, "Buscar generación en la web"); } catch { }
                 pnlPrincipal.Controls.Add(btnBuscarGeneracion);
 
                 yPosRight += lineHeight;
@@ -1490,8 +1525,10 @@ namespace CpAuton
                     AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
                     AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboPaisFabricacion.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 cboPaisFabricacion.Items.AddRange(new[] { "Japón", "Alemania", "Estados Unidos", "Corea del Sur", "China",
                 "India", "Brasil", "México", "España", "Francia", "Italia",
                 "Reino Unido", "Tailandia", "Hungría", "República Checa",
@@ -1510,8 +1547,10 @@ namespace CpAuton
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboTransmision.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 cboTransmision.Items.AddRange(new[] { "Manual", "Automática", "CVT", "Semiautomática", "Doble Embrague" });
                 cboTransmision.Text = vehiculoCompleto.transmision;
                 pnlPrincipal.Controls.Add(cboTransmision);
@@ -1530,10 +1569,10 @@ namespace CpAuton
                     Maximum = 10,
                     Value = vehiculoCompleto.nroVelocidades ?? 5,
                     TextAlign = HorizontalAlignment.Center,
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
-
-                // Label informativo que cambia según transmisión
+                // Label informativo que cambia según transmisión (kept here so it exists for handlers)
                 Label lblInfoVelocidades = new Label
                 {
                     Name = "lblInfoVelocidades",
@@ -1543,14 +1582,23 @@ namespace CpAuton
                     ForeColor = Color.Gray,
                     TextAlign = ContentAlignment.MiddleLeft
                 };
+                try
+                {
+                    var tbv = nudVelocidades.Controls.OfType<TextBox>().FirstOrDefault();
+                    if (tbv != null)
+                    {
+                        tbv.ReadOnly = true;
+                        tbv.BackColor = Color.WhiteSmoke;
+                    }
+                }
+                catch { }
+                decimal nudVelInicial = nudVelocidades.Value;
+                nudVelocidades.ValueChanged += (s, ev) => { if (!editarActivo) nudVelocidades.Value = nudVelInicial; };
+                nudVelocidades.GotFocus += (s, ev) => { nudVelInicial = nudVelocidades.Value; };
 
                 // Add controls to panel BEFORE configuring so the NumericUpDown has a Parent
                 pnlPrincipal.Controls.Add(nudVelocidades);
                 pnlPrincipal.Controls.Add(lblInfoVelocidades);
-
-                // Configurar según tipo de transmisión actual
-                // NOTA: no habilitamos la edición aún; la edición se habilita cuando el usuario pulses 'Editar'
-                ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
 
                 yPosRight += lineHeight;
                 nudVelocidades.BringToFront();
@@ -1582,7 +1630,9 @@ namespace CpAuton
                     AutoSize = true,
                     ForeColor = Color.FromArgb(220, 53, 69),
                     Checked = vehiculoCompleto.tieneTurbo,
-                    Enabled = false
+                    // keep enabled but prevent auto toggle when not editing
+                    Enabled = true,
+                    AutoCheck = false
                 };
                 pnlPrincipal.Controls.Add(chkTieneTurbo);
                 yPosRight += lineHeight;
@@ -1613,8 +1663,10 @@ namespace CpAuton
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboCombustible.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 cboCombustible.Items.AddRange(new[] { "Gasolina", "Diesel", "Híbrido", "Eléctrico", "GLP", "GNC" });
                 cboCombustible.Text = vehiculoCompleto.combustible;
                 pnlPrincipal.Controls.Add(cboCombustible);
@@ -1630,8 +1682,10 @@ namespace CpAuton
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboFrenos.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 cboFrenos.Items.AddRange(new[] {
                     "Disco en las 4 ruedas",
                     "Disco delanteros y tambor atrás",
@@ -1655,9 +1709,16 @@ namespace CpAuton
                     Maximum = 8,
                     Value = vehiculoCompleto.nroAsientos ?? 5,
                     TextAlign = HorizontalAlignment.Center,
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                // allow editing inner textbox
+                try { var tba = nudAsientos.Controls.OfType<TextBox>().FirstOrDefault(); if (tba != null) tba.ReadOnly = false; } catch { }
+                decimal nudAsientosInicial = nudAsientos.Value;
+                nudAsientos.ValueChanged += (s, ev) => { if (!editarActivo) nudAsientos.Value = nudAsientosInicial; };
+                nudAsientos.GotFocus += (s, ev) => { nudAsientosInicial = nudAsientos.Value; };
                 pnlPrincipal.Controls.Add(nudAsientos);
+
                 yPosRight += lineHeight;
                 //enviar al frente
                 nudAsientos.BringToFront();
@@ -1671,8 +1732,10 @@ namespace CpAuton
                     Size = new Size(150, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboPuertas.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 cboPuertas.Items.AddRange(new object[] { 3, 4, 5 });
                 cboPuertas.SelectedItem = vehiculoCompleto.nroPuertas;
                 pnlPrincipal.Controls.Add(cboPuertas);
@@ -1699,8 +1762,10 @@ namespace CpAuton
                     Size = new Size(ctrlWidth + 50, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboTraccion.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 cboTraccion.Items.AddRange(new[] {
                     "Delantera (4x2 FWD)",
                     "Trasera (4x2 RWD)",
@@ -1742,7 +1807,8 @@ namespace CpAuton
                     Maximum = 12,
                     Value = vehiculoCompleto.nroAirbags,
                     TextAlign = HorizontalAlignment.Center,
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
                 pnlPrincipal.Controls.Add(nudAirbags);
                 yPosLeft += lineHeight;
@@ -1756,8 +1822,10 @@ namespace CpAuton
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboOrganizacion.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 cboOrganizacion.Items.AddRange(new[] { "Latin NCAP", "Euro NCAP", "IIHS", "NHTSA", "ANCAP", "Sin calificación" });
                 cboOrganizacion.Text = vehiculoCompleto.organizacionSeguridad;
                 pnlPrincipal.Controls.Add(cboOrganizacion);
@@ -1775,7 +1843,8 @@ namespace CpAuton
                     Maximum = 5,
                     Value = vehiculoCompleto.seguridadChoques,
                     TextAlign = HorizontalAlignment.Center,
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
                 pnlPrincipal.Controls.Add(nudEstrellas);
                 yPosLeft += lineHeight;
@@ -1793,8 +1862,10 @@ namespace CpAuton
                     Size = new Size(ctrlWidth, 28),
                     DropDownStyle = ComboBoxStyle.DropDownList,
                     Font = new Font("Segoe UI", 10F),
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
+                cboConfiabilidad.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 cboConfiabilidad.Items.AddRange(new[] { "Excelente", "Bueno", "Regular", "Malo" });
                 cboConfiabilidad.Text = vehiculoCompleto.confiabilidad;
                 pnlPrincipal.Controls.Add(cboConfiabilidad);
@@ -1815,7 +1886,8 @@ namespace CpAuton
                     Increment = 0.5m,
                     Value = vehiculoCompleto.puntuacion,
                     TextAlign = HorizontalAlignment.Center,
-                    Enabled = false
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
                 };
                 pnlPrincipal.Controls.Add(nudPuntuacion);
                 yPosRight += lineHeight;
@@ -1854,7 +1926,7 @@ namespace CpAuton
                     Name = "btnIniciarSesionDetalle",
                     Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión",
                     Size = new Size(120, 35),
-                    Location = new Point(8, 8),
+                    Location = new Point(10, 10),
                     BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183),
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
@@ -1914,6 +1986,8 @@ namespace CpAuton
                             btnEliminarFotoDetalle.Enabled = true;
 
                         // ACTIVAR MODO EDICIÓN - HABILITAR TODO
+                        editarActivo = true;
+
                         txtChasis.ReadOnly = false;
                         txtChasis.BackColor = Color.White;
                         cboMarca.Enabled = true;
@@ -1934,6 +2008,8 @@ namespace CpAuton
                         }
                         catch { }
                         nudAnio.Enabled = true;
+                        // allow editing inner textbox
+                        try { var t = nudAnio.Controls.OfType<TextBox>().FirstOrDefault(); if (t != null) t.ReadOnly = false; } catch { }
                         txtGeneracion.ReadOnly = false;
                         txtGeneracion.BackColor = Color.White;
                         cboPaisFabricacion.Enabled = true;
@@ -1941,18 +2017,24 @@ namespace CpAuton
                         var nudVelocidadesEdit = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
                         // Reconfigurar velocidades para permitir edición ahora que estamos en modo edición
                         ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesEdit, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, true);
+                        // allow editing inner textbox for velocities
+                        try { var tv = nudVelocidadesEdit.Controls.OfType<TextBox>().FirstOrDefault(); if (tv != null) tv.ReadOnly = false; } catch { }
                         nudAsientos.Enabled = true;
+                        try { var ta = nudAsientos.Controls.OfType<TextBox>().FirstOrDefault(); if (ta != null) ta.ReadOnly = false; } catch { }
                         cboTraccion.Enabled = true;
                         cboPuertas.Enabled = true;
-                        chkTieneTurbo.Enabled = true;
+                        chkTieneTurbo.AutoCheck = true;
                         txtMotor.ReadOnly = false;
                         txtMotor.BackColor = Color.White;
                         cboCombustible.Enabled = true;
                         nudAirbags.Enabled = true;
+                        try { var tbair = nudAirbags.Controls.OfType<TextBox>().FirstOrDefault(); if (tbair != null) tbair.ReadOnly = false; } catch { }
                         cboOrganizacion.Enabled = true;
                         nudEstrellas.Enabled = true;
+                        try { var tbest3 = nudEstrellas.Controls.OfType<TextBox>().FirstOrDefault(); if (tbest3 != null) tbest3.ReadOnly = false; } catch { }
                         cboConfiabilidad.Enabled = true;
                         nudPuntuacion.Enabled = true;
+                        try { var tbp3 = nudPuntuacion.Controls.OfType<TextBox>().FirstOrDefault(); if (tbp3 != null) tbp3.ReadOnly = false; } catch { }
                         txtObservaciones.ReadOnly = false;
                         txtObservaciones.BackColor = Color.White;
 
@@ -2093,12 +2175,14 @@ namespace CpAuton
                             if (resultado > 0)
                             {
                                 // DESACTIVAR MODO EDICIÓN
+                                editarActivo = false;
+
                                 txtChasis.ReadOnly = true;
                                 txtChasis.BackColor = Color.WhiteSmoke;
-                                cboMarca.Enabled = false;
-                                cboModelo.Enabled = false;
-                                cboVersion.Enabled = false;
-                                cboTipo.Enabled = false;
+                                cboMarca.Enabled = true;
+                                cboModelo.Enabled = true;
+                                cboVersion.Enabled = true;
+                                cboTipo.Enabled = true;
                                 // Mostrar procedencia al salir del modo edición
                                 cboProcedencia.Visible = true;
                                 try
@@ -2110,27 +2194,33 @@ namespace CpAuton
                                     }
                                 }
                                 catch { }
-                                nudAnio.Enabled = false;
+                                nudAnio.Enabled = true;
+                                try { var t = nudAnio.Controls.OfType<TextBox>().FirstOrDefault(); if (t != null) t.ReadOnly = true; } catch { }
                                 txtGeneracion.ReadOnly = true;
                                 txtGeneracion.BackColor = Color.WhiteSmoke;
-                                cboPaisFabricacion.Enabled = false;
-                                cboTransmision.Enabled = false;
+                                cboPaisFabricacion.Enabled = true;
+                                cboTransmision.Enabled = true;
                                 var nudVelocidadesRead = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
                                 // Al salir de edición, reconfiguramos para modo lectura (deshabilitado o placeholder si CVT)
                                 ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesRead, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
-                                nudAsientos.Enabled = false;
-                                cboTraccion.Enabled = false;
-                                cboPuertas.Enabled = false;
-                                chkTieneTurbo.Enabled = false;
+                                try { var tv2 = nudVelocidadesRead.Controls.OfType<TextBox>().FirstOrDefault(); if (tv2 != null) tv2.ReadOnly = true; } catch { }
+                                nudAsientos.Enabled = true;
+                                try { var ta2 = nudAsientos.Controls.OfType<TextBox>().FirstOrDefault(); if (ta2 != null) ta2.ReadOnly = true; } catch { }
+                                cboTraccion.Enabled = true;
+                                cboPuertas.Enabled = true;
+                                chkTieneTurbo.AutoCheck = false;
                                 txtMotor.ReadOnly = true;
                                 txtMotor.BackColor = Color.WhiteSmoke;
-                                cboCombustible.Enabled = false;
+                                cboCombustible.Enabled = true;
                                 cboFrenos.Enabled = false;
-                                nudAirbags.Enabled = false;
+                                nudAirbags.Enabled = true;
+                                try { var tbair2 = nudAirbags.Controls.OfType<TextBox>().FirstOrDefault(); if (tbair2 != null) tbair2.ReadOnly = true; } catch { }
                                 cboOrganizacion.Enabled = false;
-                                nudEstrellas.Enabled = false;
+                                nudEstrellas.Enabled = true;
+                                try { var tbest3 = nudEstrellas.Controls.OfType<TextBox>().FirstOrDefault(); if (tbest3 != null) tbest3.ReadOnly = true; } catch { }
                                 cboConfiabilidad.Enabled = false;
-                                nudPuntuacion.Enabled = false;
+                                nudPuntuacion.Enabled = true;
+                                try { var tbp3 = nudPuntuacion.Controls.OfType<TextBox>().FirstOrDefault(); if (tbp3 != null) tbp3.ReadOnly = true; } catch { }
                                 txtObservaciones.ReadOnly = true;
                                 txtObservaciones.BackColor = Color.WhiteSmoke;
 
@@ -2460,7 +2550,10 @@ namespace CpAuton
 
             if (frmAuth.ShowDialog(this) == DialogResult.OK)
             {
-                ActualizarInterfaz();
+                // Actualizar interfaz del formulario principal en tiempo real
+                ActualizarInterfazSesion();
+                btnNuevo.Visible = Util.usuario != null;
+
                 return true;
             }
 
