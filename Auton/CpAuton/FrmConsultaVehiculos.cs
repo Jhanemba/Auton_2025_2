@@ -1142,7 +1142,50 @@ namespace CpAuton
                 // prevent dropdown when not in edit mode
                 cboVersion.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 pnlPrincipal.Controls.Add(cboVersion);
-                yPosLeft += lineHeight;
+
+                // Agregar botón de búsqueda junto a la versión (similar a btnBuscarGeneracion)
+                Button btnBuscarVersion = new Button
+                {
+                    Name = "btnBuscarVersion",
+                    Text = "🔍",
+                    Location = new Point(colLeftX + ctrlWidth + 8, yPosLeft),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarVersion.FlatAppearance.BorderSize = 0;
+                try { var ttV = new ToolTip(); ttV.SetToolTip(btnBuscarVersion, "Buscar información de la versión"); } catch { }
+                btnBuscarVersion.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = vehiculoCompleto != null ? vehiculoCompleto.anioFabricacion : DateTime.Now.Year;
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Versión para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"{marca} {modelo} {anioVal} versión {version}";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarVersion);
+                btnBuscarVersion.BringToFront();
+                yPosLeft += lineHeight + 20; // Espacio extra por el label informativo
+                                             //enviar lblInfoVersion al fondo
 
                 // Tipo que AHORA EDITABLE
                 AgregarLabel(pnlPrincipal, "Tipo:", 20, yPosLeft, labelWidth);
@@ -1484,8 +1527,8 @@ namespace CpAuton
                     {
                         string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
                         string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
-                        int anioVal = 0;
-                        try { anioVal = (nudAnio != null) ? (int)nudAnio.Value : DateTime.Now.Year; } catch { anioVal = DateTime.Now.Year; }
+                        int anioVal = (int)nudAnio.Value;
+                        if (anioVal < 1900 || anioVal > DateTime.Now.Year) anioVal = DateTime.Now.Year;
 
                         if (string.IsNullOrWhiteSpace(marca) && string.IsNullOrWhiteSpace(modelo))
                         {
