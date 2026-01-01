@@ -638,6 +638,8 @@ namespace CpAuton
                     BackColor = Color.WhiteSmoke
                 };
                 pnlPrincipal.Controls.Add(txtChasis);
+                txtChasis.Enabled = true;
+                txtChasis.ReadOnly = true; // deshabilitado hasta entrar en modo edición
                 yPosLeft += lineHeight;
 
                 // Procedencia (EDITABLE) - permite corregir la procedencia del vehículo
@@ -667,6 +669,7 @@ namespace CpAuton
                 };
                 cboProcedencia.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 pnlPrincipal.Controls.Add(cboProcedencia);
+                cboProcedencia.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosLeft += lineHeight;
 
                 // Obtener modelo actual PRIMERO
@@ -889,6 +892,7 @@ namespace CpAuton
 
                 flpMarcaRow.Controls.Add(btnVerMarcaDesc_small);
                 pnlPrincipal.Controls.Add(flpMarcaRow);
+                cboMarca.Enabled = false; // deshabilitado hasta entrar en modo edición
 
                 yPosLeft += lineHeight;
 
@@ -1121,6 +1125,7 @@ namespace CpAuton
 
                 flpModeloRow.Controls.Add(btnVerModeloDesc_small);
                 pnlPrincipal.Controls.Add(flpModeloRow);
+                cboModelo.Enabled = false; // deshabilitado hasta entrar en modo edición
 
                 yPosLeft += lineHeight;
 
@@ -1143,7 +1148,7 @@ namespace CpAuton
                 cboVersion.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 pnlPrincipal.Controls.Add(cboVersion);
 
-                // Agregar botón de búsqueda junto a la versión (similar a btnBuscarGeneracion)
+                // Botón buscar versión (similar a btnBuscarGeneracion) - agregado
                 Button btnBuscarVersion = new Button
                 {
                     Name = "btnBuscarVersion",
@@ -1184,6 +1189,7 @@ namespace CpAuton
                 };
                 pnlPrincipal.Controls.Add(btnBuscarVersion);
                 btnBuscarVersion.BringToFront();
+                cboVersion.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosLeft += lineHeight + 20; // Espacio extra por el label informativo
                                              //enviar lblInfoVersion al fondo
 
@@ -1201,6 +1207,7 @@ namespace CpAuton
                 };
                 cboTipo.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
                 pnlPrincipal.Controls.Add(cboTipo);
+                cboTipo.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosLeft += lineHeight;
 
                 // Variable para controlar eventos
@@ -1487,6 +1494,7 @@ namespace CpAuton
                 nudAnio.GotFocus += (s, e) => { nudAnioInicial = nudAnio.Value; };
 
                 pnlPrincipal.Controls.Add(nudAnio);
+                nudAnio.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosLeft += lineHeight;
 
                 // ==================== COLUMNA DERECHA ====================
@@ -1553,6 +1561,8 @@ namespace CpAuton
                 };
                 pnlPrincipal.Controls.Add(btnBuscarGeneracion);
 
+                txtGeneracion.Enabled = true; // habilitado hasta entrar en modo edición
+                txtGeneracion.ReadOnly = true;
                 yPosRight += lineHeight;
                 //poner al frente
                 txtGeneracion.BringToFront();
@@ -1578,6 +1588,49 @@ namespace CpAuton
                 "Turquía", "Argentina", "Sudáfrica", "Australia", "Canadá" });
                 cboPaisFabricacion.Text = vehiculoCompleto.paisFabricacion;
                 pnlPrincipal.Controls.Add(cboPaisFabricacion);
+
+                // Botón buscar país (similar a FrmRegistroVehiculo) - agregado
+                Button btnBuscarPaisFabricacion = new Button
+                {
+                    Name = "btnBuscarPaisFabricacion",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarPaisFabricacion.FlatAppearance.BorderSize = 0;
+                try { var ttpPais = new ToolTip(); ttpPais.SetToolTip(btnBuscarPaisFabricacion, "Verificar país de fabricación"); } catch { }
+                btnBuscarPaisFabricacion.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+                        string pais = cboPaisFabricacion != null ? cboPaisFabricacion.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version) || string.IsNullOrWhiteSpace(pais))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Versión y País para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿El {marca} {modelo} versión {version} es fabricado en {pais}?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarPaisFabricacion);
+                btnBuscarPaisFabricacion.BringToFront();
+                cboPaisFabricacion.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 cboPaisFabricacion.BringToFront();
 
@@ -1597,6 +1650,7 @@ namespace CpAuton
                 cboTransmision.Items.AddRange(new[] { "Manual", "Automática", "CVT", "Semiautomática", "Doble Embrague" });
                 cboTransmision.Text = vehiculoCompleto.transmision;
                 pnlPrincipal.Controls.Add(cboTransmision);
+                cboTransmision.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 cboTransmision.BringToFront();
 
@@ -1645,6 +1699,7 @@ namespace CpAuton
 
                 yPosRight += lineHeight;
                 nudVelocidades.BringToFront();
+                nudVelocidades.Enabled = false; // deshabilitado hasta entrar en modo edición
                 lblInfoVelocidades.BringToFront();
 
                 // ⭐ EVENTO: Cambiar opciones cuando cambia la transmisión
@@ -1678,6 +1733,13 @@ namespace CpAuton
                     AutoCheck = false
                 };
                 pnlPrincipal.Controls.Add(chkTieneTurbo);
+                chkTieneTurbo.Click += (s, e) =>
+                {
+                    if (editarActivo)
+                    {
+                        chkTieneTurbo.Checked = !chkTieneTurbo.Checked;
+                    }
+                };
                 yPosRight += lineHeight;
                 chkTieneTurbo.BringToFront();
 
@@ -1694,6 +1756,52 @@ namespace CpAuton
                     BackColor = Color.WhiteSmoke,
                 };
                 pnlPrincipal.Controls.Add(txtMotor);
+
+                // Botón buscar motor (similar a FrmRegistroVehiculo) - agregado
+                Button btnBuscarMotor = new Button
+                {
+                    Name = "btnBuscarMotor",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarMotor.FlatAppearance.BorderSize = 0;
+                try { var ttM = new ToolTip(); ttM.SetToolTip(btnBuscarMotor, "Buscar si el vehículo trae ese motor"); } catch { }
+                btnBuscarMotor.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        string motor = txtMotor != null ? txtMotor.Text.Trim() : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(motor))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Motor para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿El {marca} {modelo} {anioVal} trae motor {motor}?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarMotor);
+                txtMotor.Enabled = true;
+                txtMotor.ReadOnly = true; // deshabilitado hasta entrar en modo edición
+                btnBuscarMotor.BringToFront();
+
                 yPosRight += lineHeight;
                 txtMotor.BringToFront();
 
@@ -1713,6 +1821,7 @@ namespace CpAuton
                 cboCombustible.Items.AddRange(new[] { "Gasolina", "Diesel", "Híbrido", "Eléctrico", "GLP", "GNC" });
                 cboCombustible.Text = vehiculoCompleto.combustible;
                 pnlPrincipal.Controls.Add(cboCombustible);
+                cboCombustible.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 cboCombustible.BringToFront();
 
@@ -1736,6 +1845,7 @@ namespace CpAuton
                 });
                 cboFrenos.Text = vehiculoCompleto.frenos;
                 pnlPrincipal.Controls.Add(cboFrenos);
+                cboFrenos.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 //frenos al frente
                 cboFrenos.BringToFront();
@@ -1761,7 +1871,7 @@ namespace CpAuton
                 nudAsientos.ValueChanged += (s, ev) => { if (!editarActivo) nudAsientos.Value = nudAsientosInicial; };
                 nudAsientos.GotFocus += (s, ev) => { nudAsientosInicial = nudAsientos.Value; };
                 pnlPrincipal.Controls.Add(nudAsientos);
-
+                nudAsientos.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 //enviar al frente
                 nudAsientos.BringToFront();
@@ -1793,6 +1903,7 @@ namespace CpAuton
                     TextAlign = ContentAlignment.MiddleLeft
                 };
                 pnlPrincipal.Controls.Add(lblInfoPuertas);
+                cboPuertas.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 cboPuertas.BringToFront();
 
@@ -1829,7 +1940,7 @@ namespace CpAuton
                     TextAlign = ContentAlignment.MiddleLeft
                 };
                 pnlPrincipal.Controls.Add(lblInfoTraccion);
-
+                cboTraccion.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 cboTraccion.BringToFront();
 
@@ -1854,6 +1965,7 @@ namespace CpAuton
                     BackColor = Color.WhiteSmoke
                 };
                 pnlPrincipal.Controls.Add(nudAirbags);
+                nudAirbags.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosLeft += lineHeight;
 
                 // Organización (EDITABLE)
@@ -1872,6 +1984,7 @@ namespace CpAuton
                 cboOrganizacion.Items.AddRange(new[] { "Latin NCAP", "Euro NCAP", "IIHS", "NHTSA", "ANCAP", "Sin calificación" });
                 cboOrganizacion.Text = vehiculoCompleto.organizacionSeguridad;
                 pnlPrincipal.Controls.Add(cboOrganizacion);
+                cboOrganizacion.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosLeft += lineHeight;
 
                 // Estrellas (EDITABLE)
@@ -1890,6 +2003,7 @@ namespace CpAuton
                     BackColor = Color.WhiteSmoke
                 };
                 pnlPrincipal.Controls.Add(nudEstrellas);
+                nudEstrellas.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosLeft += lineHeight;
 
                 // ==================== EVALUACIÓN ====================
@@ -1912,6 +2026,7 @@ namespace CpAuton
                 cboConfiabilidad.Items.AddRange(new[] { "Excelente", "Bueno", "Regular", "Malo" });
                 cboConfiabilidad.Text = vehiculoCompleto.confiabilidad;
                 pnlPrincipal.Controls.Add(cboConfiabilidad);
+                cboConfiabilidad.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 cboConfiabilidad.BringToFront();
 
@@ -1933,6 +2048,7 @@ namespace CpAuton
                     BackColor = Color.WhiteSmoke
                 };
                 pnlPrincipal.Controls.Add(nudPuntuacion);
+                nudPuntuacion.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 nudPuntuacion.BringToFront();
 
@@ -1952,6 +2068,8 @@ namespace CpAuton
                     BackColor = Color.WhiteSmoke
                 };
                 pnlPrincipal.Controls.Add(txtObservaciones);
+                txtObservaciones.Enabled = true; // habilitado hasta entrar en modo edición
+                txtObservaciones.ReadOnly = true;
 
                 // ==================== PANEL DE BOTONES ====================
                 Panel pnlBotones = new Panel
@@ -2031,6 +2149,7 @@ namespace CpAuton
                         // ACTIVAR MODO EDICIÓN - HABILITAR TODO
                         editarActivo = true;
 
+                        txtChasis.Enabled = true;
                         txtChasis.ReadOnly = false;
                         txtChasis.BackColor = Color.White;
                         cboMarca.Enabled = true;
@@ -2053,6 +2172,7 @@ namespace CpAuton
                         nudAnio.Enabled = true;
                         // allow editing inner textbox
                         try { var t = nudAnio.Controls.OfType<TextBox>().FirstOrDefault(); if (t != null) t.ReadOnly = false; } catch { }
+                        txtGeneracion.Enabled = true;
                         txtGeneracion.ReadOnly = false;
                         txtGeneracion.BackColor = Color.White;
                         cboPaisFabricacion.Enabled = true;
@@ -2067,6 +2187,7 @@ namespace CpAuton
                         cboTraccion.Enabled = true;
                         cboPuertas.Enabled = true;
                         chkTieneTurbo.AutoCheck = true;
+                        txtMotor.Enabled = true;
                         txtMotor.ReadOnly = false;
                         txtMotor.BackColor = Color.White;
                         cboCombustible.Enabled = true;
@@ -2078,6 +2199,7 @@ namespace CpAuton
                         cboConfiabilidad.Enabled = true;
                         nudPuntuacion.Enabled = true;
                         try { var tbp3 = nudPuntuacion.Controls.OfType<TextBox>().FirstOrDefault(); if (tbp3 != null) tbp3.ReadOnly = false; } catch { }
+                        txtObservaciones.Enabled = true;
                         txtObservaciones.ReadOnly = false;
                         txtObservaciones.BackColor = Color.White;
 
@@ -2383,7 +2505,6 @@ namespace CpAuton
                         cboModelo.SelectionLength = 0;
                     }
                 };
-
 
                 frmDetalles.ShowDialog(this);
             }
