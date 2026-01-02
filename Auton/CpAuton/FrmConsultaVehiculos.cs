@@ -586,7 +586,6 @@ namespace CpAuton
                     fotoEliminada = true; // marcar para que al guardar se elimine la foto en BD
                 };
                 pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
-                
                 pnlFotografia.Controls.Add(pnlBotonesFoto);
                 pnlPrincipal.Controls.Add(pnlFotografia);
 
@@ -1889,6 +1888,50 @@ namespace CpAuton
                 });
                 cboFrenos.Text = vehiculoCompleto.frenos;
                 pnlPrincipal.Controls.Add(cboFrenos);
+                // Botón buscar frenos
+                Button btnBuscarFrenos = new Button
+                {
+                    Name = "btnBuscarFrenos",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarFrenos.FlatAppearance.BorderSize = 0;
+                try { var ttF = new ToolTip(); ttF.SetToolTip(btnBuscarFrenos, "Buscar información sobre frenos"); } catch { }
+                btnBuscarFrenos.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+                        string frenos = cboFrenos != null ? cboFrenos.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(frenos))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y tipo de Frenos para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿El {marca} {modelo} {anioVal} versión {version} trae frenos de {frenos}?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarFrenos);
+                btnBuscarFrenos.BringToFront();
                 cboFrenos.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 //frenos al frente
@@ -1973,11 +2016,54 @@ namespace CpAuton
                 cboTraccion.Text = vehiculoCompleto.traccion;
                 pnlPrincipal.Controls.Add(cboTraccion);
 
+                // Botón buscar tracción
+                Button btnBuscarTraccion = new Button
+                {
+                    Name = "btnBuscarTraccion",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + ctrlWidth + 50 + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarTraccion.FlatAppearance.BorderSize = 0;
+                try { var ttT = new ToolTip(); ttT.SetToolTip(btnBuscarTraccion, "Buscar información sobre tracción"); } catch { }
+                btnBuscarTraccion.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        string traccion = cboTraccion != null ? cboTraccion.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(traccion))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y tipo de Tracción para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿El {marca} {modelo} {anioVal} tiene tracción {traccion}?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarTraccion);
+                btnBuscarTraccion.BringToFront();
+
                 Label lblInfoTraccion = new Label
                 {
                     Name = "lblInfoTraccion",
                     Text = ObtenerInfoTraccion(vehiculoCompleto.traccion),
-                    Location = new Point(colRightX + 80 + ctrlWidth + 60, yPosRight + 3),
+                    Location = new Point(colRightX + 80 + ctrlWidth + 60 + 35, yPosRight + 3),
                     Size = new Size(120, 25),
                     Font = new Font("Segoe UI", 8F, FontStyle.Italic),
                     ForeColor = ObtenerColorTraccion(vehiculoCompleto.traccion),
@@ -2009,6 +2095,50 @@ namespace CpAuton
                     BackColor = Color.WhiteSmoke
                 };
                 pnlPrincipal.Controls.Add(nudAirbags);
+                // Botón buscar airbags
+                Button btnBuscarAirbags = new Button
+                {
+                    Name = "btnBuscarAirbags",
+                    Text = "🔍",
+                    Location = new Point(colLeftX + 100 + 8, yPosLeft),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarAirbags.FlatAppearance.BorderSize = 0;
+                try { var ttA = new ToolTip(); ttA.SetToolTip(btnBuscarAirbags, "Buscar información sobre airbags"); } catch { }
+                btnBuscarAirbags.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        int airbags = (int)nudAirbags.Value;
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+                        string pais = cboPaisFabricacion != null ? cboPaisFabricacion.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca y Modelo para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿Cuántos airbags tiene el {marca} {modelo} {anioVal} versión {version} fabricado en {pais}?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarAirbags);
+                btnBuscarAirbags.BringToFront();
                 nudAirbags.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosLeft += lineHeight;
 
@@ -2028,6 +2158,49 @@ namespace CpAuton
                 cboOrganizacion.Items.AddRange(new[] { "Latin NCAP", "Euro NCAP", "IIHS", "NHTSA", "ANCAP", "Sin calificación" });
                 cboOrganizacion.Text = vehiculoCompleto.organizacionSeguridad;
                 pnlPrincipal.Controls.Add(cboOrganizacion);
+                // Botón buscar organización
+                Button btnBuscarOrganizacion = new Button
+                {
+                    Name = "btnBuscarOrganizacion",
+                    Text = "🔍",
+                    Location = new Point(colLeftX + ctrlWidth + 8, yPosLeft),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarOrganizacion.FlatAppearance.BorderSize = 0;
+                try { var ttO = new ToolTip(); ttO.SetToolTip(btnBuscarOrganizacion, "Buscar calificación de seguridad"); } catch { }
+                btnBuscarOrganizacion.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+                        string organizacion = cboOrganizacion != null ? cboOrganizacion.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(organizacion))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Organización para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"Prueba de choque {marca} {modelo} {anioVal} versión {version} según {organizacion}";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarOrganizacion);
+                btnBuscarOrganizacion.BringToFront();
                 cboOrganizacion.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosLeft += lineHeight;
 
@@ -2047,6 +2220,54 @@ namespace CpAuton
                     BackColor = Color.WhiteSmoke
                 };
                 pnlPrincipal.Controls.Add(nudEstrellas);
+                // Botón buscar estrellas
+                Button btnBuscarEstrellas = new Button
+                {
+                    Name = "btnBuscarEstrellas",
+                    Text = "🔍",
+                    Location = new Point(colLeftX + 100 + 8, yPosLeft),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarEstrellas.FlatAppearance.BorderSize = 0;
+                try { var ttE = new ToolTip(); ttE.SetToolTip(btnBuscarEstrellas, "Buscar calificación de estrellas"); } catch { }
+                btnBuscarEstrellas.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        //version
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+                        string organizacion = cboOrganizacion != null ? cboOrganizacion.Text : string.Empty;
+                        //int estrellas = (int)nudEstrellas.Value;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca y Modelo para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = string.IsNullOrWhiteSpace(organizacion)
+                            ? $"{marca} {modelo} {anioVal} safety rating stars"
+                            : $"¿Cuántas estrellas de seguridad tiene el {marca} {modelo} {anioVal} versión {version} según {organizacion}?";
+
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarEstrellas);
+                btnBuscarEstrellas.BringToFront();
                 nudEstrellas.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosLeft += lineHeight;
 

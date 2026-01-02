@@ -191,9 +191,10 @@
               "RelativeDocumentMoniker": "CpAuton\\FrmRegistroVehiculo.cs",
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmRegistroVehiculo.cs",
               "RelativeToolTip": "CpAuton\\FrmRegistroVehiculo.cs",
-              "ViewState": "AgIAAH4IAAAAAAAAAIA+wI8IAABTAAAAAAAAAA==",
+              "ViewState": "AgIAALkIAAAAAAAAAAAswMgIAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-18T13:19:02.629Z"
+              "WhenOpened": "2025-11-18T13:19:02.629Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -203,7 +204,7 @@
               "RelativeDocumentMoniker": "CpAuton\\FrmConsultaVehiculos.cs",
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmConsultaVehiculos.cs*",
               "RelativeToolTip": "CpAuton\\FrmConsultaVehiculos.cs*",
-              "ViewState": "AgIAAAgMAAAAAAAAAAAmwBUMAAANAAAAAAAAAA==",
+              "ViewState": "AgIAADwCAAAAAAAAAAAswEwCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-15T17:45:58.032Z",
               "EditorCaption": ""
@@ -344,7 +345,8 @@
               "ToolTip": "C:\\Users\\Kevin\\Documents\\Auton_2025_2\\Auton\\CpAuton\\FrmRegistroVehiculo.cs [Dise\u00F1o]",
               "RelativeToolTip": "CpAuton\\FrmRegistroVehiculo.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-18T13:18:59.773Z"
+              "WhenOpened": "2025-11-18T13:18:59.773Z",
+              "EditorCaption": " [Dise\u00F1o]"
             },
             {
               "$type": "Document",
