@@ -2180,6 +2180,7 @@ namespace CpAuton
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 string version = cboVersion?.Text ?? "";
                 string pais = cboPaisFabricacion?.Text ?? "";
+                int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
 
                 if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version) || string.IsNullOrWhiteSpace(pais))
                 {
@@ -2188,7 +2189,7 @@ namespace CpAuton
                     return;
                 }
 
-                string query = $"¿El {marca} {modelo} versión {version} es fabricado en {pais}?";
+                string query = $"¿El {marca} {modelo} versión {version} año {anio} es fabricado en {pais}?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
                 Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
             }

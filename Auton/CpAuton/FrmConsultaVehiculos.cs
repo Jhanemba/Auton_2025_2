@@ -1651,8 +1651,8 @@ namespace CpAuton
                 cboTransmision.Text = vehiculoCompleto.transmision;
                 pnlPrincipal.Controls.Add(cboTransmision);
                 cboTransmision.Enabled = false; // deshabilitado hasta entrar en modo edición
-                yPosRight += lineHeight;
                 cboTransmision.BringToFront();
+                yPosRight += lineHeight;
 
 
                 AgregarLabel(pnlPrincipal, "Velocidades:", 590, yPosRight, labelWidth);
@@ -1673,7 +1673,7 @@ namespace CpAuton
                 Label lblInfoVelocidades = new Label
                 {
                     Name = "lblInfoVelocidades",
-                    Location = new Point(colRightX + 190, yPosRight + 3),
+                    Location = new Point(colRightX + 190 + 35, yPosRight + 3),
                     Size = new Size(150, 25),
                     Font = new Font("Segoe UI", 8F, FontStyle.Italic),
                     ForeColor = Color.Gray,
@@ -1696,11 +1696,55 @@ namespace CpAuton
                 // Add controls to panel BEFORE configuring so the NumericUpDown has a Parent
                 pnlPrincipal.Controls.Add(nudVelocidades);
                 pnlPrincipal.Controls.Add(lblInfoVelocidades);
+                // Botón buscar velocidades
+                Button btnBuscarVelocidades = new Button
+                {
+                    Name = "btnBuscarVelocidades",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + 100 + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarVelocidades.FlatAppearance.BorderSize = 0;
+                try { var ttVel = new ToolTip(); ttVel.SetToolTip(btnBuscarVelocidades, "Buscar información sobre velocidades"); } catch { }
+                btnBuscarVelocidades.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        string transmision = cboTransmision != null ? cboTransmision.Text : string.Empty;
+                        int velocidades = (int)nudVelocidades.Value;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(transmision))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Transmisión para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿El {marca} {modelo} {anioVal} con transmisión {transmision} tiene {velocidades} velocidades?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarVelocidades);
+                btnBuscarVelocidades.BringToFront();
 
                 yPosRight += lineHeight;
                 nudVelocidades.BringToFront();
                 nudVelocidades.Enabled = false; // deshabilitado hasta entrar en modo edición
-                lblInfoVelocidades.BringToFront();
+                ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
+                //lblInfoVelocidades.BringToFront();
 
                 // ⭐ EVENTO: Cambiar opciones cuando cambia la transmisión
                 cboTransmision.SelectedIndexChanged += (s, ev) =>
@@ -2816,14 +2860,135 @@ namespace CpAuton
             }
         }
 
+        //private void ConfigurarVelocidades(string tipoTransmision, NumericUpDown nudVel, Label lblInfo, int? valorActual, bool permitirEdicion)
+        // {
+        //    // Ensure there is a placeholder label to show a dash for CVT (so NumericUpDown doesn't display a numeric minimum)
+        //    Label lblPlaceholder = null;
+        //    try
+        //    {
+        //        var found = nudVel.Parent.Controls.Find("lblVelocidadesPlaceholder", true);
+        //        if (found != null && found.Length > 0 && found[0] is Label)
+        //            lblPlaceholder = (Label)found[0];
+        //    }
+        //    catch { }
+
+        //    if (lblPlaceholder == null)
+        //    {
+        //        lblPlaceholder = new Label
+        //        {
+        //            Name = "lblVelocidadesPlaceholder",
+        //            Location = nudVel.Location,
+        //            Size = nudVel.Size,
+        //            Font = new Font("Segoe UI", 10F),
+        //            TextAlign = ContentAlignment.MiddleCenter,
+        //            ForeColor = Color.Gray,
+        //            BackColor = Color.Transparent,
+        //            Visible = false
+        //        };
+        //        // Add to same parent so it scrolls/moves together
+        //        nudVel.Parent.Controls.Add(lblPlaceholder);
+        //        lblPlaceholder.BringToFront();
+        //    }
+
+        //    switch (tipoTransmision)
+        //    {
+        //        case "Manual":
+        //            nudVel.Visible = true;
+        //            lblPlaceholder.Visible = false;
+        //            nudVel.Minimum = 4;
+        //            nudVel.Maximum = 6;
+        //            nudVel.Enabled = permitirEdicion;
+        //            {
+        //                decimal min = nudVel.Minimum;
+        //                decimal max = nudVel.Maximum;
+        //                decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 5m;
+        //                if (val < min) val = min;
+        //                if (val > max) val = max;
+        //                nudVel.Value = val;
+        //            }
+        //            lblInfo.Text = "(4-6 velocidades)";
+        //            lblInfo.ForeColor = Color.FromArgb(40, 167, 69);
+        //            break;
+
+        //        case "Automática":
+        //            nudVel.Visible = true;
+        //            lblPlaceholder.Visible = false;
+        //            nudVel.Minimum = 4;
+        //            nudVel.Maximum = 10;
+        //            nudVel.Enabled = permitirEdicion;
+        //            {
+        //                decimal min = nudVel.Minimum;
+        //                decimal max = nudVel.Maximum;
+        //                decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 6m;
+        //                if (val < min) val = min;
+        //                if (val > max) val = max;
+        //                nudVel.Value = val;
+        //            }
+        //            lblInfo.Text = "(4-10 velocidades)";
+        //            lblInfo.ForeColor = Color.FromArgb(0, 123, 255);
+        //            break;
+
+        //        case "CVT":
+        //            // For CVT we show a placeholder dash instead of a numeric value
+        //            nudVel.Visible = false;
+        //            // ensure control remains disabled
+        //            nudVel.Enabled = false;
+        //            lblPlaceholder.Text = "-";
+        //            lblPlaceholder.Visible = true;
+        //            lblInfo.Text = "(Sin velocidades)";
+        //            lblInfo.ForeColor = Color.FromArgb(108, 117, 125);
+        //            if (btnBuscarVel != null) btnBuscarVel.Visible = false;
+        //            break;
+
+        //        case "Semiautomática":
+        //        case "Doble Embrague":
+        //            nudVel.Visible = true;
+        //            lblPlaceholder.Visible = false;
+        //            nudVel.Minimum = 6;
+        //            nudVel.Maximum = 8;
+        //            nudVel.Enabled = permitirEdicion;
+        //            {
+        //                decimal min = nudVel.Minimum;
+        //                decimal max = nudVel.Maximum;
+        //                decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 7m;
+        //                if (val < min) val = min;
+        //                if (val > max) val = max;
+        //                nudVel.Value = val;
+        //            }
+        //            lblInfo.Text = "(6-8 velocidades)";
+        //            lblInfo.ForeColor = Color.FromArgb(255, 193, 7);
+        //            break;
+
+        //        default:
+        //            nudVel.Visible = true;
+        //            lblPlaceholder.Visible = false;
+        //            nudVel.Enabled = false;
+        //            lblInfo.Text = "";
+        //            break;
+        //    }
+        // }
+
         private void ConfigurarVelocidades(string tipoTransmision, NumericUpDown nudVel, Label lblInfo, int? valorActual, bool permitirEdicion)
-         {
-            // Ensure there is a placeholder label to show a dash for CVT (so NumericUpDown doesn't display a numeric minimum)
+        {
+            // Aseguramos que el label informativo SIEMPRE esté visible
+            lblInfo.Visible = true;
+
+            // Buscar el botón de búsqueda de velocidades por nombre
+            Button btnBuscarVel = null;
+            try
+            {
+                var found = nudVel.Parent.Controls.Find("btnBuscarVelocidades", true);
+                if (found.Length > 0 && found[0] is Button)
+                    btnBuscarVel = (Button)found[0];
+            }
+            catch { }
+
+            // Buscar o crear el placeholder para CVT
             Label lblPlaceholder = null;
             try
             {
                 var found = nudVel.Parent.Controls.Find("lblVelocidadesPlaceholder", true);
-                if (found != null && found.Length > 0 && found[0] is Label)
+                if (found.Length > 0 && found[0] is Label)
                     lblPlaceholder = (Label)found[0];
             }
             catch { }
@@ -2841,7 +3006,6 @@ namespace CpAuton
                     BackColor = Color.Transparent,
                     Visible = false
                 };
-                // Add to same parent so it scrolls/moves together
                 nudVel.Parent.Controls.Add(lblPlaceholder);
                 lblPlaceholder.BringToFront();
             }
@@ -2854,16 +3018,16 @@ namespace CpAuton
                     nudVel.Minimum = 4;
                     nudVel.Maximum = 6;
                     nudVel.Enabled = permitirEdicion;
-                    {
-                        decimal min = nudVel.Minimum;
-                        decimal max = nudVel.Maximum;
-                        decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 5m;
-                        if (val < min) val = min;
-                        if (val > max) val = max;
-                        nudVel.Value = val;
-                    }
-                    lblInfo.Text = "(4-6 velocidades)";
+
+                    decimal valManual = valorActual.HasValue ? (decimal)valorActual.Value : 5m;
+                    valManual = Math.Max(nudVel.Minimum, Math.Min(nudVel.Maximum, valManual));
+                    nudVel.Value = valManual;
+
+                    lblInfo.Text = "(Típico: 5-6 velocidades)";
                     lblInfo.ForeColor = Color.FromArgb(40, 167, 69);
+
+                    // Mostrar botón lupa
+                    if (btnBuscarVel != null) btnBuscarVel.Visible = true;
                     break;
 
                 case "Automática":
@@ -2872,27 +3036,30 @@ namespace CpAuton
                     nudVel.Minimum = 4;
                     nudVel.Maximum = 10;
                     nudVel.Enabled = permitirEdicion;
-                    {
-                        decimal min = nudVel.Minimum;
-                        decimal max = nudVel.Maximum;
-                        decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 6m;
-                        if (val < min) val = min;
-                        if (val > max) val = max;
-                        nudVel.Value = val;
-                    }
-                    lblInfo.Text = "(4-10 velocidades)";
+
+                    decimal valAuto = valorActual.HasValue ? (decimal)valorActual.Value : 6m;
+                    valAuto = Math.Max(nudVel.Minimum, Math.Min(nudVel.Maximum, valAuto));
+                    nudVel.Value = valAuto;
+
+                    lblInfo.Text = "(Típico: 6-10 velocidades)";
                     lblInfo.ForeColor = Color.FromArgb(0, 123, 255);
+
+                    // Mostrar botón lupa
+                    if (btnBuscarVel != null) btnBuscarVel.Visible = true;
                     break;
 
                 case "CVT":
-                    // For CVT we show a placeholder dash instead of a numeric value
                     nudVel.Visible = false;
-                    // ensure control remains disabled
                     nudVel.Enabled = false;
-                    lblPlaceholder.Text = "-";
+                    lblPlaceholder.Text = "—";
                     lblPlaceholder.Visible = true;
-                    lblInfo.Text = "(Sin velocidades)";
+
+                    lblInfo.Text = "(Transmisión variable continua - sin velocidades fijas)";
+                    lblInfo.Text = "(Sin velocidades fijas)";
                     lblInfo.ForeColor = Color.FromArgb(108, 117, 125);
+
+                    // OCULTAR botón lupa porque no aplica
+                    if (btnBuscarVel != null) btnBuscarVel.Visible = false;
                     break;
 
                 case "Semiautomática":
@@ -2902,26 +3069,31 @@ namespace CpAuton
                     nudVel.Minimum = 6;
                     nudVel.Maximum = 8;
                     nudVel.Enabled = permitirEdicion;
-                    {
-                        decimal min = nudVel.Minimum;
-                        decimal max = nudVel.Maximum;
-                        decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 7m;
-                        if (val < min) val = min;
-                        if (val > max) val = max;
-                        nudVel.Value = val;
-                    }
-                    lblInfo.Text = "(6-8 velocidades)";
+
+                    decimal valDoble = valorActual.HasValue ? (decimal)valorActual.Value : 7m;
+                    valDoble = Math.Max(nudVel.Minimum, Math.Min(nudVel.Maximum, valDoble));
+                    nudVel.Value = valDoble;
+
+                    lblInfo.Text = "(Típico: 7-8 velocidades)";
                     lblInfo.ForeColor = Color.FromArgb(255, 193, 7);
+
+                    // Mostrar botón lupa
+                    if (btnBuscarVel != null) btnBuscarVel.Visible = true;
                     break;
 
                 default:
                     nudVel.Visible = true;
                     lblPlaceholder.Visible = false;
                     nudVel.Enabled = false;
-                    lblInfo.Text = "";
+                    lblInfo.Text = "(Tipo no especificado)";
+                    lblInfo.ForeColor = Color.Gray;
+
+                    // Ocultar botón por seguridad
+                    if (btnBuscarVel != null) btnBuscarVel.Visible = false;
                     break;
             }
-         }
+        }
+
         private void FrmConsultaVehiculos_FormClosed(object sender, FormClosedEventArgs e)
         {
             // reanudar menú
