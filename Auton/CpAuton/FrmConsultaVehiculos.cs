@@ -344,6 +344,7 @@ namespace CpAuton
                 Button btnEliminarFotoDetalle = null;
                 Image imagenCargada = null;
                 bool fotoEliminada = false;
+                bool fotoExisteEnBD = false;
                 // NEW: flag to indicate edit mode for preventing interaction when not editing
                 bool editarActivo = false;
 
@@ -466,6 +467,8 @@ namespace CpAuton
                                 imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(archivos[0]);
                                 ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
                                 btnEliminarFotoDetalle.Enabled = true;
+                                btnCambiarFoto.Text = "📂 Cambiar Foto";  
+                                //btnVerFotoGrande.Visible = true;
                                 fotoEliminada = false; // usuario cargó nueva imagen -> no eliminar
                             }
                         }
@@ -511,6 +514,8 @@ namespace CpAuton
                                 imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(ofd.FileName);
                                 ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
                                 btnEliminarFotoDetalle.Enabled = true;
+                                btnCambiarFoto.Text = "📂 Cambiar Foto";
+                                //btnVerFotoGrande.Visible = true;
                                 fotoEliminada = false; // nueva imagen cargada
                             }
                             catch (Exception ex)
@@ -583,12 +588,13 @@ namespace CpAuton
                     ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
                     btnEliminarFotoDetalle.Enabled = false;
                     btnVerFotoGrande.Visible = false;
+                    btnCambiarFoto.Text = "📂 Añadir Foto";
                     fotoEliminada = true; // marcar para que al guardar se elimine la foto en BD
+                    fotoExisteEnBD = false;
                 };
                 pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
                 pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
 
-                // ✅ AGREGAR ESTE CÓDIGO COMPLETO AQUÍ:
                 // Botón buscar foto en web (SIEMPRE VISIBLE)
                 Button btnBuscarFotoWeb = new Button
                 {
@@ -678,13 +684,17 @@ namespace CpAuton
                         ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
                         // Show fullscreen button when there is an image
                         btnVerFotoGrande.Visible = true;
+                        btnCambiarFoto.Text = "📂 Cambiar Foto";
                         fotoEliminada = false;
+                        fotoExisteEnBD = true;
                     }
                     else
                     {
                         ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
                         btnVerFotoGrande.Visible = false;
+                        btnCambiarFoto.Text = "📂 Añadir Foto";
                         fotoEliminada = false;
+                        fotoExisteEnBD = false;
                     }
                 }
                 catch (Exception ex)
@@ -693,6 +703,7 @@ namespace CpAuton
                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
                     btnVerFotoGrande.Visible = false;
+                    btnCambiarFoto.Text = "📂 Añadir Foto";
                     fotoEliminada = false;
                 }
 
@@ -2487,8 +2498,25 @@ namespace CpAuton
                         pbFotoDetalle.AllowDrop = true;
                         btnCambiarFoto.Visible = true;
                         btnEliminarFotoDetalle.Visible = true;
-                        if (pbFotoDetalle.Image != null)
-                            btnEliminarFotoDetalle.Enabled = true;
+                        //if (pbFotoDetalle.Image != null)
+                        //    btnEliminarFotoDetalle.Enabled = false;
+
+
+
+                        // Habilitar/deshabilitar botón "Quitar Foto" según exista imagen real (en memoria o en BD)
+                        bool hayImagen = (imagenCargada != null) || fotoExisteEnBD;
+                        btnEliminarFotoDetalle.Enabled = hayImagen;
+
+                        // Mostrar botón de ver foto grande solo si hay imagen
+                        //btnVerFotoGrande.Visible = hayImagen;
+
+                        //// Verificar si hay imagen (desde la variable temporal o el PictureBox)
+                        //bool hayImagen = (imagenCargada != null) || (pbFotoDetalle.Image != null);
+
+                        //// Configurar botones según estado
+                        //btnCambiarFoto.Text = hayImagen ? "📂 Cambiar Foto" : "📂 Añadir Foto";
+                        //btnEliminarFotoDetalle.Enabled = hayImagen;
+                        //btnVerFotoGrande.Visible = hayImagen;
 
                         // ACTIVAR MODO EDICIÓN - HABILITAR TODO
                         editarActivo = true;

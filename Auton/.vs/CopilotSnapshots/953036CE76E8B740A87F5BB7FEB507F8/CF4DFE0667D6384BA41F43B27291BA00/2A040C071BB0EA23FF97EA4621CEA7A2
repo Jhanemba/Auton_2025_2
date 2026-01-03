@@ -1,0 +1,3446 @@
+﻿using CadAuton;
+using ClnAuton;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using System.Diagnostics;
+
+namespace CpAuton
+{
+    public partial class FrmConsultaVehiculos : Form
+    {
+        private Label lblEstadoUsuario;
+        private Button btnSesion;
+
+        public FrmConsultaVehiculos()
+        {
+            InitializeComponent();
+        }
+
+        private void FrmConsultaVehiculos_Load(object sender, EventArgs e)
+        {
+            string ruta = Application.StartupPath + @"\Audio\Don Omar - Danza Kuduro (Instrumental) (Original HQ).mp3";
+            AudioManager.Reproducir(ruta, true, 55 - 10);
+
+            AgregarBotonesSesion();
+            ConfigurarDataGridView();
+            CargarVehiculos("");
+            btnNuevo.Visible = Util.usuario != null;
+        }
+
+        private void AgregarBotonesSesion()
+        {
+            Panel pnlSesion = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 50,
+                BackColor = Color.FromArgb(240, 240, 240),
+                BorderStyle = BorderStyle.FixedSingle,
+            };
+
+            btnSesion = new Button
+            {
+                Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión",
+                Size = new Size(120, 35),
+                Location = new Point(10, 7),
+                BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Arial", 9, FontStyle.Bold)
+            };
+            btnSesion.Click += BtnSesion_Click;
+
+            lblEstadoUsuario = new Label
+            {
+                Text = Util.usuario != null ? $"Usuario: {Util.usuario.nombreCompleto}" : "Usuario: No autenticado",
+                Size = new Size(400, 35),
+                Location = new Point(140, 7),
+                Font = new Font("Arial", 9),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+
+            pnlSesion.Controls.Add(btnSesion);
+            pnlSesion.Controls.Add(lblEstadoUsuario);
+
+            this.Controls.Add(pnlSesion);
+            //poner al frente
+            pnlSesion.BringToFront();
+        }
+
+        private void BtnSesion_Click(object sender, EventArgs e)
+        {
+            if (Util.usuario != null)
+            {
+                DialogResult resultado = MessageBox.Show("¿Desea cerrar la sesión?",
+                                                        "Cerrar Sesión",
+                                                        MessageBoxButtons.YesNo,
+                                                        MessageBoxIcon.Question);
+                if (resultado == DialogResult.Yes)
+                {
+                    Util.CerrarSesion();
+                    ActualizarInterfazSesion();
+                }
+            }
+            else
+            {
+                FrmAutenticacion frmAuth = new FrmAutenticacion();
+                if (frmAuth.ShowDialog(this) == DialogResult.OK)
+                {
+                    ActualizarInterfazSesion();
+                }
+            }
+            btnNuevo.Visible = Util.usuario != null;
+        }
+
+        private void ActualizarInterfazSesion()
+        {
+            if (btnSesion != null)
+            {
+                btnSesion.Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión";
+                btnSesion.BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183);
+            }
+
+            if (lblEstadoUsuario != null)
+            {
+                lblEstadoUsuario.Text = Util.usuario != null ? $"Usuario: {Util.usuario.nombreCompleto}" : "Usuario: No autenticado";
+            }
+        }
+
+        private void ConfigurarDataGridView()
+        {
+            dgvVehiculos.AutoGenerateColumns = false;
+            dgvVehiculos.AllowUserToAddRows = false;
+            dgvVehiculos.AllowUserToDeleteRows = false;
+            dgvVehiculos.ReadOnly = true;
+            dgvVehiculos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvVehiculos.MultiSelect = false;
+            dgvVehiculos.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
+
+            dgvVehiculos.Columns.Clear();
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colId",
+                DataPropertyName = "id",
+                HeaderText = "ID",
+                Width = 50-40,
+                Visible = false
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colMarca",
+                DataPropertyName = "marca",
+                HeaderText = "Marca",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colModelo",
+                DataPropertyName = "modelo",
+                HeaderText = "Modelo",
+                Width = 120
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colGeneracion",
+                DataPropertyName = "generacion",
+                HeaderText = "Generación",
+                Width = 120
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPais",
+                DataPropertyName = "paisFabricacion",
+                HeaderText = "País",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colAnio",
+                DataPropertyName = "anioFabricacion",
+                HeaderText = "Año",
+                Width = 60
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colTransmision",
+                DataPropertyName = "transmision",
+                HeaderText = "Transmisión",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colTraccion",
+                DataPropertyName = "traccion",
+                HeaderText = "🔧 Tracción",
+                Width = 120,
+                Visible = false
+            });
+
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPuertas",
+                DataPropertyName = "nroPuertas",
+                HeaderText = "Puertas",
+                Width = 60-40,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewCheckBoxColumn
+            {
+                Name = "colTurbo",
+                DataPropertyName = "tieneTurbo",
+                HeaderText = "Turbo",
+                Width = 60
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colMotor",
+                DataPropertyName = "motor",
+                HeaderText = "Motor",
+                Width = 80
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colAsientos",
+                DataPropertyName = "nroAsientos",
+                HeaderText = "Asientos",
+                Width = 70 - 40,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter },
+                Visible = false
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colConfiabilidad",
+                DataPropertyName = "confiabilidad",
+                HeaderText = "Confiabilidad",
+                Width = 100
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPuntuacion",
+                DataPropertyName = "puntuacion",
+                HeaderText = "Puntuación",
+                Width = 80,
+                DefaultCellStyle = { Format = "N1" }
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colCombustible",
+                DataPropertyName = "combustible",
+                HeaderText = "Combustible",
+                Width = 80
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewImageColumn
+            {
+                Name = "colFoto",
+                HeaderText = "Foto",
+                Width = 50,
+                ImageLayout = DataGridViewImageCellLayout.Zoom
+            });
+        }
+
+        private void CargarVehiculos(string parametro)
+        {
+            try
+            {
+                var vehiculos = ConsultaVehiculosCln.listarPa(parametro ?? "");
+                dgvVehiculos.DataSource = vehiculos;
+
+                if (lblTotal != null)
+                {
+                    lblTotal.Text = $"Total de vehículos: {vehiculos.Count}";
+                }
+
+                ColorearFilasPorConfiabilidad();
+                ActualizarIconosFoto();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar los vehículos: {ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ColorearFilasPorConfiabilidad()
+        {
+            foreach (DataGridViewRow row in dgvVehiculos.Rows)
+            {
+                if (row.Cells["colConfiabilidad"].Value != null)
+                {
+                    string confiabilidad = row.Cells["colConfiabilidad"].Value.ToString();
+                    switch (confiabilidad)
+                    {
+                        case "Excelente":
+                            row.DefaultCellStyle.BackColor = Color.LightGreen;
+                            break;
+                        case "Bueno":
+                            row.DefaultCellStyle.BackColor = Color.LightBlue;
+                            break;
+                        case "Regular":
+                            row.DefaultCellStyle.BackColor = Color.LightYellow;
+                            break;
+                        case "Malo":
+                            row.DefaultCellStyle.BackColor = Color.LightCoral;
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void txtBuscar_TextChanged(object sender, EventArgs e)
+        {
+            CargarVehiculos(txtBuscar.Text.Trim());
+        }
+
+        private void btnCerrar_Click(object sender, EventArgs e)
+        {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
+            this.Close();
+        }
+
+        private void dgvVehiculos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                MostrarDetallesVehiculo();
+            }
+        }
+
+        private void MostrarDetallesVehiculo()
+        {
+            if (dgvVehiculos.CurrentRow != null)
+            {
+                var vehiculo = (paVehiculoListar_Result)dgvVehiculos.CurrentRow.DataBoundItem;
+                var vehiculoCompleto = ConsultaVehiculosCln.obtenerUno(vehiculo.id);
+                PictureBox pbFotoDetalle = null;
+                Button btnCambiarFoto = null;
+                Button btnEliminarFotoDetalle = null;
+                Image imagenCargada = null;
+                bool fotoEliminada = false;
+                // NEW: flag to indicate edit mode for preventing interaction when not editing
+                bool editarActivo = false;
+
+                // ===== FORMULARIO PRINCIPAL =====
+                Form frmDetalles = new Form
+                {
+                    Text = $"Detalles del Vehículo - {vehiculo.marca} {vehiculo.modelo}",
+                    Size = new Size(1200, 850),
+                    StartPosition = FormStartPosition.CenterParent,
+                    FormBorderStyle = FormBorderStyle.FixedDialog,
+                    MaximizeBox = false,
+                    MinimizeBox = false,
+                    Font = new Font("Segoe UI", 10F),
+                    AutoScroll = true,
+                    ShowInTaskbar = false,
+
+                };
+
+                Panel pnlPrincipal = new Panel
+                {
+                    Location = new Point(0, 0),
+                    Size = new Size(1184, 700-120),
+                    Padding = new Padding(20),
+                    BackColor = Color.PapayaWhip,
+                    AutoScroll = true
+                };
+
+                int yPos = 15;
+                int lineHeight = 45;
+                int labelWidth = 150;
+                int ctrlWidth = 250;
+                int colLeftX = 170;
+                int colRightX = 650;
+
+                // ===== TÍTULO Y ESTADO =====
+                Label lblTitulo = new Label
+                {
+                    Text = "📋 CONSULTA/EDICIÓN DE VEHÍCULO",
+                    Font = new Font("Segoe UI", 15, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(51, 122, 183),
+                    Location = new Point(20, yPos),
+                    Size = new Size(1140, 32),
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                pnlPrincipal.Controls.Add(lblTitulo);
+                yPos += 40;
+
+                Label lblEstado = new Label
+                {
+                    Name = "lblEstado",
+                    Text = "🔒 MODO LECTURA",
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    ForeColor = Color.Red,
+                    Location = new Point(20, yPos),
+                    Size = new Size(1140, 25),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    BackColor = Color.FromArgb(255, 230, 230),
+                    Padding = new Padding(5)
+                };
+                pnlPrincipal.Controls.Add(lblEstado);
+                yPos += 35;
+
+                // ==================== FOTOGRAFÍA ====================
+                yPos += 35;
+                Panel pnlFotografia = new Panel
+                {
+                    Location = new Point(20+575, yPos+500+100+45+90),
+                    Size = new Size(540, 320),
+                    BackColor = Color.White,
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+
+                Label lblTituloFoto = new Label
+                {
+                    Text = "📷 FOTOGRAFÍA DEL VEHÍCULO",
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(51, 122, 183),
+                    Location = new Point(10, 10),
+                    Size = new Size(520, 25),
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                pnlFotografia.Controls.Add(lblTituloFoto);
+
+                pbFotoDetalle = new PictureBox
+                {
+                    Location = new Point(10, 45),
+                    Size = new Size(520, 220),
+                    BorderStyle = BorderStyle.FixedSingle,
+                    BackColor = Color.FromArgb(250, 250, 250),
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    // Start with AllowDrop = false; it will be enabled when user enters edit mode
+                    AllowDrop = false
+                };
+
+                // Use AllowDrop as the single source of truth for permitting drag&drop
+                pbFotoDetalle.DragEnter += (s, ev) =>
+                {
+                    if (pbFotoDetalle.AllowDrop && ev.Data.GetDataPresent(DataFormats.FileDrop))
+                    {
+                        string[] archivos = (string[])ev.Data.GetData(DataFormats.FileDrop);
+                        if (archivos.Length > 0 && ImagenHelper.EsImagenValida(archivos[0]))
+                        {
+                            ev.Effect = DragDropEffects.Copy;
+                            pbFotoDetalle.BackColor = Color.FromArgb(220, 255, 220);
+                        }
+                    }
+                };
+
+                pbFotoDetalle.DragDrop += (s, ev) =>
+                {
+                    pbFotoDetalle.BackColor = Color.FromArgb(250, 250, 250);
+                    if (pbFotoDetalle.AllowDrop && ev.Data.GetDataPresent(DataFormats.FileDrop))
+                    {
+                        try
+                        {
+                            string[] archivos = (string[])ev.Data.GetData(DataFormats.FileDrop);
+                            if (archivos.Length > 0)
+                            {
+                                if (imagenCargada != null) imagenCargada.Dispose();
+                                imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(archivos[0]);
+                                ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                                btnEliminarFotoDetalle.Enabled = true;
+                                btnCambiarFoto.Text = "📂 Cambiar Foto";  
+                                //btnVerFotoGrande.Visible = true;
+                                fotoEliminada = false; // usuario cargó nueva imagen -> no eliminar
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error al cargar imagen: {ex.Message}", "Error",
+                                          MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                };
+
+                pnlFotografia.Controls.Add(pbFotoDetalle);
+
+                // Botones de control de foto (solo visibles en modo edición)
+                Panel pnlBotonesFoto = new Panel
+                {
+                    Location = new Point(10, 275),
+                    Size = new Size(520, 35)
+                };
+
+                btnCambiarFoto = new Button
+                {
+                    Text = "📂 Cambiar Foto",
+                    Size = new Size(150, 30),
+                    Location = new Point(0, 0),
+                    BackColor = Color.FromArgb(51, 122, 183),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false
+                };
+                btnCambiarFoto.FlatAppearance.BorderSize = 0;
+                btnCambiarFoto.Click += (s, ev) =>
+                {
+                    using (OpenFileDialog ofd = new OpenFileDialog())
+                    {
+                        ofd.Filter = "Imágenes|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
+                        if (ofd.ShowDialog() == DialogResult.OK)
+                        {
+                            try
+                            {
+                                if (imagenCargada != null) imagenCargada.Dispose();
+                                imagenCargada = ImagenHelper.CargarImagenDesdeArchivo(ofd.FileName);
+                                ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                                btnEliminarFotoDetalle.Enabled = true;
+                                btnCambiarFoto.Text = "📂 Cambiar Foto";
+                                //btnVerFotoGrande.Visible = true;
+                                fotoEliminada = false; // nueva imagen cargada
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Error: {ex.Message}", "Error",
+                                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                };
+                pnlBotonesFoto.Controls.Add(btnCambiarFoto);
+
+                // NEW: Button to view photo fullscreen (eye)
+                Button btnVerFotoGrande = new Button
+                {
+                    Name = "btnVerFotoGrande",
+                    Text = "👁️ Ver Foto",
+                    Size = new Size(120, 30),
+                    Location = new Point(320, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false // will enable when image is present
+                };
+                btnVerFotoGrande.FlatAppearance.BorderSize = 0;
+                btnVerFotoGrande.Click += (s, ev) =>
+                {
+                    try
+                    {
+                        if (imagenCargada != null)
+                        {
+                            using (var frmFull = new FullscreenImageForm((Image)imagenCargada.Clone()))
+                            {
+                                frmFull.ShowDialog(frmDetalles);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No hay fotografía disponible para mostrar.", "Información",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al mostrar fotografía: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlBotonesFoto.Controls.Add(btnVerFotoGrande);
+
+                btnEliminarFotoDetalle = new Button
+                {
+                    Text = "🗑️ Quitar Foto",
+                    Size = new Size(150, 30),
+                    Location = new Point(160, 0),
+                    BackColor = Color.FromArgb(217, 83, 79),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Visible = false,
+                    Enabled = false
+                };
+                btnEliminarFotoDetalle.FlatAppearance.BorderSize = 0;
+                btnEliminarFotoDetalle.Click += (s, ev) =>
+                {
+                    if (imagenCargada != null) imagenCargada.Dispose();
+                    imagenCargada = null;
+                    pbFotoDetalle.Image = null;
+                    ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
+                    btnEliminarFotoDetalle.Enabled = false;
+                    btnVerFotoGrande.Visible = false;
+                    btnCambiarFoto.Text = "📂 Añadir Foto";
+                    fotoEliminada = true; // marcar para que al guardar se elimine la foto en BD
+                };
+                pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
+                pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
+
+                // Botón buscar foto en web (SIEMPRE VISIBLE)
+                Button btnBuscarFotoWeb = new Button
+                {
+                    Name = "btnBuscarFotoWeb",
+                    Text = "🌐 Buscar Web",
+                    Size = new Size(150, 30),
+                    Location = new Point(320, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = true  // SIEMPRE VISIBLE
+                };
+                btnBuscarFotoWeb.FlatAppearance.BorderSize = 0;
+                btnBuscarFotoWeb.Click += (s, ev) =>
+                {
+                    try
+                    {
+                        string marca = "";
+                        string modelo = "";
+                        string version = "";
+                        string tipo = "";
+                        int anioVal = DateTime.Now.Year;
+                        int puertas = 5;
+
+                        // Buscar los controles de forma segura
+                        try
+                        {
+                            var flpMarca = pnlPrincipal.Controls.Find("flpMarcaRow", true).FirstOrDefault() as FlowLayoutPanel;
+                            if (flpMarca != null)
+                            {
+                                var cboM = flpMarca.Controls.OfType<ComboBox>().FirstOrDefault();
+                                if (cboM != null) marca = cboM.Text.Trim();
+                            }
+
+                            var flpModelo = pnlPrincipal.Controls.Find("flpModeloRow", true).FirstOrDefault() as FlowLayoutPanel;
+                            if (flpModelo != null)
+                            {
+                                var cboMod = flpModelo.Controls.OfType<ComboBox>().FirstOrDefault();
+                                if (cboMod != null) modelo = cboMod.Text.Trim();
+                            }
+
+                            var cboVer = pnlPrincipal.Controls.Find("cboVersion", true).FirstOrDefault() as ComboBox;
+                            if (cboVer != null) version = cboVer.Text.Trim();
+
+                            var cboT = pnlPrincipal.Controls.Find("cboTipo", true).FirstOrDefault() as ComboBox;
+                            if (cboT != null) tipo = cboT.Text.Trim();
+
+                            var nudA = pnlPrincipal.Controls.Find("nudAnio", true).FirstOrDefault() as NumericUpDown;
+                            if (nudA != null) anioVal = (int)nudA.Value;
+
+                            var cboP = pnlPrincipal.Controls.Find("cboPuertas", true).FirstOrDefault() as ComboBox;
+                            if (cboP != null && cboP.SelectedItem != null)
+                                puertas = (int)cboP.SelectedItem;
+                        }
+                        catch { }
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca y Modelo para buscar fotografías.",
+                                "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"{marca} {modelo} año {anioVal} versión {version} tipo {tipo} de {puertas} puertas fotos";
+                        string url = "https://www.google.com/search?tbm=isch&q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlBotonesFoto.Controls.Add(btnBuscarFotoWeb);
+                pnlFotografia.Controls.Add(pnlBotonesFoto);
+                pnlPrincipal.Controls.Add(pnlFotografia);
+
+
+                try
+                {
+                    byte[] fotoBytes = ConsultaVehiculosCln.obtenerFotografia(vehiculo.id);
+                    if (fotoBytes != null && fotoBytes.Length > 0)
+                    {
+                        imagenCargada = ImagenHelper.ConvertirBytesAImagen(fotoBytes);
+                        ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, imagenCargada);
+                        // Show fullscreen button when there is an image
+                        btnVerFotoGrande.Visible = true;
+                        btnCambiarFoto.Text = "📂 Cambiar Foto";
+                        fotoEliminada = false;
+                    }
+                    else
+                    {
+                        ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
+                        btnVerFotoGrande.Visible = false;
+                        btnCambiarFoto.Text = "📂 Añadir Foto";
+                        fotoEliminada = false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cargar fotografía: {ex.Message}", "Advertencia",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ImagenHelper.AjustarImagenPictureBox(pbFotoDetalle, null);
+                    btnVerFotoGrande.Visible = false;
+                    btnCambiarFoto.Text = "📂 Añadir Foto";
+                    fotoEliminada = false;
+                }
+
+
+                // ==================== COLUMNA IZQUIERDA ====================
+                AgregarSeccion(pnlPrincipal, "📋 IDENTIFICACIÓN DEL MODELO", 20, yPos, 540);
+                int yPosLeft = yPos + 38;
+
+                // Nro de Chasis que AHORA EDITABLE
+                AgregarLabel(pnlPrincipal, "Nro. Chasis:", 20, yPosLeft, labelWidth);
+                TextBox txtChasis = new TextBox
+                {
+                    Name = "txtChasis",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Text = vehiculoCompleto.nroChasis,
+                    CharacterCasing = CharacterCasing.Upper,
+                    MaxLength = 17,
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke
+                };
+                pnlPrincipal.Controls.Add(txtChasis);
+                txtChasis.Enabled = true;
+                txtChasis.ReadOnly = true; // deshabilitado hasta entrar en modo edición
+                yPosLeft += lineHeight;
+
+                // Procedencia (EDITABLE) - permite corregir la procedencia del vehículo
+                // Crear label explícito para poder ocultarlo en modo edición
+                Label lblProcedencia = new Label
+                {
+                    Name = "lblProcedencia",
+                    Text = "Procedencia:",
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    Location = new Point(20, yPosLeft + 3),
+                    Size = new Size(labelWidth, 25),
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    ForeColor = Color.FromArgb(33, 37, 41)
+                };
+                pnlPrincipal.Controls.Add(lblProcedencia);
+
+                ComboBox cboProcedencia = new ComboBox
+                {
+                    Name = "cboProcedencia",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    Visible = true,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboProcedencia.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+                pnlPrincipal.Controls.Add(cboProcedencia);
+                cboProcedencia.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosLeft += lineHeight;
+
+                // Obtener modelo actual PRIMERO
+                ModeloVehiculo modeloActual = null;
+                try
+                {
+                    modeloActual = ModeloVehiculoCln.obtenerUno(vehiculoCompleto.idModeloVehiculo);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cargar modelo: {ex.Message}", "Error",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    frmDetalles.Close();
+                    return;
+                }
+
+                // Marca que AHORA EDITABLE
+                AgregarLabel(pnlPrincipal, "Marca:", 20, yPosLeft, labelWidth);
+                ComboBox cboMarca = new ComboBox
+                {
+                    Name = "cboMarca",
+                    //Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDown,
+                    AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                    AutoCompleteSource = AutoCompleteSource.ListItems,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboMarca.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+
+                // Botón + para agregar nueva marca (visible solo en modo edición)
+                Button btnAddMarca = new Button
+                {
+                    Name = "btnAddMarca",
+                    Text = "+",
+                    Size = new Size(30, 28),
+                    //Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft-1),
+                    BackColor = Color.FromArgb(40, 167, 69),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false
+                };
+                btnAddMarca.FlatAppearance.BorderSize = 0;
+                btnAddMarca.Click += (s, e) =>
+                {
+                    // Solo usuarios autenticados pueden agregar
+                    if (Util.usuario == null)
+                    {
+                        MessageBox.Show("Debe autenticarse para agregar una nueva marca", "Autenticación",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    try
+                    {
+                        using (var frm = new FrmNuevaMarca(0))
+                        {
+                            if (frm.ShowDialog(this) == DialogResult.OK)
+                            {
+                                int nuevoIdMarca = frm.NuevoIdMarca;
+                                var marcas = MarcaCln.listar()
+                                    .Where(m => m.estado != -1)
+                                    .OrderBy(m => m.nombre)
+                                    .ToList();
+
+                                // Actualizamos el ComboBox dentro del FlowLayoutPanel
+                                cboMarca.DataSource = null;
+                                cboMarca.DisplayMember = "nombre";
+                                cboMarca.ValueMember = "id";
+                                cboMarca.DataSource = marcas;
+                                cboMarca.BindingContext = new BindingContext();
+
+                                if (nuevoIdMarca > 0 && marcas.Any(m => m.id == nuevoIdMarca))
+                                    cboMarca.SelectedValue = nuevoIdMarca;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al agregar marca: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                // Botón lápiz para editar la marca seleccionada (visible solo en modo edición)
+                Button btnEditMarca = new Button
+                {
+                    Name = "btnEditMarca",
+                    Text = "✏️",
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(255, 193, 7),
+                    Margin = new Padding(8, 0, 0, 0),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false,
+                    Enabled = true
+                };
+                btnEditMarca.FlatAppearance.BorderSize = 0;
+                btnEditMarca.Click += (s, e) =>
+                {
+                    try
+                    {
+                        if (cboMarca.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione primero una marca para editar", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        int idMarcaSel = Convert.ToInt32(cboMarca.SelectedValue);
+                        using (var frm = new FrmGestionarMarcasModelos())
+                        {
+                            frm.AbrirEnMarca(idMarcaSel);
+                            frm.ShowDialog(this);
+                        }
+
+                        // Refrescar lista de marcas y mantener selección si existe
+                        var marcas = MarcaCln.listar()
+                            .Where(m => m.estado != -1)
+                            .OrderBy(m => m.nombre)
+                            .ToList();
+
+                        cboMarca.DataSource = null;
+                        cboMarca.DisplayMember = "nombre";
+                        cboMarca.ValueMember = "id";
+                        cboMarca.DataSource = marcas;
+                        cboMarca.BindingContext = new BindingContext();
+
+                        if (marcas.Any(m => m.id == idMarcaSel))
+                            cboMarca.SelectedValue = idMarcaSel;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al editar marca: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+
+                // Agregamos ComboBox y botón '+' dentro de un FlowLayoutPanel para que se desplacen juntos con AutoScroll
+                FlowLayoutPanel flpMarcaRow = new FlowLayoutPanel
+                {
+                    Name = "flpMarcaRow",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth + 50+35, 28),
+                    FlowDirection = FlowDirection.LeftToRight,
+                    WrapContents = false,
+                    AutoSize = false,
+                };
+                cboMarca.Location = new Point(0, 0);
+                cboMarca.Size = new Size(ctrlWidth, 28);
+                btnAddMarca.Margin = new Padding(8, 0, 0, 0);
+                flpMarcaRow.Controls.Add(cboMarca);
+                flpMarcaRow.Controls.Add(btnAddMarca);
+                flpMarcaRow.Controls.Add(btnEditMarca);
+
+                // Botón ojo para ver descripción de la MARCA (siempre visible)
+                Button btnVerMarcaDesc_small = new Button
+                {
+                    Name = "btnVerMarcaDesc",
+                    Text = "👁️",
+                    Size = new Size(36, 28),
+                    Margin = new Padding(8, 0, 0, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = true
+                };
+                btnVerMarcaDesc_small.FlatAppearance.BorderSize = 0;
+                btnVerMarcaDesc_small.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string descripcion = null;
+                        if (cboMarca.SelectedValue != null)
+                        {
+                            int idSel = Convert.ToInt32(cboMarca.SelectedValue);
+                            if (cboMarca.DataSource is System.Collections.IEnumerable ds)
+                            {
+                                foreach (var item in ds)
+                                {
+                                    var propId = item.GetType().GetProperty("id");
+                                    if (propId != null && Convert.ToInt32(propId.GetValue(item)) == idSel)
+                                    {
+                                        var propDesc = item.GetType().GetProperty("descripcion");
+                                        if (propDesc != null)
+                                            descripcion = propDesc.GetValue(item) as string;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Intentar obtener desde la colección completa
+                            if (string.IsNullOrWhiteSpace(descripcion))
+                            {
+                                var marcaObj = MarcaCln.listar().FirstOrDefault(m => m.id == idSel);
+                                if (marcaObj != null)
+                                    descripcion = marcaObj.descripcion;
+                            }
+                        }
+
+                        if (string.IsNullOrWhiteSpace(descripcion))
+                            descripcion = "(Sin descripción disponible)";
+
+                        MessageBox.Show(descripcion, "Descripción de la Marca", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al obtener descripción de la marca: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                flpMarcaRow.Controls.Add(btnVerMarcaDesc_small);
+                pnlPrincipal.Controls.Add(flpMarcaRow);
+                cboMarca.Enabled = false; // deshabilitado hasta entrar en modo edición
+
+                yPosLeft += lineHeight;
+
+                // Modelo que AHORA EDITABLE - depende de marca
+                AgregarLabel(pnlPrincipal, "Modelo:", 20, yPosLeft, labelWidth);
+                ComboBox cboModelo = new ComboBox
+                {
+                    Name = "cboModelo",
+                    //Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDown,
+                    AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                    AutoCompleteSource = AutoCompleteSource.ListItems,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboModelo.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+
+                // Botón + para agregar nuevo modelo (visible solo en modo edición)
+                Button btnAddModelo = new Button
+                {
+                    Name = "btnAddModelo",
+                    Text = "+",
+                    Size = new Size(30, 28),
+                    //Location = new Point(colLeftX + ctrlWidth + 10, yPosLeft),
+                    BackColor = Color.FromArgb(40, 167, 69),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false
+                };
+                btnAddModelo.FlatAppearance.BorderSize = 0;
+                btnAddModelo.Click += (s, e) =>
+                {
+                    if (Util.usuario == null)
+                    {
+                        MessageBox.Show("Debe autenticarse para agregar un nuevo modelo", "Autenticación",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    try
+                    {
+                        if (cboMarca.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione primero una marca para asociar el nuevo modelo", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        int idMarcaSeleccionada = Convert.ToInt32(cboMarca.SelectedValue);
+                        int idTipoSeleccionado = (modeloActual != null) ? modeloActual.idTipoVehiculo : 0;
+
+                        using (var frm = new FrmNuevoModelo(idMarcaSeleccionada, idTipoSeleccionado))
+                        {
+                            if (frm.ShowDialog(this) == DialogResult.OK)
+                            {
+                                int nuevoIdModelo = frm.NuevoIdModelo;
+
+                                var modelos = ModeloVehiculoCln.listar()
+                                    .Where(m => m.idMarca == idMarcaSeleccionada && m.estado != -1)
+                                    .OrderBy(m => m.nombre)
+                                    .ToList();
+
+                                cboModelo.DataSource = null;
+                                cboModelo.DisplayMember = "nombre";
+                                cboModelo.ValueMember = "id";
+                                cboModelo.DataSource = modelos;
+                                cboModelo.BindingContext = new BindingContext();
+
+                                if (nuevoIdModelo > 0 && modelos.Any(m => m.id == nuevoIdModelo))
+                                    cboModelo.SelectedValue = nuevoIdModelo;
+
+                                // Habilitar lápiz de modelo si existe
+                                try
+                                {
+                                    var btnTemp = pnlPrincipal.Controls.Find("btnEditModelo", true).FirstOrDefault() as Button;
+                                    if (btnTemp != null) btnTemp.Enabled = cboModelo.SelectedValue != null;
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al agregar modelo: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                // Botón lápiz para editar el modelo seleccionada (visible solo en modo edición)
+                Button btnEditModelo = new Button
+                {
+                    Name = "btnEditModelo",
+                    Text = "✏️",
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(255, 193, 7),
+                    Margin = new Padding(8, 0, 0, 0),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = false,
+                    Enabled = true
+                };
+                btnEditModelo.FlatAppearance.BorderSize = 0;
+                btnEditModelo.Click += (s, e) =>
+                {
+                    try
+                    {
+                        if (cboModelo.SelectedValue == null)
+                        {
+                            MessageBox.Show("Seleccione primero un modelo para editar", "Validación",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        int idModeloSel = Convert.ToInt32(cboModelo.SelectedValue);
+                        using (var frm = new FrmGestionarMarcasModelos())
+                        {
+                            frm.AbrirEnModelo(idModeloSel);
+                            frm.ShowDialog(this);
+                        }
+
+                        // Refrescar lista de modelos para la marca actual
+                        if (cboMarca.SelectedValue != null)
+                        {
+                            int idMarcaSel = Convert.ToInt32(cboMarca.SelectedValue);
+                            var modelos = ModeloVehiculoCln.listar()
+                                .Where(m => m.idMarca == idMarcaSel && m.estado != -1)
+                                .OrderBy(m => m.nombre)
+                                .ToList();
+
+                            cboModelo.DataSource = null;
+                            cboModelo.DisplayMember = "nombre";
+                            cboModelo.ValueMember = "id";
+                            cboModelo.DataSource = modelos;
+                            cboModelo.BindingContext = new BindingContext();
+
+                            if (modelos.Any(m => m.id == idModeloSel))
+                                cboModelo.SelectedValue = idModeloSel;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al editar modelo: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                // Agregar ComboBox y botón '+' dentro de un FlowLayoutPanel para modelo
+                FlowLayoutPanel flpModeloRow = new FlowLayoutPanel
+                {
+                    Name = "flpModeloRow",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth + 50+35, 28),
+                    FlowDirection = FlowDirection.LeftToRight,
+                    WrapContents = false,
+                    AutoSize = false
+                };
+                cboModelo.Location = new Point(0, 0);
+                cboModelo.Size = new Size(ctrlWidth, 28);
+                btnAddModelo.Margin = new Padding(8, 0, 0, 0);
+                flpModeloRow.Controls.Add(cboModelo);
+                flpModeloRow.Controls.Add(btnAddModelo);
+                flpModeloRow.Controls.Add(btnEditModelo);
+
+                // Botón ojo para ver descripción del MODELO (siempre visible)
+                Button btnVerModeloDesc_small = new Button
+                {
+                    Name = "btnVerModeloDesc",
+                    Text = "👁️",
+                    Size = new Size(36, 28),
+                    Margin = new Padding(8, 0, 0, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = true
+                };
+                btnVerModeloDesc_small.FlatAppearance.BorderSize = 0;
+                btnVerModeloDesc_small.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string descripcion = null;
+                        // Intentar obtener desde la lista de modelos cargada (si existe)
+                        if (cboModelo.SelectedValue != null)
+                        {
+                            int idSel = Convert.ToInt32(cboModelo.SelectedValue);
+                            // Intentar buscar en la fuente enlazada
+                            if (cboModelo.DataSource is System.Collections.IEnumerable ds)
+                            {
+                                // Buscar propiedad 'id' and 'descripcion' mediante reflection-safe approach
+                                foreach (var item in ds)
+                                {
+                                    var propId = item.GetType().GetProperty("id");
+                                    if (propId != null && Convert.ToInt32(propId.GetValue(item)) == idSel)
+                                    {
+                                        var propDesc = item.GetType().GetProperty("descripcion");
+                                        if (propDesc != null)
+                                            descripcion = propDesc.GetValue(item) as string;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // Si no se obtuvo, pedir al servidor la entidad completa
+                            if (string.IsNullOrWhiteSpace(descripcion))
+                            {
+                                var modeloObj = ModeloVehiculoCln.obtenerUno(idSel);
+                                if (modeloObj != null)
+                                    descripcion = modeloObj.descripcion;
+                            }
+                        }
+
+                        if (string.IsNullOrWhiteSpace(descripcion))
+                            descripcion = "(Sin descripción disponible)";
+
+                        MessageBox.Show(descripcion, "Descripción del Modelo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al obtener descripción del modelo: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+
+                flpModeloRow.Controls.Add(btnVerModeloDesc_small);
+                pnlPrincipal.Controls.Add(flpModeloRow);
+                cboModelo.Enabled = false; // deshabilitado hasta entrar en modo edición
+
+                yPosLeft += lineHeight;
+
+                // VERSIÓN
+                AgregarLabel(pnlPrincipal, "Versión:", 20, yPosLeft, labelWidth);
+                ComboBox cboVersion = new ComboBox
+                {
+                    Name = "cboVersion",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    // keep enabled so it looks normal, prevent selection when not editing via handler
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboVersion.Items.AddRange(new[] { "Básica", "Intermedia", "Full" });
+                cboVersion.Text = vehiculoCompleto.version;
+                // prevent dropdown when not in edit mode
+                cboVersion.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+                pnlPrincipal.Controls.Add(cboVersion);
+
+                // Botón buscar versión (similar a btnBuscarGeneracion) - agregado
+                Button btnBuscarVersion = new Button
+                {
+                    Name = "btnBuscarVersion",
+                    Text = "🔍",
+                    Location = new Point(colLeftX + ctrlWidth + 8, yPosLeft),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarVersion.FlatAppearance.BorderSize = 0;
+                try { var ttV = new ToolTip(); ttV.SetToolTip(btnBuscarVersion, "Buscar información de la versión"); } catch { }
+                btnBuscarVersion.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = vehiculoCompleto != null ? vehiculoCompleto.anioFabricacion : DateTime.Now.Year;
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Versión para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"{marca} {modelo} {anioVal} versión {version}";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarVersion);
+                btnBuscarVersion.BringToFront();
+                cboVersion.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosLeft += lineHeight + 20; // Espacio extra por el label informativo
+                                             //enviar lblInfoVersion al fondo
+
+                // Tipo que AHORA EDITABLE
+                AgregarLabel(pnlPrincipal, "Tipo:", 20, yPosLeft, labelWidth);
+                ComboBox cboTipo = new ComboBox
+                {
+                    Name = "cboTipo",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboTipo.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+                pnlPrincipal.Controls.Add(cboTipo);
+                cboTipo.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosLeft += lineHeight;
+
+                // Variable para controlar eventos
+                bool permitirEventos = false;
+
+                // Evento para cargar modelos cuando cambie la marca (SOLO EN MODO EDICIÓN)
+                EventHandler marcaCambiadaHandler = (s, e) =>
+                {
+                    if (permitirEventos && cboMarca.Enabled && cboMarca.SelectedValue != null && editarActivo)
+                    {
+                        try
+                        {
+                            int idMarca = Convert.ToInt32(cboMarca.SelectedValue);
+                            var modelosNuevos = ModeloVehiculoCln.listar()
+                                .Where(m => m.idMarca == idMarca && m.estado != -1)
+                                .OrderBy(m => m.nombre)
+                                .ToList();
+
+                            permitirEventos = false;
+                            cboModelo.DataSource = null;
+                            cboModelo.DataSource = modelosNuevos;
+                            cboModelo.DisplayMember = "nombre";
+                            cboModelo.ValueMember = "id";
+                            permitirEventos = true;
+
+                            if (modelosNuevos.Any())
+                            {
+                                cboModelo.SelectedIndex = 0;
+                            }
+                        }
+                        catch { }
+                    }
+                };
+
+                cboMarca.SelectedIndexChanged += marcaCambiadaHandler;
+
+                // Evento para cargar marcas cuando cambie la procedencia (SOLO EN MODO EDICIÓN)
+                cboProcedencia.SelectedIndexChanged += (s, e) =>
+                {
+                    try
+                    {
+                        if (!permitirEventos) return;
+                        if (!cboProcedencia.Enabled) return;
+
+                        var sel = cboProcedencia.SelectedValue;
+                        if (sel == null) return;
+
+                        // Only allow when in edit mode
+                        if (!editarActivo) return;
+
+                        int idProc = Convert.ToInt32(sel);
+                        var marcasFiltradas = MarcaCln.listar()
+                            .Where(m => m.idProcedencia == idProc && m.estado != -1)
+                            .OrderBy(m => m.nombre)
+                            .ToList();
+
+                        permitirEventos = false;
+                        cboMarca.DataSource = null;
+                        cboMarca.DisplayMember = "nombre";
+                        cboMarca.ValueMember = "id";
+                        cboMarca.DataSource = marcasFiltradas;
+                        cboMarca.BindingContext = new BindingContext();
+
+                        if (marcasFiltradas.Any())
+                            cboMarca.SelectedIndex = 0;
+                        else
+                            cboMarca.SelectedIndex = -1;
+
+                        permitirEventos = true;
+                    }
+                    catch { }
+                };
+
+
+                // 1. Cargamos Marcas, Tipos y Modelos (DisplayMember/ValueMember ANTES del DataSource)
+                try
+                {
+                    // 1. Cargamos Marcas
+                    var marcas = MarcaCln.listar()
+                        .Where(m => m.estado != -1)
+                        .OrderBy(m => m.nombre)
+                        .ToList();
+
+                    cboMarca.DisplayMember = "nombre";
+                    cboMarca.ValueMember = "id";
+                    cboMarca.DataSource = null;
+                    cboMarca.DataSource = marcas;
+                    cboMarca.BindingContext = new BindingContext();
+
+                    // 2. Cargando Tipos
+                    var tipos = TipoVehiculoCln.listar()
+                        .Where(t => t.estado != -1)
+                        .OrderBy(t => t.descripcion)
+                        .ToList();
+
+                    cboTipo.DisplayMember = "descripcion";
+                    cboTipo.ValueMember = "id";
+                    cboTipo.DataSource = null;
+                    cboTipo.DataSource = tipos;
+                    cboTipo.BindingContext = new BindingContext();
+
+                    // Load procedencias and set selection based on current marca
+                    try
+                    {
+                        var procedencias = ProcedenciaCln.listar()
+                            .Where(p => p.estado != -1)
+                            .OrderBy(p => p.descripcion)
+                            .ToList();
+
+                        cboProcedencia.DisplayMember = "descripcion";
+                        cboProcedencia.ValueMember = "id";
+                        cboProcedencia.DataSource = null;
+                        cboProcedencia.DataSource = procedencias;
+                        cboProcedencia.BindingContext = new BindingContext();
+
+                        // Select the procedencia that corresponds to the current modelo's marca
+                        try
+                        {
+                            var marcaDelModelo = marcas.FirstOrDefault(m => m.id == modeloActual?.idMarca);
+                            if (marcaDelModelo != null)
+                                cboProcedencia.SelectedValue = marcaDelModelo.idProcedencia;
+                            else
+                                cboProcedencia.SelectedIndex = -1;
+                        }
+                        catch { cboProcedencia.SelectedIndex = -1; }
+                    }
+                    catch { /* ignore procedencias loading errors */ }
+
+                    // 3. Cargando Modelos de la marca actual
+                    var modelos = ModeloVehiculoCln.listar()
+                        .Where(m => m.idMarca == modeloActual.idMarca && m.estado != -1)
+                        .OrderBy(m => m.nombre)
+                        .ToList();
+
+                    cboModelo.DisplayMember = "nombre";
+                    cboModelo.ValueMember = "id";
+                    cboModelo.DataSource = null;
+                    cboModelo.DataSource = modelos;
+                    cboModelo.BindingContext = new BindingContext();
+
+                    // 4. Depuración + Selección por ID (muestra IDs y primeras entradas)
+                    try
+                    {
+                        permitirEventos = false;
+
+                        var sb = new StringBuilder();
+                        //sb.AppendLine("DEBUG - Valores recibidos:");
+                        //sb.AppendLine($"paVehiculoListar_Result -> id: {vehiculo.id}, modelo(grid): {vehiculo.modelo}, marca(grid): {vehiculo.marca}");
+                        //sb.AppendLine($"vehiculoCompleto.idModeloVehiculo: {vehiculoCompleto.idModeloVehiculo}");
+                        //sb.AppendLine("");
+                        //if (modeloActual != null)
+                        //{
+                        //    sb.AppendLine($"Modelo actual -> id: {modeloActual.id}, idMarca: {modeloActual.idMarca}, idTipoVehiculo: {modeloActual.idTipoVehiculo}, nombre: {modeloActual.nombre}");
+                        //}
+                        //else
+                        //{
+                        //    sb.AppendLine("Modelo actual: NULL");
+                        //}
+
+                        //sb.AppendLine("");
+                        //sb.AppendLine("Primeras marcas cargadas:");
+                        //if (marcas != null && marcas.Any())
+                        //{
+                        //    for (int i = 0; i < Math.Min(6, marcas.Count); i++)
+                        //        sb.AppendLine($"  [{i}] id={marcas[i].id} -> {marcas[i].nombre}");
+                        //}
+                        //else sb.AppendLine("  (no hay marcas)");
+
+                        //sb.AppendLine("");
+                        //sb.AppendLine("Primeros tipos cargados:");
+                        //if (tipos != null && tipos.Any())
+                        //{
+                        //    for (int i = 0; i < Math.Min(6, tipos.Count); i++)
+                        //        sb.AppendLine($"  [{i}] id={tipos[i].id} -> {tipos[i].descripcion}");
+                        //}
+                        //else sb.AppendLine("  (no hay tipos)");
+
+                        //sb.AppendLine("");
+                        //sb.AppendLine("Primeros modelos cargados (para la marca actual):");
+                        //if (modelos != null && modelos.Any())
+                        //{
+                        //    for (int i = 0; i < Math.Min(6, modelos.Count); i++)
+                        //        sb.AppendLine($"  [{i}] id={modelos[i].id} idMarca={modelos[i].idMarca} -> {modelos[i].nombre}");
+                        //}
+                        //else sb.AppendLine("  (no hay modelos)");
+
+                        //MessageBox.Show(sb.ToString(), "DEBUG - Selección", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        // Seleccionamos marca por ID si existe
+                        if (marcas != null && marcas.Any())
+                        {
+                            var marcaSeleccionada = marcas.FirstOrDefault(m => m.id == modeloActual?.idMarca);
+                            if (marcaSeleccionada != null)
+                                cboMarca.SelectedValue = marcaSeleccionada.id;
+                            else
+                                cboMarca.SelectedIndex = -1;
+                        }
+
+                        // Seleccionar tipo por ID si existe
+                        if (tipos != null && tipos.Any())
+                        {
+                            var tipoSeleccionado = tipos.FirstOrDefault(t => t.id == modeloActual?.idTipoVehiculo);
+                            if (tipoSeleccionado != null)
+                                cboTipo.SelectedValue = tipoSeleccionado.id;
+                            else
+                                cboTipo.SelectedIndex = -1;
+                        }
+
+                        // Asegurar que el modelo del vehículo esté en la lista de modelos.
+                        var modeloEnLista = modelos?.FirstOrDefault(m => m.id == vehiculoCompleto.idModeloVehiculo);
+                        if (modeloEnLista == null)
+                        {
+                            var modeloReal = ModeloVehiculoCln.obtenerUno(vehiculoCompleto.idModeloVehiculo);
+                            if (modeloReal != null)
+                            {
+                                modelos.Insert(0, modeloReal);
+
+                                // Rebind del combo de modelos con BindingContext nuevo
+                                cboModelo.DataSource = null;
+                                cboModelo.DisplayMember = "nombre";
+                                cboModelo.ValueMember = "id";
+                                cboModelo.DataSource = modelos;
+                                cboModelo.BindingContext = new BindingContext();
+                            }
+                        }
+
+                        // Seleccionamos modelo por ID
+                        if (modelos != null && modelos.Any())
+                        {
+                            var modeloSeleccionado = modelos.FirstOrDefault(m => m.id == vehiculoCompleto.idModeloVehiculo);
+                            if (modeloSeleccionado != null)
+                                cboModelo.SelectedValue = modeloSeleccionado.id;
+                            else
+                                cboModelo.SelectedIndex = -1;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al establecer selección: {ex.Message}", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    finally
+                    {
+                        permitirEventos = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cargar datos: {ex.Message}", "Error",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    permitirEventos = true;
+                }
+
+                // Año de Fabricación EDITABLE
+                AgregarLabel(pnlPrincipal, "Año Fabricación:", 20, yPosLeft, labelWidth);
+                NumericUpDown nudAnio = new NumericUpDown
+                {
+                    Name = "nudAnio",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(120, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 1900,
+                    Maximum = DateTime.Now.Year,
+                    Value = vehiculoCompleto.anioFabricacion,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                // make inner textbox readonly so it looks like normal textbox but not editable
+                try
+                {
+                    var tb = nudAnio.Controls.OfType<TextBox>().FirstOrDefault();
+                    if (tb != null)
+                    {
+                        tb.ReadOnly = true;
+                        tb.BackColor = Color.WhiteSmoke;
+                    }
+                }
+                catch { }
+
+                // prevent value changes when not editing by reverting to initial value
+                decimal nudAnioInicial = nudAnio.Value;
+                nudAnio.ValueChanged += (s, e) => { if (!editarActivo) { nudAnio.Value = nudAnioInicial; } };
+                nudAnio.GotFocus += (s, e) => { nudAnioInicial = nudAnio.Value; };
+
+                pnlPrincipal.Controls.Add(nudAnio);
+                nudAnio.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosLeft += lineHeight;
+
+                // ==================== COLUMNA DERECHA ====================
+                AgregarSeccion(pnlPrincipal, "⚙️ CARACTERÍSTICAS ESPECÍFICAS", 590, yPos, 560);
+                int yPosRight = yPos + 38;
+
+                // Generación (EDITABLE)
+                AgregarLabel(pnlPrincipal, "Generación:", 590, yPosRight, labelWidth);
+                TextBox txtGeneracion = new TextBox
+                {
+                    Name = "txtGeneracion",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Text = vehiculoCompleto.generacion,
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke
+                };
+                pnlPrincipal.Controls.Add(txtGeneracion);
+                // Agregar botón lupa junto al TextBox (misma funcionalidad que FrmRegistroVehiculo)
+                Button btnBuscarGeneracion = new Button
+                {
+                    Name = "btnBuscarGeneracion",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarGeneracion.FlatAppearance.BorderSize = 0;
+                try { var ttG = new ToolTip(); ttG.SetToolTip(btnBuscarGeneracion, "Buscar generación en la web"); } catch { }
+                btnBuscarGeneracion.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = (int)nudAnio.Value;
+                        if (anioVal < 1900 || anioVal > DateTime.Now.Year) anioVal = DateTime.Now.Year;
+
+                        if (string.IsNullOrWhiteSpace(marca) && string.IsNullOrWhiteSpace(modelo))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar al menos la Marca o el Modelo para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿Qué generación es el {marca} {modelo} {anioVal}?".Trim();
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+
+                        var psi = new ProcessStartInfo
+                        {
+                            FileName = url,
+                            UseShellExecute = true
+                        };
+                        Process.Start(psi);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarGeneracion);
+
+                txtGeneracion.Enabled = true; // habilitado hasta entrar en modo edición
+                txtGeneracion.ReadOnly = true;
+                yPosRight += lineHeight;
+                //poner al frente
+                txtGeneracion.BringToFront();
+
+                // País de Fabricación (EDITABLE)
+                AgregarLabel(pnlPrincipal, "País Fabricación:", 590, yPosRight, labelWidth);
+                ComboBox cboPaisFabricacion = new ComboBox
+                {
+                    Name = "cboPaisFabricacion",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDown,
+                    AutoCompleteMode = AutoCompleteMode.SuggestAppend, // Búsqueda mientras escribe
+                    AutoCompleteSource = AutoCompleteSource.ListItems, // Busca en los items
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboPaisFabricacion.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+                cboPaisFabricacion.Items.AddRange(new[] { "Japón", "Alemania", "Estados Unidos", "Corea del Sur", "China",
+                "India", "Brasil", "México", "España", "Francia", "Italia",
+                "Reino Unido", "Tailandia", "Hungría", "República Checa",
+                "Turquía", "Argentina", "Sudáfrica", "Australia", "Canadá" });
+                cboPaisFabricacion.Text = vehiculoCompleto.paisFabricacion;
+                pnlPrincipal.Controls.Add(cboPaisFabricacion);
+
+                // Botón buscar país (similar a FrmRegistroVehiculo) - agregado
+                Button btnBuscarPaisFabricacion = new Button
+                {
+                    Name = "btnBuscarPaisFabricacion",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarPaisFabricacion.FlatAppearance.BorderSize = 0;
+                try { var ttpPais = new ToolTip(); ttpPais.SetToolTip(btnBuscarPaisFabricacion, "Verificar país de fabricación"); } catch { }
+                btnBuscarPaisFabricacion.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+                        string pais = cboPaisFabricacion != null ? cboPaisFabricacion.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version) || string.IsNullOrWhiteSpace(pais))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Versión y País para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿El {marca} {modelo} versión {version} es fabricado en {pais}?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarPaisFabricacion);
+                btnBuscarPaisFabricacion.BringToFront();
+                cboPaisFabricacion.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosRight += lineHeight;
+                cboPaisFabricacion.BringToFront();
+
+                // Transmisión (EDITABLE)
+                AgregarLabel(pnlPrincipal, "Transmisión:", 590, yPosRight, labelWidth);
+                ComboBox cboTransmision = new ComboBox
+                {
+                    Name = "cboTransmision",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboTransmision.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+                cboTransmision.Items.AddRange(new[] { "Manual", "Automática", "CVT", "Semiautomática", "Doble Embrague" });
+                cboTransmision.Text = vehiculoCompleto.transmision;
+                pnlPrincipal.Controls.Add(cboTransmision);
+                cboTransmision.Enabled = false; // deshabilitado hasta entrar en modo edición
+                cboTransmision.BringToFront();
+                yPosRight += lineHeight;
+
+
+                AgregarLabel(pnlPrincipal, "Velocidades:", 590, yPosRight, labelWidth);
+                NumericUpDown nudVelocidades = new NumericUpDown
+                {
+                    Name = "nudVelocidades",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(100, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 4,
+                    Maximum = 10,
+                    Value = vehiculoCompleto.nroVelocidades ?? 5,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                // Label informativo que cambia según transmisión (kept here so it exists for handlers)
+                Label lblInfoVelocidades = new Label
+                {
+                    Name = "lblInfoVelocidades",
+                    Location = new Point(colRightX + 190 + 35, yPosRight + 3),
+                    Size = new Size(150, 25),
+                    Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                    ForeColor = Color.Gray,
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                try
+                {
+                    var tbv = nudVelocidades.Controls.OfType<TextBox>().FirstOrDefault();
+                    if (tbv != null)
+                    {
+                        tbv.ReadOnly = true;
+                        tbv.BackColor = Color.WhiteSmoke;
+                    }
+                }
+                catch { }
+                decimal nudVelInicial = nudVelocidades.Value;
+                nudVelocidades.ValueChanged += (s, ev) => { if (!editarActivo) nudVelocidades.Value = nudVelInicial; };
+                nudVelocidades.GotFocus += (s, ev) => { nudVelInicial = nudVelocidades.Value; };
+
+                // Add controls to panel BEFORE configuring so the NumericUpDown has a Parent
+                pnlPrincipal.Controls.Add(nudVelocidades);
+                pnlPrincipal.Controls.Add(lblInfoVelocidades);
+                // Botón buscar velocidades
+                Button btnBuscarVelocidades = new Button
+                {
+                    Name = "btnBuscarVelocidades",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + 100 + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarVelocidades.FlatAppearance.BorderSize = 0;
+                try { var ttVel = new ToolTip(); ttVel.SetToolTip(btnBuscarVelocidades, "Buscar información sobre velocidades"); } catch { }
+                btnBuscarVelocidades.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        string transmision = cboTransmision != null ? cboTransmision.Text : string.Empty;
+                        int velocidades = (int)nudVelocidades.Value;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(transmision))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Transmisión para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿El {marca} {modelo} {anioVal} con transmisión {transmision} tiene {velocidades} velocidades?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarVelocidades);
+                btnBuscarVelocidades.BringToFront();
+
+                yPosRight += lineHeight;
+                nudVelocidades.BringToFront();
+                nudVelocidades.Enabled = false; // deshabilitado hasta entrar en modo edición
+                ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
+                //lblInfoVelocidades.BringToFront();
+
+                // ⭐ EVENTO: Cambiar opciones cuando cambia la transmisión
+                cboTransmision.SelectedIndexChanged += (s, ev) =>
+                {
+                    // Cuando cambia la transmisión, reconfiguramos las velocidades.
+                    // Solo permitimos editar si el control de transmisión está habilitado (modo edición).
+                    if (cboTransmision.Enabled) // Solo si está en modo edición
+                    {
+                        ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, null, true);
+                    }
+                    else
+                    {
+                        // Modo lectura: aseguramos que no se permita editar
+                        ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, null, false);
+                    }
+                };
+
+                // Tiene Turbo (EDITABLE)
+                CheckBox chkTieneTurbo = new CheckBox
+                {
+                    Name = "chkTieneTurbo",
+                    Text = "🚀 Tiene Turbo",
+                    Location = new Point(colRightX + 80, yPosRight + 3),
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    AutoSize = true,
+                    ForeColor = Color.FromArgb(220, 53, 69),
+                    Checked = vehiculoCompleto.tieneTurbo,
+                    // keep enabled but prevent auto toggle when not editing
+                    Enabled = true,
+                    AutoCheck = false
+                };
+                pnlPrincipal.Controls.Add(chkTieneTurbo);
+                chkTieneTurbo.Click += (s, e) =>
+                {
+                    if (editarActivo)
+                    {
+                        chkTieneTurbo.Checked = !chkTieneTurbo.Checked;
+                    }
+                };
+                yPosRight += lineHeight;
+                chkTieneTurbo.BringToFront();
+
+                // Motor (EDITABLE)
+                AgregarLabel(pnlPrincipal, "Motor:", 590, yPosRight, labelWidth);
+                TextBox txtMotor = new TextBox
+                {
+                    Name = "txtMotor",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Text = vehiculoCompleto.motor,
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke,
+                };
+                pnlPrincipal.Controls.Add(txtMotor);
+
+                // Botón buscar motor (similar a FrmRegistroVehiculo) - agregado
+                Button btnBuscarMotor = new Button
+                {
+                    Name = "btnBuscarMotor",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarMotor.FlatAppearance.BorderSize = 0;
+                try { var ttM = new ToolTip(); ttM.SetToolTip(btnBuscarMotor, "Buscar si el vehículo trae ese motor"); } catch { }
+                btnBuscarMotor.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        string motor = txtMotor != null ? txtMotor.Text.Trim() : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(motor))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Motor para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿El {marca} {modelo} {anioVal} trae motor {motor}?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarMotor);
+                txtMotor.Enabled = true;
+                txtMotor.ReadOnly = true; // deshabilitado hasta entrar en modo edición
+                btnBuscarMotor.BringToFront();
+
+                yPosRight += lineHeight;
+                txtMotor.BringToFront();
+
+                // Combustible (EDITABLE)
+                AgregarLabel(pnlPrincipal, "Combustible:", 590, yPosRight, labelWidth);
+                ComboBox cboCombustible = new ComboBox
+                {
+                    Name = "cboCombustible",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboCombustible.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+                cboCombustible.Items.AddRange(new[] { "Gasolina", "Diesel", "Híbrido", "Eléctrico", "GLP", "GNC" });
+                cboCombustible.Text = vehiculoCompleto.combustible;
+                pnlPrincipal.Controls.Add(cboCombustible);
+                cboCombustible.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosRight += lineHeight;
+                cboCombustible.BringToFront();
+
+                // FRENOS
+                AgregarLabel(pnlPrincipal, "Frenos:", 590, yPosRight, labelWidth);
+                ComboBox cboFrenos = new ComboBox
+                {
+                    Name = "cboFrenos",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboFrenos.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+                cboFrenos.Items.AddRange(new[] {
+                    "Disco en las 4 ruedas",
+                    "Disco delanteros y tambor atrás",
+                    "Tambor delantero y disco atrás"
+                });
+                cboFrenos.Text = vehiculoCompleto.frenos;
+                pnlPrincipal.Controls.Add(cboFrenos);
+                // Botón buscar frenos
+                Button btnBuscarFrenos = new Button
+                {
+                    Name = "btnBuscarFrenos",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + ctrlWidth + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarFrenos.FlatAppearance.BorderSize = 0;
+                try { var ttF = new ToolTip(); ttF.SetToolTip(btnBuscarFrenos, "Buscar información sobre frenos"); } catch { }
+                btnBuscarFrenos.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+                        string frenos = cboFrenos != null ? cboFrenos.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(frenos))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y tipo de Frenos para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿El {marca} {modelo} {anioVal} versión {version} trae frenos de {frenos}?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarFrenos);
+                btnBuscarFrenos.BringToFront();
+                cboFrenos.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosRight += lineHeight;
+                //frenos al frente
+                cboFrenos.BringToFront();
+
+                // Nro de Asientos
+                AgregarLabel(pnlPrincipal, "Nro. Asientos:", 590, yPosRight, labelWidth);
+                NumericUpDown nudAsientos = new NumericUpDown
+                {
+                    Name = "nudAsientos",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(100, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 3,
+                    Maximum = 8,
+                    Value = vehiculoCompleto.nroAsientos ?? 5,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                // allow editing inner textbox
+                try { var tba = nudAsientos.Controls.OfType<TextBox>().FirstOrDefault(); if (tba != null) tba.ReadOnly = false; } catch { }
+                decimal nudAsientosInicial = nudAsientos.Value;
+                nudAsientos.ValueChanged += (s, ev) => { if (!editarActivo) nudAsientos.Value = nudAsientosInicial; };
+                nudAsientos.GotFocus += (s, ev) => { nudAsientosInicial = nudAsientos.Value; };
+                pnlPrincipal.Controls.Add(nudAsientos);
+                nudAsientos.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosRight += lineHeight;
+                //enviar al frente
+                nudAsientos.BringToFront();
+
+                // Nro de Puertas
+                AgregarLabel(pnlPrincipal, "Nro. Puertas:", 590, yPosRight, labelWidth);
+                ComboBox cboPuertas = new ComboBox
+                {
+                    Name = "cboPuertas",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(150, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboPuertas.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+                cboPuertas.Items.AddRange(new object[] { 3, 4, 5 });
+                cboPuertas.SelectedItem = vehiculoCompleto.nroPuertas;
+                pnlPrincipal.Controls.Add(cboPuertas);
+
+                Label lblInfoPuertas = new Label
+                {
+                    Text = vehiculoCompleto.nroPuertas == 5 ? "(Común)" : "(Menos frecuente)",
+                    Location = new Point(colRightX + 240, yPosRight + 3),
+                    Size = new Size(150, 25),
+                    Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                    ForeColor = vehiculoCompleto.nroPuertas == 5 ? Color.Green : Color.Gray,
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                pnlPrincipal.Controls.Add(lblInfoPuertas);
+                cboPuertas.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosRight += lineHeight;
+                cboPuertas.BringToFront();
+
+                // Tracción
+                AgregarLabel(pnlPrincipal, "Tracción:", 590, yPosRight, labelWidth);
+                ComboBox cboTraccion = new ComboBox
+                {
+                    Name = "cboTraccion",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(ctrlWidth + 50, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboTraccion.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+                cboTraccion.Items.AddRange(new[] {
+                    "Delantera (4x2 FWD)",
+                    "Trasera (4x2 RWD)",
+                    "Integral permanente (AWD 4x4)",
+                    "Doble tracción seleccionable (4WD 4x4)"
+                });
+                cboTraccion.Text = vehiculoCompleto.traccion;
+                pnlPrincipal.Controls.Add(cboTraccion);
+
+                // Botón buscar tracción
+                Button btnBuscarTraccion = new Button
+                {
+                    Name = "btnBuscarTraccion",
+                    Text = "🔍",
+                    Location = new Point(colRightX + 80 + ctrlWidth + 50 + 8, yPosRight),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarTraccion.FlatAppearance.BorderSize = 0;
+                try { var ttT = new ToolTip(); ttT.SetToolTip(btnBuscarTraccion, "Buscar información sobre tracción"); } catch { }
+                btnBuscarTraccion.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        string traccion = cboTraccion != null ? cboTraccion.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(traccion))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y tipo de Tracción para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿El {marca} {modelo} {anioVal} tiene tracción {traccion}?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarTraccion);
+                btnBuscarTraccion.BringToFront();
+
+                Label lblInfoTraccion = new Label
+                {
+                    Name = "lblInfoTraccion",
+                    Text = ObtenerInfoTraccion(vehiculoCompleto.traccion),
+                    Location = new Point(colRightX + 80 + ctrlWidth + 60 + 35, yPosRight + 3),
+                    Size = new Size(120, 25),
+                    Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                    ForeColor = ObtenerColorTraccion(vehiculoCompleto.traccion),
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                pnlPrincipal.Controls.Add(lblInfoTraccion);
+                cboTraccion.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosRight += lineHeight;
+                cboTraccion.BringToFront();
+
+                // ==================== SEGURIDAD ====================
+                yPos = Math.Max(yPosLeft, yPosRight) + 15;
+                AgregarSeccion(pnlPrincipal, "🛡️ SEGURIDAD", 20, yPos, 540);
+                yPosLeft = yPos + 38;
+
+                // Airbags (EDITABLE)
+                AgregarLabel(pnlPrincipal, "Airbags:", 20, yPosLeft, labelWidth);
+                NumericUpDown nudAirbags = new NumericUpDown
+                {
+                    Name = "nudAirbags",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(100, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 0,
+                    Maximum = 12,
+                    Value = vehiculoCompleto.nroAirbags,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                pnlPrincipal.Controls.Add(nudAirbags);
+                // Botón buscar airbags
+                Button btnBuscarAirbags = new Button
+                {
+                    Name = "btnBuscarAirbags",
+                    Text = "🔍",
+                    Location = new Point(colLeftX + 100 + 8, yPosLeft),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarAirbags.FlatAppearance.BorderSize = 0;
+                try { var ttA = new ToolTip(); ttA.SetToolTip(btnBuscarAirbags, "Buscar información sobre airbags"); } catch { }
+                btnBuscarAirbags.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        int airbags = (int)nudAirbags.Value;
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+                        string pais = cboPaisFabricacion != null ? cboPaisFabricacion.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca y Modelo para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"¿Cuántos airbags tiene el {marca} {modelo} {anioVal} versión {version} fabricado en {pais}?";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarAirbags);
+                btnBuscarAirbags.BringToFront();
+                nudAirbags.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosLeft += lineHeight;
+
+                // Organización (EDITABLE)
+                AgregarLabel(pnlPrincipal, "Organización:", 20, yPosLeft, labelWidth);
+                ComboBox cboOrganizacion = new ComboBox
+                {
+                    Name = "cboOrganizacion",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboOrganizacion.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+                cboOrganizacion.Items.AddRange(new[] { "Latin NCAP", "Euro NCAP", "IIHS", "NHTSA", "ANCAP", "Sin calificación" });
+                cboOrganizacion.Text = vehiculoCompleto.organizacionSeguridad;
+                pnlPrincipal.Controls.Add(cboOrganizacion);
+                // Botón buscar organización
+                Button btnBuscarOrganizacion = new Button
+                {
+                    Name = "btnBuscarOrganizacion",
+                    Text = "🔍",
+                    Location = new Point(colLeftX + ctrlWidth + 8, yPosLeft),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarOrganizacion.FlatAppearance.BorderSize = 0;
+                try { var ttO = new ToolTip(); ttO.SetToolTip(btnBuscarOrganizacion, "Buscar calificación de seguridad"); } catch { }
+                btnBuscarOrganizacion.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+                        string organizacion = cboOrganizacion != null ? cboOrganizacion.Text : string.Empty;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(organizacion))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Organización para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"Prueba de choque {marca} {modelo} {anioVal} versión {version} según {organizacion}";
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarOrganizacion);
+                btnBuscarOrganizacion.BringToFront();
+                cboOrganizacion.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosLeft += lineHeight;
+
+                // Estrellas (EDITABLE)
+                AgregarLabel(pnlPrincipal, "Estrellas:", 20, yPosLeft, labelWidth);
+                NumericUpDown nudEstrellas = new NumericUpDown
+                {
+                    Name = "nudEstrellas",
+                    Location = new Point(colLeftX, yPosLeft),
+                    Size = new Size(100, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 0,
+                    Maximum = 5,
+                    Value = vehiculoCompleto.seguridadChoques,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                pnlPrincipal.Controls.Add(nudEstrellas);
+                // Botón buscar estrellas
+                Button btnBuscarEstrellas = new Button
+                {
+                    Name = "btnBuscarEstrellas",
+                    Text = "🔍",
+                    Location = new Point(colLeftX + 100 + 8, yPosLeft),
+                    Size = new Size(36, 28),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    Cursor = Cursors.Hand
+                };
+                btnBuscarEstrellas.FlatAppearance.BorderSize = 0;
+                try { var ttE = new ToolTip(); ttE.SetToolTip(btnBuscarEstrellas, "Buscar calificación de estrellas"); } catch { }
+                btnBuscarEstrellas.Click += (s, e) =>
+                {
+                    try
+                    {
+                        string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
+                        string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
+                        int anioVal = 0;
+                        try { anioVal = (int)nudAnio.Value; } catch { anioVal = DateTime.Now.Year; }
+                        //version
+                        string version = cboVersion != null ? cboVersion.Text : string.Empty;
+                        string organizacion = cboOrganizacion != null ? cboOrganizacion.Text : string.Empty;
+                        //int estrellas = (int)nudEstrellas.Value;
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca y Modelo para realizar la búsqueda.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = string.IsNullOrWhiteSpace(organizacion)
+                            ? $"{marca} {modelo} {anioVal} safety rating stars"
+                            : $"¿Cuántas estrellas de seguridad tiene el {marca} {modelo} {anioVal} versión {version} según {organizacion}?";
+
+                        string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlPrincipal.Controls.Add(btnBuscarEstrellas);
+                btnBuscarEstrellas.BringToFront();
+                nudEstrellas.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosLeft += lineHeight;
+
+                // ==================== EVALUACIÓN ====================
+                AgregarSeccion(pnlPrincipal, "⭐ EVALUACIÓN", 590, yPos, 560);
+                yPosRight = yPos + 38;
+
+                // Confiabilidad (EDITABLE)
+                AgregarLabel(pnlPrincipal, "Confiabilidad:", 590, yPosRight, labelWidth);
+                ComboBox cboConfiabilidad = new ComboBox
+                {
+                    Name = "cboConfiabilidad",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(ctrlWidth, 28),
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Font = new Font("Segoe UI", 10F),
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                cboConfiabilidad.DropDown += (s, e) => { if (!editarActivo) ((ComboBox)s).DroppedDown = false; };
+                cboConfiabilidad.Items.AddRange(new[] { "Excelente", "Bueno", "Regular", "Malo" });
+                cboConfiabilidad.Text = vehiculoCompleto.confiabilidad;
+                pnlPrincipal.Controls.Add(cboConfiabilidad);
+                cboConfiabilidad.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosRight += lineHeight;
+                cboConfiabilidad.BringToFront();
+
+                // Puntuación (EDITABLE)
+                AgregarLabel(pnlPrincipal, "Puntuación:", 590, yPosRight, labelWidth);
+                NumericUpDown nudPuntuacion = new NumericUpDown
+                {
+                    Name = "nudPuntuacion",
+                    Location = new Point(colRightX + 80, yPosRight),
+                    Size = new Size(120, 28),
+                    Font = new Font("Segoe UI", 10F),
+                    Minimum = 1.0m,
+                    Maximum = 10.0m,
+                    DecimalPlaces = 1,
+                    Increment = 0.5m,
+                    Value = vehiculoCompleto.puntuacion,
+                    TextAlign = HorizontalAlignment.Center,
+                    Enabled = Util.usuario != null,
+                    BackColor = Color.WhiteSmoke
+                };
+                pnlPrincipal.Controls.Add(nudPuntuacion);
+                nudPuntuacion.Enabled = false; // deshabilitado hasta entrar en modo edición
+                yPosRight += lineHeight;
+                nudPuntuacion.BringToFront();
+
+                // ==================== OBSERVACIONES ====================
+                yPos = Math.Max(yPosLeft, yPosRight) + 15;
+                AgregarLabel(pnlPrincipal, "Observaciones:", 20, yPos, labelWidth);
+                TextBox txtObservaciones = new TextBox
+                {
+                    Name = "txtObservaciones",
+                    Location = new Point(colLeftX, yPos),
+                    Size = new Size(990/2-100, 65+200),
+                    Multiline = true,
+                    ScrollBars = ScrollBars.Vertical,
+                    Font = new Font("Segoe UI", 10F),
+                    Text = vehiculoCompleto.observaciones ?? "",
+                    ReadOnly = true,
+                    BackColor = Color.WhiteSmoke
+                };
+                pnlPrincipal.Controls.Add(txtObservaciones);
+                txtObservaciones.Enabled = true; // habilitado hasta entrar en modo edición
+                txtObservaciones.ReadOnly = true;
+
+                // ==================== PANEL DE BOTONES ====================
+                Panel pnlBotones = new Panel
+                {
+                    Location = new Point(0, 650-65),
+                    Size = new Size(1184, 70-05),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    //BackColor = Color.FromArgb(248, 249, 250),
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+
+                // Botón Iniciar Sesión (overlay en la esquina superior izquierda del formulario de detalles)
+                Button btnIniciarSesionDetalle = new Button
+                {
+                    Name = "btnIniciarSesionDetalle",
+                    Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión",
+                    Size = new Size(120, 35),
+                    Location = new Point(10, 10),
+                    BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Arial", 9, FontStyle.Bold),
+                    Visible = Util.usuario == null // solo mostrar si no hay usuario autenticado
+                };
+                btnIniciarSesionDetalle.FlatAppearance.BorderSize = 0;
+                // Hacer que el botón no afecte el layout: lo añadimos directamente al formulario (no al panel principal)
+                frmDetalles.Controls.Add(btnIniciarSesionDetalle);
+                btnIniciarSesionDetalle.BringToFront();
+
+                // Crear botones Editar y Eliminar siempre, pero ocultarlos si el usuario no está autenticado.
+                Button btnEditar = new Button
+                {
+                    Name = "btnEditar",
+                    Text = "✏️ Editar",
+                    Size = new Size(180, 45),
+                    Location = new Point(350, 12),
+                    BackColor = Color.FromArgb(51, 122, 183),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = Util.usuario != null
+                };
+                btnEditar.FlatAppearance.BorderSize = 0;
+
+                Button btnEliminar = new Button
+                {
+                    Name = "btnEliminar",
+                    Text = "🗑️ Eliminar",
+                    Size = new Size(180, 45),
+                    Location = new Point(550, 12),
+                    BackColor = Color.FromArgb(217, 83, 79),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = Util.usuario != null
+                };
+                btnEliminar.FlatAppearance.BorderSize = 0;
+
+                // Asociar eventos a los botones Editar y Eliminar (la lógica existente se mantiene)
+                btnEliminar.Click += (s, e) => EliminarVehiculo(vehiculo, frmDetalles);
+
+                // Nota: el evento Click de btnEditar es extenso y depende de variables locales. Se reutiliza el código original
+                // agregando la misma lógica aquí.
+                btnEditar.Click += (s, e) =>
+                {
+                    if (btnEditar.Text == "✏️ Editar")
+                    {
+                        // Habilitar controles de foto
+                        pbFotoDetalle.AllowDrop = true;
+                        btnCambiarFoto.Visible = true;
+                        btnEliminarFotoDetalle.Visible = true;
+                        if (pbFotoDetalle.Image != null)
+                            btnEliminarFotoDetalle.Enabled = false;
+
+                        if (pbFotoDetalle.Image == null)
+                            btnEliminarFotoDetalle.Enabled = true;
+
+                        //// Verificar si hay imagen (desde la variable temporal o el PictureBox)
+                        //bool hayImagen = (imagenCargada != null) || (pbFotoDetalle.Image != null);
+
+                        //// Configurar botones según estado
+                        //btnCambiarFoto.Text = hayImagen ? "📂 Cambiar Foto" : "📂 Añadir Foto";
+                        //btnEliminarFotoDetalle.Enabled = hayImagen;
+                        //btnVerFotoGrande.Visible = hayImagen;
+
+                        // ACTIVAR MODO EDICIÓN - HABILITAR TODO
+                        editarActivo = true;
+
+                        txtChasis.Enabled = true;
+                        txtChasis.ReadOnly = false;
+                        txtChasis.BackColor = Color.White;
+                        cboMarca.Enabled = true;
+                        cboModelo.Enabled = true;
+                        cboTipo.Enabled = true;
+                        cboVersion.Enabled = true;
+                        cboFrenos.Enabled = true;
+                        // Ocultar procedencia en modo edición (no editable aquí)
+                        cboProcedencia.Visible = false;
+                        try
+                        {
+                            // Ocultar cualquier etiqueta que muestre "Procedencia" por si existe más de una instancia
+                            foreach (Control ctrl in pnlPrincipal.Controls)
+                            {
+                                if (ctrl is Label l && !string.IsNullOrEmpty(l.Text) && l.Text.Trim().StartsWith("Procedencia"))
+                                    l.Visible = false;
+                            }
+                        }
+                        catch { }
+                        nudAnio.Enabled = true;
+                        // allow editing inner textbox
+                        try { var t = nudAnio.Controls.OfType<TextBox>().FirstOrDefault(); if (t != null) t.ReadOnly = false; } catch { }
+                        txtGeneracion.Enabled = true;
+                        txtGeneracion.ReadOnly = false;
+                        txtGeneracion.BackColor = Color.White;
+                        cboPaisFabricacion.Enabled = true;
+                        cboTransmision.Enabled = true;
+                        var nudVelocidadesEdit = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                        // Reconfigurar velocidades para permitir edición ahora que estamos en modo edición
+                        ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesEdit, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, true);
+                        // allow editing inner textbox for velocities
+                        try { var tv = nudVelocidadesEdit.Controls.OfType<TextBox>().FirstOrDefault(); if (tv != null) tv.ReadOnly = false; } catch { }
+                        nudAsientos.Enabled = true;
+                        try { var ta = nudAsientos.Controls.OfType<TextBox>().FirstOrDefault(); if (ta != null) ta.ReadOnly = false; } catch { }
+                        cboTraccion.Enabled = true;
+                        cboPuertas.Enabled = true;
+                        chkTieneTurbo.AutoCheck = true;
+                        txtMotor.Enabled = true;
+                        txtMotor.ReadOnly = false;
+                        txtMotor.BackColor = Color.White;
+                        cboCombustible.Enabled = true;
+                        nudAirbags.Enabled = true;
+                        try { var tbair = nudAirbags.Controls.OfType<TextBox>().FirstOrDefault(); if (tbair != null) tbair.ReadOnly = false; } catch { }
+                        cboOrganizacion.Enabled = true;
+                        nudEstrellas.Enabled = true;
+                        try { var tbest3 = nudEstrellas.Controls.OfType<TextBox>().FirstOrDefault(); if (tbest3 != null) tbest3.ReadOnly = false; } catch { }
+                        cboConfiabilidad.Enabled = true;
+                        nudPuntuacion.Enabled = true;
+                        try { var tbp3 = nudPuntuacion.Controls.OfType<TextBox>().FirstOrDefault(); if (tbp3 != null) tbp3.ReadOnly = false; } catch { }
+                        txtObservaciones.Enabled = true;
+                        txtObservaciones.ReadOnly = false;
+                        txtObservaciones.BackColor = Color.White;
+
+                        // Mostrar botones + para agregar marca/modelo
+                        btnAddMarca.Visible = true;
+                        btnAddModelo.Visible = true;
+                        btnEditMarca.Visible = true;
+                        btnEditModelo.Visible = true;
+
+                        lblEstado.Text = "✏️ MODO EDICIÓN - Modifique los campos necesarios";
+                        lblEstado.ForeColor = Color.Green;
+                        lblEstado.BackColor = Color.FromArgb(230, 255, 230);
+                        btnEditar.Text = "💾 Guardar";
+                        btnEditar.BackColor = Color.FromArgb(40, 167, 69);
+
+                        // EVENTO: Limpiar selección visual DESPUÉS de que el formulario se muestre
+
+                        if (cboMarca.SelectedIndex >= 0)
+                        {
+                            cboMarca.SelectionStart = 0;
+                            cboMarca.SelectionLength = 0;
+                        }
+
+                        if (cboModelo.SelectedIndex >= 0)
+                        {
+                            cboModelo.SelectionStart = 0;
+                            cboModelo.SelectionLength = 0;
+                        }
+
+
+                    }
+                    else // GUARDAR
+                    {
+                        // Deshabilitar controles de foto
+                        pbFotoDetalle.AllowDrop = false;
+                        btnCambiarFoto.Visible = false;
+                        btnEliminarFotoDetalle.Visible = false;
+                        // VALIDAR ANTES DE GUARDAR
+                        if (!ValidarEdicionCompleta(txtChasis.Text, cboModelo.SelectedIndex,
+                            txtGeneracion.Text, cboPaisFabricacion.SelectedIndex,
+                            cboConfiabilidad.SelectedIndex, cboVersion.SelectedIndex, cboFrenos.SelectedIndex, cboTraccion.SelectedIndex))
+                            return;
+
+                        try
+                        {
+                            // VALIDACIONES PREVIAS
+                            if (cboModelo.SelectedValue == null || cboTipo.SelectedValue == null)
+                            {
+                                MessageBox.Show("⚠️ Debe seleccionar un modelo y un tipo válidos",
+                                              "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+
+                            int nuevoIdModelo = Convert.ToInt32(cboModelo.SelectedValue);
+                            int nuevoIdTipo = Convert.ToInt32(cboTipo.SelectedValue);
+
+                            // ACTUALIZAR EL TIPO DEL MODELO (SI CAMBIÓ)
+                            var modeloSeleccionado = ModeloVehiculoCln.obtenerUno(nuevoIdModelo);
+
+                            if (modeloSeleccionado == null)
+                            {
+                                MessageBox.Show("❌ Error: No se pudo cargar el modelo seleccionado",
+                                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+
+                            // Si el tipo cambió, actualizar el modelo
+                            if (modeloSeleccionado.idTipoVehiculo != nuevoIdTipo)
+                            {
+                                modeloSeleccionado.idTipoVehiculo = nuevoIdTipo;
+                                modeloSeleccionado.usuarioRegistro = Util.usuario.usuario;
+
+                                int resultadoModelo = ModeloVehiculoCln.actualizar(modeloSeleccionado);
+
+                                if (resultadoModelo == 0)
+                                {
+                                    MessageBox.Show("❌ Error al actualizar el tipo del modelo",
+                                                  "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+                            }
+
+                            // Procesar fotografía si cambió
+                            if (imagenCargada != null)
+                            {
+                                byte[] fotoBytes = ImagenHelper.ConvertirImagenABytes(imagenCargada);
+                                vehiculoCompleto.fotografia = fotoBytes;
+
+                                double tamanoKB = ImagenHelper.ObtenerTamanoKB(fotoBytes);
+                                if (tamanoKB > 2048)
+                                {
+                                    MessageBox.Show($"⚠️ Fotografía optimizada: {Math.Round(tamanoKB / 1024, 2)} MB\n" +
+                                                  "Se recomienda usar imágenes más pequeñas.",
+                                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                }
+                            }
+                            else if (fotoEliminada)
+                            {
+                                // Si el usuario eliminó la foto explícitamente
+                                vehiculoCompleto.fotografia = null;
+                            }
+
+                            // ACTUALIZAR VEHÍCULO
+                            vehiculoCompleto.nroChasis = txtChasis.Text.Trim().ToUpper();
+                            vehiculoCompleto.idModeloVehiculo = nuevoIdModelo;
+                            vehiculoCompleto.version = cboVersion.Text;
+                            vehiculoCompleto.anioFabricacion = (int)nudAnio.Value;
+                            vehiculoCompleto.generacion = txtGeneracion.Text.Trim();
+                            vehiculoCompleto.paisFabricacion = cboPaisFabricacion.Text.Trim();
+                            vehiculoCompleto.transmision = cboTransmision.Text;
+                            vehiculoCompleto.traccion = cboTraccion.Text;
+                            if (cboTransmision.Text == "CVT")
+                            {
+                                vehiculoCompleto.nroVelocidades = null;
+                            }
+                            else
+                            {
+                                var nudVel = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                                vehiculoCompleto.nroVelocidades = (int)nudVel.Value;
+                            }
+                            vehiculoCompleto.nroAsientos = (int)nudAsientos.Value;
+                            vehiculoCompleto.nroPuertas = (int)cboPuertas.SelectedItem;
+                            vehiculoCompleto.tieneTurbo = chkTieneTurbo.Checked;
+                            vehiculoCompleto.motor = txtMotor.Text.Trim();
+                            vehiculoCompleto.combustible = cboCombustible.Text;
+                            vehiculoCompleto.frenos = cboFrenos.Text;
+                            vehiculoCompleto.nroAirbags = (int)nudAirbags.Value;
+                            vehiculoCompleto.organizacionSeguridad = cboOrganizacion.Text;
+                            vehiculoCompleto.seguridadChoques = (int)nudEstrellas.Value;
+                            vehiculoCompleto.confiabilidad = cboConfiabilidad.Text;
+                            vehiculoCompleto.puntuacion = nudPuntuacion.Value;
+                            vehiculoCompleto.observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ?
+                                null : txtObservaciones.Text.Trim();
+                            vehiculoCompleto.usuarioRegistro = Util.usuario.usuario;
+
+                            int resultado = ConsultaVehiculosCln.actualizar(vehiculoCompleto);
+
+                            if (resultado > 0)
+                            {
+                                // DESACTIVAR MODO EDICIÓN
+                                editarActivo = false;
+
+                                txtChasis.ReadOnly = true;
+                                txtChasis.BackColor = Color.WhiteSmoke;
+                                cboMarca.Enabled = true;
+                                cboModelo.Enabled = true;
+                                cboVersion.Enabled = true;
+                                cboTipo.Enabled = true;
+                                // Mostrar procedencia al salir del modo edición
+                                cboProcedencia.Visible = true;
+                                try
+                                {
+                                    foreach (Control ctrl in pnlPrincipal.Controls)
+                                    {
+                                        if (ctrl is Label l && !string.IsNullOrEmpty(l.Text) && l.Text.Trim().StartsWith("Procedencia"))
+                                            l.Visible = true;
+                                    }
+                                }
+                                catch { }
+                                nudAnio.Enabled = true;
+                                try { var t = nudAnio.Controls.OfType<TextBox>().FirstOrDefault(); if (t != null) t.ReadOnly = true; } catch { }
+                                txtGeneracion.ReadOnly = true;
+                                txtGeneracion.BackColor = Color.WhiteSmoke;
+                                cboPaisFabricacion.Enabled = true;
+                                cboTransmision.Enabled = true;
+                                var nudVelocidadesRead = pnlPrincipal.Controls.Find("nudVelocidades", true)[0] as NumericUpDown;
+                                // Al salir de edición, reconfiguramos para modo lectura (deshabilitado o placeholder si CVT)
+                                ConfigurarVelocidades(cboTransmision.Text, nudVelocidadesRead, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
+                                try { var tv2 = nudVelocidadesRead.Controls.OfType<TextBox>().FirstOrDefault(); if (tv2 != null) tv2.ReadOnly = true; } catch { }
+                                nudAsientos.Enabled = true;
+                                try { var ta2 = nudAsientos.Controls.OfType<TextBox>().FirstOrDefault(); if (ta2 != null) ta2.ReadOnly = true; } catch { }
+                                cboTraccion.Enabled = true;
+                                cboPuertas.Enabled = true;
+                                chkTieneTurbo.AutoCheck = false;
+                                txtMotor.ReadOnly = true;
+                                txtMotor.BackColor = Color.WhiteSmoke;
+                                cboCombustible.Enabled = true;
+                                cboFrenos.Enabled = false;
+                                nudAirbags.Enabled = true;
+                                try { var tbair2 = nudAirbags.Controls.OfType<TextBox>().FirstOrDefault(); if (tbair2 != null) tbair2.ReadOnly = true; } catch { }
+                                cboOrganizacion.Enabled = false;
+                                nudEstrellas.Enabled = true;
+                                try { var tbest3 = nudEstrellas.Controls.OfType<TextBox>().FirstOrDefault(); if (tbest3 != null) tbest3.ReadOnly = true; } catch { }
+                                cboConfiabilidad.Enabled = false;
+                                nudPuntuacion.Enabled = true;
+                                try { var tbp3 = nudPuntuacion.Controls.OfType<TextBox>().FirstOrDefault(); if (tbp3 != null) tbp3.ReadOnly = true; } catch { }
+                                txtObservaciones.ReadOnly = true;
+                                txtObservaciones.BackColor = Color.WhiteSmoke;
+
+                                // Ocultar botones +
+                                btnAddMarca.Visible = false;
+                                btnAddModelo.Visible = false;
+                                btnEditMarca.Visible = false;
+                                btnEditModelo.Visible = false;
+
+                                lblEstado.Text = "🔒 MODO LECTURA";
+                                lblEstado.ForeColor = Color.Red;
+                                lblEstado.BackColor = Color.FromArgb(255, 230, 230);
+                                btnEditar.Text = "✏️ Editar";
+                                btnEditar.BackColor = Color.FromArgb(51, 122, 183);
+
+                                MessageBox.Show("✅ Vehículo actualizado exitosamente\n" +
+                                              $"Modelo: {modeloSeleccionado.nombre}\n" +
+                                              $"Versión: {cboVersion.Text}\n" +
+                                              $"Tipo actualizado: {cboTipo.Text}" +
+                                                $"Frenos: {cboFrenos.Text}",
+                                              "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                                frmDetalles.Close();
+                                CargarVehiculos("");
+                            }
+                            else
+                            {
+                                MessageBox.Show("❌ No se pudo actualizar el vehículo",
+                                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"❌ Error al guardar:\n{ex.Message}\n\nStackTrace:\n{ex.StackTrace}",
+                                          "Error Detallado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                };
+
+                // Añadir los botones al panel de botones
+                pnlBotones.Controls.Add(btnEditar);
+                pnlBotones.Controls.Add(btnEliminar);
+
+                // Asociar evento de iniciar sesión del botón de detalles
+                btnIniciarSesionDetalle.Click += (s, e) =>
+                {
+                    if (Util.usuario != null)
+                    {
+                        // Si por alguna razón ya hay usuario, ocultamos el botón y actualizamos UI
+                        btnIniciarSesionDetalle.Visible = false;
+                        btnEditar.Visible = true;
+                        btnEliminar.Visible = true;
+                        ActualizarInterfaz();
+                        btnNuevo.Visible = Util.usuario != null;
+                        return;
+                    }
+
+                    using (var frmAuth = new FrmAutenticacion())
+                    {
+                        frmAuth.StartPosition = FormStartPosition.CenterParent;
+                        if (frmAuth.ShowDialog(this) == DialogResult.OK)
+                        {
+                            // Actualizar interfaz del formulario principal en tiempo real
+                            ActualizarInterfazSesion();
+                            btnNuevo.Visible = Util.usuario != null;
+
+                            // Mostrar los botones de edición ahora que el usuario está autenticado
+                            btnIniciarSesionDetalle.Visible = false;
+                            btnEditar.Visible = true;
+                            btnEliminar.Visible = true;
+
+                            MessageBox.Show("✅ Autenticación exitosa.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                };
+
+                Button btnCerrar = new Button
+                {
+                    Text = "❌ Cerrar",
+                    Size = new Size(180, 45),
+                    Location = new Point(750, 12),
+                    BackColor = Color.FromArgb(108, 117, 125),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    DialogResult = DialogResult.OK
+                };
+                btnCerrar.FlatAppearance.BorderSize = 0;
+
+                pnlBotones.Controls.Add(btnCerrar);
+                frmDetalles.Controls.Add(pnlBotones);
+                frmDetalles.Controls.Add(pnlPrincipal);
+                frmDetalles.AcceptButton = btnCerrar;
+
+                frmDetalles.FormClosing += (s, ev) =>
+                {
+                    if (imagenCargada != null)
+                    {
+                        imagenCargada.Dispose();
+                        imagenCargada = null;
+                    }
+                };
+
+                //EVENTO: Limpiar selección visual DESPUÉS de que el formulario se muestre
+                frmDetalles.Shown += (s, ev) =>
+                {
+                    if (cboMarca.SelectedIndex >= 0)
+                    {
+                        cboMarca.SelectionStart = 0;
+                        cboMarca.SelectionLength = 0;
+                    }
+
+                    if (cboModelo.SelectedIndex >= 0)
+                    {
+                        cboModelo.SelectionStart = 0;
+                        cboModelo.SelectionLength = 0;
+                    }
+                };
+
+                frmDetalles.ShowDialog(this);
+            }
+        }
+
+        // Método de validación actualizado
+        private bool ValidarEdicionCompleta(string chasis, int modeloIndex, string generacion,
+            int paisIndex, int confiabilidadIndex, int versionIndex, int frenosIndex, int traccionIndex)
+        {
+            if (string.IsNullOrWhiteSpace(chasis))
+            {
+                MessageBox.Show("⚠️ El número de chasis es obligatorio", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (chasis.Length != 17)
+            {
+                MessageBox.Show("⚠️ El número de chasis debe tener exactamente 17 caracteres", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (modeloIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar un modelo", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(generacion))
+            {
+                MessageBox.Show("⚠️ La generación es obligatoria", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (paisIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar el país de fabricación", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (confiabilidadIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar el nivel de confiabilidad", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (versionIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar la versión del vehículo", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (frenosIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar el tipo de frenos", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (traccionIndex == -1)
+            {
+                MessageBox.Show("⚠️ Debe seleccionar el tipo de tracción", "Validación",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+        // Método auxiliar para agregar secciones
+        private void AgregarSeccion(Panel panel, string titulo, int x, int yPos, int width)
+        {
+            Panel pnlSeccion = new Panel
+            {
+                Location = new Point(x, yPos),
+                Size = new Size(width, 32),
+                BackColor = Color.FromArgb(52, 58, 64)
+            };
+
+            Label lblSeccion = new Label
+            {
+                Text = titulo,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.White,
+                Location = new Point(10, 7),
+                AutoSize = true
+            };
+            pnlSeccion.Controls.Add(lblSeccion);
+            panel.Controls.Add(pnlSeccion);
+        }
+
+        // Método auxiliar para agregar labels
+        private void AgregarLabel(Panel panel, string texto, int x, int yPos, int width)
+        {
+            Label lbl = new Label
+            {
+                Text = texto,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Location = new Point(x, yPos + 3),
+                Size = new Size(width, 25),
+                TextAlign = ContentAlignment.MiddleLeft,
+                ForeColor = Color.FromArgb(33, 37, 41)
+            };
+            panel.Controls.Add(lbl);
+        }
+
+        // Método para eliminar vehículo
+        private void EliminarVehiculo(paVehiculoListar_Result vehiculo, Form frmDetalles)
+        {
+            DialogResult resultado = MessageBox.Show(
+                $"⚠️ ¿Está seguro que desea eliminar este vehículo?\n\n" +
+                $"Marca: {vehiculo.marca}\n" +
+                $"Modelo: {vehiculo.modelo}\n" +
+                $"Generación: {vehiculo.generacion}\n" +
+                $"País: {vehiculo.paisFabricacion}\n\n" +
+                $"Esta acción no se puede deshacer.",
+                "Confirmar Eliminación",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (resultado == DialogResult.Yes)
+            {
+                try
+                {
+                    int resultado_op = ConsultaVehiculosCln.eliminar(vehiculo.id, Util.usuario.usuario);
+                    if (resultado_op > 0)
+                    {
+                        frmDetalles.Close();
+                        CargarVehiculos("");
+                        MessageBox.Show("✅ Vehículo eliminado exitosamente", "Éxito",
+                                      MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"❌ Error al eliminar el vehículo: {ex.Message}", "Error",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+
+
+        private void btnExportar_Click(object sender, EventArgs e)
+        {
+            ExportarACSV();
+        }
+
+        private void ExportarACSV()
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    Filter = "CSV files (*.csv)|*.csv",
+                    FileName = $"Vehiculos_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
+                };
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    StringBuilder csv = new StringBuilder();
+                    csv.AppendLine("Marca,Modelo,Generación,País,Año,Transmisión,Turbo,Motor,Combustible,Confiabilidad,Puntuación");
+
+                    foreach (DataGridViewRow row in dgvVehiculos.Rows)
+                    {
+                        if (!row.IsNewRow)
+                        {
+                            csv.AppendLine($"{row.Cells["colMarca"].Value}," +
+                                         $"{row.Cells["colModelo"].Value}," +
+                                         $"{row.Cells["colGeneracion"].Value}," +
+                                         $"{row.Cells["colPais"].Value}," +
+                                         $"{row.Cells["colAnio"].Value}," +
+                                         $"{row.Cells["colTransmision"].Value}," +
+                                         $"{row.Cells["colTurbo"].Value}," +
+                                         $"{row.Cells["colMotor"].Value}," +
+                                         $"{row.Cells["colCombustible"].Value}," +
+                                         $"{row.Cells["colConfiabilidad"].Value}," +
+                                         $"{row.Cells["colPuntuacion"].Value}");
+                        }
+                    }
+
+                    System.IO.File.WriteAllText(saveFileDialog.FileName, csv.ToString(), Encoding.UTF8);
+                    MessageBox.Show("✅ Datos exportados exitosamente.", "Exportar",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Error al exportar: {ex.Message}", "Error",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private bool ValidarAutenticacion()
+        {
+            if (Util.usuario != null)
+                return true;
+
+            FrmAutenticacion frmAuth = new FrmAutenticacion();
+            frmAuth.StartPosition = FormStartPosition.CenterParent;
+
+            if (frmAuth.ShowDialog(this) == DialogResult.OK)
+            {
+                // Actualizar interfaz del formulario principal en tiempo real
+                ActualizarInterfazSesion();
+                btnNuevo.Visible = Util.usuario != null;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private void ActualizarInterfaz()
+        {
+            var menuStrip = this.Controls.Find("menuPrincipal", false);
+            if (menuStrip.Length > 0 && menuStrip[0] is MenuStrip ms)
+            {
+                var menuAdmin = ms.Items.Find("menuAdmin", true);
+                if (menuAdmin.Length > 0)
+                    menuAdmin[0].Visible = Util.usuario != null && Util.EsAdministrador();
+
+                var menuLogin = ms.Items.Find("menuLogin", true);
+                if (menuLogin.Length > 0)
+                    menuLogin[0].Visible = Util.usuario == null;
+
+                var menuCerrarSesion = ms.Items.Find("menuCerrarSesion", true);
+                if (menuCerrarSesion.Length > 0)
+                    menuCerrarSesion[0].Visible = Util.usuario != null;
+            }
+
+            var statusStrip = this.Controls.Find("statusStrip", false);
+            if (statusStrip.Length > 0 && statusStrip[0] is StatusStrip ss)
+            {
+                var lblUsuario = (ToolStripStatusLabel)ss.Items["lblUsuario"];
+                if (Util.usuario != null)
+                {
+                    lblUsuario.Text = $"Usuario: {Util.usuario.nombreCompleto} - {Util.usuario.cargo}";
+                }
+                else
+                {
+                    lblUsuario.Text = "Usuario: Invitado (Solo consulta)";
+                }
+            }
+        }
+
+        private void MenuNuevo_Click(object sender, EventArgs e)
+        {
+            if (ValidarAutenticacion())
+            {
+                using (var frmRegistro = new FrmRegistroVehiculo())
+                {
+                    if (frmRegistro.ShowDialog(this) == DialogResult.OK)
+                    {
+                        CargarVehiculos("");
+                    }
+                }
+            }
+            ActualizarInterfazSesion();
+        }
+        private void txtClave_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter) btnBuscar.PerformClick();
+        }
+
+        private void ActualizarIconosFoto()
+        {
+            try
+            {
+                // Crear íconos pequeños
+                Bitmap iconoConFoto = new Bitmap(24, 24);
+                using (Graphics g = Graphics.FromImage(iconoConFoto))
+                {
+                    g.Clear(Color.White);
+                    g.DrawString("📷", new Font("Segoe UI", 14), Brushes.Green, new PointF(-2, -2));
+                }
+
+                Bitmap iconoSinFoto = new Bitmap(24, 24);
+                using (Graphics g = Graphics.FromImage(iconoSinFoto))
+                {
+                    g.Clear(Color.White);
+                    g.DrawString("📷", new Font("Segoe UI", 14), Brushes.LightGray, new PointF(-2, -2));
+                }
+
+                foreach (DataGridViewRow row in dgvVehiculos.Rows)
+                {
+                    if (row.Cells["colId"].Value != null)
+                    {
+                        int idVehiculo = Convert.ToInt32(row.Cells["colId"].Value);
+                        byte[] foto = ConsultaVehiculosCln.obtenerFotografia(idVehiculo);
+
+                        if (row.Cells["colFoto"] is DataGridViewImageCell cell)
+                        {
+                            cell.Value = (foto != null && foto.Length > 0) ? iconoConFoto : iconoSinFoto;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Silenciar errores de íconos para no interrumpir la carga
+                System.Diagnostics.Debug.WriteLine($"Error actualizando íconos: {ex.Message}");
+            }
+        }
+
+        //private void ConfigurarVelocidades(string tipoTransmision, NumericUpDown nudVel, Label lblInfo, int? valorActual, bool permitirEdicion)
+        // {
+        //    // Ensure there is a placeholder label to show a dash for CVT (so NumericUpDown doesn't display a numeric minimum)
+        //    Label lblPlaceholder = null;
+        //    try
+        //    {
+        //        var found = nudVel.Parent.Controls.Find("lblVelocidadesPlaceholder", true);
+        //        if (found != null && found.Length > 0 && found[0] is Label)
+        //            lblPlaceholder = (Label)found[0];
+        //    }
+        //    catch { }
+
+        //    if (lblPlaceholder == null)
+        //    {
+        //        lblPlaceholder = new Label
+        //        {
+        //            Name = "lblVelocidadesPlaceholder",
+        //            Location = nudVel.Location,
+        //            Size = nudVel.Size,
+        //            Font = new Font("Segoe UI", 10F),
+        //            TextAlign = ContentAlignment.MiddleCenter,
+        //            ForeColor = Color.Gray,
+        //            BackColor = Color.Transparent,
+        //            Visible = false
+        //        };
+        //        // Add to same parent so it scrolls/moves together
+        //        nudVel.Parent.Controls.Add(lblPlaceholder);
+        //        lblPlaceholder.BringToFront();
+        //    }
+
+        //    switch (tipoTransmision)
+        //    {
+        //        case "Manual":
+        //            nudVel.Visible = true;
+        //            lblPlaceholder.Visible = false;
+        //            nudVel.Minimum = 4;
+        //            nudVel.Maximum = 6;
+        //            nudVel.Enabled = permitirEdicion;
+        //            {
+        //                decimal min = nudVel.Minimum;
+        //                decimal max = nudVel.Maximum;
+        //                decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 5m;
+        //                if (val < min) val = min;
+        //                if (val > max) val = max;
+        //                nudVel.Value = val;
+        //            }
+        //            lblInfo.Text = "(4-6 velocidades)";
+        //            lblInfo.ForeColor = Color.FromArgb(40, 167, 69);
+        //            break;
+
+        //        case "Automática":
+        //            nudVel.Visible = true;
+        //            lblPlaceholder.Visible = false;
+        //            nudVel.Minimum = 4;
+        //            nudVel.Maximum = 10;
+        //            nudVel.Enabled = permitirEdicion;
+        //            {
+        //                decimal min = nudVel.Minimum;
+        //                decimal max = nudVel.Maximum;
+        //                decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 6m;
+        //                if (val < min) val = min;
+        //                if (val > max) val = max;
+        //                nudVel.Value = val;
+        //            }
+        //            lblInfo.Text = "(4-10 velocidades)";
+        //            lblInfo.ForeColor = Color.FromArgb(0, 123, 255);
+        //            break;
+
+        //        case "CVT":
+        //            // For CVT we show a placeholder dash instead of a numeric value
+        //            nudVel.Visible = false;
+        //            // ensure control remains disabled
+        //            nudVel.Enabled = false;
+        //            lblPlaceholder.Text = "-";
+        //            lblPlaceholder.Visible = true;
+        //            lblInfo.Text = "(Sin velocidades)";
+        //            lblInfo.ForeColor = Color.FromArgb(108, 117, 125);
+        //            if (btnBuscarVel != null) btnBuscarVel.Visible = false;
+        //            break;
+
+        //        case "Semiautomática":
+        //        case "Doble Embrague":
+        //            nudVel.Visible = true;
+        //            lblPlaceholder.Visible = false;
+        //            nudVel.Minimum = 6;
+        //            nudVel.Maximum = 8;
+        //            nudVel.Enabled = permitirEdicion;
+        //            {
+        //                decimal min = nudVel.Minimum;
+        //                decimal max = nudVel.Maximum;
+        //                decimal val = valorActual.HasValue ? (decimal)valorActual.Value : 7m;
+        //                if (val < min) val = min;
+        //                if (val > max) val = max;
+        //                nudVel.Value = val;
+        //            }
+        //            lblInfo.Text = "(6-8 velocidades)";
+        //            lblInfo.ForeColor = Color.FromArgb(255, 193, 7);
+        //            break;
+
+        //        default:
+        //            nudVel.Visible = true;
+        //            lblPlaceholder.Visible = false;
+        //            nudVel.Enabled = false;
+        //            lblInfo.Text = "";
+        //            break;
+        //    }
+        // }
+
+        private void ConfigurarVelocidades(string tipoTransmision, NumericUpDown nudVel, Label lblInfo, int? valorActual, bool permitirEdicion)
+        {
+            // Aseguramos que el label informativo SIEMPRE esté visible
+            lblInfo.Visible = true;
+
+            // Buscar el botón de búsqueda de velocidades por nombre
+            Button btnBuscarVel = null;
+            try
+            {
+                var found = nudVel.Parent.Controls.Find("btnBuscarVelocidades", true);
+                if (found.Length > 0 && found[0] is Button)
+                    btnBuscarVel = (Button)found[0];
+            }
+            catch { }
+
+            // Buscar o crear el placeholder para CVT
+            Label lblPlaceholder = null;
+            try
+            {
+                var found = nudVel.Parent.Controls.Find("lblVelocidadesPlaceholder", true);
+                if (found.Length > 0 && found[0] is Label)
+                    lblPlaceholder = (Label)found[0];
+            }
+            catch { }
+
+            if (lblPlaceholder == null)
+            {
+                lblPlaceholder = new Label
+                {
+                    Name = "lblVelocidadesPlaceholder",
+                    Location = nudVel.Location,
+                    Size = nudVel.Size,
+                    Font = new Font("Segoe UI", 10F),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    ForeColor = Color.Gray,
+                    BackColor = Color.Transparent,
+                    Visible = false
+                };
+                nudVel.Parent.Controls.Add(lblPlaceholder);
+                lblPlaceholder.BringToFront();
+            }
+
+            switch (tipoTransmision)
+            {
+                case "Manual":
+                    nudVel.Visible = true;
+                    lblPlaceholder.Visible = false;
+                    nudVel.Minimum = 4;
+                    nudVel.Maximum = 6;
+                    nudVel.Enabled = permitirEdicion;
+
+                    decimal valManual = valorActual.HasValue ? (decimal)valorActual.Value : 5m;
+                    valManual = Math.Max(nudVel.Minimum, Math.Min(nudVel.Maximum, valManual));
+                    nudVel.Value = valManual;
+
+                    lblInfo.Text = "(Típico: 5-6 velocidades)";
+                    lblInfo.ForeColor = Color.FromArgb(40, 167, 69);
+
+                    // Mostrar botón lupa
+                    if (btnBuscarVel != null) btnBuscarVel.Visible = true;
+                    break;
+
+                case "Automática":
+                    nudVel.Visible = true;
+                    lblPlaceholder.Visible = false;
+                    nudVel.Minimum = 4;
+                    nudVel.Maximum = 10;
+                    nudVel.Enabled = permitirEdicion;
+
+                    decimal valAuto = valorActual.HasValue ? (decimal)valorActual.Value : 6m;
+                    valAuto = Math.Max(nudVel.Minimum, Math.Min(nudVel.Maximum, valAuto));
+                    nudVel.Value = valAuto;
+
+                    lblInfo.Text = "(Típico: 6-10 velocidades)";
+                    lblInfo.ForeColor = Color.FromArgb(0, 123, 255);
+
+                    // Mostrar botón lupa
+                    if (btnBuscarVel != null) btnBuscarVel.Visible = true;
+                    break;
+
+                case "CVT":
+                    nudVel.Visible = false;
+                    nudVel.Enabled = false;
+                    lblPlaceholder.Text = "—";
+                    lblPlaceholder.Visible = true;
+
+                    lblInfo.Text = "(Transmisión variable continua - sin velocidades fijas)";
+                    lblInfo.Text = "(Sin velocidades fijas)";
+                    lblInfo.ForeColor = Color.FromArgb(108, 117, 125);
+
+                    // OCULTAR botón lupa porque no aplica
+                    if (btnBuscarVel != null) btnBuscarVel.Visible = false;
+                    break;
+
+                case "Semiautomática":
+                case "Doble Embrague":
+                    nudVel.Visible = true;
+                    lblPlaceholder.Visible = false;
+                    nudVel.Minimum = 6;
+                    nudVel.Maximum = 8;
+                    nudVel.Enabled = permitirEdicion;
+
+                    decimal valDoble = valorActual.HasValue ? (decimal)valorActual.Value : 7m;
+                    valDoble = Math.Max(nudVel.Minimum, Math.Min(nudVel.Maximum, valDoble));
+                    nudVel.Value = valDoble;
+
+                    lblInfo.Text = "(Típico: 7-8 velocidades)";
+                    lblInfo.ForeColor = Color.FromArgb(255, 193, 7);
+
+                    // Mostrar botón lupa
+                    if (btnBuscarVel != null) btnBuscarVel.Visible = true;
+                    break;
+
+                default:
+                    nudVel.Visible = true;
+                    lblPlaceholder.Visible = false;
+                    nudVel.Enabled = false;
+                    lblInfo.Text = "(Tipo no especificado)";
+                    lblInfo.ForeColor = Color.Gray;
+
+                    // Ocultar botón por seguridad
+                    if (btnBuscarVel != null) btnBuscarVel.Visible = false;
+                    break;
+            }
+        }
+
+        private void FrmConsultaVehiculos_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
+        }
+
+        private string ObtenerInfoTraccion(string traccion)
+        {
+            if (string.IsNullOrEmpty(traccion)) return "";
+
+            if (traccion.Contains("Delantera")) return "Común en sedán";
+            if (traccion.Contains("Trasera")) return "Deportivo";
+            if (traccion.Contains("Integral")) return "4x4 SUV";
+            if (traccion.Contains("Doble")) return "4x4 Off-road";
+
+            return "";
+        }
+
+        private Color ObtenerColorTraccion(string traccion)
+        {
+            if (string.IsNullOrEmpty(traccion)) return Color.Gray;
+
+            if (traccion.Contains("Delantera")) return Color.FromArgb(0, 123, 255);
+            if (traccion.Contains("Trasera")) return Color.FromArgb(220, 53, 69);
+            if (traccion.Contains("Integral")) return Color.FromArgb(40, 167, 69);
+            if (traccion.Contains("Doble")) return Color.FromArgb(255, 193, 7);
+
+            return Color.Gray;
+        }
+    }
+}
