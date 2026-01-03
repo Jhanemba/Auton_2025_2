@@ -586,6 +586,85 @@ namespace CpAuton
                     fotoEliminada = true; // marcar para que al guardar se elimine la foto en BD
                 };
                 pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
+                pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
+
+                // ✅ AGREGAR ESTE CÓDIGO COMPLETO AQUÍ:
+                // Botón buscar foto en web (SIEMPRE VISIBLE)
+                Button btnBuscarFotoWeb = new Button
+                {
+                    Name = "btnBuscarFotoWeb",
+                    Text = "🌐 Buscar Web",
+                    Size = new Size(150, 30),
+                    Location = new Point(320, 0),
+                    BackColor = Color.FromArgb(23, 162, 184),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = true  // SIEMPRE VISIBLE
+                };
+                btnBuscarFotoWeb.FlatAppearance.BorderSize = 0;
+                btnBuscarFotoWeb.Click += (s, ev) =>
+                {
+                    try
+                    {
+                        string marca = "";
+                        string modelo = "";
+                        string version = "";
+                        string tipo = "";
+                        int anioVal = DateTime.Now.Year;
+                        int puertas = 5;
+
+                        // Buscar los controles de forma segura
+                        try
+                        {
+                            var flpMarca = pnlPrincipal.Controls.Find("flpMarcaRow", true).FirstOrDefault() as FlowLayoutPanel;
+                            if (flpMarca != null)
+                            {
+                                var cboM = flpMarca.Controls.OfType<ComboBox>().FirstOrDefault();
+                                if (cboM != null) marca = cboM.Text.Trim();
+                            }
+
+                            var flpModelo = pnlPrincipal.Controls.Find("flpModeloRow", true).FirstOrDefault() as FlowLayoutPanel;
+                            if (flpModelo != null)
+                            {
+                                var cboMod = flpModelo.Controls.OfType<ComboBox>().FirstOrDefault();
+                                if (cboMod != null) modelo = cboMod.Text.Trim();
+                            }
+
+                            var cboVer = pnlPrincipal.Controls.Find("cboVersion", true).FirstOrDefault() as ComboBox;
+                            if (cboVer != null) version = cboVer.Text.Trim();
+
+                            var cboT = pnlPrincipal.Controls.Find("cboTipo", true).FirstOrDefault() as ComboBox;
+                            if (cboT != null) tipo = cboT.Text.Trim();
+
+                            var nudA = pnlPrincipal.Controls.Find("nudAnio", true).FirstOrDefault() as NumericUpDown;
+                            if (nudA != null) anioVal = (int)nudA.Value;
+
+                            var cboP = pnlPrincipal.Controls.Find("cboPuertas", true).FirstOrDefault() as ComboBox;
+                            if (cboP != null && cboP.SelectedItem != null)
+                                puertas = (int)cboP.SelectedItem;
+                        }
+                        catch { }
+
+                        if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo))
+                        {
+                            MessageBox.Show("⚠️ Debe especificar Marca y Modelo para buscar fotografías.",
+                                "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string query = $"{marca} {modelo} año {anioVal} versión {version} tipo {tipo} de {puertas} puertas fotos";
+                        string url = "https://www.google.com/search?tbm=isch&q=" + Uri.EscapeDataString(query);
+                        Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                };
+                pnlBotonesFoto.Controls.Add(btnBuscarFotoWeb);
                 pnlFotografia.Controls.Add(pnlBotonesFoto);
                 pnlPrincipal.Controls.Add(pnlFotografia);
 
