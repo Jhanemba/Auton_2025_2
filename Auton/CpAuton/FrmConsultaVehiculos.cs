@@ -347,6 +347,57 @@ namespace CpAuton
                 bool fotoExisteEnBD = false;
                 // NEW: flag to indicate edit mode for preventing interaction when not editing
                 bool editarActivo = false;
+                // Variables para detectar cambios
+                bool hayCambios = false;
+                Dictionary<string, object> valoresOriginales = new Dictionary<string, object>();
+
+                //// Método para verificar si hay cambios
+                //Action verificarCambios = () =>
+                //{
+                //    try
+                //    {
+                //        hayCambios = false;
+
+                //        // Verificar cada campo
+                //        if (txtChasis.Text.Trim().ToUpper() != valoresOriginales["nroChasis"].ToString()) hayCambios = true;
+                //        if (cboModelo.SelectedValue != null && (int)cboModelo.SelectedValue != (int)valoresOriginales["idModeloVehiculo"]) hayCambios = true;
+                //        if (cboTipo.SelectedValue != null && (int)cboTipo.SelectedValue != (int)valoresOriginales["idTipoVehiculo"]) hayCambios = true;
+                //        if (cboVersion.Text != valoresOriginales["version"].ToString()) hayCambios = true;
+                //        if ((int)nudAnio.Value != (int)valoresOriginales["anioFabricacion"]) hayCambios = true;
+                //        if (txtGeneracion.Text.Trim() != valoresOriginales["generacion"].ToString()) hayCambios = true;
+                //        if (cboPaisFabricacion.Text.Trim() != valoresOriginales["paisFabricacion"].ToString()) hayCambios = true;
+                //        if (cboTransmision.Text != valoresOriginales["transmision"].ToString()) hayCambios = true;
+                //        if (cboTraccion.Text != valoresOriginales["traccion"].ToString()) hayCambios = true;
+
+                //        // Velocidades (puede ser null)
+                //        int? velActual = cboTransmision.Text == "CVT" ? (int?)null : (int)nudVelocidades.Value;
+                //        int? velOriginal = valoresOriginales["nroVelocidades"] as int?;
+                //        if (velActual != velOriginal) hayCambios = true;
+
+                //        if ((int)nudAsientos.Value != (int)valoresOriginales["nroAsientos"]) hayCambios = true;
+                //        if ((int)cboPuertas.SelectedItem != (int)valoresOriginales["nroPuertas"]) hayCambios = true;
+                //        if (chkTieneTurbo.Checked != (bool)valoresOriginales["tieneTurbo"]) hayCambios = true;
+                //        if (txtMotor.Text.Trim() != valoresOriginales["motor"].ToString()) hayCambios = true;
+                //        if (cboCombustible.Text != valoresOriginales["combustible"].ToString()) hayCambios = true;
+                //        if (cboFrenos.Text != valoresOriginales["frenos"].ToString()) hayCambios = true;
+                //        if ((int)nudAirbags.Value != (int)valoresOriginales["nroAirbags"]) hayCambios = true;
+                //        if (cboOrganizacion.Text != valoresOriginales["organizacionSeguridad"].ToString()) hayCambios = true;
+                //        if ((int)nudEstrellas.Value != (int)valoresOriginales["seguridadChoques"]) hayCambios = true;
+                //        if (cboConfiabilidad.Text != valoresOriginales["confiabilidad"].ToString()) hayCambios = true;
+                //        if (nudPuntuacion.Value != (decimal)valoresOriginales["puntuacion"]) hayCambios = true;
+
+                //        string obsActual = string.IsNullOrWhiteSpace(txtObservaciones.Text) ? "" : txtObservaciones.Text.Trim();
+                //        string obsOriginal = valoresOriginales["observaciones"]?.ToString() ?? "";
+                //        if (obsActual != obsOriginal) hayCambios = true;
+
+                //        // Verificar si cambió la foto
+                //        if (imagenCargada != null || fotoEliminada) hayCambios = true;
+
+                //        // Habilitar/deshabilitar botón Guardar
+                //        btnEditar.Enabled = hayCambios;
+                //    }
+                //    catch { }
+                //};
 
                 // ===== FORMULARIO PRINCIPAL =====
                 Form frmDetalles = new Form
@@ -453,6 +504,7 @@ namespace CpAuton
                     }
                 };
 
+
                 pbFotoDetalle.DragDrop += (s, ev) =>
                 {
                     pbFotoDetalle.BackColor = Color.FromArgb(250, 250, 250);
@@ -470,6 +522,7 @@ namespace CpAuton
                                 btnCambiarFoto.Text = "📂 Cambiar Foto";  
                                 //btnVerFotoGrande.Visible = true;
                                 fotoEliminada = false; // usuario cargó nueva imagen -> no eliminar
+                                //verificarCambios();
                             }
                         }
                         catch (Exception ex)
@@ -517,6 +570,7 @@ namespace CpAuton
                                 btnCambiarFoto.Text = "📂 Cambiar Foto";
                                 //btnVerFotoGrande.Visible = true;
                                 fotoEliminada = false; // nueva imagen cargada
+                                //verificarCambios();
                             }
                             catch (Exception ex)
                             {
@@ -590,6 +644,7 @@ namespace CpAuton
                     btnVerFotoGrande.Visible = false;
                     btnCambiarFoto.Text = "📂 Añadir Foto";
                     fotoEliminada = true; // marcar para que al guardar se elimine la foto en BD
+                    //verificarCambios();
                     fotoExisteEnBD = false;
                 };
                 pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
@@ -1871,6 +1926,7 @@ namespace CpAuton
                     if (editarActivo)
                     {
                         chkTieneTurbo.Checked = !chkTieneTurbo.Checked;
+                        //verificarCambios();
                     }
                 };
                 yPosRight += lineHeight;
@@ -2080,6 +2136,28 @@ namespace CpAuton
                     TextAlign = ContentAlignment.MiddleLeft
                 };
                 pnlPrincipal.Controls.Add(lblInfoPuertas);
+                cboPuertas.SelectedIndexChanged += (s, e) =>
+                {
+                    if (cboPuertas.SelectedItem != null)
+                    {
+                        int puertas = (int)cboPuertas.SelectedItem;
+                        switch (puertas)
+                        {
+                            case 3:
+                                lblInfoPuertas.Text = "(Menos frecuente)";
+                                lblInfoPuertas.ForeColor = Color.Gray;
+                                break;
+                            case 4:
+                                lblInfoPuertas.Text = "(Menos frecuente)";
+                                lblInfoPuertas.ForeColor = Color.Gray;
+                                break;
+                            case 5:
+                                lblInfoPuertas.Text = "(Común)";
+                                lblInfoPuertas.ForeColor = Color.Green;
+                                break;
+                        }
+                    }
+                };
                 cboPuertas.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 cboPuertas.BringToFront();
@@ -2160,6 +2238,31 @@ namespace CpAuton
                     TextAlign = ContentAlignment.MiddleLeft
                 };
                 pnlPrincipal.Controls.Add(lblInfoTraccion);
+                cboTraccion.SelectedIndexChanged += (s, e) =>
+                {
+                    if (cboTraccion.SelectedIndex >= 0)
+                    {
+                        switch (cboTraccion.SelectedIndex)
+                        {
+                            case 0: // Delantera (4x2 FWD)
+                                lblInfoTraccion.Text = "Sedán/Hatchback";
+                                lblInfoTraccion.ForeColor = Color.FromArgb(0, 123, 255);
+                                break;
+                            case 1: // Trasera (4x2 RWD)
+                                lblInfoTraccion.Text = "Deportivos/Coupé";
+                                lblInfoTraccion.ForeColor = Color.FromArgb(220, 53, 69);
+                                break;
+                            case 2: // Integral permanente (AWD 4x4)
+                                lblInfoTraccion.Text = "SUV moderna";
+                                lblInfoTraccion.ForeColor = Color.FromArgb(40, 167, 69);
+                                break;
+                            case 3: // Doble tracción seleccionable (4WD 4x4)
+                                lblInfoTraccion.Text = "Pickup/Off-road";
+                                lblInfoTraccion.ForeColor = Color.FromArgb(255, 193, 7);
+                                break;
+                        }
+                    }
+                };
                 cboTraccion.Enabled = false; // deshabilitado hasta entrar en modo edición
                 yPosRight += lineHeight;
                 cboTraccion.BringToFront();
@@ -2488,12 +2591,88 @@ namespace CpAuton
                 // Asociar eventos a los botones Editar y Eliminar (la lógica existente se mantiene)
                 btnEliminar.Click += (s, e) => EliminarVehiculo(vehiculo, frmDetalles);
 
+                // Método para verificar si hay cambios
+                Action verificarCambios = () =>
+                {
+                    try
+                    {
+                        hayCambios = false;
+
+                        // Verificar cada campo
+                        if (txtChasis.Text.Trim().ToUpper() != valoresOriginales["nroChasis"].ToString()) hayCambios = true;
+                        if (cboModelo.SelectedValue != null && (int)cboModelo.SelectedValue != (int)valoresOriginales["idModeloVehiculo"]) hayCambios = true;
+                        if (cboTipo.SelectedValue != null && (int)cboTipo.SelectedValue != (int)valoresOriginales["idTipoVehiculo"]) hayCambios = true;
+                        if (cboVersion.Text != valoresOriginales["version"].ToString()) hayCambios = true;
+                        if ((int)nudAnio.Value != (int)valoresOriginales["anioFabricacion"]) hayCambios = true;
+                        if (txtGeneracion.Text.Trim() != valoresOriginales["generacion"].ToString()) hayCambios = true;
+                        if (cboPaisFabricacion.Text.Trim() != valoresOriginales["paisFabricacion"].ToString()) hayCambios = true;
+                        if (cboTransmision.Text != valoresOriginales["transmision"].ToString()) hayCambios = true;
+                        if (cboTraccion.Text != valoresOriginales["traccion"].ToString()) hayCambios = true;
+
+                        // Velocidades (puede ser null)
+                        int? velActual = cboTransmision.Text == "CVT" ? (int?)null : (int)nudVelocidades.Value;
+                        int? velOriginal = valoresOriginales["nroVelocidades"] as int?;
+                        if (velActual != velOriginal) hayCambios = true;
+
+                        if ((int)nudAsientos.Value != (int)valoresOriginales["nroAsientos"]) hayCambios = true;
+                        if ((int)cboPuertas.SelectedItem != (int)valoresOriginales["nroPuertas"]) hayCambios = true;
+                        if (chkTieneTurbo.Checked != (bool)valoresOriginales["tieneTurbo"]) hayCambios = true;
+                        if (txtMotor.Text.Trim() != valoresOriginales["motor"].ToString()) hayCambios = true;
+                        if (cboCombustible.Text != valoresOriginales["combustible"].ToString()) hayCambios = true;
+                        if (cboFrenos.Text != valoresOriginales["frenos"].ToString()) hayCambios = true;
+                        if ((int)nudAirbags.Value != (int)valoresOriginales["nroAirbags"]) hayCambios = true;
+                        if (cboOrganizacion.Text != valoresOriginales["organizacionSeguridad"].ToString()) hayCambios = true;
+                        if ((int)nudEstrellas.Value != (int)valoresOriginales["seguridadChoques"]) hayCambios = true;
+                        if (cboConfiabilidad.Text != valoresOriginales["confiabilidad"].ToString()) hayCambios = true;
+                        if (nudPuntuacion.Value != (decimal)valoresOriginales["puntuacion"]) hayCambios = true;
+
+                        string obsActual = string.IsNullOrWhiteSpace(txtObservaciones.Text) ? "" : txtObservaciones.Text.Trim();
+                        string obsOriginal = valoresOriginales["observaciones"]?.ToString() ?? "";
+                        if (obsActual != obsOriginal) hayCambios = true;
+
+                        // Verificar si cambió la foto
+                        if (imagenCargada != null || fotoEliminada) hayCambios = true;
+
+                        // Habilitar/deshabilitar botón Guardar
+                        btnEditar.Enabled = hayCambios;
+                    }
+                    catch { }
+                };
+
                 // Nota: el evento Click de btnEditar es extenso y depende de variables locales. Se reutiliza el código original
                 // agregando la misma lógica aquí.
                 btnEditar.Click += (s, e) =>
                 {
                     if (btnEditar.Text == "✏️ Editar")
                     {
+                        // ACTIVAR MODO EDICIÓN
+                        editarActivo = true;
+
+                        // GUARDAR VALORES ORIGINALES
+                        valoresOriginales.Clear();
+                        valoresOriginales["nroChasis"] = txtChasis.Text.Trim().ToUpper();
+                        valoresOriginales["idModeloVehiculo"] = cboModelo.SelectedValue ?? 0;
+                        valoresOriginales["idTipoVehiculo"] = cboTipo.SelectedValue ?? 0;
+                        valoresOriginales["version"] = cboVersion.Text;
+                        valoresOriginales["anioFabricacion"] = (int)nudAnio.Value;
+                        valoresOriginales["generacion"] = txtGeneracion.Text.Trim();
+                        valoresOriginales["paisFabricacion"] = cboPaisFabricacion.Text.Trim();
+                        valoresOriginales["transmision"] = cboTransmision.Text;
+                        valoresOriginales["traccion"] = cboTraccion.Text;
+                        valoresOriginales["nroVelocidades"] = cboTransmision.Text == "CVT" ? (int?)null : (int)nudVelocidades.Value;
+                        valoresOriginales["nroAsientos"] = (int)nudAsientos.Value;
+                        valoresOriginales["nroPuertas"] = (int)cboPuertas.SelectedItem;
+                        valoresOriginales["tieneTurbo"] = chkTieneTurbo.Checked;
+                        valoresOriginales["motor"] = txtMotor.Text.Trim();
+                        valoresOriginales["combustible"] = cboCombustible.Text;
+                        valoresOriginales["frenos"] = cboFrenos.Text;
+                        valoresOriginales["nroAirbags"] = (int)nudAirbags.Value;
+                        valoresOriginales["organizacionSeguridad"] = cboOrganizacion.Text;
+                        valoresOriginales["seguridadChoques"] = (int)nudEstrellas.Value;
+                        valoresOriginales["confiabilidad"] = cboConfiabilidad.Text;
+                        valoresOriginales["puntuacion"] = nudPuntuacion.Value;
+                        valoresOriginales["observaciones"] = txtObservaciones.Text?.Trim() ?? "";
+
                         // Habilitar controles de foto
                         pbFotoDetalle.AllowDrop = true;
                         btnCambiarFoto.Visible = true;
@@ -2586,6 +2765,33 @@ namespace CpAuton
                         lblEstado.BackColor = Color.FromArgb(230, 255, 230);
                         btnEditar.Text = "💾 Guardar";
                         btnEditar.BackColor = Color.FromArgb(40, 167, 69);
+                        btnEditar.Enabled = false;  //Inicialmente deshabilitado
+
+                        // ✅ CONECTAR EVENTOS DE CAMBIO
+                        txtChasis.TextChanged += (ss, ee) => verificarCambios();
+                        cboModelo.SelectedIndexChanged += (ss, ee) => verificarCambios();
+                        cboTipo.SelectedIndexChanged += (ss, ee) => verificarCambios();
+                        cboVersion.SelectedIndexChanged += (ss, ee) => verificarCambios();
+                        nudAnio.ValueChanged += (ss, ee) => verificarCambios();
+                        txtGeneracion.TextChanged += (ss, ee) => verificarCambios();
+                        cboPaisFabricacion.SelectedIndexChanged += (ss, ee) => verificarCambios();
+                        cboPaisFabricacion.TextChanged += (ss, ee) => verificarCambios();
+                        cboTransmision.SelectedIndexChanged += (ss, ee) => verificarCambios();
+                        cboTraccion.SelectedIndexChanged += (ss, ee) => verificarCambios();
+                        nudVelocidades.ValueChanged += (ss, ee) => verificarCambios();
+                        nudAsientos.ValueChanged += (ss, ee) => verificarCambios();
+                        cboPuertas.SelectedIndexChanged += (ss, ee) => verificarCambios();
+                        chkTieneTurbo.CheckedChanged += (ss, ee) => verificarCambios();
+                        txtMotor.TextChanged += (ss, ee) => verificarCambios();
+                        cboCombustible.SelectedIndexChanged += (ss, ee) => verificarCambios();
+                        cboFrenos.SelectedIndexChanged += (ss, ee) => verificarCambios();
+                        nudAirbags.ValueChanged += (ss, ee) => verificarCambios();
+                        cboOrganizacion.SelectedIndexChanged += (ss, ee) => verificarCambios();
+                        nudEstrellas.ValueChanged += (ss, ee) => verificarCambios();
+                        cboConfiabilidad.SelectedIndexChanged += (ss, ee) => verificarCambios();
+                        nudPuntuacion.ValueChanged += (ss, ee) => verificarCambios();
+                        txtObservaciones.TextChanged += (ss, ee) => verificarCambios();
+
 
                         // EVENTO: Limpiar selección visual DESPUÉS de que el formulario se muestre
 
@@ -2951,6 +3157,8 @@ namespace CpAuton
 
             return true;
         }
+
+
 
         // Método auxiliar para agregar secciones
         private void AgregarSeccion(Panel panel, string titulo, int x, int yPos, int width)
@@ -3433,10 +3641,10 @@ namespace CpAuton
         {
             if (string.IsNullOrEmpty(traccion)) return "";
 
-            if (traccion.Contains("Delantera")) return "Común en sedán";
-            if (traccion.Contains("Trasera")) return "Deportivo";
-            if (traccion.Contains("Integral")) return "4x4 SUV";
-            if (traccion.Contains("Doble")) return "4x4 Off-road";
+            if (traccion.Contains("Delantera")) return "Sedán/Hatchback";
+            if (traccion.Contains("Trasera")) return "Deportivos/Coupé";
+            if (traccion.Contains("Integral")) return "SUV moderna";
+            if (traccion.Contains("Doble")) return "Pickup/Off-road";
 
             return "";
         }
