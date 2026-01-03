@@ -342,6 +342,8 @@ namespace CpAuton
                 PictureBox pbFotoDetalle = null;
                 Button btnCambiarFoto = null;
                 Button btnEliminarFotoDetalle = null;
+                Button btnEditar = null;
+                Button btnEliminar = null;
                 Image imagenCargada = null;
                 bool fotoEliminada = false;
                 bool fotoExisteEnBD = false;
@@ -350,6 +352,8 @@ namespace CpAuton
                 // Variables para detectar cambios
                 bool hayCambios = false;
                 Dictionary<string, object> valoresOriginales = new Dictionary<string, object>();
+                // Declaración temprana para evitar "usar antes de declarar"
+                Action verificarCambios = () => { }; // no-op temporal; se asignará la implementación completa más abajo
 
                 //// Método para verificar si hay cambios
                 //Action verificarCambios = () =>
@@ -522,7 +526,7 @@ namespace CpAuton
                                 btnCambiarFoto.Text = "📂 Cambiar Foto";  
                                 //btnVerFotoGrande.Visible = true;
                                 fotoEliminada = false; // usuario cargó nueva imagen -> no eliminar
-                                //verificarCambios();
+                                verificarCambios();
                             }
                         }
                         catch (Exception ex)
@@ -570,7 +574,7 @@ namespace CpAuton
                                 btnCambiarFoto.Text = "📂 Cambiar Foto";
                                 //btnVerFotoGrande.Visible = true;
                                 fotoEliminada = false; // nueva imagen cargada
-                                //verificarCambios();
+                                verificarCambios();
                             }
                             catch (Exception ex)
                             {
@@ -644,7 +648,7 @@ namespace CpAuton
                     btnVerFotoGrande.Visible = false;
                     btnCambiarFoto.Text = "📂 Añadir Foto";
                     fotoEliminada = true; // marcar para que al guardar se elimine la foto en BD
-                    //verificarCambios();
+                    verificarCambios();
                     fotoExisteEnBD = false;
                 };
                 pnlBotonesFoto.Controls.Add(btnEliminarFotoDetalle);
@@ -1925,8 +1929,10 @@ namespace CpAuton
                 {
                     if (editarActivo)
                     {
-                        chkTieneTurbo.Checked = !chkTieneTurbo.Checked;
-                        //verificarCambios();
+                        // No toggle manual: dejar que AutoCheck gestione el cambio cuando esté activado.
+                        // Solo notificamos que hubo interacción para recalcular cambios.
+                        //chkTieneTurbo.Checked = !chkTieneTurbo.Checked;
+                        verificarCambios();
                     }
                 };
                 yPosRight += lineHeight;
@@ -2529,70 +2535,8 @@ namespace CpAuton
                 txtObservaciones.Enabled = true; // habilitado hasta entrar en modo edición
                 txtObservaciones.ReadOnly = true;
 
-                // ==================== PANEL DE BOTONES ====================
-                Panel pnlBotones = new Panel
-                {
-                    Location = new Point(0, 650-65),
-                    Size = new Size(1184, 70-05),
-                    BackColor = Color.FromArgb(52, 58, 64),
-                    //BackColor = Color.FromArgb(248, 249, 250),
-                    BorderStyle = BorderStyle.FixedSingle
-                };
-
-                // Botón Iniciar Sesión (overlay en la esquina superior izquierda del formulario de detalles)
-                Button btnIniciarSesionDetalle = new Button
-                {
-                    Name = "btnIniciarSesionDetalle",
-                    Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión",
-                    Size = new Size(120, 35),
-                    Location = new Point(10, 10),
-                    BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183),
-                    ForeColor = Color.White,
-                    FlatStyle = FlatStyle.Flat,
-                    Font = new Font("Arial", 9, FontStyle.Bold),
-                    Visible = Util.usuario == null // solo mostrar si no hay usuario autenticado
-                };
-                btnIniciarSesionDetalle.FlatAppearance.BorderSize = 0;
-                // Hacer que el botón no afecte el layout: lo añadimos directamente al formulario (no al panel principal)
-                frmDetalles.Controls.Add(btnIniciarSesionDetalle);
-                btnIniciarSesionDetalle.BringToFront();
-
-                // Crear botones Editar y Eliminar siempre, pero ocultarlos si el usuario no está autenticado.
-                Button btnEditar = new Button
-                {
-                    Name = "btnEditar",
-                    Text = "✏️ Editar",
-                    Size = new Size(180, 45),
-                    Location = new Point(350, 12),
-                    BackColor = Color.FromArgb(51, 122, 183),
-                    ForeColor = Color.White,
-                    FlatStyle = FlatStyle.Flat,
-                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                    Cursor = Cursors.Hand,
-                    Visible = Util.usuario != null
-                };
-                btnEditar.FlatAppearance.BorderSize = 0;
-
-                Button btnEliminar = new Button
-                {
-                    Name = "btnEliminar",
-                    Text = "🗑️ Eliminar",
-                    Size = new Size(180, 45),
-                    Location = new Point(550, 12),
-                    BackColor = Color.FromArgb(217, 83, 79),
-                    ForeColor = Color.White,
-                    FlatStyle = FlatStyle.Flat,
-                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                    Cursor = Cursors.Hand,
-                    Visible = Util.usuario != null
-                };
-                btnEliminar.FlatAppearance.BorderSize = 0;
-
-                // Asociar eventos a los botones Editar y Eliminar (la lógica existente se mantiene)
-                btnEliminar.Click += (s, e) => EliminarVehiculo(vehiculo, frmDetalles);
-
                 // Método para verificar si hay cambios
-                Action verificarCambios = () =>
+                verificarCambios = () =>
                 {
                     try
                     {
@@ -2630,14 +2574,98 @@ namespace CpAuton
                         string obsOriginal = valoresOriginales["observaciones"]?.ToString() ?? "";
                         if (obsActual != obsOriginal) hayCambios = true;
 
-                        // Verificar si cambió la foto
-                        if (imagenCargada != null || fotoEliminada) hayCambios = true;
+                        //// Verificar si cambió la foto
+                        //if (imagenCargada != null || fotoEliminada) hayCambios = true;
 
-                        // Habilitar/deshabilitar botón Guardar
-                        btnEditar.Enabled = hayCambios;
+                        //// Habilitar/deshabilitar botón Guardar
+                        //btnEditar.Enabled = hayCambios;
+                        // --- LÓGICA CORRECTA PARA LA FOTO ---
+                        // valoresOriginales["fotoExiste"] fue guardado al entrar en edición.
+                        bool fotoOriginalExistia = valoresOriginales.ContainsKey("fotoExiste") && (bool)valoresOriginales["fotoExiste"];
+                        bool fotoCambio = false;
+
+                        if (imagenCargada != null)
+                        {
+                            // Hay una imagen cargada en memoria -> siempre hay cambio (nuevo o reemplazo)
+                            fotoCambio = true;
+                        }
+                        else if (fotoEliminada)
+                        {
+                            // Si eliminado: es cambio solo si originalmente existía foto.
+                            // Si originalmente NO existía y el usuario añadió luego la quitó, eso revierte al estado original -> no cambio.
+                            fotoCambio = fotoOriginalExistia;
+                        }
+                        // else imagenCargada == null && fotoEliminada == false => no cambio en foto
+
+                        if (fotoCambio) hayCambios = true;
+
+                        // Habilitar/deshabilitar botón Guardar (protección null)
+                        if (btnEditar != null) btnEditar.Enabled = hayCambios;
                     }
                     catch { }
                 };
+
+                // ==================== PANEL DE BOTONES ====================
+                Panel pnlBotones = new Panel
+                {
+                    Location = new Point(0, 650-65),
+                    Size = new Size(1184, 70-05),
+                    BackColor = Color.FromArgb(52, 58, 64),
+                    //BackColor = Color.FromArgb(248, 249, 250),
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+
+                // Botón Iniciar Sesión (overlay en la esquina superior izquierda del formulario de detalles)
+                Button btnIniciarSesionDetalle = new Button
+                {
+                    Name = "btnIniciarSesionDetalle",
+                    Text = Util.usuario != null ? "Cerrar Sesión" : "Iniciar Sesión",
+                    Size = new Size(120, 35),
+                    Location = new Point(10, 10),
+                    BackColor = Util.usuario != null ? Color.FromArgb(217, 83, 79) : Color.FromArgb(51, 122, 183),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Arial", 9, FontStyle.Bold),
+                    Visible = Util.usuario == null // solo mostrar si no hay usuario autenticado
+                };
+                btnIniciarSesionDetalle.FlatAppearance.BorderSize = 0;
+                // Hacer que el botón no afecte el layout: lo añadimos directamente al formulario (no al panel principal)
+                frmDetalles.Controls.Add(btnIniciarSesionDetalle);
+                btnIniciarSesionDetalle.BringToFront();
+
+                // Crear botones Editar y Eliminar siempre, pero ocultarlos si el usuario no está autenticado.
+                btnEditar = new Button
+                {
+                    Name = "btnEditar",
+                    Text = "✏️ Editar",
+                    Size = new Size(180, 45),
+                    Location = new Point(350, 12),
+                    BackColor = Color.FromArgb(51, 122, 183),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = Util.usuario != null
+                };
+                btnEditar.FlatAppearance.BorderSize = 0;
+
+                btnEliminar = new Button
+                {
+                    Name = "btnEliminar",
+                    Text = "🗑️ Eliminar",
+                    Size = new Size(180, 45),
+                    Location = new Point(550, 12),
+                    BackColor = Color.FromArgb(217, 83, 79),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat,
+                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                    Cursor = Cursors.Hand,
+                    Visible = Util.usuario != null
+                };
+                btnEliminar.FlatAppearance.BorderSize = 0;
+
+                // Asociar eventos a los botones Editar y Eliminar (la lógica existente se mantiene)
+                btnEliminar.Click += (s, e) => EliminarVehiculo(vehiculo, frmDetalles);
 
                 // Nota: el evento Click de btnEditar es extenso y depende de variables locales. Se reutiliza el código original
                 // agregando la misma lógica aquí.
@@ -2672,6 +2700,7 @@ namespace CpAuton
                         valoresOriginales["confiabilidad"] = cboConfiabilidad.Text;
                         valoresOriginales["puntuacion"] = nudPuntuacion.Value;
                         valoresOriginales["observaciones"] = txtObservaciones.Text?.Trim() ?? "";
+                        valoresOriginales["fotoExiste"] = fotoExisteEnBD;
 
                         // Habilitar controles de foto
                         pbFotoDetalle.AllowDrop = true;
@@ -2767,7 +2796,7 @@ namespace CpAuton
                         btnEditar.BackColor = Color.FromArgb(40, 167, 69);
                         btnEditar.Enabled = false;  //Inicialmente deshabilitado
 
-                        // ✅ CONECTAR EVENTOS DE CAMBIO
+                        // CONECTAR EVENTOS DE CAMBIO
                         txtChasis.TextChanged += (ss, ee) => verificarCambios();
                         cboModelo.SelectedIndexChanged += (ss, ee) => verificarCambios();
                         cboTipo.SelectedIndexChanged += (ss, ee) => verificarCambios();
