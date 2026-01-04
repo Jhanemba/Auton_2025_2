@@ -21,7 +21,7 @@ namespace ClnAuton
             }
         }
 
-        // Actualiza un vehículo existente - CON FOTOGRAFÍA
+        // Actualiza un vehículo existente - permite indicar si se debe actualizar la fotografía
         public static int actualizar(Vehiculo vehiculo, bool actualizarFoto = true)
         {
             try
@@ -35,22 +35,20 @@ namespace ClnAuton
                         return 0;
                     }
 
-                    // Actualizar todos los campos
+                    // Actualizar TODOS los campos
                     existente.nroChasis = vehiculo.nroChasis;
                     existente.idModeloVehiculo = vehiculo.idModeloVehiculo;
-                    existente.version = vehiculo.version;
                     existente.anioFabricacion = vehiculo.anioFabricacion;
                     existente.generacion = vehiculo.generacion;
                     existente.paisFabricacion = vehiculo.paisFabricacion;
                     existente.transmision = vehiculo.transmision;
-                    existente.nroVelocidades = vehiculo.nroVelocidades;  
-                    existente.nroAsientos = vehiculo.nroAsientos;  
-                    existente.nroPuertas = vehiculo.nroPuertas;  
-                    existente.traccion = vehiculo.traccion;  
+                    existente.nroVelocidades = vehiculo.nroVelocidades;
+                    existente.nroPuertas = vehiculo.nroPuertas;
+                    existente.nroAsientos = vehiculo.nroAsientos;
+                    existente.traccion = vehiculo.traccion;
                     existente.tieneTurbo = vehiculo.tieneTurbo;
                     existente.motor = vehiculo.motor;
                     existente.combustible = vehiculo.combustible;
-                    existente.frenos = vehiculo.frenos;
                     existente.frenos = vehiculo.frenos;
                     existente.nroAirbags = vehiculo.nroAirbags;
                     existente.seguridadChoques = vehiculo.seguridadChoques;
@@ -59,9 +57,16 @@ namespace ClnAuton
                     existente.puntuacion = vehiculo.puntuacion;
                     existente.kilometraje = vehiculo.kilometraje;
                     existente.observaciones = vehiculo.observaciones;
-                    existente.usuarioRegistro = vehiculo.usuarioRegistro;
+                    //existente.usuarioRegistro = vehiculo.usuarioRegistro;
 
-                    // ⭐ ACTUALIZAR FOTOGRAFÍA solo si se indica
+                    // Copiar usuarioModificacion y fechaModificacion si vienen en el objeto
+                    if (!string.IsNullOrWhiteSpace(vehiculo.usuarioModificacion))
+                    {
+                        existente.usuarioModificacion = vehiculo.usuarioModificacion;
+                        existente.fechaModificacion = vehiculo.fechaModificacion ?? DateTime.Now;
+                    }
+
+                    // FOTOGRAFÍA: actualizar solo si se indicó
                     if (actualizarFoto)
                     {
                         existente.fotografia = vehiculo.fotografia;
@@ -79,33 +84,7 @@ namespace ClnAuton
             }
         }
 
-        // Elimina lógicamente un vehículo
-        public static int eliminar(int id, string usuarioRegistro)
-        {
-            using (var context = new AutonEntities())
-            {
-                var vehiculo = context.Vehiculo.Find(id);
-                if (vehiculo != null)
-                {
-                    vehiculo.estado = -1;
-                    vehiculo.usuarioRegistro = usuarioRegistro;
-                    return context.SaveChanges();
-                }
-                return 0;
-            }
-        }
-
-        // Obtiene un vehículo por su ID (CON fotografía)
-        public static Vehiculo obtenerUno(int id)
-        {
-            using (var context = new AutonEntities())
-            {
-                return context.Vehiculo.Find(id);
-            }
-        }
-
-        // ⭐ NUEVO: Obtiene SOLO la fotografía de un vehículo
-        // (Optimizado para no cargar todos los datos)
+        // ⭐ NUEVO: Obtiene la fotografía de un vehículo
         public static byte[] obtenerFotografia(int id)
         {
             using (var context = new AutonEntities())
@@ -119,32 +98,35 @@ namespace ClnAuton
             }
         }
 
-        // ⭐ NUEVO: Actualiza SOLO la fotografía de un vehículo
-        public static int actualizarFotografia(int id, byte[] fotografia, string usuario)
+        // Elimina lógicamente un vehículo (estado = -1)
+        public static int eliminar(int id, string usuario)
         {
-            try
+            using (var context = new AutonEntities())
             {
-                using (var context = new AutonEntities())
+                var vehiculo = context.Vehiculo.Find(id);
+                if (vehiculo != null)
                 {
-                    var vehiculo = context.Vehiculo.Find(id);
-                    if (vehiculo == null) return 0;
-
-                    vehiculo.fotografia = fotografia;
+                    vehiculo.estado = -1;
+                    // Registrar quién hizo la eliminación en la auditoría
+                    if (!string.IsNullOrWhiteSpace(usuario))
+                    {
+                        vehiculo.usuarioModificacion = usuario;
+                        vehiculo.fechaModificacion = DateTime.Now;
+                    }
                     vehiculo.usuarioRegistro = usuario;
-
                     return context.SaveChanges();
                 }
-            }
-            catch
-            {
                 return 0;
             }
         }
 
-        // ⭐ NUEVO: Elimina la fotografía de un vehículo
-        public static int eliminarFotografia(int id, string usuario)
+        // Obtiene un vehículo por su ID
+        public static Vehiculo obtenerUno(int id)
         {
-            return actualizarFotografia(id, null, usuario);
+            using (var context = new AutonEntities())
+            {
+                return context.Vehiculo.Find(id);
+            }
         }
 
         // Lista todos los vehículos activos
@@ -156,7 +138,7 @@ namespace ClnAuton
             }
         }
 
-        // Lista vehículos usando procedimiento almacenado
+        // Lista vehículos usando el procedimiento almacenado con parámetro de búsqueda
         public static List<paVehiculoListar_Result> listarPa(string parametro)
         {
             using (var context = new AutonEntities())

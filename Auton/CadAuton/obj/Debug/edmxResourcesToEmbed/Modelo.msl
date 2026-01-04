@@ -138,6 +138,8 @@
           <ScalarProperty Name="version" ColumnName="version" />
           <ScalarProperty Name="frenos" ColumnName="frenos" />
           <ScalarProperty Name="traccion" ColumnName="traccion" />
+          <ScalarProperty Name="usuarioModificacion" ColumnName="usuarioModificacion" />
+          <ScalarProperty Name="fechaModificacion" ColumnName="fechaModificacion" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -261,6 +263,8 @@
           <ScalarProperty Name="observaciones" ColumnName="observaciones" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
+          <ScalarProperty Name="usuarioModificacion" ColumnName="usuarioModificacion" />
+          <ScalarProperty Name="fechaModificacion" ColumnName="fechaModificacion" />
           <ScalarProperty Name="estado" ColumnName="estado" />
         </ComplexTypeMapping>
       </ResultMapping>

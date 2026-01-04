@@ -43,9 +43,9 @@ namespace ClnAuton
                     existente.paisFabricacion = vehiculo.paisFabricacion;
                     existente.transmision = vehiculo.transmision;
                     existente.nroVelocidades = vehiculo.nroVelocidades;
-                    existente.nroPuertas = vehiculo.nroPuertas;    
+                    existente.nroPuertas = vehiculo.nroPuertas;
                     existente.nroAsientos = vehiculo.nroAsientos;
-                    existente.traccion = vehiculo.traccion;  
+                    existente.traccion = vehiculo.traccion;
                     existente.tieneTurbo = vehiculo.tieneTurbo;
                     existente.motor = vehiculo.motor;
                     existente.combustible = vehiculo.combustible;
@@ -57,7 +57,14 @@ namespace ClnAuton
                     existente.puntuacion = vehiculo.puntuacion;
                     existente.kilometraje = vehiculo.kilometraje;
                     existente.observaciones = vehiculo.observaciones;
-                    existente.usuarioRegistro = vehiculo.usuarioRegistro;
+                    //existente.usuarioRegistro = vehiculo.usuarioRegistro;
+
+                    // COPIAR usuarioModificacion y fechaModificacion si vienen en el objeto
+                    if (!string.IsNullOrWhiteSpace(vehiculo.usuarioModificacion))
+                    {
+                        existente.usuarioModificacion = vehiculo.usuarioModificacion;
+                        existente.fechaModificacion = vehiculo.fechaModificacion ?? DateTime.Now;
+                    }
 
                     // FOTOGRAFÍA: actualizar solo si se indicó
                     if (actualizarFoto)

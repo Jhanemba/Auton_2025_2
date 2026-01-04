@@ -135,6 +135,8 @@
           <Property Name="version" Type="varchar" MaxLength="20" />
           <Property Name="frenos" Type="varchar" MaxLength="50" />
           <Property Name="traccion" Type="varchar" MaxLength="50" />
+          <Property Name="usuarioModificacion" Type="varchar" MaxLength="50" />
+          <Property Name="fechaModificacion" Type="datetime" />
         </EntityType>
         <EntityType Name="VehiculoMantenimiento">
           <Key>
@@ -286,6 +288,7 @@
           <Parameter Name="kilometraje" Type="int" Mode="In" />
           <Parameter Name="observaciones" Type="varchar" Mode="In" />
           <Parameter Name="fotografia" Type="varbinary(max)" Mode="In" />
+          <Parameter Name="usuarioModificacion" Type="varchar" Mode="In" />
         </Function>
         <Function Name="paVehiculoEliminar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="int" Mode="In" />
@@ -530,6 +533,8 @@
           <Property Name="version" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="frenos" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="traccion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="usuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="fechaModificacion" Type="DateTime" Precision="3" />
           <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="Vehiculo" ToRole="HistorialConfiabilidad" />
           <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="Vehiculo" ToRole="ModeloVehiculo" />
           <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="Vehiculo" ToRole="VehiculoMantenimiento" />
@@ -728,6 +733,7 @@
             <Parameter Name="kilometraje" Mode="In" Type="Int32" />
             <Parameter Name="observaciones" Mode="In" Type="String" />
             <Parameter Name="fotografia" Mode="In" Type="Binary" />
+            <Parameter Name="usuarioModificacion" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="paVehiculoEliminar" ReturnType="Collection(String)">
             <Parameter Name="id" Mode="In" Type="Int32" />
@@ -853,6 +859,8 @@
           <Property Type="String" Name="observaciones" Nullable="true" MaxLength="500" />
           <Property Type="String" Name="usuarioRegistro" Nullable="false" MaxLength="50" />
           <Property Type="DateTime" Name="fechaRegistro" Nullable="false" Precision="23" />
+          <Property Type="String" Name="usuarioModificacion" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="fechaModificacion" Nullable="true" Precision="23" />
           <Property Type="Int16" Name="estado" Nullable="false" />
         </ComplexType>
         <ComplexType Name="paVehiculosAlemanes_Result">
@@ -1178,6 +1186,8 @@
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="frenos" ColumnName="frenos" />
                 <ScalarProperty Name="traccion" ColumnName="traccion" />
+                <ScalarProperty Name="usuarioModificacion" ColumnName="usuarioModificacion" />
+                <ScalarProperty Name="fechaModificacion" ColumnName="fechaModificacion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1301,6 +1311,8 @@
                 <ScalarProperty Name="observaciones" ColumnName="observaciones" />
                 <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
                 <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
+                <ScalarProperty Name="usuarioModificacion" ColumnName="usuarioModificacion" />
+                <ScalarProperty Name="fechaModificacion" ColumnName="fechaModificacion" />
                 <ScalarProperty Name="estado" ColumnName="estado" />
               </ComplexTypeMapping>
             </ResultMapping>

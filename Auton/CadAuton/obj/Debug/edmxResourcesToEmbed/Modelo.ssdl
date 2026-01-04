@@ -130,6 +130,8 @@
     <Property Name="version" Type="varchar" MaxLength="20" />
     <Property Name="frenos" Type="varchar" MaxLength="50" />
     <Property Name="traccion" Type="varchar" MaxLength="50" />
+    <Property Name="usuarioModificacion" Type="varchar" MaxLength="50" />
+    <Property Name="fechaModificacion" Type="datetime" />
   </EntityType>
   <EntityType Name="VehiculoMantenimiento">
     <Key>
@@ -281,6 +283,7 @@
     <Parameter Name="kilometraje" Type="int" Mode="In" />
     <Parameter Name="observaciones" Type="varchar" Mode="In" />
     <Parameter Name="fotografia" Type="varbinary(max)" Mode="In" />
+    <Parameter Name="usuarioModificacion" Type="varchar" Mode="In" />
   </Function>
   <Function Name="paVehiculoEliminar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="id" Type="int" Mode="In" />

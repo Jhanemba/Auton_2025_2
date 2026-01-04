@@ -2096,7 +2096,7 @@ namespace CpAuton
                     return;
                 }
 
-                string query = $"¿Qué generación es el {marca} {modelo} {anio}?".Trim();
+                string query = $"¿Qué generación es el {marca} {modelo} {anio}  y entre que años comprende?".Trim();
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo

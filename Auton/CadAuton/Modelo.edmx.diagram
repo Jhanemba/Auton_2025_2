@@ -4,16 +4,16 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8c2367dc71b6411f96e3455dc89d4e04" Name="Diagram1">
-        <EntityTypeShape EntityType="AutonModel.Cargo" Width="1.5" PointX="0.75" PointY="10.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="AutonModel.Empleado" Width="1.5" PointX="3" PointY="10.25" IsExpanded="true" />
+      <Diagram DiagramId="39ca899e9c6e4c278f92e25831e0f7b6" Name="Diagram1">
+        <EntityTypeShape EntityType="AutonModel.Cargo" Width="1.5" PointX="0.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutonModel.Empleado" Width="1.5" PointX="3" PointY="11.125" IsExpanded="true" />
         <EntityTypeShape EntityType="AutonModel.HistorialConfiabilidad" Width="1.5" PointX="9.75" PointY="2.375" IsExpanded="true" />
         <EntityTypeShape EntityType="AutonModel.Marca" Width="1.5" PointX="3" PointY="4.5" IsExpanded="true" />
         <EntityTypeShape EntityType="AutonModel.ModeloVehiculo" Width="1.5" PointX="5.25" PointY="4.25" IsExpanded="true" />
         <EntityTypeShape EntityType="AutonModel.Procedencia" Width="1.5" PointX="0.75" PointY="4.625" IsExpanded="true" />
         <EntityTypeShape EntityType="AutonModel.TipoVehiculo" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="AutonModel.Usuario" Width="1.5" PointX="5.25" PointY="10.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="AutonModel.Vehiculo" Width="1.5" PointX="7.5" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutonModel.Usuario" Width="1.5" PointX="5.25" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AutonModel.Vehiculo" Width="1.5" PointX="7.5" PointY="2.25" IsExpanded="true" />
         <EntityTypeShape EntityType="AutonModel.VehiculoMantenimiento" Width="1.5" PointX="9.75" PointY="6.125" IsExpanded="true" />
         <AssociationConnector Association="AutonModel.FK_Empleado_Cargo" ManuallyRouted="false" />
         <AssociationConnector Association="AutonModel.FK_Usuario_Empleado" ManuallyRouted="false" />

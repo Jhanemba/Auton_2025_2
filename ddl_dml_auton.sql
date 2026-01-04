@@ -261,8 +261,12 @@ AS
     INNER JOIN Cargo c ON e.idCargo = c.id
     WHERE u.usuario = @usuario AND u.clave = @clave AND u.estado = 1 AND e.estado = 1;
 
+-- Ajustar paVehiculoListar para devolver usuarioModificacion y fechaModificacion
+IF OBJECT_ID('paVehiculoListar', 'P') IS NOT NULL
+    DROP PROC paVehiculoListar;
 GO
-ALTER PROC paVehiculoListar @parametro VARCHAR(100)
+
+CREATE PROC paVehiculoListar @parametro VARCHAR(100)
 AS
     SELECT v.id, 
            v.nroChasis,
@@ -291,7 +295,9 @@ AS
            v.kilometraje, 
            v.observaciones, 
            v.usuarioRegistro, 
-           v.fechaRegistro, 
+           v.fechaRegistro,
+           v.usuarioModificacion,
+           v.fechaModificacion,
            v.estado
     FROM Vehiculo v
     INNER JOIN ModeloVehiculo mv ON v.idModeloVehiculo = mv.id
@@ -402,15 +408,19 @@ BEGIN
 END
 
 
+-- Ajustar paVehiculoActualizar: añadir parámetro @usuarioModificacion y actualizar las columnas correctamente
+IF OBJECT_ID('paVehiculoActualizar', 'P') IS NOT NULL
+    DROP PROC paVehiculoActualizar;
 GO
-ALTER PROC paVehiculoActualizar
+
+CREATE PROC paVehiculoActualizar
     @id INT,
     @version VARCHAR(20),
     @generacion VARCHAR(50),
     @paisFabricacion VARCHAR(50),
     @transmision VARCHAR(20),
     @nroVelocidades INT = NULL,
-    @nroPuertas INT,             -- ⭐ NUEVO PARÁMETRO
+    @nroPuertas INT,
     @nroAsientos INT,
     @traccion VARCHAR(50),
     @tieneTurbo BIT,
@@ -425,9 +435,12 @@ ALTER PROC paVehiculoActualizar
     @puntuacion DECIMAL(3,1),
     @kilometraje INT = NULL,
     @observaciones VARCHAR(500) = NULL,
-    @fotografia VARBINARY(MAX) = NULL
+    @fotografia VARBINARY(MAX) = NULL,
+    @usuarioModificacion VARCHAR(50) = NULL
 AS
 BEGIN
+    SET NOCOUNT ON;
+
     IF @transmision = 'CVT' AND @nroVelocidades IS NOT NULL
     BEGIN
         RAISERROR('Las transmisiones CVT no tienen velocidades discretas', 16, 1);
@@ -442,19 +455,19 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Vehiculo WHERE id = @id AND confiabilidad != @confiabilidad)
         INSERT INTO HistorialConfiabilidad (idVehiculo, confiabilidadAnterior, confiabilidadNueva, 
-                                           puntuacionAnterior, puntuacionNueva, motivo)
+                                           puntuacionAnterior, puntuacionNueva, motivo, usuarioRegistro, fechaRegistro)
         SELECT @id, confiabilidad, @confiabilidad, puntuacion, @puntuacion, 
-               'Actualización manual de confiabilidad'
+               'Actualización manual de confiabilidad', SUSER_NAME(), GETDATE()
         FROM Vehiculo WHERE id = @id;
     
     UPDATE Vehiculo 
     SET 
-        @version = version,
+        version = @version,
         generacion = @generacion,
         paisFabricacion = @paisFabricacion,
         transmision = @transmision,
         nroVelocidades = @nroVelocidades,
-        nroPuertas = @nroPuertas,      -- ⭐ ACTUALIZAR CAMPO
+        nroPuertas = @nroPuertas,
         nroAsientos = @nroAsientos,
         traccion = @traccion,
         tieneTurbo = @tieneTurbo,
@@ -469,12 +482,13 @@ BEGIN
         puntuacion = @puntuacion,
         kilometraje = @kilometraje,
         observaciones = @observaciones,
-        fotografia = ISNULL(@fotografia, fotografia)
+        fotografia = ISNULL(@fotografia, fotografia),
+        usuarioModificacion = ISNULL(@usuarioModificacion, usuarioModificacion),
+        fechaModificacion = CASE WHEN @usuarioModificacion IS NOT NULL THEN GETDATE() ELSE fechaModificacion END
     WHERE id = @id;
     
     SELECT 'Actualizado correctamente' AS mensaje;
 END
-
 
 
 GO
@@ -579,6 +593,28 @@ BEGIN
     PRINT 'El campo traccion ya existe en la tabla Vehiculo';
 END
 
+
+-- 1) Añadir columnas para seguimiento de modificaciones
+GO
+IF NOT EXISTS (
+    SELECT * FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Vehiculo') AND name = 'usuarioModificacion'
+)
+BEGIN
+    ALTER TABLE Vehiculo
+    ADD usuarioModificacion VARCHAR(50) NULL;
+    PRINT 'Campo usuarioModificacion agregado a la tabla Vehiculo';
+END
+
+IF NOT EXISTS (
+    SELECT * FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Vehiculo') AND name = 'fechaModificacion'
+)
+BEGIN
+    ALTER TABLE Vehiculo
+    ADD fechaModificacion DATETIME NULL;
+    PRINT 'Campo fechaModificacion agregado a la tabla Vehiculo';
+END
 
 
 -- =====================================================
@@ -1254,6 +1290,23 @@ WHERE p.descripcion = 'Japonés'
 select * FROM Marca
 SELECT * FROM Procedencia WHERE estado != -1;
 SELECT * FROM Cargo
+SELECT * FROM Vehiculo WHERE estado != -1;
+SELECT * FROM Vehiculo WHERE id = 37;
+
+-- Ver parámetros declarados
+SELECT PARAMETER_NAME, DATA_TYPE
+FROM INFORMATION_SCHEMA.PARAMETERS
+WHERE SPECIFIC_NAME = 'paVehiculoActualizar'
+ORDER BY ORDINAL_POSITION;
+
+UPDATE Vehiculo
+SET usuarioModificacion = 'prueba_sql',
+    fechaModificacion = GETDATE()
+WHERE id = 37;
+
+SELECT id, usuarioModificacion, fechaModificacion
+FROM Vehiculo
+WHERE id = 37;
 
 
 

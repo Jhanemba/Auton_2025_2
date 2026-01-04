@@ -114,6 +114,16 @@ namespace CpAuton
             {
                 lblEstadoUsuario.Text = Util.usuario != null ? $"Usuario: {Util.usuario.nombreCompleto}" : "Usuario: No autenticado";
             }
+
+            // Mostrar/ocultar columnas de auditoría según autenticación
+            try
+            {
+                if (dgvVehiculos.Columns.Contains("colUsuarioRegistro"))
+                    dgvVehiculos.Columns["colUsuarioRegistro"].Visible = Util.usuario != null;
+                if (dgvVehiculos.Columns.Contains("colUsuarioModificacion"))
+                    dgvVehiculos.Columns["colUsuarioModificacion"].Visible = Util.usuario != null;
+            }
+            catch { }
         }
 
         private void ConfigurarDataGridView()
@@ -255,12 +265,42 @@ namespace CpAuton
                 Width = 80
             });
 
+            // Foto pequeña
             dgvVehiculos.Columns.Add(new DataGridViewImageColumn
             {
                 Name = "colFoto",
                 HeaderText = "Foto",
                 Width = 50,
                 ImageLayout = DataGridViewImageCellLayout.Zoom
+            });
+
+            // Columnas de auditoría (se muestran solo si el usuario está autenticado)
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colUsuarioRegistro",
+                DataPropertyName = "usuarioRegistro",
+                HeaderText = "Creado por",
+                Width = 140,
+                Visible = Util.usuario != null,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    NullValue = "-"
+                }
+            });
+
+            dgvVehiculos.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colUsuarioModificacion",
+                DataPropertyName = "usuarioModificacion",
+                HeaderText = "Modificado por",
+                Width = 140,
+                Visible = Util.usuario != null,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    NullValue = "-",
+                    Alignment = DataGridViewContentAlignment.MiddleCenter
+                }
             });
         }
 
@@ -1692,7 +1732,7 @@ namespace CpAuton
                             return;
                         }
 
-                        string query = $"¿Qué generación es el {marca} {modelo} {anioVal}?".Trim();
+                        string query = $"¿Qué generación es el {marca} {modelo} {anioVal}  y entre que años comprende?".Trim();
                         string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                         var psi = new ProcessStartInfo
@@ -2941,6 +2981,8 @@ namespace CpAuton
                             vehiculoCompleto.observaciones = string.IsNullOrWhiteSpace(txtObservaciones.Text) ?
                                 null : txtObservaciones.Text.Trim();
                             vehiculoCompleto.usuarioRegistro = Util.usuario.usuario;
+                            vehiculoCompleto.usuarioModificacion = Util.usuario.usuario;
+                            vehiculoCompleto.fechaModificacion = DateTime.Now;
 
                             int resultado = ConsultaVehiculosCln.actualizar(vehiculoCompleto);
 

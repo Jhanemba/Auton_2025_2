@@ -48,6 +48,8 @@ namespace CadAuton
         public string version { get; set; }
         public string frenos { get; set; }
         public string traccion { get; set; }
+        public string usuarioModificacion { get; set; }
+        public Nullable<System.DateTime> fechaModificacion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HistorialConfiabilidad> HistorialConfiabilidad { get; set; }

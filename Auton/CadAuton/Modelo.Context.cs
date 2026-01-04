@@ -93,7 +93,7 @@ namespace CadAuton
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<paUsuarioValidar_Result>("paUsuarioValidar", usuarioParameter, claveParameter);
         }
     
-        public virtual ObjectResult<string> paVehiculoActualizar(Nullable<int> id, string version, string generacion, string paisFabricacion, string transmision, Nullable<int> nroVelocidades, Nullable<int> nroPuertas, Nullable<int> nroAsientos, string traccion, Nullable<bool> tieneTurbo, string motor, string combustible, string frenos, Nullable<int> nroAirbags, Nullable<int> seguridadChoques, string organizacionSeguridad, Nullable<int> anioFabricacion, string confiabilidad, Nullable<decimal> puntuacion, Nullable<int> kilometraje, string observaciones, byte[] fotografia)
+        public virtual ObjectResult<string> paVehiculoActualizar(Nullable<int> id, string version, string generacion, string paisFabricacion, string transmision, Nullable<int> nroVelocidades, Nullable<int> nroPuertas, Nullable<int> nroAsientos, string traccion, Nullable<bool> tieneTurbo, string motor, string combustible, string frenos, Nullable<int> nroAirbags, Nullable<int> seguridadChoques, string organizacionSeguridad, Nullable<int> anioFabricacion, string confiabilidad, Nullable<decimal> puntuacion, Nullable<int> kilometraje, string observaciones, byte[] fotografia, string usuarioModificacion)
         {
             var idParameter = id.HasValue ?
                 new ObjectParameter("id", id) :
@@ -183,7 +183,11 @@ namespace CadAuton
                 new ObjectParameter("fotografia", fotografia) :
                 new ObjectParameter("fotografia", typeof(byte[]));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("paVehiculoActualizar", idParameter, versionParameter, generacionParameter, paisFabricacionParameter, transmisionParameter, nroVelocidadesParameter, nroPuertasParameter, nroAsientosParameter, traccionParameter, tieneTurboParameter, motorParameter, combustibleParameter, frenosParameter, nroAirbagsParameter, seguridadChoquesParameter, organizacionSeguridadParameter, anioFabricacionParameter, confiabilidadParameter, puntuacionParameter, kilometrajeParameter, observacionesParameter, fotografiaParameter);
+            var usuarioModificacionParameter = usuarioModificacion != null ?
+                new ObjectParameter("usuarioModificacion", usuarioModificacion) :
+                new ObjectParameter("usuarioModificacion", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("paVehiculoActualizar", idParameter, versionParameter, generacionParameter, paisFabricacionParameter, transmisionParameter, nroVelocidadesParameter, nroPuertasParameter, nroAsientosParameter, traccionParameter, tieneTurboParameter, motorParameter, combustibleParameter, frenosParameter, nroAirbagsParameter, seguridadChoquesParameter, organizacionSeguridadParameter, anioFabricacionParameter, confiabilidadParameter, puntuacionParameter, kilometrajeParameter, observacionesParameter, fotografiaParameter, usuarioModificacionParameter);
         }
     
         public virtual ObjectResult<string> paVehiculoEliminar(Nullable<int> id)
