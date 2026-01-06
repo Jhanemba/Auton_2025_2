@@ -19,7 +19,7 @@ USE Auton
 GO
 CREATE USER usrauton FOR LOGIN usrauton
 GO
-CREATE ROLE [db_owner] ADD MEMBER usrauton
+ALTER ROLE db_owner ADD MEMBER usrauton
 GO
 
 USE Auton;
@@ -60,6 +60,8 @@ DROP PROC IF EXISTS paVehiculosChinos;
 DROP PROC IF EXISTS paVehiculosAlemanes;
 DROP PROC IF EXISTS paVehiculosEuropeos;
 DROP PROC IF EXISTS paVehiculosCoreanos;
+
+DROP PROC IF EXISTS paVehiculoObtenerFotografia;
 
 -- Eliminar vistas si existen
 DROP VIEW IF EXISTS VW_VehiculosCompleto;
@@ -171,7 +173,7 @@ CREATE TABLE Vehiculo (
     
     -- Seguridad
     nroAirbags INT NOT NULL DEFAULT 2,
-    seguridadChoques INT NOT NULL DEFAULT 0 CHECK (seguridadChoques >= 0 AND seguridadChoques <= 5),
+    seguridadChoques INT NOT NULL DEFAULT 0 CHECK (seguridadChoques >= -1 AND seguridadChoques <= 5),
     organizacionSeguridad VARCHAR(50) NOT NULL DEFAULT 'Sin calificación',
     
     -- Evaluación
@@ -222,7 +224,7 @@ CREATE TABLE VehiculoMantenimiento (
 );
 
 
-CREATE TABLE Vehiculo
+ALTER TABLE Vehiculo
 ADD fotografia VARBINARY(MAX) NULL;
 
 PRINT 'Campo fotografia agregado a la tabla Vehiculo';
@@ -244,6 +246,98 @@ ALTER TABLE Vehiculo
 ADD nroPuertas INT NOT NULL DEFAULT 5
     CHECK (nroPuertas IN (3, 4, 5));
 
+
+
+-- =====================================================
+IF NOT EXISTS (SELECT * FROM sys.columns 
+               WHERE object_id = OBJECT_ID('Vehiculo') 
+               AND name = 'version')
+BEGIN
+    ALTER TABLE Vehiculo
+    ADD version VARCHAR(20) NULL 
+        CHECK (version IN ('Básica', 'Intermedia', 'Full'));
+    
+    PRINT 'Campo version agregado a la tabla Vehiculo';
+END
+ELSE
+BEGIN
+    PRINT 'El campo version ya existe en la tabla Vehiculo';
+END
+
+
+GO
+IF NOT EXISTS (SELECT * FROM sys.columns 
+               WHERE object_id = OBJECT_ID('Vehiculo') 
+               AND name = 'frenos')
+BEGIN
+    ALTER TABLE Vehiculo
+    ADD frenos VARCHAR(50) NULL 
+        CHECK (frenos IN ('Disco en las 4 ruedas', 
+                         'Disco delanteros y tambor atrás', 
+                         'Tambor delantero y disco atrás'));
+    
+    PRINT 'Campo frenos agregado a la tabla Vehiculo';
+END
+ELSE
+BEGIN
+    PRINT 'El campo frenos ya existe en la tabla Vehiculo';
+END
+-- =====================================================
+IF NOT EXISTS (SELECT * FROM sys.columns 
+               WHERE object_id = OBJECT_ID('Vehiculo') 
+               AND name = 'traccion')
+BEGIN
+    ALTER TABLE Vehiculo
+    ADD traccion VARCHAR(50) NULL 
+        CHECK (traccion IN (
+            'Delantera (4x2 FWD)', 
+            'Trasera (4x2 RWD)', 
+            'Integral permanente (AWD 4x4)', 
+            'Doble tracción seleccionable (4WD 4x4)'
+        ));
+    
+    PRINT 'Campo traccion agregado a la tabla Vehiculo';
+END
+ELSE
+BEGIN
+    PRINT 'El campo traccion ya existe en la tabla Vehiculo';
+END
+
+
+-- Añadir columnas para seguimiento de modificaciones
+GO
+IF NOT EXISTS (
+    SELECT * FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Vehiculo') AND name = 'usuarioModificacion'
+)
+BEGIN
+    ALTER TABLE Vehiculo
+    ADD usuarioModificacion VARCHAR(50) NULL;
+    PRINT 'Campo usuarioModificacion agregado a la tabla Vehiculo';
+END
+
+IF NOT EXISTS (
+    SELECT * FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Vehiculo') AND name = 'fechaModificacion'
+)
+BEGIN
+    ALTER TABLE Vehiculo
+    ADD fechaModificacion DATETIME NULL;
+    PRINT 'Campo fechaModificacion agregado a la tabla Vehiculo';
+END
+
+--GO
+---- Permitir -1 para "Sin calificación" en seguridadChoques
+--ALTER TABLE Vehiculo
+--ALTER COLUMN seguridadChoques INT NULL;
+
+---- Agregar constraint con default
+--IF NOT EXISTS (SELECT * FROM sys.default_constraints WHERE name = 'DF_Vehiculo_seguridadChoques')
+--BEGIN
+--    ALTER TABLE Vehiculo 
+--    ADD CONSTRAINT DF_Vehiculo_seguridadChoques DEFAULT 0 FOR seguridadChoques;
+--END
+
 -- =====================================================
 -- PROCEDIMIENTOS ALMACENADOS
 -- =====================================================
@@ -262,10 +356,11 @@ AS
     WHERE u.usuario = @usuario AND u.clave = @clave AND u.estado = 1 AND e.estado = 1;
 
 -- Ajustar paVehiculoListar para devolver usuarioModificacion y fechaModificacion
-IF OBJECT_ID('paVehiculoListar', 'P') IS NOT NULL
-    DROP PROC paVehiculoListar;
-GO
+--IF OBJECT_ID('paVehiculoListar', 'P') IS NOT NULL
+--    DROP PROC paVehiculoListar;
 
+
+GO
 CREATE PROC paVehiculoListar @parametro VARCHAR(100)
 AS
     SELECT v.id, 
@@ -353,7 +448,7 @@ AS
 --    ORDER BY v.estado DESC, p.descripcion ASC, m.nombre ASC, mv.nombre ASC;
 
 GO
-ALTER PROC paVehiculoInsertar
+CREATE PROC paVehiculoInsertar
     @nroChasis VARCHAR(17),
     @idModeloVehiculo INT,
     @version VARCHAR(20),
@@ -415,6 +510,7 @@ GO
 
 CREATE PROC paVehiculoActualizar
     @id INT,
+    --@idModeloVehiculo INT, --faltaba esto
     @version VARCHAR(20),
     @generacion VARCHAR(50),
     @paisFabricacion VARCHAR(50),
@@ -462,6 +558,7 @@ BEGIN
     
     UPDATE Vehiculo 
     SET 
+        --idModeloVehiculo = @idModeloVehiculo,
         version = @version,
         generacion = @generacion,
         paisFabricacion = @paisFabricacion,
@@ -539,89 +636,13 @@ AS
     WHERE mv.estado = 1 AND mv.idMarca = @idMarca
     ORDER BY mv.nombre ASC;
 
-    IF NOT EXISTS (SELECT * FROM sys.columns 
-               WHERE object_id = OBJECT_ID('Vehiculo') 
-               AND name = 'version')
-BEGIN
-    ALTER TABLE Vehiculo
-    ADD version VARCHAR(20) NULL 
-        CHECK (version IN ('Básica', 'Intermedia', 'Full'));
-    
-    PRINT 'Campo version agregado a la tabla Vehiculo';
-END
-ELSE
-BEGIN
-    PRINT 'El campo version ya existe en la tabla Vehiculo';
-END
-
-
-GO
-IF NOT EXISTS (SELECT * FROM sys.columns 
-               WHERE object_id = OBJECT_ID('Vehiculo') 
-               AND name = 'frenos')
-BEGIN
-    ALTER TABLE Vehiculo
-    ADD frenos VARCHAR(50) NULL 
-        CHECK (frenos IN ('Disco en las 4 ruedas', 
-                         'Disco delanteros y tambor atrás', 
-                         'Tambor delantero y disco atrás'));
-    
-    PRINT 'Campo frenos agregado a la tabla Vehiculo';
-END
-ELSE
-BEGIN
-    PRINT 'El campo frenos ya existe en la tabla Vehiculo';
-END
--- =====================================================
-IF NOT EXISTS (SELECT * FROM sys.columns 
-               WHERE object_id = OBJECT_ID('Vehiculo') 
-               AND name = 'traccion')
-BEGIN
-    ALTER TABLE Vehiculo
-    ADD traccion VARCHAR(50) NULL 
-        CHECK (traccion IN (
-            'Delantera (4x2 FWD)', 
-            'Trasera (4x2 RWD)', 
-            'Integral permanente (AWD 4x4)', 
-            'Doble tracción seleccionable (4WD 4x4)'
-        ));
-    
-    PRINT 'Campo traccion agregado a la tabla Vehiculo';
-END
-ELSE
-BEGIN
-    PRINT 'El campo traccion ya existe en la tabla Vehiculo';
-END
-
-
--- 1) Añadir columnas para seguimiento de modificaciones
-GO
-IF NOT EXISTS (
-    SELECT * FROM sys.columns 
-    WHERE object_id = OBJECT_ID('Vehiculo') AND name = 'usuarioModificacion'
-)
-BEGIN
-    ALTER TABLE Vehiculo
-    ADD usuarioModificacion VARCHAR(50) NULL;
-    PRINT 'Campo usuarioModificacion agregado a la tabla Vehiculo';
-END
-
-IF NOT EXISTS (
-    SELECT * FROM sys.columns 
-    WHERE object_id = OBJECT_ID('Vehiculo') AND name = 'fechaModificacion'
-)
-BEGIN
-    ALTER TABLE Vehiculo
-    ADD fechaModificacion DATETIME NULL;
-    PRINT 'Campo fechaModificacion agregado a la tabla Vehiculo';
-END
 
 
 -- =====================================================
 -- PROCEDIMIENTO: Vehículos Japoneses
 -- =====================================================
 GO
-ALTER PROC paVehiculosJaponeses @parametro VARCHAR(100) = ''
+CREATE PROC paVehiculosJaponeses @parametro VARCHAR(100) = ''
 AS
 BEGIN
     SELECT 
@@ -660,7 +681,7 @@ END
 -- PROCEDIMIENTO: Vehículos Americanos
 -- =====================================================
 GO
-ALTER PROC paVehiculosAmericanos @parametro VARCHAR(100) = ''
+CREATE PROC paVehiculosAmericanos @parametro VARCHAR(100) = ''
 AS
 BEGIN
     SELECT 
@@ -698,7 +719,7 @@ END
 -- PROCEDIMIENTO: Vehículos Chinos
 -- =====================================================
 GO
-ALTER PROC paVehiculosChinos
+CREATE PROC paVehiculosChinos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -738,7 +759,7 @@ END
 -- PROCEDIMIENTO: Vehículos Alemanes
 -- =====================================================
 GO
-ALTER PROC paVehiculosAlemanes
+CREATE PROC paVehiculosAlemanes
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -797,7 +818,7 @@ END
 -- PROCEDIMIENTO: Vehículos Europeos
 -- =====================================================
 GO
-ALTER PROC paVehiculosEuropeos
+CREATE PROC paVehiculosEuropeos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -857,7 +878,7 @@ END
 -- PROCEDIMIENTO: Vehículos Coreanos
 -- =====================================================
 GO
-ALTER PROC paVehiculosCoreanos
+CREATE PROC paVehiculosCoreanos
     @parametro VARCHAR(100) = ''
 AS
 BEGIN
@@ -1017,6 +1038,39 @@ END
 
 
 EXEC paVehiculosJaponeses ''
+-- Actualizar el vehículo con ID 1
+EXEC paVehiculoActualizar
+    @id = 1,
+    @idModeloVehiculo = 1,
+    @version = 'Full',
+    @generacion = 'Gen 12 (2020-2024)',
+    @paisFabricacion = 'Japón',
+    @transmision = 'CVT',
+    @nroVelocidades = NULL,
+    @nroPuertas = 5,
+    @nroAsientos = 5,
+    @traccion = 'Delantera (4x2 FWD)',
+    @tieneTurbo = 0,
+    @motor = '2.0L Híbrido',
+    @combustible = 'Híbrido',
+    @frenos = 'Disco en las 4 ruedas',
+    @nroAirbags = 10,
+    @seguridadChoques = 5,
+    @organizacionSeguridad = 'JNCAP',
+    @anioFabricacion = 2022,
+    @confiabilidad = 'Excelente',
+    @puntuacion = 9.8,
+    @kilometraje = 30000,
+    @observaciones = 'Vehículo actualizado con mantenimiento completo',
+    @fotografia = NULL,
+    @usuarioModificacion = 'admin';
+
+    SELECT * FROM Vehiculo WHERE id = 1;
+
+    EXEC paVehiculoListar '';
+    EXEC paVehiculoInsertar;
+    SELECT * FROM sys.objects WHERE name = 'paVehiculoListar' AND type = 'P';
+
 
 -- PROCEDIMIENTO ALMACENADO: Listar Empleados con Usuario
 -- =====================================================

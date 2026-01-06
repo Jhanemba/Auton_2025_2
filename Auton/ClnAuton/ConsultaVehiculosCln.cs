@@ -38,6 +38,7 @@ namespace ClnAuton
                     // Actualizar TODOS los campos
                     existente.nroChasis = vehiculo.nroChasis;
                     existente.idModeloVehiculo = vehiculo.idModeloVehiculo;
+                    existente.version = vehiculo.version;
                     existente.anioFabricacion = vehiculo.anioFabricacion;
                     existente.generacion = vehiculo.generacion;
                     existente.paisFabricacion = vehiculo.paisFabricacion;
@@ -78,8 +79,9 @@ namespace ClnAuton
                     return 1;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error al actualizar: {ex.Message}");
                 return 0;
             }
         }

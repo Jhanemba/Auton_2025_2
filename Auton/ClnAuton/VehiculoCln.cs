@@ -10,14 +10,69 @@ namespace ClnAuton
 {
     public class VehiculoCln
     {
+        public static bool existeChasis(string nroChasis)
+        {
+            try
+            {
+                using (var context = new AutonEntities())
+                {
+                    return context.Vehiculo
+                        .Any(v => v.nroChasis == nroChasis && v.estado != -1);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        // Inserta un nuevo vehículo CON fotografía
+        //public static int insertar(Vehiculo vehiculo)
+        //{
+        //    using (var context = new AutonEntities())
+        //    {
+        //        context.Vehiculo.Add(vehiculo);
+        //        context.SaveChanges();
+        //        return vehiculo.id;
+        //    }
+        //}
+
         // Inserta un nuevo vehículo CON fotografía
         public static int insertar(Vehiculo vehiculo)
         {
-            using (var context = new AutonEntities())
+            try
             {
-                context.Vehiculo.Add(vehiculo);
-                context.SaveChanges();
-                return vehiculo.id;
+                using (var context = new AutonEntities())
+                {
+                    context.Vehiculo.Add(vehiculo);
+                    context.SaveChanges();
+                    return vehiculo.id;
+                }
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            {
+                var sb = new StringBuilder();
+                foreach (var eve in ex.EntityValidationErrors)
+                {
+                    sb.AppendLine($"Entidad: {eve.Entry.Entity.GetType().Name} Estado: {eve.Entry.State}");
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        sb.AppendLine($"  - {ve.PropertyName}: {ve.ErrorMessage}");
+                    }
+                }
+                throw new Exception(sb.ToString(), ex);
+            }
+            catch (Exception ex)
+            {
+                // Propagar mensaje más claro con inner exceptions
+                var detalle = new StringBuilder();
+                detalle.AppendLine(ex.Message);
+                var ie = ex.InnerException;
+                while (ie != null)
+                {
+                    detalle.AppendLine("Inner: " + ie.Message);
+                    ie = ie.InnerException;
+                }
+                throw new Exception("Error al insertar Vehículo: " + detalle.ToString(), ex);
             }
         }
 
@@ -38,6 +93,7 @@ namespace ClnAuton
                     // Actualizar TODOS los campos
                     existente.nroChasis = vehiculo.nroChasis;
                     existente.idModeloVehiculo = vehiculo.idModeloVehiculo;
+                    existente.version = vehiculo.version;//
                     existente.anioFabricacion = vehiculo.anioFabricacion;
                     existente.generacion = vehiculo.generacion;
                     existente.paisFabricacion = vehiculo.paisFabricacion;
@@ -84,7 +140,7 @@ namespace ClnAuton
             }
         }
 
-        // ⭐ NUEVO: Obtiene la fotografía de un vehículo
+        // Obtiene la fotografía de un vehículo
         public static byte[] obtenerFotografia(int id)
         {
             using (var context = new AutonEntities())

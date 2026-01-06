@@ -292,6 +292,28 @@ namespace CpAuton
             };
             pnlPrincipal.Controls.Add(txtNroChasis);
             SetCueBanner(txtNroChasis, "17 caracteres");
+            // Botón buscar información del VIN/Chasis
+            Button btnBuscarChasis = new Button
+            {
+                Text = "🔍",
+                Location = new Point(colLeftX + ctrlWidth - 44 + 8, yPosLeft),
+                Size = new Size(36, 28),
+                BackColor = Color.FromArgb(52, 58, 64),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnBuscarChasis.FlatAppearance.BorderSize = 0;
+            btnBuscarChasis.Click += BtnBuscarChasis_Click;
+            try
+            {
+                var ttChasis = new ToolTip();
+                ttChasis.SetToolTip(btnBuscarChasis, "Buscar información sobre dígitos del VIN/Chasis");
+            }
+            catch { }
+            pnlPrincipal.Controls.Add(btnBuscarChasis);
+            btnBuscarChasis.BringToFront();
             yPosLeft += lineHeight;
 
             // Año de Fabricación
@@ -1142,21 +1164,34 @@ namespace CpAuton
         }
 
         // ⭐ NUEVO EVENTO: Cuando cambia la organización de seguridad
+        // ⭐ EVENTO: Cuando cambia la organización de seguridad
         private void CboOrganizacionSeguridad_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboOrganizacionSeguridad.SelectedIndex >= 0)
             {
                 string organizacion = cboOrganizacionSeguridad.Text;
 
-                // Si se selecciona "Sin calificación", automáticamente seleccionar "Sin calificación" en estrellas
+                // Si se selecciona "Sin calificación", deshabilitar estrellas
                 if (organizacion == "Sin calificación")
                 {
                     cboSeguridadChoques.SelectedIndex = 6; // "Sin calificación" está en el índice 6
+                    cboSeguridadChoques.Enabled = false;   // DESHABILITAR
+                }
+                else
+                {
+                    // Si se selecciona otra organización válida, habilitar estrellas
+                    cboSeguridadChoques.Enabled = true;    // HABILITAR
+                    // Limpiar selección si estaba en "Sin calificación"
+                    if (cboSeguridadChoques.SelectedIndex == 6)
+                    {
+                        cboSeguridadChoques.SelectedIndex = -1;
+                    }
                 }
             }
 
             // Actualizar estado de botones
             ActualizarBotonesBusqueda();
+            ActualizarPuntuacionSugerida();
         }
 
         // ⭐ NUEVO: Botón buscar airbags
@@ -1650,9 +1685,30 @@ namespace CpAuton
                     int idModelo = (int)cboModelo.SelectedValue;
                     int anio = (int)nudAnio.Value;
                     decimal puntuacion = nudPuntuacion.Value;
+                    // Verificar si el chasis ya existe
+                    string nroChasisIngresado = txtNroChasis.Text.Trim().ToUpper();
+                    if (VehiculoCln.existeChasis(nroChasisIngresado))
+                    {
+                        MessageBox.Show(
+                            $"⚠️ CHASIS DUPLICADO\n\n" +
+                            $"El número de chasis:\n{nroChasisIngresado}\n\n" +
+                            $"ya se encuentra registrado en el sistema.\n\n" +
+                            $"No se puede registrar un vehículo con el mismo chasis.",
+                            "Error: Chasis Duplicado",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        txtNroChasis.Focus();
+                        txtNroChasis.SelectAll();
+                        return;
+                    }
+
 
                     int estrellas = 0;
-                    if (cboSeguridadChoques.SelectedIndex < 6)
+                    if (cboSeguridadChoques.SelectedIndex == 6)
+                    {
+                        estrellas = -1; // Sin calificación
+                    }
+                    else if (cboSeguridadChoques.SelectedIndex >= 0 && cboSeguridadChoques.SelectedIndex < 6)
                     {
                         estrellas = 5 - cboSeguridadChoques.SelectedIndex;
                     }
@@ -1737,8 +1793,8 @@ namespace CpAuton
                                         $"Generación: {txtGeneracion.Text}\n" +
                                         $"País: {cboPaisFabricacion.Text}\n" +
                                         $"Carrocería: {cboPuertas.SelectedItem} puertas, {nudAsientos.Value} asientos\n" +
-                                        $"Transmisión: {cboTransmision.Text}{velocidadesInfo}{turboInfo}",
-                                         $"Frenos: {cboFreno.Text}" +
+                                        $"Transmisión: {cboTransmision.Text}{velocidadesInfo}{turboInfo}\n" +
+                                        $"Frenos: {cboFreno.Text}",
                                         "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.DialogResult = DialogResult.OK;
                         this.Close();
@@ -1902,9 +1958,16 @@ namespace CpAuton
             try
             {
                 int estrellas = 0;
-                if (cboSeguridadChoques != null && cboSeguridadChoques.SelectedIndex < 6 && cboSeguridadChoques.SelectedIndex >= 0)
+                if (cboSeguridadChoques != null && cboSeguridadChoques.SelectedIndex >= 0)
                 {
-                    estrellas = 5 - cboSeguridadChoques.SelectedIndex; // mismo cálculo usado al guardar
+                    if (cboSeguridadChoques.SelectedIndex == 6)
+                    {
+                        estrellas = -1; // Sin calificación
+                    }
+                    else if (cboSeguridadChoques.SelectedIndex < 6)
+                    {
+                        estrellas = 5 - cboSeguridadChoques.SelectedIndex;
+                    }
                 }
 
                 decimal seguridadScore = 2.0m + (estrellas * 1.2m); // base aproximadamente entre 2 y 8
@@ -2252,6 +2315,39 @@ namespace CpAuton
             catch (Exception ex)
             {
                 MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnBuscarChasis_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string marca = cboMarca?.Text.Trim() ?? "";
+                string modelo = cboModelo?.Text.Trim() ?? "";
+                int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string pais = cboPaisFabricacion?.Text.Trim() ?? "";
+
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(pais))
+                {
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo y País de Fabricación para realizar la búsqueda.",
+                                  "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                string query = $"¿El {marca} {modelo} {anio} fabricado en {pais} con qué dígitos comienza según su VIN o número de chasis?";
+                string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ No se pudo abrir el navegador:\n{ex.Message}",
+                              "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
