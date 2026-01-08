@@ -3349,6 +3349,7 @@ namespace CpAuton
                 frmDetalles.ShowDialog(this);
             }
         }
+        //---------------------------------------------------------------------------------
 
         // Método de validación actualizado
         private bool ValidarEdicionCompleta(string chasis, int modeloIndex, string generacion,

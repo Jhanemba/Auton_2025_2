@@ -60,3 +60,4 @@ C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\JVKE - golde
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\Don Omar - Danza Kuduro (Instrumental) (Original HQ).mp3
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.exe.config
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\45. Farewell - See You Again (Film Version)  Furious 7 (Complete Soundtrack).mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmDetallesVehiculo.resources
