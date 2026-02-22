@@ -264,138 +264,157 @@ namespace CpAuton
         {
             if (e.RowIndex >= 0)
             {
-                MostrarDetallesVehiculo();
-            }
-        }
+                var vehiculo = (paVehiculosAmericanos_Result)dgvVehiculos.CurrentRow.DataBoundItem;
 
-        private void MostrarDetallesVehiculo()
-        {
-            if (dgvVehiculos.CurrentRow != null)
-            {
-                var vehiculo = (paVehiculosChinos_Result)dgvVehiculos.CurrentRow.DataBoundItem;
-                var vehiculoCompleto = VehiculoCln.obtenerUno(vehiculo.id);
+                // Obtener el vehículo completo usando paVehiculoListar para acceder a todos los detalles
+                var vehiculoCompleto = ConsultaVehiculosCln.listarPa("").FirstOrDefault(v => v.id == vehiculo.id);
 
-                Form frmDetalles = new Form
+                if (vehiculoCompleto != null)
                 {
-                    Text = $"Detalles - {vehiculo.marca} {vehiculo.modelo}",
-                    Size = new Size(700, 650),
-                    StartPosition = FormStartPosition.CenterParent,
-                    FormBorderStyle = FormBorderStyle.FixedDialog,
-                    MaximizeBox = false,
-                    MinimizeBox = false,
-                    BackColor = Color.White,
-                    Font = new Font("Segoe UI", 10F)
-                };
-
-                Panel pnlPrincipal = new Panel
-                {
-                    Dock = DockStyle.Fill,
-                    AutoScroll = true,
-                    Padding = new Padding(30)
-                };
-
-                int yPos = 20;
-
-                Label lblTitulo = new Label
-                {
-                    Text = $"🇨🇳 {vehiculo.marca} {vehiculo.modelo}",
-                    Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                    ForeColor = Color.FromArgb(220, 38, 38),
-                    Location = new Point(30, yPos),
-                    Size = new Size(600, 30)
-                };
-                pnlPrincipal.Controls.Add(lblTitulo);
-                yPos += 50;
-
-                AgregarCampoDetalle(pnlPrincipal, "🌏 Procedencia:", vehiculo.procedencia, ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "🏢 Marca:", vehiculo.marca, ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "🚗 Modelo:", vehiculo.modelo, ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "📅 Generación:", vehiculoCompleto.generacion, ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "🌍 País Fabricación:", vehiculoCompleto.paisFabricacion, ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "📆 Año:", vehiculoCompleto.anioFabricacion.ToString(), ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "⚙️ Transmisión:", vehiculoCompleto.transmision, ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "🚀 Turbo:", vehiculoCompleto.tieneTurbo ? "Sí" : "No", ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "🔧 Motor:", vehiculoCompleto.motor, ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "⛽ Combustible:", vehiculoCompleto.combustible, ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "🛡️ Airbags:", vehiculoCompleto.nroAirbags.ToString(), ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "⭐ Seguridad:", $"{vehiculoCompleto.seguridadChoques} estrellas ({vehiculoCompleto.organizacionSeguridad})", ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "⭐ Confiabilidad:", vehiculoCompleto.confiabilidad, ref yPos);
-                AgregarCampoDetalle(pnlPrincipal, "📊 Puntuación:", vehiculoCompleto.puntuacion.ToString("N1"), ref yPos);
-
-                if (!string.IsNullOrWhiteSpace(vehiculoCompleto.observaciones))
-                {
-                    yPos += 10;
-                    Label lblObsTitle = new Label
+                    using (var frmDetalles = new FrmDetallesVehiculo(vehiculoCompleto, () => CargarVehiculosChinos()))
                     {
-                        Text = "📝 Observaciones:",
-                        Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                        Location = new Point(30, yPos),
-                        Size = new Size(600, 25),
-                        ForeColor = Color.FromArgb(52, 58, 64)
-                    };
-                    pnlPrincipal.Controls.Add(lblObsTitle);
-                    yPos += 30;
-
-                    TextBox txtObs = new TextBox
-                    {
-                        Location = new Point(30, yPos),
-                        Size = new Size(600, 80),
-                        Multiline = true,
-                        ReadOnly = true,
-                        BackColor = Color.FromArgb(248, 249, 250),
-                        BorderStyle = BorderStyle.FixedSingle,
-                        Text = vehiculoCompleto.observaciones,
-                        Font = new Font("Segoe UI", 9)
-                    };
-                    pnlPrincipal.Controls.Add(txtObs);
+                        frmDetalles.ShowDialog(this);
+                    }
                 }
-
-                Button btnCerrar = new Button
-                {
-                    Text = "✅ Cerrar",
-                    Size = new Size(150, 45),
-                    Location = new Point(260, 550),
-                    BackColor = Color.FromArgb(220, 38, 38),
-                    ForeColor = Color.White,
-                    FlatStyle = FlatStyle.Flat,
-                    Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                    Cursor = Cursors.Hand,
-                    DialogResult = DialogResult.OK
-                };
-                btnCerrar.FlatAppearance.BorderSize = 0;
-
-                frmDetalles.Controls.Add(btnCerrar);
-                frmDetalles.Controls.Add(pnlPrincipal);
-                frmDetalles.AcceptButton = btnCerrar;
-
-                frmDetalles.ShowDialog(this);
             }
         }
 
-        private void AgregarCampoDetalle(Panel panel, string label, string valor, ref int yPos)
-        {
-            Label lblLabel = new Label
-            {
-                Text = label,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                Location = new Point(30, yPos),
-                Size = new Size(200, 25),
-                ForeColor = Color.FromArgb(52, 58, 64)
-            };
-            panel.Controls.Add(lblLabel);
+        //private void dgvVehiculos_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    if (e.RowIndex >= 0)
+        //    {
+        //        MostrarDetallesVehiculo();
+        //    }
+        //}
 
-            Label lblValor = new Label
-            {
-                Text = valor ?? "N/A",
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(250, yPos),
-                Size = new Size(380, 25),
-                ForeColor = Color.FromArgb(73, 80, 87)
-            };
-            panel.Controls.Add(lblValor);
+        //private void MostrarDetallesVehiculo()
+        //{
+        //    if (dgvVehiculos.CurrentRow != null)
+        //    {
+        //        var vehiculo = (paVehiculosChinos_Result)dgvVehiculos.CurrentRow.DataBoundItem;
+        //        var vehiculoCompleto = VehiculoCln.obtenerUno(vehiculo.id);
 
-            yPos += 35;
-        }
+        //        Form frmDetalles = new Form
+        //        {
+        //            Text = $"Detalles - {vehiculo.marca} {vehiculo.modelo}",
+        //            Size = new Size(700, 650),
+        //            StartPosition = FormStartPosition.CenterParent,
+        //            FormBorderStyle = FormBorderStyle.FixedDialog,
+        //            MaximizeBox = false,
+        //            MinimizeBox = false,
+        //            BackColor = Color.White,
+        //            Font = new Font("Segoe UI", 10F)
+        //        };
+
+        //        Panel pnlPrincipal = new Panel
+        //        {
+        //            Dock = DockStyle.Fill,
+        //            AutoScroll = true,
+        //            Padding = new Padding(30)
+        //        };
+
+        //        int yPos = 20;
+
+        //        Label lblTitulo = new Label
+        //        {
+        //            Text = $"🇨🇳 {vehiculo.marca} {vehiculo.modelo}",
+        //            Font = new Font("Segoe UI", 14, FontStyle.Bold),
+        //            ForeColor = Color.FromArgb(220, 38, 38),
+        //            Location = new Point(30, yPos),
+        //            Size = new Size(600, 30)
+        //        };
+        //        pnlPrincipal.Controls.Add(lblTitulo);
+        //        yPos += 50;
+
+        //        AgregarCampoDetalle(pnlPrincipal, "🌏 Procedencia:", vehiculo.procedencia, ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "🏢 Marca:", vehiculo.marca, ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "🚗 Modelo:", vehiculo.modelo, ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "📅 Generación:", vehiculoCompleto.generacion, ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "🌍 País Fabricación:", vehiculoCompleto.paisFabricacion, ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "📆 Año:", vehiculoCompleto.anioFabricacion.ToString(), ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "⚙️ Transmisión:", vehiculoCompleto.transmision, ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "🚀 Turbo:", vehiculoCompleto.tieneTurbo ? "Sí" : "No", ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "🔧 Motor:", vehiculoCompleto.motor, ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "⛽ Combustible:", vehiculoCompleto.combustible, ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "🛡️ Airbags:", vehiculoCompleto.nroAirbags.ToString(), ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "⭐ Seguridad:", $"{vehiculoCompleto.seguridadChoques} estrellas ({vehiculoCompleto.organizacionSeguridad})", ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "⭐ Confiabilidad:", vehiculoCompleto.confiabilidad, ref yPos);
+        //        AgregarCampoDetalle(pnlPrincipal, "📊 Puntuación:", vehiculoCompleto.puntuacion.ToString("N1"), ref yPos);
+
+        //        if (!string.IsNullOrWhiteSpace(vehiculoCompleto.observaciones))
+        //        {
+        //            yPos += 10;
+        //            Label lblObsTitle = new Label
+        //            {
+        //                Text = "📝 Observaciones:",
+        //                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+        //                Location = new Point(30, yPos),
+        //                Size = new Size(600, 25),
+        //                ForeColor = Color.FromArgb(52, 58, 64)
+        //            };
+        //            pnlPrincipal.Controls.Add(lblObsTitle);
+        //            yPos += 30;
+
+        //            TextBox txtObs = new TextBox
+        //            {
+        //                Location = new Point(30, yPos),
+        //                Size = new Size(600, 80),
+        //                Multiline = true,
+        //                ReadOnly = true,
+        //                BackColor = Color.FromArgb(248, 249, 250),
+        //                BorderStyle = BorderStyle.FixedSingle,
+        //                Text = vehiculoCompleto.observaciones,
+        //                Font = new Font("Segoe UI", 9)
+        //            };
+        //            pnlPrincipal.Controls.Add(txtObs);
+        //        }
+
+        //        Button btnCerrar = new Button
+        //        {
+        //            Text = "✅ Cerrar",
+        //            Size = new Size(150, 45),
+        //            Location = new Point(260, 550),
+        //            BackColor = Color.FromArgb(220, 38, 38),
+        //            ForeColor = Color.White,
+        //            FlatStyle = FlatStyle.Flat,
+        //            Font = new Font("Segoe UI", 11, FontStyle.Bold),
+        //            Cursor = Cursors.Hand,
+        //            DialogResult = DialogResult.OK
+        //        };
+        //        btnCerrar.FlatAppearance.BorderSize = 0;
+
+        //        frmDetalles.Controls.Add(btnCerrar);
+        //        frmDetalles.Controls.Add(pnlPrincipal);
+        //        frmDetalles.AcceptButton = btnCerrar;
+
+        //        frmDetalles.ShowDialog(this);
+        //    }
+        //}
+
+        //private void AgregarCampoDetalle(Panel panel, string label, string valor, ref int yPos)
+        //{
+        //    Label lblLabel = new Label
+        //    {
+        //        Text = label,
+        //        Font = new Font("Segoe UI", 10, FontStyle.Bold),
+        //        Location = new Point(30, yPos),
+        //        Size = new Size(200, 25),
+        //        ForeColor = Color.FromArgb(52, 58, 64)
+        //    };
+        //    panel.Controls.Add(lblLabel);
+
+        //    Label lblValor = new Label
+        //    {
+        //        Text = valor ?? "N/A",
+        //        Font = new Font("Segoe UI", 10),
+        //        Location = new Point(250, yPos),
+        //        Size = new Size(380, 25),
+        //        ForeColor = Color.FromArgb(73, 80, 87)
+        //    };
+        //    panel.Controls.Add(lblValor);
+
+        //    yPos += 35;
+        //}
 
         private void btnCerrar_Click(object sender, EventArgs e)
         {

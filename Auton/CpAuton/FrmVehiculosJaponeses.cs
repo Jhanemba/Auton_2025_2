@@ -14,6 +14,8 @@ namespace CpAuton
 {
     public partial class FrmVehiculosJaponeses : Form
     {
+        private Button btnSesion;
+
         public FrmVehiculosJaponeses()
         {
             InitializeComponent();

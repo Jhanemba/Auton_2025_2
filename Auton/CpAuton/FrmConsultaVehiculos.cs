@@ -394,6 +394,7 @@ namespace CpAuton
                 Dictionary<string, object> valoresOriginales = new Dictionary<string, object>();
                 // Declaración temprana para evitar "usar antes de declarar"
                 Action verificarCambios = () => { }; // no-op temporal; se asignará la implementación completa más abajo
+                Action actualizarBotonesBusqueda = () => { };
 
                 //// Método para verificar si hay cambios
                 //Action verificarCambios = () =>
@@ -806,6 +807,12 @@ namespace CpAuton
                     fotoEliminada = false;
                 }
 
+                try
+                {
+                    actualizarBotonesBusqueda();
+                }
+                catch { }
+
 
                 // ==================== COLUMNA IZQUIERDA ====================
                 AgregarSeccion(pnlPrincipal, "📋 IDENTIFICACIÓN DEL MODELO", 20, yPos, 540);
@@ -1107,6 +1114,7 @@ namespace CpAuton
                 flpMarcaRow.Controls.Add(btnVerMarcaDesc_small);
                 pnlPrincipal.Controls.Add(flpMarcaRow);
                 cboMarca.Enabled = false; // deshabilitado hasta entrar en modo edición
+                cboMarca.TextChanged += (s, e) => actualizarBotonesBusqueda();
 
                 yPosLeft += lineHeight;
 
@@ -1340,6 +1348,8 @@ namespace CpAuton
                 flpModeloRow.Controls.Add(btnVerModeloDesc_small);
                 pnlPrincipal.Controls.Add(flpModeloRow);
                 cboModelo.Enabled = false; // deshabilitado hasta entrar en modo edición
+                cboModelo.SelectedIndexChanged += (s, e) => actualizarBotonesBusqueda();
+                cboModelo.TextChanged += (s, e) => actualizarBotonesBusqueda();
 
                 yPosLeft += lineHeight;
 
@@ -1404,6 +1414,8 @@ namespace CpAuton
                 pnlPrincipal.Controls.Add(btnBuscarVersion);
                 btnBuscarVersion.BringToFront();
                 cboVersion.Enabled = false; // deshabilitado hasta entrar en modo edición
+                cboVersion.SelectedIndexChanged += (s, e) => actualizarBotonesBusqueda();
+
                 yPosLeft += lineHeight + 20; // Espacio extra por el label informativo
                                              //enviar lblInfoVersion al fondo
 
@@ -1709,6 +1721,8 @@ namespace CpAuton
 
                 pnlPrincipal.Controls.Add(nudAnio);
                 nudAnio.Enabled = false; // deshabilitado hasta entrar en modo edición
+                nudAnio.ValueChanged += (s, e) => actualizarBotonesBusqueda();
+
                 yPosLeft += lineHeight;
 
                 // ==================== COLUMNA DERECHA ====================
@@ -1879,6 +1893,8 @@ namespace CpAuton
                 pnlPrincipal.Controls.Add(btnBuscarPaisFabricacion);
                 btnBuscarPaisFabricacion.BringToFront();
                 cboPaisFabricacion.Enabled = false; // deshabilitado hasta entrar en modo edición
+                cboPaisFabricacion.SelectedIndexChanged += (s, e) => actualizarBotonesBusqueda();
+                cboPaisFabricacion.TextChanged += (s, e) => actualizarBotonesBusqueda();
                 yPosRight += lineHeight;
                 cboPaisFabricacion.BringToFront();
 
@@ -1987,6 +2003,8 @@ namespace CpAuton
                 };
                 pnlPrincipal.Controls.Add(btnBuscarVelocidades);
                 btnBuscarVelocidades.BringToFront();
+                nudVelocidades.ValueChanged += (s, e) => actualizarBotonesBusqueda();
+
 
                 yPosRight += lineHeight;
                 nudVelocidades.BringToFront();
@@ -2008,6 +2026,7 @@ namespace CpAuton
                         // Modo lectura: aseguramos que no se permita editar
                         ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, null, false);
                     }
+                    actualizarBotonesBusqueda();
                 };
 
                 // Tiene Turbo (EDITABLE)
@@ -2096,6 +2115,7 @@ namespace CpAuton
                 txtMotor.Enabled = true;
                 txtMotor.ReadOnly = true; // deshabilitado hasta entrar en modo edición
                 btnBuscarMotor.BringToFront();
+                txtMotor.TextChanged += (s, e) => actualizarBotonesBusqueda();
 
                 yPosRight += lineHeight;
                 txtMotor.BringToFront();
@@ -2185,6 +2205,8 @@ namespace CpAuton
                 pnlPrincipal.Controls.Add(btnBuscarFrenos);
                 btnBuscarFrenos.BringToFront();
                 cboFrenos.Enabled = false; // deshabilitado hasta entrar en modo edición
+                cboFrenos.SelectedIndexChanged += (s, e) => actualizarBotonesBusqueda();
+
                 yPosRight += lineHeight;
                 //frenos al frente
                 cboFrenos.BringToFront();
@@ -2370,6 +2392,8 @@ namespace CpAuton
                     }
                 };
                 cboTraccion.Enabled = false; // deshabilitado hasta entrar en modo edición
+                cboTraccion.SelectedIndexChanged += (s, e) => actualizarBotonesBusqueda();
+
                 yPosRight += lineHeight;
                 cboTraccion.BringToFront();
 
@@ -2487,6 +2511,7 @@ namespace CpAuton
                         }
                     }
 
+                    actualizarBotonesBusqueda();
                     // Verificar cambios para habilitar botón Guardar
                     verificarCambios();
                 };
@@ -2502,7 +2527,8 @@ namespace CpAuton
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
                     Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                    Cursor = Cursors.Hand
+                    Cursor = Cursors.Hand,
+                    //Enabled = false
                 };
                 btnBuscarOrganizacion.FlatAppearance.BorderSize = 0;
                 try { var ttO = new ToolTip(); ttO.SetToolTip(btnBuscarOrganizacion, "Buscar calificación de seguridad"); } catch { }
@@ -2641,6 +2667,15 @@ namespace CpAuton
                 }
 
                 pnlPrincipal.Controls.Add(cboEstrellas);
+                cboEstrellas.SelectedIndexChanged += (s, e) =>
+                {
+                    try
+                    {
+                        actualizarBotonesBusqueda();
+                        verificarCambios();
+                    }
+                    catch { }
+                };
                 // Botón buscar estrellas
                 Button btnBuscarEstrellas = new Button
                 {
@@ -2652,7 +2687,8 @@ namespace CpAuton
                     ForeColor = Color.White,
                     FlatStyle = FlatStyle.Flat,
                     Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                    Cursor = Cursors.Hand
+                    Cursor = Cursors.Hand,
+                    //Enabled = false
                 };
                 btnBuscarEstrellas.FlatAppearance.BorderSize = 0;
                 try { var ttE = new ToolTip(); ttE.SetToolTip(btnBuscarEstrellas, "Buscar calificación de estrellas"); } catch { }
@@ -2688,6 +2724,7 @@ namespace CpAuton
                 pnlPrincipal.Controls.Add(btnBuscarEstrellas);
                 btnBuscarEstrellas.BringToFront();
                 cboEstrellas.Enabled = false; // deshabilitado hasta entrar en modo edición
+                actualizarBotonesBusqueda();
                 yPosLeft += lineHeight;
 
                 // ==================== EVALUACIÓN ====================
@@ -2822,6 +2859,71 @@ namespace CpAuton
 
                         // Habilitar/deshabilitar botón Guardar (protección null)
                         if (btnEditar != null) btnEditar.Enabled = hayCambios;
+                    }
+                    catch { }
+                };
+
+                actualizarBotonesBusqueda = () =>
+                {
+                    try
+                    {
+                        var allowedOrgs = new[] { "Latin NCAP", "Euro NCAP", "IIHS", "NHTSA", "ANCAP" };
+
+                        bool tieneMarca = cboMarca != null && !string.IsNullOrWhiteSpace(cboMarca.Text);
+                        bool tieneModelo = cboModelo != null && !string.IsNullOrWhiteSpace(cboModelo.Text);
+                        bool tienePais = cboPaisFabricacion != null && !string.IsNullOrWhiteSpace(cboPaisFabricacion.Text);
+                        bool tieneVersion = cboVersion != null && cboVersion.SelectedIndex >= 0;
+                        // Organización válida sólo si coincide con la lista explícita (ignora mayúsc./espacios)
+                        bool organizacionValida = cboOrganizacion != null &&
+                            allowedOrgs.Any(o => string.Equals(o, cboOrganizacion.Text?.Trim(), StringComparison.OrdinalIgnoreCase));
+
+                        // Estrellas válidas: índices 0..5 representan 5..0 estrellas; índice 6 = "Sin calificación"
+                        bool estrellasValida = cboEstrellas != null && cboEstrellas.SelectedIndex >= 0 && cboEstrellas.SelectedIndex <= 5;
+
+                        bool tieneMotor = txtMotor != null && !string.IsNullOrWhiteSpace(txtMotor.Text);
+                        bool tieneAnio = nudAnio != null && nudAnio.Value > 0;
+                        bool tieneFrenos = cboFrenos != null && cboFrenos.SelectedIndex >= 0;
+                        bool tieneTransmision = cboTransmision != null && cboTransmision.SelectedIndex >= 0;
+
+                        // Solo verificar si hay transmisión válida y NO es CVT
+                        // NO importa si está en modo edición o lectura
+                        bool tieneVelocidadesValidas = cboTransmision != null &&
+                                                       cboTransmision.SelectedIndex >= 0 &&
+                                                       cboTransmision.Text != "CVT" &&
+                                                       nudVelocidades != null &&
+                                                       nudVelocidades.Value >= nudVelocidades.Minimum;
+
+                        // Actualizar estado de todos los botones
+                        if (btnBuscarAirbags != null)
+                            btnBuscarAirbags.Enabled = tieneMarca && tieneModelo && tienePais && tieneVersion;
+
+                        // Ahora sólo habilitamos si la selección es explícitamente válida
+                        if (btnBuscarOrganizacion != null)
+                            btnBuscarOrganizacion.Enabled = tieneMarca && tieneModelo && tieneVersion && organizacionValida;
+
+                        if (btnBuscarEstrellas != null)
+                            btnBuscarEstrellas.Enabled = tieneMarca && tieneModelo && tieneVersion && estrellasValida;
+
+                        if (btnBuscarMotor != null)
+                            btnBuscarMotor.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneMotor;
+
+                        if (btnBuscarVelocidades != null)
+                            btnBuscarVelocidades.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVelocidadesValidas;
+
+                        if (btnBuscarTraccion != null)
+                            btnBuscarTraccion.Enabled = cboTraccion != null && cboTraccion.SelectedIndex >= 0;
+
+                        if (btnBuscarPaisFabricacion != null)
+                            btnBuscarPaisFabricacion.Enabled = tieneMarca && tieneModelo && tieneVersion && tienePais;
+
+                        if (btnBuscarVersion != null)
+                            btnBuscarVersion.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion;
+
+                        if (btnBuscarFrenos != null)
+                            btnBuscarFrenos.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion && tieneFrenos;
+
+                        if (btnBuscarFotoWeb != null)
+                            btnBuscarFotoWeb.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion;
                     }
                     catch { }
                 };
@@ -3016,6 +3118,8 @@ namespace CpAuton
                         btnAddModelo.Visible = true;
                         btnEditMarca.Visible = true;
                         btnEditModelo.Visible = true;
+                        actualizarBotonesBusqueda();
+
 
                         lblEstado.Text = "✏️ MODO EDICIÓN - Modifique los campos necesarios";
                         lblEstado.ForeColor = Color.Green;

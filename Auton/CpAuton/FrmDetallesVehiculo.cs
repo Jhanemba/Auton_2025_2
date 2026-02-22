@@ -70,6 +70,8 @@ namespace CpAuton
         private Button btnAddModelo;
         private Button btnEditMarca;
         private Button btnEditModelo;
+        private bool permitirEventos = false;
+
         public FrmDetallesVehiculo(paVehiculoListar_Result vehiculo, Action onActualizado = null)
         {
             InitializeComponent();
@@ -496,6 +498,7 @@ namespace CpAuton
             flpMarcaRow.Controls.Add(btnEditMarca);
             flpMarcaRow.Controls.Add(btnVerMarcaDesc);
             pnlPrincipal.Controls.Add(flpMarcaRow);
+            cboMarca.TextChanged += (s, e) => ActualizarBotonesBusqueda();
             yPosLeft += lineHeight;
 
             // Modelo
@@ -575,6 +578,8 @@ namespace CpAuton
             flpModeloRow.Controls.Add(btnEditModelo);
             flpModeloRow.Controls.Add(btnVerModeloDesc);
             pnlPrincipal.Controls.Add(flpModeloRow);
+            cboModelo.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda();
+            cboModelo.TextChanged += (s, e) => ActualizarBotonesBusqueda();
             yPosLeft += lineHeight;
 
             // Versión
@@ -611,6 +616,7 @@ namespace CpAuton
             try { var ttV = new ToolTip(); ttV.SetToolTip(btnBuscarVersion, "Buscar información de la versión"); } catch { }
             pnlPrincipal.Controls.Add(btnBuscarVersion);
             btnBuscarVersion.BringToFront();
+            cboVersion.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda();
             yPosLeft += lineHeight + 20;
 
             // Tipo
@@ -655,6 +661,7 @@ namespace CpAuton
             }
             catch { }
             pnlPrincipal.Controls.Add(nudAnio);
+            nudAnio.ValueChanged += (s, e) => ActualizarBotonesBusqueda();
             yPosLeft += lineHeight;
 
             // Agregar el botón de búsqueda del chasis aquí (después de declarar nudAnio y antes de usarlo)
@@ -762,6 +769,8 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(btnBuscarPaisFabricacion);
             cboPaisFabricacion.BringToFront();
             btnBuscarPaisFabricacion.BringToFront();
+            cboPaisFabricacion.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda();
+            cboPaisFabricacion.TextChanged += (s, e) => ActualizarBotonesBusqueda();
             yPosRight += lineHeight;
 
             // Transmisión
@@ -841,6 +850,7 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(btnBuscarVelocidades);
             nudVelocidades.BringToFront();
             btnBuscarVelocidades.BringToFront();
+            //nudVelocidades.ValueChanged += (s, e) => ActualizarBotonesBusqueda();
             yPosRight += lineHeight;
 
             ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
@@ -855,6 +865,7 @@ namespace CpAuton
                 {
                     ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, null, false);
                 }
+                ActualizarBotonesBusqueda();
             };
 
             // Turbo
@@ -912,6 +923,7 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(btnBuscarMotor);
             txtMotor.BringToFront();
             btnBuscarMotor.BringToFront();
+            txtMotor.TextChanged += (s, e) => ActualizarBotonesBusqueda();
             yPosRight += lineHeight;
 
             // Combustible
@@ -972,6 +984,7 @@ namespace CpAuton
             pnlPrincipal.Controls.Add(btnBuscarFrenos);
             cboFrenos.BringToFront();
             btnBuscarFrenos.BringToFront();
+            cboFrenos.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda();
             yPosRight += lineHeight;
 
             // Nro de Asientos
@@ -1122,6 +1135,7 @@ namespace CpAuton
                 }
             };
             cboTraccion.BringToFront();
+            cboTraccion.SelectedIndexChanged += (s, e) => ActualizarBotonesBusqueda();
             yPosRight += lineHeight;
 
             // ==================== SEGURIDAD ====================
@@ -1192,7 +1206,9 @@ namespace CpAuton
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Enabled = false
+
             };
             btnBuscarOrganizacion.FlatAppearance.BorderSize = 0;
             btnBuscarOrganizacion.Click += BtnBuscarOrganizacion_Click;
@@ -1253,13 +1269,14 @@ namespace CpAuton
                     }
                     else
                     {
-                        cboEstrellas.Enabled = editarActivo;
+                        cboEstrellas.Enabled = editarActivo; // Solo habilitar si estamos en modo edición
                         if (cboEstrellas.SelectedIndex == 6)
                         {
                             cboEstrellas.SelectedIndex = -1;
                         }
                     }
                 }
+                ActualizarBotonesBusqueda();
                 verificarCambios();
             };
 
@@ -1273,7 +1290,8 @@ namespace CpAuton
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Enabled = false
             };
             btnBuscarEstrellas.FlatAppearance.BorderSize = 0;
             btnBuscarEstrellas.Click += BtnBuscarEstrellas_Click;
@@ -1438,6 +1456,9 @@ namespace CpAuton
                         .OrderBy(m => m.nombre)
                         .ToList();
 
+                    // DESHABILITAR EVENTOS TEMPORALMENTE
+                    permitirEventos = false;
+
                     // Cargar Procedencias
                     cboProcedencia.DisplayMember = "descripcion";
                     cboProcedencia.ValueMember = "id";
@@ -1466,80 +1487,169 @@ namespace CpAuton
                     cboModelo.SelectedValue = vehiculoCompleto.idModeloVehiculo;
 
                     // AGREGAR EVENTO PARA CAMBIO DE MARCA (cargar modelos dinámicamente)
-                    bool permitirEventos = false;
+                    // CONFIGURAR EVENTOS (SOLO UNA VEZ)
+                    ConfigurarEventosCascada();
 
-                    cboProcedencia.SelectedIndexChanged += (s, e) =>
-                    {
-                        try
-                        {
-                            if (!permitirEventos) return;
-                            if (!cboProcedencia.Enabled) return;
-                            if (!editarActivo) return;
-
-                            var sel = cboProcedencia.SelectedValue;
-                            if (sel == null) return;
-
-                            int idProc = Convert.ToInt32(sel);
-                            var marcasFiltradas = MarcaCln.listar()
-                                .Where(m => m.idProcedencia == idProc && m.estado != -1)
-                                .OrderBy(m => m.nombre)
-                                .ToList();
-
-                            permitirEventos = false;
-                            cboMarca.DataSource = null;
-                            cboMarca.DisplayMember = "nombre";
-                            cboMarca.ValueMember = "id";
-                            cboMarca.DataSource = marcasFiltradas;
-                            cboMarca.BindingContext = new BindingContext();
-
-                            if (marcasFiltradas.Any())
-                                cboMarca.SelectedIndex = 0;
-                            else
-                                cboMarca.SelectedIndex = -1;
-
-                            permitirEventos = true;
-                        }
-                        catch { }
-                    };
-
-                    cboMarca.SelectedIndexChanged += (s, e) =>
-                    {
-                        if (permitirEventos && cboMarca.Enabled && cboMarca.SelectedValue != null && editarActivo)
-                        {
-                            try
-                            {
-                                int idMarca = Convert.ToInt32(cboMarca.SelectedValue);
-                                var modelosNuevos = ModeloVehiculoCln.listar()
-                                    .Where(m => m.idMarca == idMarca && m.estado != -1)
-                                    .OrderBy(m => m.nombre)
-                                    .ToList();
-
-                                permitirEventos = false;
-                                cboModelo.DataSource = null;
-                                cboModelo.DataSource = modelosNuevos;
-                                cboModelo.DisplayMember = "nombre";
-                                cboModelo.ValueMember = "id";
-                                permitirEventos = true;
-
-                                if (modelosNuevos.Any())
-                                {
-                                    cboModelo.SelectedIndex = 0;
-                                }
-                            }
-                            catch { }
-                        }
-                    };
+                    // HABILITAR EVENTOS (pero no dispararán porque los controles están deshabilitados)
 
                     permitirEventos = true;
                 }
 
                 CargarFotografia();
+
+                // INICIALIZAR ESTADO DE BOTONES
+
+                try
+                {
+                    ActualizarBotonesBusqueda();
+                }
+                catch { }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cargar datos: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ConfigurarEventosCascada()
+        {
+            // EVENTO: Cuando cambia PROCEDENCIA → cargar MARCAS de esa procedencia
+            cboProcedencia.SelectedIndexChanged += (s, e) =>
+            {
+                try
+                {
+                    if (!permitirEventos) return;
+                    if (!cboProcedencia.Enabled) return;
+                    if (!editarActivo) return; // Solo en modo edición
+
+                    var sel = cboProcedencia.SelectedValue;
+                    if (sel == null) return;
+
+                    int idProc = Convert.ToInt32(sel);
+                    var marcasFiltradas = MarcaCln.listar()
+                        .Where(m => m.idProcedencia == idProc && m.estado != -1)
+                        .OrderBy(m => m.nombre)
+                        .ToList();
+
+                    permitirEventos = false;
+                    cboMarca.DataSource = null;
+                    cboMarca.DisplayMember = "nombre";
+                    cboMarca.ValueMember = "id";
+                    cboMarca.DataSource = marcasFiltradas;
+                    cboMarca.BindingContext = new BindingContext();
+
+                    if (marcasFiltradas.Any())
+                        cboMarca.SelectedIndex = 0;
+                    else
+                        cboMarca.SelectedIndex = -1;
+
+                    permitirEventos = true;
+                }
+                catch { }
+            };
+
+            // EVENTO: Cuando cambia MARCA → cargar MODELOS de esa marca
+            cboMarca.SelectedIndexChanged += (s, e) =>
+            {
+                if (permitirEventos && cboMarca.Enabled && cboMarca.SelectedValue != null && editarActivo)
+                {
+                    try
+                    {
+                        int idMarca = Convert.ToInt32(cboMarca.SelectedValue);
+                        var modelosNuevos = ModeloVehiculoCln.listar()
+                            .Where(m => m.idMarca == idMarca && m.estado != -1)
+                            .OrderBy(m => m.nombre)
+                            .ToList();
+
+                        permitirEventos = false;
+                        cboModelo.DataSource = null;
+                        cboModelo.DisplayMember = "nombre";
+                        cboModelo.ValueMember = "id";
+                        cboModelo.DataSource = modelosNuevos;
+                        cboModelo.BindingContext = new BindingContext();
+                        permitirEventos = true;
+
+                        if (modelosNuevos.Any())
+                        {
+                            cboModelo.SelectedIndex = 0;
+                        }
+                    }
+                    catch { }
+                }
+            };
+        }
+
+        private void ActualizarBotonesBusqueda()
+        {
+            bool tieneMarca = cboMarca != null && !string.IsNullOrWhiteSpace(cboMarca.Text);
+            bool tieneModelo = cboModelo != null && !string.IsNullOrWhiteSpace(cboModelo.Text);
+            bool tienePais = cboPaisFabricacion != null && !string.IsNullOrWhiteSpace(cboPaisFabricacion.Text);
+            bool tieneVersion = cboVersion != null && cboVersion.SelectedIndex >= 0;
+            bool tieneOrganizacion = cboOrganizacion != null &&
+                                    cboOrganizacion.SelectedIndex >= 0 &&
+                                    cboOrganizacion.Text != "Sin calificación";
+            bool tieneMotor = txtMotor != null && !string.IsNullOrWhiteSpace(txtMotor.Text);
+            bool tieneAnio = nudAnio != null && nudAnio.Value > 0;
+            bool tieneFrenos = cboFrenos != null && cboFrenos.SelectedIndex >= 0;
+            bool tieneTransmision = cboTransmision != null && cboTransmision.SelectedIndex >= 0;
+            // Verificar si nudVelocidades está visible Y habilitado (no CVT)
+            // NO importa si está en modo edición o lectura
+            bool tieneVelocidadesValidas = cboTransmision != null &&
+                                           cboTransmision.SelectedIndex >= 0 &&
+                                           cboTransmision.Text != "CVT" &&
+                                           nudVelocidades != null &&
+                                           nudVelocidades.Value >= nudVelocidades.Minimum;
+
+            // Botón Airbags
+            var btnBuscarAirbags = pnlPrincipal.Controls.Find("btnBuscarAirbags", true).FirstOrDefault() as Button;
+            if (btnBuscarAirbags != null)
+                btnBuscarAirbags.Enabled = tieneMarca && tieneModelo && tienePais && tieneVersion;
+
+            // Botón Organización: habilitado si hay marca, modelo y versión
+            var btnBuscarOrganizacion = pnlPrincipal.Controls.Find("btnBuscarOrganizacion", true).FirstOrDefault() as Button;
+            if (btnBuscarOrganizacion != null)
+                btnBuscarOrganizacion.Enabled = tieneMarca && tieneModelo && tieneVersion && tieneOrganizacion;
+
+            // Botón Estrellas: habilitado solo si hay organización válida (no "Sin calificación")
+            var btnBuscarEstrellas = pnlPrincipal.Controls.Find("btnBuscarEstrellas", true).FirstOrDefault() as Button;
+            if (btnBuscarEstrellas != null)
+                btnBuscarEstrellas.Enabled = tieneMarca && tieneModelo && tieneOrganizacion && tieneVersion;
+
+            // Botón Motor
+            var btnBuscarMotor = pnlPrincipal.Controls.Find("btnBuscarMotor", true).FirstOrDefault() as Button;
+            if (btnBuscarMotor != null)
+                btnBuscarMotor.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneMotor;
+
+            // Botón Velocidades
+            var btnBuscarVelocidades = pnlPrincipal.Controls.Find("btnBuscarVelocidades", true).FirstOrDefault() as Button;
+            if (btnBuscarVelocidades != null)
+                btnBuscarVelocidades.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVelocidadesValidas;
+
+            // Botón Tracción
+            var btnBuscarTraccion = pnlPrincipal.Controls.Find("btnBuscarTraccion", true).FirstOrDefault() as Button;
+            if (btnBuscarTraccion != null)
+                btnBuscarTraccion.Enabled = cboTraccion != null && cboTraccion.SelectedIndex >= 0;
+
+            // Botón País de Fabricación
+            var btnBuscarPaisFabricacion = pnlPrincipal.Controls.Find("btnBuscarPaisFabricacion", true).FirstOrDefault() as Button;
+            if (btnBuscarPaisFabricacion != null)
+                btnBuscarPaisFabricacion.Enabled = tieneMarca && tieneModelo && tieneVersion && tienePais;
+
+            // Botón Versión
+            var btnBuscarVersion = pnlPrincipal.Controls.Find("btnBuscarVersion", true).FirstOrDefault() as Button;
+            if (btnBuscarVersion != null)
+                btnBuscarVersion.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion;
+
+            // Botón Frenos
+            var btnBuscarFrenos = pnlPrincipal.Controls.Find("btnBuscarFrenos", true).FirstOrDefault() as Button;
+            if (btnBuscarFrenos != null)
+                btnBuscarFrenos.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion && tieneFrenos;
+
+            // Botón Buscar Foto Web
+            var btnBuscarFotoWeb = pnlPrincipal.Controls.Find("btnBuscarFotoWeb", true).FirstOrDefault() as Button;
+            if (btnBuscarFotoWeb != null)
+                btnBuscarFotoWeb.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion;
         }
 
         private void CargarFotografia()
@@ -1699,6 +1809,9 @@ namespace CpAuton
         {
             editarActivo = true;
 
+            // HABILITAR EVENTOS PARA QUE MARCA/MODELO FUNCIONEN
+            permitirEventos = true;
+
             GuardarValoresOriginales();
 
             // Habilitar controles de foto
@@ -1775,6 +1888,9 @@ namespace CpAuton
             btnEditMarca.Visible = true;
             btnEditModelo.Visible = true;
 
+            ActualizarBotonesBusqueda();
+
+
             var lblEstado = pnlPrincipal.Controls.Find("lblEstado", true).FirstOrDefault() as Label;
             if (lblEstado != null)
             {
@@ -1786,6 +1902,19 @@ namespace CpAuton
             btnEditar.Text = "💾 Guardar";
             btnEditar.BackColor = Color.FromArgb(40, 167, 69);
             btnEditar.Enabled = false;
+
+            // Limpiar selección visual de ComboBox
+            if (cboMarca.SelectedIndex >= 0)
+            {
+                cboMarca.SelectionStart = 0;
+                cboMarca.SelectionLength = 0;
+            }
+
+            if (cboModelo.SelectedIndex >= 0)
+            {
+                cboModelo.SelectionStart = 0;
+                cboModelo.SelectionLength = 0;
+            }
 
             // Conectar eventos
             txtChasis.TextChanged += (ss, ee) => verificarCambios();
@@ -1871,6 +2000,8 @@ namespace CpAuton
                 {
                     modeloSeleccionado.idTipoVehiculo = nuevoIdTipo;
                     modeloSeleccionado.usuarioRegistro = Util.usuario.usuario;
+                    //modeloSeleccionado.usuarioModificacion = Util.usuario.usuario;
+                    //modeloSeleccionado.fechaModificacion = DateTime.Now;
 
                     int resultadoModelo = ModeloVehiculoCln.actualizar(modeloSeleccionado);
 
@@ -2025,6 +2156,9 @@ namespace CpAuton
         {
             editarActivo = false;
 
+            // DESHABILITAR EVENTOS
+            permitirEventos = false;
+
             pbFotografia.AllowDrop = false;
             btnCambiarFoto.Visible = false;
             btnEliminarFotoDetalle.Visible = false;
@@ -2054,6 +2188,19 @@ namespace CpAuton
             cboTransmision.Enabled = false;
 
             ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, vehiculoCompleto.nroVelocidades, false);
+
+            // EVENTO: Reconfigurar velocidades cuando cambia transmisión
+            cboTransmision.SelectedIndexChanged += (s, ev) =>
+            {
+                if (cboTransmision.Enabled && editarActivo) // Solo en modo edición
+                {
+                    ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, null, true);
+                }
+                else
+                {
+                    ConfigurarVelocidades(cboTransmision.Text, nudVelocidades, lblInfoVelocidades, null, false);
+                }
+            };
 
             nudAsientos.Enabled = false;
             cboTraccion.Enabled = false;

@@ -296,7 +296,7 @@ namespace CpAuton
             Button btnBuscarChasis = new Button
             {
                 Text = "🔍",
-                Location = new Point(colLeftX + ctrlWidth - 44 + 8, yPosLeft),
+                Location = new Point(colLeftX + ctrlWidth  + 8, yPosLeft),
                 Size = new Size(36, 28),
                 BackColor = Color.FromArgb(52, 58, 64),
                 ForeColor = Color.White,
@@ -1146,13 +1146,17 @@ namespace CpAuton
             if (btnBuscarTraccion != null)
                 btnBuscarTraccion.Enabled = cboTraccion != null && cboTraccion.SelectedIndex >= 0;
 
-            // Botón País de Fabricación: habilitado si hay país seleccionado
+            // Botón País de Fabricación: habilitado si hay país seleccionado y marca/modelo/version/pais/motor
             if (btnBuscarPaisFabricacion != null)
-                btnBuscarPaisFabricacion.Enabled = tieneMarca && tieneModelo && tieneVersion && tienePais;
+                btnBuscarPaisFabricacion.Enabled = tieneMarca && tieneModelo && tieneVersion && tienePais && tieneMotor;
 
-            // Botón Versión: habilitado si hay versión seleccionada y marca/modelo/año
+            // Botón Versión: habilitado si hay versión seleccionada y marca/modelo/año/pais
             if (btnBuscarVersion != null)
-                btnBuscarVersion.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion;
+                btnBuscarVersion.Enabled = tieneMarca && tieneModelo && tieneAnio && tieneVersion && tienePais;
+
+            //Botón Generación: habilitado si hay marca, modelo, año y pais
+            if (btnBuscarGeneracion != null)
+                btnBuscarGeneracion.Enabled = tieneMarca && tieneModelo && tieneAnio && tienePais;
 
             // NUEVO: Botón Frenos
             if (btnBuscarFrenos != null)
@@ -1202,6 +1206,7 @@ namespace CpAuton
                 string marca = cboMarca?.Text.Trim() ?? "";
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string motor = txtMotor?.Text.Trim() ?? "";
                 string pais = cboPaisFabricacion?.Text.Trim() ?? "";
                 string version = cboVersion?.Text ?? ""; // ⭐ NUEVO
 
@@ -1214,7 +1219,7 @@ namespace CpAuton
                 }
 
                 // ⭐ MODIFICADO: Incluir versión en la búsqueda
-                string query = $"¿Cuántos airbags tiene el {marca} {modelo} {anio} versión {version} fabricado en {pais}?";
+                string query = $"¿Cuántos airbags tiene el {marca} {modelo} {anio} motor {motor} versión {version} fabricado en {pais}?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo
@@ -1239,8 +1244,10 @@ namespace CpAuton
                 string marca = cboMarca?.Text.Trim() ?? "";
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string motor = txtMotor?.Text.Trim() ?? "";
+                string pais = cboPaisFabricacion?.Text.Trim() ?? "";
                 string organizacion = cboOrganizacionSeguridad?.Text ?? "";
-                string version = cboVersion?.Text ?? ""; // ⭐ NUEVO
+                string version = cboVersion?.Text ?? "";
 
                 if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) ||
                     string.IsNullOrWhiteSpace(organizacion) || string.IsNullOrWhiteSpace(version))
@@ -1251,7 +1258,7 @@ namespace CpAuton
                 }
 
                 // ⭐ MODIFICADO: Incluir versión
-                string query = $"Prueba de choque {marca} {modelo} {anio} versión {version} según {organizacion}";
+                string query = $"Prueba de choque {marca} {modelo} {anio} motor {motor} versión {version} fabricado en {pais} según {organizacion}";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo
@@ -1268,7 +1275,7 @@ namespace CpAuton
             }
         }
 
-        // ⭐ NUEVO: Botón buscar estrellas de seguridad
+        // Botón buscar estrellas de seguridad
         private void BtnBuscarEstrellas_Click(object sender, EventArgs e)
         {
             try
@@ -1276,8 +1283,10 @@ namespace CpAuton
                 string marca = cboMarca?.Text.Trim() ?? "";
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string motor = txtMotor?.Text.Trim() ?? "";
                 string organizacion = cboOrganizacionSeguridad?.Text ?? "";
-                string version = cboVersion?.Text ?? ""; // ⭐ NUEVO
+                string version = cboVersion?.Text ?? ""; 
+                string pais = cboPaisFabricacion?.Text.Trim() ?? "";
 
                 if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) ||
                     string.IsNullOrWhiteSpace(organizacion) || organizacion == "Sin calificación" ||
@@ -1289,7 +1298,7 @@ namespace CpAuton
                 }
 
                 // ⭐ MODIFICADO: Incluir versión
-                string query = $"¿Cuántas estrellas de seguridad tiene el {marca} {modelo} {anio} versión {version} según {organizacion}?";
+                string query = $"¿Cuántas estrellas de seguridad tiene el {marca} {modelo} {anio} motor {motor} versión {version} fabricado en {pais} según {organizacion}?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo
@@ -1307,7 +1316,7 @@ namespace CpAuton
         }
 
 
-        // NUEVO: Botón buscar motor
+        //Botón buscar motor
         private void BtnBuscarMotor_Click(object sender, EventArgs e)
         {
             try
@@ -1315,6 +1324,7 @@ namespace CpAuton
                 string marca = cboMarca?.Text.Trim() ?? "";
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string pais = cboPaisFabricacion?.Text.Trim() ?? "";
                 string motor = txtMotor?.Text.Trim() ?? "";
 
                 if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(motor))
@@ -1324,7 +1334,7 @@ namespace CpAuton
                     return;
                 }
 
-                string query = $"¿El {marca} {modelo} {anio} trae motor {motor}?";
+                string query = $"¿El {marca} {modelo} {anio} fabricado en {pais} trae motor {motor}?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo
@@ -1349,6 +1359,7 @@ namespace CpAuton
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
                 string version = cboVersion?.Text ?? "";
+                string pais = cboPaisFabricacion?.Text.Trim() ?? "";
                 string frenos = cboFreno?.Text ?? "";
 
                 if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) ||
@@ -1359,7 +1370,7 @@ namespace CpAuton
                     return;
                 }
 
-                string query = $"¿El {marca} {modelo} {anio} versión {version} trae frenos de {frenos}?";
+                string query = $"¿El {marca} {modelo} {anio} versión {version} fabricado en {pais} trae frenos de {frenos}?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo
@@ -2151,15 +2162,17 @@ namespace CpAuton
                 string marca = cboMarca != null ? cboMarca.Text.Trim() : string.Empty;
                 string modelo = cboModelo != null ? cboModelo.Text.Trim() : string.Empty;
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string motor = txtMotor != null ? txtMotor.Text.Trim() : string.Empty;
+                string pais = cboPaisFabricacion != null ? cboPaisFabricacion.Text.Trim() : string.Empty;
 
-                if (string.IsNullOrWhiteSpace(marca) && string.IsNullOrWhiteSpace(modelo))
+                if (string.IsNullOrWhiteSpace(marca) && string.IsNullOrWhiteSpace(modelo) && string.IsNullOrWhiteSpace(pais))
                 {
-                    MessageBox.Show("⚠️ Debe especificar al menos la Marca o el Modelo para realizar la búsqueda.",
+                    MessageBox.Show("⚠️ Debe especificar al menos la Marca, el Modelo y pais para realizar la búsqueda.",
                                   "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                string query = $"¿Qué generación es el {marca} {modelo} {anio}  y entre que años comprende?".Trim();
+                string query = $"¿Qué generación es el {marca} {modelo} {anio} motor {motor} fabricado en {pais} y entre que años comprende?".Trim();
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo
@@ -2188,6 +2201,7 @@ namespace CpAuton
                 string marca = cboMarca?.Text.Trim() ?? "";
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string motor = txtMotor?.Text.Trim() ?? "";
                 string transmision = cboTransmision?.Text ?? "";
                 string nroVel = nudVelocidades != null && nudVelocidades.Enabled ? nudVelocidades.Value.ToString() : "";
 
@@ -2198,7 +2212,7 @@ namespace CpAuton
                     return;
                 }
 
-                string query = $"¿El {marca} {modelo} {anio} caja {transmision} viene con {nroVel} velocidades?";
+                string query = $"¿El {marca} {modelo} {anio} motor {motor} caja {transmision} viene con {nroVel} velocidades?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
@@ -2214,6 +2228,8 @@ namespace CpAuton
             try
             {
                 string marca = cboMarca?.Text.Trim() ?? "";
+                int Anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string motor = txtMotor?.Text.Trim() ?? "";
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 string version = cboVersion?.Text ?? "";
                 string traccion = cboTraccion?.Text ?? "";
@@ -2225,7 +2241,7 @@ namespace CpAuton
                     return;
                 }
 
-                string query = $"¿El {marca} {modelo} versión {version} viene con tracción {traccion}?";
+                string query = $"¿El {marca} {modelo} {Anio} motor {motor} versión {version} viene con tracción {traccion}?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
                 Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
             }
@@ -2244,15 +2260,16 @@ namespace CpAuton
                 string version = cboVersion?.Text ?? "";
                 string pais = cboPaisFabricacion?.Text ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string motor = txtMotor?.Text.Trim() ?? "";
 
-                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version) || string.IsNullOrWhiteSpace(pais))
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version) || string.IsNullOrWhiteSpace(pais) || string.IsNullOrWhiteSpace(motor))
                 {
-                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Versión y País para realizar la búsqueda.",
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Versión, País y Motor para realizar la búsqueda.",
                                   "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                string query = $"¿El {marca} {modelo} versión {version} año {anio} es fabricado en {pais}?";
+                string query = $"¿El {marca} {modelo} {anio} motor {motor} versión {version} es fabricado en {pais}?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
                 Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
             }
@@ -2269,16 +2286,18 @@ namespace CpAuton
                 string marca = cboMarca?.Text.Trim() ?? "";
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string motor = txtMotor?.Text.Trim() ?? "";
                 string version = cboVersion?.Text ?? "";
+                string pais = cboPaisFabricacion?.Text.Trim() ?? "";
 
-                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version))
+                if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(version) || string.IsNullOrWhiteSpace(pais))
                 {
-                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo y Versión para realizar la búsqueda.",
+                    MessageBox.Show("⚠️ Debe especificar Marca, Modelo, Versión y País de Fabricación para realizar la búsqueda.",
                                   "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                string query = $"{marca} {modelo} {anio} versión {version}";
+                string query = $"{marca} {modelo} {anio} motor {motor} fabricado en {pais} versión {version}";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
                 Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
             }
@@ -2325,6 +2344,7 @@ namespace CpAuton
                 string marca = cboMarca?.Text.Trim() ?? "";
                 string modelo = cboModelo?.Text.Trim() ?? "";
                 int anio = nudAnio != null ? (int)nudAnio.Value : DateTime.Now.Year;
+                string motor = txtMotor?.Text.Trim() ?? "";
                 string pais = cboPaisFabricacion?.Text.Trim() ?? "";
 
                 if (string.IsNullOrWhiteSpace(marca) || string.IsNullOrWhiteSpace(modelo) || string.IsNullOrWhiteSpace(pais))
@@ -2334,7 +2354,7 @@ namespace CpAuton
                     return;
                 }
 
-                string query = $"¿El {marca} {modelo} {anio} fabricado en {pais} con qué dígitos comienza según su VIN o número de chasis?";
+                string query = $"¿El {marca} {modelo} {anio} motor {motor} fabricado en {pais} con qué dígitos comienza según su VIN o número de chasis?";
                 string url = "https://www.google.com/search?q=" + Uri.EscapeDataString(query);
 
                 var psi = new ProcessStartInfo
