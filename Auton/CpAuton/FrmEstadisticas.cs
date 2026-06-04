@@ -22,6 +22,8 @@ namespace CpAuton
 
         private void FrmEstadisticas_Load(object sender, EventArgs e)
         {
+            string ruta = Application.StartupPath + @"\Audio\JVKE - golden hour (instrumental).mp3";
+            AudioManager.Reproducir(ruta, true, 25 - 10);
             CargarEstadisticas();
         }
 
@@ -404,6 +406,12 @@ namespace CpAuton
             card.Controls.Add(lblCantidad);
 
             return card;
+        }
+        private void FrmEstadistica_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // reanudar menú
+            string rutaMenu = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
+            AudioManager.Reproducir(rutaMenu, true, 60);
         }
     }
 }

@@ -208,8 +208,22 @@ namespace CpAuton
 
         private void FrmAcercaDe_Load(object sender, EventArgs e)
         {
-            string ruta = Application.StartupPath + @"\Audio\JVKE - golden hour (instrumental).mp3";
-            AudioManager.Reproducir(ruta, true, 25 - 10);
+            string ruta = Application.StartupPath + @"\Audio\WELTiTA (Instrumental) - Bad Bunny ft. Chuwi-(Nonek).mp3";
+            string ruta2 = Application.StartupPath + @"\Audio\Milo J - Solifican12 (Instrumental)-(146k).mp3";
+            string ruta3 = Application.StartupPath + @"\Audio\Amor salvaje-(Nonek).mp3";
+            string ruta4 = Application.StartupPath + @"\Audio\cuando el mundo acabe-(Nonek).mp3";
+            string ruta5 = Application.StartupPath + @"\Audio\Como No Quererte-(Nonek)-pt2.mp3";
+            string ruta6 = Application.StartupPath + @"\Audio\Amor Eterno-(Nonek)-pt2.mp3";
+            string ruta7 = Application.StartupPath + @"\Audio\Niño-(Nonek).mp3";
+            string ruta8 = Application.StartupPath + @"\Audio\氤氲之森-(Nonek).mp3";
+
+
+            AudioManager.LoopPlaylist = false;
+            AudioManager.SetPlaylist(new List<string> { ruta, ruta2, ruta3, ruta4, ruta5, ruta6, ruta7, ruta8 });
+            AudioManager.PlayPlaylist(25 - 10 + 35, 45, 45, 45, 45 - 10, 45 - 10, 45, 45); // volumen
+
+
+            //AudioManager.Reproducir(ruta, ruta2, true, 25 - 10 + 35);
         }
 
         private void FrmAcercaDe_FormClosed(object sender, FormClosedEventArgs e)

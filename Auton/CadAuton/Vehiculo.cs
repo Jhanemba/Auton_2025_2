@@ -50,10 +50,12 @@ namespace CadAuton
         public string traccion { get; set; }
         public string usuarioModificacion { get; set; }
         public Nullable<System.DateTime> fechaModificacion { get; set; }
+        public Nullable<int> idUsuarioRegistro { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HistorialConfiabilidad> HistorialConfiabilidad { get; set; }
         public virtual ModeloVehiculo ModeloVehiculo { get; set; }
+        public virtual Usuario Usuario { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<VehiculoMantenimiento> VehiculoMantenimiento { get; set; }
     }

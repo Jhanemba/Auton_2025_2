@@ -14,6 +14,14 @@ namespace CadAuton
     
     public partial class Usuario
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Usuario()
+        {
+            this.HistorialConfiabilidad = new HashSet<HistorialConfiabilidad>();
+            this.Vehiculo = new HashSet<Vehiculo>();
+            this.VehiculoMantenimiento = new HashSet<VehiculoMantenimiento>();
+        }
+    
         public int id { get; set; }
         public int idEmpleado { get; set; }
         public string usuario1 { get; set; }
@@ -24,5 +32,11 @@ namespace CadAuton
         public short estado { get; set; }
     
         public virtual Empleado Empleado { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<HistorialConfiabilidad> HistorialConfiabilidad { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Vehiculo> Vehiculo { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<VehiculoMantenimiento> VehiculoMantenimiento { get; set; }
     }
 }

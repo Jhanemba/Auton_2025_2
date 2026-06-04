@@ -41,6 +41,7 @@
           <ScalarProperty Name="motivo" ColumnName="motivo" />
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
+          <ScalarProperty Name="idUsuarioRegistro" ColumnName="idUsuarioRegistro" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -140,6 +141,7 @@
           <ScalarProperty Name="traccion" ColumnName="traccion" />
           <ScalarProperty Name="usuarioModificacion" ColumnName="usuarioModificacion" />
           <ScalarProperty Name="fechaModificacion" ColumnName="fechaModificacion" />
+          <ScalarProperty Name="idUsuarioRegistro" ColumnName="idUsuarioRegistro" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -156,6 +158,7 @@
           <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
           <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
           <ScalarProperty Name="estado" ColumnName="estado" />
+          <ScalarProperty Name="idUsuarioRegistro" ColumnName="idUsuarioRegistro" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

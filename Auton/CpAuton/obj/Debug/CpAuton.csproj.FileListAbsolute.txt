@@ -61,3 +61,11 @@ C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\Don Omar - D
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.exe.config
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\45. Farewell - See You Again (Film Version)  Furious 7 (Complete Soundtrack).mp3
 C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\obj\Debug\CpAuton.FrmDetallesVehiculo.resources
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\WELTiTA (Instrumental) - Bad Bunny ft. Chuwi-(Nonek).mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\Milo J - Solifican12 (Instrumental)-(146k).mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\Amor salvaje-(Nonek).mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\cuando el mundo acabe-(Nonek).mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\Amor Eterno-(Nonek)-pt2.mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\Como No Quererte-(Nonek)-pt2.mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\Niño-(Nonek).mp3
+C:\Users\Kevin\Documents\Auton_2025_2\Auton\CpAuton\bin\Debug\Audio\氤氲之森-(Nonek).mp3

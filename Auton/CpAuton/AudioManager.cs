@@ -15,6 +15,8 @@ namespace CpAuton
         private static int _index = 0;
         private static bool _userStopped = false;
         private static int _lastPlayState = 0;
+        // --- NUEVO: Propiedad para controlar el bucle desde cualquier formulario ---
+        public static bool LoopPlaylist { get; set; } = true;
 
         public static void Inicializar(AxWindowsMediaPlayer reproductor)
         {
@@ -164,7 +166,27 @@ namespace CpAuton
                 // avanzar al siguiente índice
                 _index++;
                 if (_index >= _playlist.Count)
+                {
                     _index = 0; // vuelve a la primera canción
+
+                    // --- NUEVO: Si LoopPlaylist es false, detiene la reproducción y sale ---
+                    if (!LoopPlaylist)
+                    {
+                        try
+                        {
+                            if (_player != null && _player.IsHandleCreated)
+                            {
+                                _player.BeginInvoke(new Action(() => _player.Ctlcontrols.stop()));
+                            }
+                            else
+                            {
+                                _player?.Ctlcontrols.stop();
+                            }
+                        }
+                        catch { }
+                        return; // Detiene la música y no pasa a la primera canción
+                    }
+                }
 
                 try
                 {

@@ -347,7 +347,19 @@
     <Content Include="Audio\Amerika.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Audio\Amor Eterno-%28Nonek%29-pt2.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\Amor salvaje-%28Nonek%29.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\Como No Quererte-%28Nonek%29-pt2.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Audio\Crystal Waters - Gypsy Woman %28She%27s Homeless%29 %28Official instrumental%29.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\cuando el mundo acabe-%28Nonek%29.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Audio\Don Omar - Danza Kuduro %28Instrumental%29 %28Original HQ%29.mp3">
@@ -359,10 +371,22 @@
     <Content Include="Audio\JVKE - golden hour %28instrumental%29.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Audio\Milo J - Solifican12 %28Instrumental%29-%28146k%29.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\Niño-%28Nonek%29.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Audio\Teriyaki Boyz - Tokyo Drift Instrumental.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Audio\WELTiTA %28Instrumental%29 - Bad Bunny ft. Chuwi-%28Nonek%29.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Audio\攬佬SKAI ISYOURGODAR劉夫陽大展鴻圖HD 高清官方歌词版MV.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Audio\氤氲之森-%28Nonek%29.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Car_Right_Red_26350.ico" />

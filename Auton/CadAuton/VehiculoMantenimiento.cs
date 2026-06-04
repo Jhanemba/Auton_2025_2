@@ -24,7 +24,9 @@ namespace CadAuton
         public string usuarioRegistro { get; set; }
         public System.DateTime fechaRegistro { get; set; }
         public short estado { get; set; }
+        public Nullable<int> idUsuarioRegistro { get; set; }
     
+        public virtual Usuario Usuario { get; set; }
         public virtual Vehiculo Vehiculo { get; set; }
     }
 }

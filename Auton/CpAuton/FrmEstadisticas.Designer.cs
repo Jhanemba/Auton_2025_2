@@ -42,6 +42,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmEstadisticas";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmEstadistica_FormClosed);
             this.Load += new System.EventHandler(this.FrmEstadisticas_Load);
             this.ResumeLayout(false);
 

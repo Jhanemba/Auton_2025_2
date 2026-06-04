@@ -325,6 +325,66 @@ BEGIN
     ADD fechaModificacion DATETIME NULL;
     PRINT 'Campo fechaModificacion agregado a la tabla Vehiculo';
 END
+-- ==========================================================0
+
+-- En Vehiculo
+IF NOT EXISTS (SELECT * FROM sys.columns 
+               WHERE object_id = OBJECT_ID('Vehiculo') AND name = 'idUsuarioRegistro')
+BEGIN
+    ALTER TABLE Vehiculo
+    ADD idUsuarioRegistro INT NULL
+    CONSTRAINT FK_Vehiculo_Usuario FOREIGN KEY (idUsuarioRegistro) REFERENCES Usuario(id);
+    PRINT 'FK idUsuarioRegistro agregado a Vehiculo';
+END
+
+
+-- En HistorialConfiabilidad
+IF NOT EXISTS (SELECT * FROM sys.columns 
+               WHERE object_id = OBJECT_ID('HistorialConfiabilidad') AND name = 'idUsuarioRegistro')
+BEGIN
+    ALTER TABLE HistorialConfiabilidad
+    ADD idUsuarioRegistro INT NULL
+    CONSTRAINT FK_HistorialConfiabilidad_Usuario FOREIGN KEY (idUsuarioRegistro) REFERENCES Usuario(id);
+    PRINT 'FK idUsuarioRegistro agregado a HistorialConfiabilidad';
+END
+
+
+-- En VehiculoMantenimiento
+IF NOT EXISTS (SELECT * FROM sys.columns 
+               WHERE object_id = OBJECT_ID('VehiculoMantenimiento') AND name = 'idUsuarioRegistro')
+BEGIN
+    ALTER TABLE VehiculoMantenimiento
+    ADD idUsuarioRegistro INT NULL
+    CONSTRAINT FK_VehiculoMantenimiento_Usuario FOREIGN KEY (idUsuarioRegistro) REFERENCES Usuario(id);
+    PRINT 'FK idUsuarioRegistro agregado a VehiculoMantenimiento';
+END
+
+
+-- Obtener el id del usuario administrador
+DECLARE @idAdmin INT;
+SELECT @idAdmin = id FROM Usuario WHERE esAdministrador = 1 AND estado = 1;
+
+
+-- Actualizar Vehiculo
+UPDATE Vehiculo
+SET idUsuarioRegistro = (SELECT TOP 1 id FROM Usuario WHERE esAdministrador = 1 AND estado = 1)
+WHERE idUsuarioRegistro IS NULL AND estado != -1;
+PRINT 'Vehiculo: registros existentes asignados al admin';
+
+
+-- Actualizar HistorialConfiabilidad
+UPDATE HistorialConfiabilidad
+SET idUsuarioRegistro = (SELECT TOP 1 id FROM Usuario WHERE esAdministrador = 1 AND estado = 1)
+WHERE idUsuarioRegistro IS NULL;
+PRINT 'HistorialConfiabilidad: registros existentes asignados al admin';
+
+-- Actualizar VehiculoMantenimiento
+UPDATE VehiculoMantenimiento
+SET idUsuarioRegistro = (SELECT TOP 1 id FROM Usuario WHERE esAdministrador = 1 AND estado = 1)
+WHERE idUsuarioRegistro IS NULL;
+PRINT 'VehiculoMantenimiento: registros existentes asignados al admin';
+
+-- ===================================================
 
 --GO
 ---- Permitir -1 para "Sin calificación" en seguridadChoques
@@ -426,7 +486,7 @@ AS
 --ALTER PROC paVehiculoListar @parametro VARCHAR(100)
 --AS
 --    SELECT v.id, 
---           v.nroChasis,  -- ⭐ AGREGAR ESTA LÍNEA
+--           v.nroChasis, *****
 --           mv.nombre AS modelo, 
 --           m.nombre AS marca, 
 --           p.descripcion AS procedencia,
@@ -448,7 +508,7 @@ AS
 --    ORDER BY v.estado DESC, p.descripcion ASC, m.nombre ASC, mv.nombre ASC;
 
 GO
-CREATE PROC paVehiculoInsertar
+ALTER PROC paVehiculoInsertar
     @nroChasis VARCHAR(17),
     @idModeloVehiculo INT,
     @version VARCHAR(20),
@@ -456,7 +516,7 @@ CREATE PROC paVehiculoInsertar
     @paisFabricacion VARCHAR(50),
     @transmision VARCHAR(20),
     @nroVelocidades INT = NULL,
-    @nroPuertas INT = 5,         -- ⭐ NUEVO PARÁMETRO
+    @nroPuertas INT = 5,         -- ⭐**
     @nroAsientos INT,
     @traccion VARCHAR(50),
     @tieneTurbo BIT,
@@ -471,7 +531,8 @@ CREATE PROC paVehiculoInsertar
     @puntuacion DECIMAL(3,1),
     @kilometraje INT = NULL,
     @observaciones VARCHAR(500) = NULL,
-    @fotografia VARBINARY(MAX) = NULL
+    @fotografia VARBINARY(MAX) = NULL,
+    @idUsuarioRegistro INT = NULL
 AS
 BEGIN
     IF @transmision = 'CVT' AND @nroVelocidades IS NOT NULL
@@ -490,13 +551,13 @@ BEGIN
         nroChasis, idModeloVehiculo, version, generacion, paisFabricacion, transmision, 
         nroVelocidades, nroPuertas, nroAsientos, traccion,
         tieneTurbo, motor, combustible, frenos, nroAirbags, seguridadChoques, organizacionSeguridad,
-        anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones, fotografia
+        anioFabricacion, confiabilidad, puntuacion, kilometraje, observaciones, fotografia, idUsuarioRegistro
     )
     VALUES (
         @nroChasis, @idModeloVehiculo, @version, @generacion, @paisFabricacion, @transmision, 
         @nroVelocidades, @nroPuertas, @nroAsientos, @traccion,
         @tieneTurbo, @motor, @combustible, @frenos, @nroAirbags, @seguridadChoques, @organizacionSeguridad,
-        @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones, @fotografia
+        @anioFabricacion, @confiabilidad, @puntuacion, @kilometraje, @observaciones, @fotografia, @idUsuarioRegistro
     );
     
     SELECT SCOPE_IDENTITY() AS nuevoId;
@@ -508,7 +569,7 @@ IF OBJECT_ID('paVehiculoActualizar', 'P') IS NOT NULL
     DROP PROC paVehiculoActualizar;
 GO
 
-CREATE PROC paVehiculoActualizar
+ALTER PROC paVehiculoActualizar
     @id INT,
     --@idModeloVehiculo INT, --faltaba esto
     @version VARCHAR(20),
@@ -532,7 +593,8 @@ CREATE PROC paVehiculoActualizar
     @kilometraje INT = NULL,
     @observaciones VARCHAR(500) = NULL,
     @fotografia VARBINARY(MAX) = NULL,
-    @usuarioModificacion VARCHAR(50) = NULL
+    @usuarioModificacion VARCHAR(50) = NULL,
+    @idUsuarioModificacion INT = NULL 
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -551,9 +613,9 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Vehiculo WHERE id = @id AND confiabilidad != @confiabilidad)
         INSERT INTO HistorialConfiabilidad (idVehiculo, confiabilidadAnterior, confiabilidadNueva, 
-                                           puntuacionAnterior, puntuacionNueva, motivo, usuarioRegistro, fechaRegistro)
+                                           puntuacionAnterior, puntuacionNueva, motivo, usuarioRegistro, fechaRegistro, idUsuarioRegistro)
         SELECT @id, confiabilidad, @confiabilidad, puntuacion, @puntuacion, 
-               'Actualización manual de confiabilidad', SUSER_NAME(), GETDATE()
+               'Actualización manual de confiabilidad', SUSER_NAME(), GETDATE(), @idUsuarioModificacion
         FROM Vehiculo WHERE id = @id;
     
     UPDATE Vehiculo 
@@ -969,7 +1031,7 @@ END
 --    @puntuacion DECIMAL(3,1),
 --    @kilometraje INT = NULL,
 --    @observaciones VARCHAR(500) = NULL,
---    @fotografia VARBINARY(MAX) = NULL  -- ⭐ NUEVO PARÁMETRO
+--    @fotografia VARBINARY(MAX) = NULL  -- ⭐***
 --AS
 --    INSERT INTO Vehiculo (
 --        nroChasis, idModeloVehiculo, generacion, paisFabricacion, transmision,
@@ -1004,7 +1066,7 @@ END
 --    @puntuacion DECIMAL(3,1),
 --    @kilometraje INT = NULL,
 --    @observaciones VARCHAR(500) = NULL,
---    @fotografia VARBINARY(MAX) = NULL  -- ⭐ NUEVO PARÁMETRO
+--    @fotografia VARBINARY(MAX) = NULL  -- ⭐***
 --AS
 --    -- Guardar historial si cambia la confiabilidad
 --    IF EXISTS (SELECT 1 FROM Vehiculo WHERE id = @id AND confiabilidad != @confiabilidad)
@@ -1029,7 +1091,7 @@ END
 --        puntuacion = @puntuacion,
 --        kilometraje = @kilometraje,
 --        observaciones = @observaciones,
---        fotografia = ISNULL(@fotografia, fotografia)  -- ⭐ Solo actualiza si se proporciona
+--        fotografia = ISNULL(@fotografia, fotografia)  -- Solo actualiza si se proporciona
 --    WHERE id = @id;
     
 --    SELECT 'Actualizado correctamente' AS mensaje;
@@ -1320,6 +1382,9 @@ BEGIN
     PRINT 'Índice IX_Empleado_IdCargo creado';
 END
 
+SELECT *FROM Vehiculo
+SELECT *FROM HistorialConfiabilidad;
+
 -- =====================================================
 -- RESUMEN
 -- =====================================================
@@ -1342,8 +1407,10 @@ INNER JOIN Procedencia p ON m.idProcedencia = p.id
 WHERE p.descripcion = 'Japonés'
 
 select * FROM Marca
+SELECT * FROM ModeloVehiculo
 SELECT * FROM Procedencia WHERE estado != -1;
 SELECT * FROM Cargo
+SELECT * FROM Vehiculo
 SELECT * FROM Vehiculo WHERE estado != -1;
 SELECT * FROM Vehiculo WHERE id = 37;
 

@@ -44,6 +44,7 @@
           <Property Name="motivo" Type="varchar" MaxLength="250" Nullable="false" />
           <Property Name="usuarioRegistro" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="fechaRegistro" Type="datetime" Nullable="false" />
+          <Property Name="idUsuarioRegistro" Type="int" />
         </EntityType>
         <EntityType Name="Marca">
           <Key>
@@ -137,6 +138,7 @@
           <Property Name="traccion" Type="varchar" MaxLength="50" />
           <Property Name="usuarioModificacion" Type="varchar" MaxLength="50" />
           <Property Name="fechaModificacion" Type="datetime" />
+          <Property Name="idUsuarioRegistro" Type="int" />
         </EntityType>
         <EntityType Name="VehiculoMantenimiento">
           <Key>
@@ -152,6 +154,7 @@
           <Property Name="usuarioRegistro" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="fechaRegistro" Type="datetime" Nullable="false" />
           <Property Name="estado" Type="smallint" Nullable="false" />
+          <Property Name="idUsuarioRegistro" Type="int" />
         </EntityType>
         <Association Name="FK_Empleado_Cargo">
           <End Role="Cargo" Type="Self.Cargo" Multiplicity="1" />
@@ -162,6 +165,18 @@
             </Principal>
             <Dependent Role="Empleado">
               <PropertyRef Name="idCargo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HistorialConfiabilidad_Usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+          <End Role="HistorialConfiabilidad" Type="Self.HistorialConfiabilidad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="HistorialConfiabilidad">
+              <PropertyRef Name="idUsuarioRegistro" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -237,6 +252,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Vehiculo_Usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+          <End Role="Vehiculo" Type="Self.Vehiculo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Vehiculo">
+              <PropertyRef Name="idUsuarioRegistro" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VehiculoMantenimiento_Usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+          <End Role="VehiculoMantenimiento" Type="Self.VehiculoMantenimiento" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="VehiculoMantenimiento">
+              <PropertyRef Name="idUsuarioRegistro" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_VehiculoMantenimiento_Vehiculo">
           <End Role="Vehiculo" Type="Self.Vehiculo" Multiplicity="1" />
           <End Role="VehiculoMantenimiento" Type="Self.VehiculoMantenimiento" Multiplicity="*" />
@@ -289,6 +328,7 @@
           <Parameter Name="observaciones" Type="varchar" Mode="In" />
           <Parameter Name="fotografia" Type="varbinary(max)" Mode="In" />
           <Parameter Name="usuarioModificacion" Type="varchar" Mode="In" />
+          <Parameter Name="idUsuarioModificacion" Type="int" Mode="In" />
         </Function>
         <Function Name="paVehiculoEliminar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="int" Mode="In" />
@@ -317,6 +357,7 @@
           <Parameter Name="kilometraje" Type="int" Mode="In" />
           <Parameter Name="observaciones" Type="varchar" Mode="In" />
           <Parameter Name="fotografia" Type="varbinary(max)" Mode="In" />
+          <Parameter Name="idUsuarioRegistro" Type="int" Mode="In" />
         </Function>
         <Function Name="paVehiculoListar" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="parametro" Type="varchar" Mode="In" />
@@ -357,6 +398,10 @@
             <End Role="Cargo" EntitySet="Cargo" />
             <End Role="Empleado" EntitySet="Empleado" />
           </AssociationSet>
+          <AssociationSet Name="FK_HistorialConfiabilidad_Usuario" Association="Self.FK_HistorialConfiabilidad_Usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="HistorialConfiabilidad" EntitySet="HistorialConfiabilidad" />
+          </AssociationSet>
           <AssociationSet Name="FK_HistorialConfiabilidad_Vehiculo" Association="Self.FK_HistorialConfiabilidad_Vehiculo">
             <End Role="Vehiculo" EntitySet="Vehiculo" />
             <End Role="HistorialConfiabilidad" EntitySet="HistorialConfiabilidad" />
@@ -380,6 +425,14 @@
           <AssociationSet Name="FK_Vehiculo_ModeloVehiculo" Association="Self.FK_Vehiculo_ModeloVehiculo">
             <End Role="ModeloVehiculo" EntitySet="ModeloVehiculo" />
             <End Role="Vehiculo" EntitySet="Vehiculo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vehiculo_Usuario" Association="Self.FK_Vehiculo_Usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="Vehiculo" EntitySet="Vehiculo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VehiculoMantenimiento_Usuario" Association="Self.FK_VehiculoMantenimiento_Usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="VehiculoMantenimiento" EntitySet="VehiculoMantenimiento" />
           </AssociationSet>
           <AssociationSet Name="FK_VehiculoMantenimiento_Vehiculo" Association="Self.FK_VehiculoMantenimiento_Vehiculo">
             <End Role="Vehiculo" EntitySet="Vehiculo" />
@@ -433,6 +486,8 @@
           <Property Name="motivo" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="idUsuarioRegistro" Type="Int32" />
+          <NavigationProperty Name="Usuario" Relationship="Self.FK_HistorialConfiabilidad_Usuario" FromRole="HistorialConfiabilidad" ToRole="Usuario" />
           <NavigationProperty Name="Vehiculo" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="HistorialConfiabilidad" ToRole="Vehiculo" />
         </EntityType>
         <EntityType Name="Marca">
@@ -501,6 +556,9 @@
           <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="estado" Type="Int16" Nullable="false" />
           <NavigationProperty Name="Empleado" Relationship="Self.FK_Usuario_Empleado" FromRole="Usuario" ToRole="Empleado" />
+          <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Usuario" FromRole="Usuario" ToRole="HistorialConfiabilidad" />
+          <NavigationProperty Name="Vehiculo" Relationship="Self.FK_Vehiculo_Usuario" FromRole="Usuario" ToRole="Vehiculo" />
+          <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Usuario" FromRole="Usuario" ToRole="VehiculoMantenimiento" />
         </EntityType>
         <EntityType Name="Vehiculo">
           <Key>
@@ -535,8 +593,10 @@
           <Property Name="traccion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="usuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="fechaModificacion" Type="DateTime" Precision="3" />
+          <Property Name="idUsuarioRegistro" Type="Int32" />
           <NavigationProperty Name="HistorialConfiabilidad" Relationship="Self.FK_HistorialConfiabilidad_Vehiculo" FromRole="Vehiculo" ToRole="HistorialConfiabilidad" />
           <NavigationProperty Name="ModeloVehiculo" Relationship="Self.FK_Vehiculo_ModeloVehiculo" FromRole="Vehiculo" ToRole="ModeloVehiculo" />
+          <NavigationProperty Name="Usuario" Relationship="Self.FK_Vehiculo_Usuario" FromRole="Vehiculo" ToRole="Usuario" />
           <NavigationProperty Name="VehiculoMantenimiento" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="Vehiculo" ToRole="VehiculoMantenimiento" />
         </EntityType>
         <EntityType Name="VehiculoMantenimiento">
@@ -553,6 +613,8 @@
           <Property Name="usuarioRegistro" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="fechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="estado" Type="Int16" Nullable="false" />
+          <Property Name="idUsuarioRegistro" Type="Int32" />
+          <NavigationProperty Name="Usuario" Relationship="Self.FK_VehiculoMantenimiento_Usuario" FromRole="VehiculoMantenimiento" ToRole="Usuario" />
           <NavigationProperty Name="Vehiculo" Relationship="Self.FK_VehiculoMantenimiento_Vehiculo" FromRole="VehiculoMantenimiento" ToRole="Vehiculo" />
         </EntityType>
         <Association Name="FK_Empleado_Cargo">
@@ -576,6 +638,18 @@
             </Principal>
             <Dependent Role="Usuario">
               <PropertyRef Name="idEmpleado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HistorialConfiabilidad_Usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+          <End Role="HistorialConfiabilidad" Type="Self.HistorialConfiabilidad" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="HistorialConfiabilidad">
+              <PropertyRef Name="idUsuarioRegistro" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -639,6 +713,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Vehiculo_Usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+          <End Role="Vehiculo" Type="Self.Vehiculo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Vehiculo">
+              <PropertyRef Name="idUsuarioRegistro" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VehiculoMantenimiento_Usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+          <End Role="VehiculoMantenimiento" Type="Self.VehiculoMantenimiento" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="VehiculoMantenimiento">
+              <PropertyRef Name="idUsuarioRegistro" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_VehiculoMantenimiento_Vehiculo">
           <End Role="Vehiculo" Type="Self.Vehiculo" Multiplicity="1" />
           <End Role="VehiculoMantenimiento" Type="Self.VehiculoMantenimiento" Multiplicity="*" />
@@ -670,6 +768,10 @@
             <End Role="Empleado" EntitySet="Empleado" />
             <End Role="Usuario" EntitySet="Usuario" />
           </AssociationSet>
+          <AssociationSet Name="FK_HistorialConfiabilidad_Usuario" Association="Self.FK_HistorialConfiabilidad_Usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="HistorialConfiabilidad" EntitySet="HistorialConfiabilidad" />
+          </AssociationSet>
           <AssociationSet Name="FK_HistorialConfiabilidad_Vehiculo" Association="Self.FK_HistorialConfiabilidad_Vehiculo">
             <End Role="Vehiculo" EntitySet="Vehiculo" />
             <End Role="HistorialConfiabilidad" EntitySet="HistorialConfiabilidad" />
@@ -689,6 +791,14 @@
           <AssociationSet Name="FK_Vehiculo_ModeloVehiculo" Association="Self.FK_Vehiculo_ModeloVehiculo">
             <End Role="ModeloVehiculo" EntitySet="ModeloVehiculo" />
             <End Role="Vehiculo" EntitySet="Vehiculo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vehiculo_Usuario" Association="Self.FK_Vehiculo_Usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="Vehiculo" EntitySet="Vehiculo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VehiculoMantenimiento_Usuario" Association="Self.FK_VehiculoMantenimiento_Usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="VehiculoMantenimiento" EntitySet="VehiculoMantenimiento" />
           </AssociationSet>
           <AssociationSet Name="FK_VehiculoMantenimiento_Vehiculo" Association="Self.FK_VehiculoMantenimiento_Vehiculo">
             <End Role="Vehiculo" EntitySet="Vehiculo" />
@@ -734,6 +844,7 @@
             <Parameter Name="observaciones" Mode="In" Type="String" />
             <Parameter Name="fotografia" Mode="In" Type="Binary" />
             <Parameter Name="usuarioModificacion" Mode="In" Type="String" />
+            <Parameter Name="idUsuarioModificacion" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="paVehiculoEliminar" ReturnType="Collection(String)">
             <Parameter Name="id" Mode="In" Type="Int32" />
@@ -762,6 +873,7 @@
             <Parameter Name="kilometraje" Mode="In" Type="Int32" />
             <Parameter Name="observaciones" Mode="In" Type="String" />
             <Parameter Name="fotografia" Mode="In" Type="Binary" />
+            <Parameter Name="idUsuarioRegistro" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="paVehiculoListar" ReturnType="Collection(AutonModel.paVehiculoListar_Result)">
             <Parameter Name="parametro" Mode="In" Type="String" />
@@ -1089,6 +1201,7 @@
                 <ScalarProperty Name="motivo" ColumnName="motivo" />
                 <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
                 <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
+                <ScalarProperty Name="idUsuarioRegistro" ColumnName="idUsuarioRegistro" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1188,6 +1301,7 @@
                 <ScalarProperty Name="traccion" ColumnName="traccion" />
                 <ScalarProperty Name="usuarioModificacion" ColumnName="usuarioModificacion" />
                 <ScalarProperty Name="fechaModificacion" ColumnName="fechaModificacion" />
+                <ScalarProperty Name="idUsuarioRegistro" ColumnName="idUsuarioRegistro" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1204,6 +1318,7 @@
                 <ScalarProperty Name="usuarioRegistro" ColumnName="usuarioRegistro" />
                 <ScalarProperty Name="fechaRegistro" ColumnName="fechaRegistro" />
                 <ScalarProperty Name="estado" ColumnName="estado" />
+                <ScalarProperty Name="idUsuarioRegistro" ColumnName="idUsuarioRegistro" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
