@@ -1,8 +1,11 @@
-﻿using System;
+﻿using CadAuton;
+using ClnAuton;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +15,18 @@ namespace CpAuton
 {
     public partial class FrmPrincipal : Form
     {
+        private List<Vehiculo> vehiculosCarrusel = new List<Vehiculo>();
+        private List<paVehiculoListar_Result> vehiculosCarruselResumen = new List<paVehiculoListar_Result>();
+        private int indiceCarruselActual = 0;
+        private Timer timerCarrusel;
+        private Timer timerFade;
+        private float opacidadActual = 1.0f;
+        private const float velocidadFade = 0.05f;
+        private bool estoyEnFade = false;
+        private Image imagenAnterior;
+        private ToolTip toolTipCarrusel = new ToolTip();
+
+
         public FrmPrincipal()
         {
             InitializeComponent();
@@ -164,6 +179,18 @@ namespace CpAuton
                     lblUsuario.Text = "Usuario: Invitado (Solo consulta)";
                 }
             }
+            // Reiniciar carrusel cuando cambia la autenticación
+            try
+            {
+                if (timerCarrusel != null)
+                {
+                    timerCarrusel.Stop();
+                    timerCarrusel.Dispose();
+                    timerCarrusel = null;
+                }
+                InicializarCarrusel();
+            }
+            catch { }
         }
 
         // Eventos de menú
@@ -389,6 +416,280 @@ namespace CpAuton
             }
         }
 
+        private void IniciarEfectoFadeIn()
+        {
+            opacidadActual = 0.0f;
+
+            timerFade = new Timer();
+            timerFade.Interval = 30;
+            timerFade.Tick += (s, e) =>
+            {
+                opacidadActual += velocidadFade;
+
+                if (opacidadActual >= 1.0f)
+                {
+                    opacidadActual = 1.0f;
+                    timerFade.Stop();
+                    timerFade.Dispose();
+                    timerFade = null;
+                    estoyEnFade = false;
+
+                    // Desconectar el paint handler
+                    pictureBox1.Paint -= PictureBox1_Paint;
+                }
+
+                pictureBox1.Invalidate();
+            };
+
+            timerFade.Start();
+        }
+
+        // Método para cargar solo la imagen sin mostrarla
+        private void CargarImagenActual()
+        {
+            try
+            {
+                if (vehiculosCarrusel.Count == 0) return;
+                if (indiceCarruselActual < 0 || indiceCarruselActual >= vehiculosCarrusel.Count) return;
+
+                var vehiculo = vehiculosCarrusel[indiceCarruselActual];
+                var vehiculoResumen = vehiculosCarruselResumen.Count > indiceCarruselActual
+                    ? vehiculosCarruselResumen[indiceCarruselActual]
+                    : null;
+
+                if (vehiculo.fotografia == null || vehiculo.fotografia.Length == 0) return;
+
+                using (var ms = new System.IO.MemoryStream(vehiculo.fotografia))
+                {
+                    var nuevaImagen = Image.FromStream(ms);
+                    pictureBox1.Image = (Image)nuevaImagen.Clone();
+                }
+
+                // Actualizar tooltip
+                if (vehiculoResumen != null)
+                {
+                    string infoVehiculo = $"🏆 {indiceCarruselActual + 1}/{vehiculosCarrusel.Count}\n" +
+                                         $"Marca: {vehiculoResumen.marca}\n" +
+                                         $"Modelo: {vehiculoResumen.modelo}\n" +
+                                         $"Confiabilidad: {vehiculo.confiabilidad}\n" +
+                                         $"Puntuación: {vehiculo.puntuacion}/10";
+                    toolTipCarrusel.SetToolTip(pictureBox1, infoVehiculo);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error cargando imagen: {ex.Message}");
+            }
+        }
+
+        private void IniciarEfectoFade()
+        {
+            if (estoyEnFade) return;
+
+            estoyEnFade = true;
+            opacidadActual = 1.0f;
+
+            // ⭐ GUARDAR LA IMAGEN ACTUAL ANTES DE CAMBIAR
+            imagenAnterior = pictureBox1.Image != null ? (Image)pictureBox1.Image.Clone() : null;
+
+            // ⭐ CAMBIAR AL SIGUIENTE VEHÍCULO
+            indiceCarruselActual = (indiceCarruselActual + 1) % vehiculosCarrusel.Count;
+
+            // ⭐ CARGAR LA NUEVA IMAGEN (pero sin mostrarla aún)
+            CargarImagenActual();
+
+            // Crear timer para el fade-out
+            timerFade = new Timer();
+            timerFade.Interval = 30;
+            timerFade.Tick += (s, e) =>
+            {
+                opacidadActual -= velocidadFade;
+
+                if (opacidadActual <= 0)
+                {
+                    opacidadActual = 0;
+                    timerFade.Stop();
+                    timerFade.Dispose();
+                    timerFade = null;
+
+                    // Limpiar imagen anterior
+                    if (imagenAnterior != null)
+                    {
+                        imagenAnterior.Dispose();
+                        imagenAnterior = null;
+                    }
+
+                    // Iniciar fade-in
+                    IniciarEfectoFadeIn();
+                }
+
+                pictureBox1.Invalidate();
+            };
+
+            // ⭐ CONECTAR EL PAINT HANDLER
+            pictureBox1.Paint -= PictureBox1_Paint;
+            pictureBox1.Paint += PictureBox1_Paint;
+
+            timerFade.Start();
+        }
+
+        // ⭐ NUEVO: Paint handler para dibujar el fade
+        private void PictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            if (!estoyEnFade) return;
+
+            // Dibujar imagen anterior con opacidad decreciente (fade-out)
+            if (imagenAnterior != null && opacidadActual > 0)
+            {
+                Bitmap bmpFadeOut = AplicarOpacidad(imagenAnterior, opacidadActual);
+                e.Graphics.DrawImage(bmpFadeOut, 0, 0, pictureBox1.Width, pictureBox1.Height);
+                bmpFadeOut.Dispose();
+            }
+
+            // Dibujar imagen nueva con opacidad creciente (fade-in)
+            float opacidadNueva = 1.0f - opacidadActual;
+            if (pictureBox1.Image != null && opacidadNueva > 0)
+            {
+                Bitmap bmpFadeIn = AplicarOpacidad(pictureBox1.Image, opacidadNueva);
+                e.Graphics.DrawImage(bmpFadeIn, 0, 0, pictureBox1.Width, pictureBox1.Height);
+                bmpFadeIn.Dispose();
+            }
+        }
+
+        private Bitmap AplicarOpacidad(Image imagen, float opacidad)
+        {
+            if (imagen == null) return null;
+
+            Bitmap bmp = new Bitmap(imagen.Width, imagen.Height);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                ColorMatrix cm = new ColorMatrix(new float[][]
+                {
+                    new float[] {1, 0, 0, 0, 0},
+                    new float[] {0, 1, 0, 0, 0},
+                    new float[] {0, 0, 1, 0, 0},
+                    new float[] {0, 0, 0, opacidad, 0},
+                    new float[] {0, 0, 0, 0, 1}
+                });
+
+                ImageAttributes ia = new ImageAttributes();
+                ia.SetColorMatrix(cm);
+
+                g.DrawImage(imagen, new Rectangle(0, 0, bmp.Width, bmp.Height),
+                    0, 0, imagen.Width, imagen.Height, GraphicsUnit.Pixel, ia);
+            }
+            return bmp;
+        }
+
+        //protected override void OnFormClosing(FormClosingEventArgs e)
+        //{
+        //    if (timerCarrusel != null)
+        //    {
+        //        timerCarrusel.Stop();
+        //        timerCarrusel.Dispose();
+        //    }
+
+        //    DialogResult resultado = MessageBox.Show("¿Está seguro que desea salir del sistema?",
+        //                                            "Salir",
+        //                                            MessageBoxButtons.YesNo,
+        //                                            MessageBoxIcon.Question);
+        //    if (resultado == DialogResult.No)
+        //    {
+        //        e.Cancel = true;
+        //    }
+        //    base.OnFormClosing(e);
+        //}
+
+        private void ActualizarImagenCarrusel()
+        {
+            try
+            {
+                if (vehiculosCarrusel.Count == 0) return;
+
+                var vehiculo = vehiculosCarrusel[indiceCarruselActual];
+                if (vehiculo.fotografia == null || vehiculo.fotografia.Length == 0) return;
+
+                // Convertir bytes a imagen
+                using (var ms = new System.IO.MemoryStream(vehiculo.fotografia))
+                {
+                    var nuevaImagen = Image.FromStream(ms);
+
+                    // Efecto de fade: opacidad gradual
+                    if (pictureBox1.Image != null)
+                    {
+                        pictureBox1.Image.Dispose();
+                    }
+
+                    pictureBox1.Image = (Image)nuevaImagen.Clone();
+
+                    string infoVehiculo = $"🏆 {vehiculosCarrusel.IndexOf(vehiculo) + 1}/3\n" +
+                                         //$"Marca: {vehiculoResumen.marca}\n" +
+                                         //$"Modelo: {vehiculoResumen.modelo}\n" +
+                                         $"Confiabilidad: {vehiculo.confiabilidad}\n" +
+                                         $"Puntuación: {vehiculo.puntuacion}/10";
+                    toolTipCarrusel.SetToolTip(pictureBox1, infoVehiculo);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error actualizando carrusel: {ex.Message}");
+            }
+        }
+
+        private void AvanzarCarrusel()
+        {
+            if (vehiculosCarrusel.Count == 0 || estoyEnFade) return;
+
+            // ⭐ INICIAR EL EFECTO FADE EN VEZ DE CAMBIAR DIRECTAMENTE
+            IniciarEfectoFade();
+        }
+
+        private void InicializarCarrusel()
+        {
+            try
+            {
+                // DESPUÉS (descarta sin foto primero, luego toma 3):
+                var todosValidos = ConsultaVehiculosCln.listarTodosPa()
+                    .Where(v => (v.confiabilidad == "Bueno" || v.confiabilidad == "Excelente"))
+                    .OrderByDescending(v => v.puntuacion)
+                    .ToList();
+
+                // Convertir a objetos Vehiculo para obtener fotografías
+                vehiculosCarrusel.Clear();
+                vehiculosCarruselResumen.Clear(); // GUARDAR TAMBIÉN EL RESUMEN
+
+                foreach (var vehiculoResumen in todosValidos)
+                {
+                    if (vehiculosCarrusel.Count >= 3) break; // Ya tenemos 3, parar
+
+                    var vehiculoCompleto = ConsultaVehiculosCln.obtenerUno(vehiculoResumen.id);
+                    if (vehiculoCompleto != null && vehiculoCompleto.fotografia != null && vehiculoCompleto.fotografia.Length > 0)
+                    {
+                        vehiculosCarrusel.Add(vehiculoCompleto);
+                        vehiculosCarruselResumen.Add(vehiculoResumen);
+                    }
+                }
+
+                // Solo activar carrusel si hay 3 o más vehículos con foto
+                if (vehiculosCarrusel.Count >= 3)
+                {
+                    indiceCarruselActual = 0;
+                    CargarImagenActual();
+
+                    // Crear y configurar timer para cambiar imagen cada 5 segundos
+                    timerCarrusel = new Timer();
+                    timerCarrusel.Interval = 5000; // 5 segundos
+                    timerCarrusel.Tick += (s, e) => AvanzarCarrusel();
+                    timerCarrusel.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error inicializando carrusel: {ex.Message}");
+            }
+   
+        }
+
         private void FrmPrincipal_Load(object sender, EventArgs e)
         {
             // Inicializa pasando el control wmpPlayer que colocaste en el diseñador
@@ -397,6 +698,8 @@ namespace CpAuton
             // Reproducir música del menú
             string ruta = Application.StartupPath + @"\Audio\Crystal Waters - Gypsy Woman (She's Homeless) (Official instrumental).mp3";
             AudioManager.Reproducir(ruta, true, 60);
+
+            //InicializarCarrusel();
         }
     }
 }
