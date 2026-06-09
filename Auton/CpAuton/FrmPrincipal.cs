@@ -37,6 +37,7 @@ namespace CpAuton
         private void btnCaTodoVehiculos_Click(object sender, EventArgs e)
         {
             new FrmConsultaVehiculos().ShowDialog();
+            RecargarCarrusel();
         }
 
         private void ConfigurarFormulario()
@@ -197,6 +198,7 @@ namespace CpAuton
         private void MenuConsultar_Click(object sender, EventArgs e)
         {
             new FrmConsultaVehiculos().ShowDialog();
+            RecargarCarrusel();
         }
 
         private void MenuNuevo_Click(object sender, EventArgs e)
@@ -206,6 +208,7 @@ namespace CpAuton
                 using (var frmRegistro = new FrmRegistroVehiculo())
                 {
                     frmRegistro.ShowDialog(this);
+                    RecargarCarrusel();
                 }
             }
         }
@@ -260,6 +263,7 @@ namespace CpAuton
                 using (var frmEditar = new FrmConsultaVehiculos())
                 {
                     frmEditar.ShowDialog(this);
+                    RecargarCarrusel();
                 }
             }
         }
@@ -688,6 +692,42 @@ namespace CpAuton
                 System.Diagnostics.Debug.WriteLine($"Error inicializando carrusel: {ex.Message}");
             }
    
+        }
+
+        /// Recarga el carrusel deteniéndolo y reinicializándolo.
+        public void RecargarCarrusel()
+        {
+            try
+            {
+                if (timerCarrusel != null)
+                {
+                    timerCarrusel.Stop();
+                    timerCarrusel.Dispose();
+                    timerCarrusel = null;
+                }
+
+                if (timerFade != null)
+                {
+                    timerFade.Stop();
+                    timerFade.Dispose();
+                    timerFade = null;
+                }
+
+                estoyEnFade = false;
+                indiceCarruselActual = 0;
+
+                if (imagenAnterior != null)
+                {
+                    imagenAnterior.Dispose();
+                    imagenAnterior = null;
+                }
+
+                InicializarCarrusel();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error recargando carrusel: {ex.Message}");
+            }
         }
 
         private void FrmPrincipal_Load(object sender, EventArgs e)
