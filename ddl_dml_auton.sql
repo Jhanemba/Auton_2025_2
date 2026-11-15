@@ -1189,7 +1189,7 @@ INSERT INTO Cargo (descripcion) VALUES
 
 -- Empleados
 INSERT INTO Empleado (cedulaIdentidad, nombres, primerApellido, segundoApellido, direccion, celular, idCargo) VALUES 
-('12345678', 'Kevin Eduardo', 'Cardenas', 'Mamani', 'Av. Venezuela #123', 71234567, 1),
+('12345678', 'Kevin', 'Car', 'M.', 'Av. Venezuela #123', 71234567, 1),
 ('87654321', 'María José', 'Fernández', 'López', 'Calle Bolívar #456', 72345678, 2);
 
 -- Usuarios
