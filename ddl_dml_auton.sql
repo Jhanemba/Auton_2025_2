@@ -1,6 +1,6 @@
 ﻿-- =====================================================
 -- SISTEMA AUTON - CONFIABILIDAD VEHICULAR POR PROCEDENCIA
--- Desarrollo: Kevin Eduardo Cardenas Mamani
+-- Desarrollo: KevCar
 -- Universidad: USFX - Carrera de Informática
 -- Versión optimizada para .NET con CAD, CLN, CP
 -- =====================================================

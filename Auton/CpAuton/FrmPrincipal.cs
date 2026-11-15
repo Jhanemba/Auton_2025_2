@@ -691,7 +691,6 @@ namespace CpAuton
             {
                 System.Diagnostics.Debug.WriteLine($"Error inicializando carrusel: {ex.Message}");
             }
-   
         }
 
         /// Recarga el carrusel deteniéndolo y reinicializándolo.
